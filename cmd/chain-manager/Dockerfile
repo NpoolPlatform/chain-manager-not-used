@@ -6,6 +6,6 @@ COPY chain-manager /app
 
 ENTRYPOINT ["/app/chain-manager"]
 
-EXPOSE 50330 50331 50332 50333
+EXPOSE 50560 50561 50562 50563
 
 CMD ["run"]
