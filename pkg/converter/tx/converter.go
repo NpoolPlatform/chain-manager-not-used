@@ -1,29 +1,30 @@
-package general
+package tx
 
 import (
-	npool "github.com/NpoolPlatform/message/npool/servicetmpl/general"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent"
+	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/tx"
 )
 
-func Ent2Grpc(row *ent.General) *npool.General {
+func Ent2Grpc(row *ent.Tran) *npool.Tx {
 	if row == nil {
 		return nil
 	}
 
-	return &npool.General{
-		ID:         row.ID.String(),
-		AppID:      row.AppID.String(),
-		UserID:     row.UserID.String(),
-		CoinTypeID: row.CoinTypeID.String(),
-		Incoming:   row.Incoming.String(),
-		Locked:     row.Locked.String(),
-		Outcoming:  row.Outcoming.String(),
-		Spendable:  row.Spendable.String(),
+	return &npool.Tx{
+		ID:            row.ID.String(),
+		FromAccountID: row.FromAccountID.String(),
+		ToAccountID:   row.ToAccountID.String(),
+		Amount:        row.Amount.String(),
+		FeeAmount:     row.FeeAmount.String(),
+		ChainTxID:     row.ChainTxID,
+		State:         npool.TxState(npool.TxState_value[row.State]),
+		CreatedAt:     row.CreatedAt,
+		UpdatedAt:     row.UpdatedAt,
 	}
 }
 
-func Ent2GrpcMany(rows []*ent.General) []*npool.General {
-	infos := []*npool.General{}
+func Ent2GrpcMany(rows []*ent.Tran) []*npool.Tx {
+	infos := []*npool.Tx{}
 	for _, row := range rows {
 		infos = append(infos, Ent2Grpc(row))
 	}

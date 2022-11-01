@@ -23,20 +23,20 @@ type Tran struct {
 	UpdatedAt uint32 `json:"updated_at,omitempty"`
 	// DeletedAt holds the value of the "deleted_at" field.
 	DeletedAt uint32 `json:"deleted_at,omitempty"`
-	// AppID holds the value of the "app_id" field.
-	AppID uuid.UUID `json:"app_id,omitempty"`
-	// UserID holds the value of the "user_id" field.
-	UserID uuid.UUID `json:"user_id,omitempty"`
-	// CoinTypeID holds the value of the "coin_type_id" field.
-	CoinTypeID uuid.UUID `json:"coin_type_id,omitempty"`
-	// Incoming holds the value of the "incoming" field.
-	Incoming decimal.Decimal `json:"incoming,omitempty"`
-	// Locked holds the value of the "locked" field.
-	Locked decimal.Decimal `json:"locked,omitempty"`
-	// Outcoming holds the value of the "outcoming" field.
-	Outcoming decimal.Decimal `json:"outcoming,omitempty"`
-	// Spendable holds the value of the "spendable" field.
-	Spendable decimal.Decimal `json:"spendable,omitempty"`
+	// FromAccountID holds the value of the "from_account_id" field.
+	FromAccountID uuid.UUID `json:"from_account_id,omitempty"`
+	// ToAccountID holds the value of the "to_account_id" field.
+	ToAccountID uuid.UUID `json:"to_account_id,omitempty"`
+	// Amount holds the value of the "amount" field.
+	Amount decimal.Decimal `json:"amount,omitempty"`
+	// FeeAmount holds the value of the "fee_amount" field.
+	FeeAmount decimal.Decimal `json:"fee_amount,omitempty"`
+	// ChainTxID holds the value of the "chain_tx_id" field.
+	ChainTxID string `json:"chain_tx_id,omitempty"`
+	// State holds the value of the "state" field.
+	State string `json:"state,omitempty"`
+	// Extra holds the value of the "extra" field.
+	Extra string `json:"extra,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -44,11 +44,13 @@ func (*Tran) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case tran.FieldIncoming, tran.FieldLocked, tran.FieldOutcoming, tran.FieldSpendable:
+		case tran.FieldAmount, tran.FieldFeeAmount:
 			values[i] = new(decimal.Decimal)
 		case tran.FieldCreatedAt, tran.FieldUpdatedAt, tran.FieldDeletedAt:
 			values[i] = new(sql.NullInt64)
-		case tran.FieldID, tran.FieldAppID, tran.FieldUserID, tran.FieldCoinTypeID:
+		case tran.FieldChainTxID, tran.FieldState, tran.FieldExtra:
+			values[i] = new(sql.NullString)
+		case tran.FieldID, tran.FieldFromAccountID, tran.FieldToAccountID:
 			values[i] = new(uuid.UUID)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Tran", columns[i])
@@ -89,47 +91,47 @@ func (t *Tran) assignValues(columns []string, values []interface{}) error {
 			} else if value.Valid {
 				t.DeletedAt = uint32(value.Int64)
 			}
-		case tran.FieldAppID:
+		case tran.FieldFromAccountID:
 			if value, ok := values[i].(*uuid.UUID); !ok {
-				return fmt.Errorf("unexpected type %T for field app_id", values[i])
+				return fmt.Errorf("unexpected type %T for field from_account_id", values[i])
 			} else if value != nil {
-				t.AppID = *value
+				t.FromAccountID = *value
 			}
-		case tran.FieldUserID:
+		case tran.FieldToAccountID:
 			if value, ok := values[i].(*uuid.UUID); !ok {
-				return fmt.Errorf("unexpected type %T for field user_id", values[i])
+				return fmt.Errorf("unexpected type %T for field to_account_id", values[i])
 			} else if value != nil {
-				t.UserID = *value
+				t.ToAccountID = *value
 			}
-		case tran.FieldCoinTypeID:
-			if value, ok := values[i].(*uuid.UUID); !ok {
-				return fmt.Errorf("unexpected type %T for field coin_type_id", values[i])
-			} else if value != nil {
-				t.CoinTypeID = *value
-			}
-		case tran.FieldIncoming:
+		case tran.FieldAmount:
 			if value, ok := values[i].(*decimal.Decimal); !ok {
-				return fmt.Errorf("unexpected type %T for field incoming", values[i])
+				return fmt.Errorf("unexpected type %T for field amount", values[i])
 			} else if value != nil {
-				t.Incoming = *value
+				t.Amount = *value
 			}
-		case tran.FieldLocked:
+		case tran.FieldFeeAmount:
 			if value, ok := values[i].(*decimal.Decimal); !ok {
-				return fmt.Errorf("unexpected type %T for field locked", values[i])
+				return fmt.Errorf("unexpected type %T for field fee_amount", values[i])
 			} else if value != nil {
-				t.Locked = *value
+				t.FeeAmount = *value
 			}
-		case tran.FieldOutcoming:
-			if value, ok := values[i].(*decimal.Decimal); !ok {
-				return fmt.Errorf("unexpected type %T for field outcoming", values[i])
-			} else if value != nil {
-				t.Outcoming = *value
+		case tran.FieldChainTxID:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field chain_tx_id", values[i])
+			} else if value.Valid {
+				t.ChainTxID = value.String
 			}
-		case tran.FieldSpendable:
-			if value, ok := values[i].(*decimal.Decimal); !ok {
-				return fmt.Errorf("unexpected type %T for field spendable", values[i])
-			} else if value != nil {
-				t.Spendable = *value
+		case tran.FieldState:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field state", values[i])
+			} else if value.Valid {
+				t.State = value.String
+			}
+		case tran.FieldExtra:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field extra", values[i])
+			} else if value.Valid {
+				t.Extra = value.String
 			}
 		}
 	}
@@ -168,26 +170,26 @@ func (t *Tran) String() string {
 	builder.WriteString("deleted_at=")
 	builder.WriteString(fmt.Sprintf("%v", t.DeletedAt))
 	builder.WriteString(", ")
-	builder.WriteString("app_id=")
-	builder.WriteString(fmt.Sprintf("%v", t.AppID))
+	builder.WriteString("from_account_id=")
+	builder.WriteString(fmt.Sprintf("%v", t.FromAccountID))
 	builder.WriteString(", ")
-	builder.WriteString("user_id=")
-	builder.WriteString(fmt.Sprintf("%v", t.UserID))
+	builder.WriteString("to_account_id=")
+	builder.WriteString(fmt.Sprintf("%v", t.ToAccountID))
 	builder.WriteString(", ")
-	builder.WriteString("coin_type_id=")
-	builder.WriteString(fmt.Sprintf("%v", t.CoinTypeID))
+	builder.WriteString("amount=")
+	builder.WriteString(fmt.Sprintf("%v", t.Amount))
 	builder.WriteString(", ")
-	builder.WriteString("incoming=")
-	builder.WriteString(fmt.Sprintf("%v", t.Incoming))
+	builder.WriteString("fee_amount=")
+	builder.WriteString(fmt.Sprintf("%v", t.FeeAmount))
 	builder.WriteString(", ")
-	builder.WriteString("locked=")
-	builder.WriteString(fmt.Sprintf("%v", t.Locked))
+	builder.WriteString("chain_tx_id=")
+	builder.WriteString(t.ChainTxID)
 	builder.WriteString(", ")
-	builder.WriteString("outcoming=")
-	builder.WriteString(fmt.Sprintf("%v", t.Outcoming))
+	builder.WriteString("state=")
+	builder.WriteString(t.State)
 	builder.WriteString(", ")
-	builder.WriteString("spendable=")
-	builder.WriteString(fmt.Sprintf("%v", t.Spendable))
+	builder.WriteString("extra=")
+	builder.WriteString(t.Extra)
 	builder.WriteByte(')')
 	return builder.String()
 }

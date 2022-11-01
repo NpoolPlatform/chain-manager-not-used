@@ -31,26 +31,26 @@ const (
 // TranMutation represents an operation that mutates the Tran nodes in the graph.
 type TranMutation struct {
 	config
-	op            Op
-	typ           string
-	id            *uuid.UUID
-	created_at    *uint32
-	addcreated_at *int32
-	updated_at    *uint32
-	addupdated_at *int32
-	deleted_at    *uint32
-	adddeleted_at *int32
-	app_id        *uuid.UUID
-	user_id       *uuid.UUID
-	coin_type_id  *uuid.UUID
-	incoming      *decimal.Decimal
-	locked        *decimal.Decimal
-	outcoming     *decimal.Decimal
-	spendable     *decimal.Decimal
-	clearedFields map[string]struct{}
-	done          bool
-	oldValue      func(context.Context) (*Tran, error)
-	predicates    []predicate.Tran
+	op              Op
+	typ             string
+	id              *uuid.UUID
+	created_at      *uint32
+	addcreated_at   *int32
+	updated_at      *uint32
+	addupdated_at   *int32
+	deleted_at      *uint32
+	adddeleted_at   *int32
+	from_account_id *uuid.UUID
+	to_account_id   *uuid.UUID
+	amount          *decimal.Decimal
+	fee_amount      *decimal.Decimal
+	chain_tx_id     *string
+	state           *string
+	extra           *string
+	clearedFields   map[string]struct{}
+	done            bool
+	oldValue        func(context.Context) (*Tran, error)
+	predicates      []predicate.Tran
 }
 
 var _ ent.Mutation = (*TranMutation)(nil)
@@ -325,347 +325,347 @@ func (m *TranMutation) ResetDeletedAt() {
 	m.adddeleted_at = nil
 }
 
-// SetAppID sets the "app_id" field.
-func (m *TranMutation) SetAppID(u uuid.UUID) {
-	m.app_id = &u
+// SetFromAccountID sets the "from_account_id" field.
+func (m *TranMutation) SetFromAccountID(u uuid.UUID) {
+	m.from_account_id = &u
 }
 
-// AppID returns the value of the "app_id" field in the mutation.
-func (m *TranMutation) AppID() (r uuid.UUID, exists bool) {
-	v := m.app_id
+// FromAccountID returns the value of the "from_account_id" field in the mutation.
+func (m *TranMutation) FromAccountID() (r uuid.UUID, exists bool) {
+	v := m.from_account_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldAppID returns the old "app_id" field's value of the Tran entity.
+// OldFromAccountID returns the old "from_account_id" field's value of the Tran entity.
 // If the Tran object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TranMutation) OldAppID(ctx context.Context) (v uuid.UUID, err error) {
+func (m *TranMutation) OldFromAccountID(ctx context.Context) (v uuid.UUID, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldAppID is only allowed on UpdateOne operations")
+		return v, errors.New("OldFromAccountID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldAppID requires an ID field in the mutation")
+		return v, errors.New("OldFromAccountID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldAppID: %w", err)
+		return v, fmt.Errorf("querying old value for OldFromAccountID: %w", err)
 	}
-	return oldValue.AppID, nil
+	return oldValue.FromAccountID, nil
 }
 
-// ClearAppID clears the value of the "app_id" field.
-func (m *TranMutation) ClearAppID() {
-	m.app_id = nil
-	m.clearedFields[tran.FieldAppID] = struct{}{}
+// ClearFromAccountID clears the value of the "from_account_id" field.
+func (m *TranMutation) ClearFromAccountID() {
+	m.from_account_id = nil
+	m.clearedFields[tran.FieldFromAccountID] = struct{}{}
 }
 
-// AppIDCleared returns if the "app_id" field was cleared in this mutation.
-func (m *TranMutation) AppIDCleared() bool {
-	_, ok := m.clearedFields[tran.FieldAppID]
+// FromAccountIDCleared returns if the "from_account_id" field was cleared in this mutation.
+func (m *TranMutation) FromAccountIDCleared() bool {
+	_, ok := m.clearedFields[tran.FieldFromAccountID]
 	return ok
 }
 
-// ResetAppID resets all changes to the "app_id" field.
-func (m *TranMutation) ResetAppID() {
-	m.app_id = nil
-	delete(m.clearedFields, tran.FieldAppID)
+// ResetFromAccountID resets all changes to the "from_account_id" field.
+func (m *TranMutation) ResetFromAccountID() {
+	m.from_account_id = nil
+	delete(m.clearedFields, tran.FieldFromAccountID)
 }
 
-// SetUserID sets the "user_id" field.
-func (m *TranMutation) SetUserID(u uuid.UUID) {
-	m.user_id = &u
+// SetToAccountID sets the "to_account_id" field.
+func (m *TranMutation) SetToAccountID(u uuid.UUID) {
+	m.to_account_id = &u
 }
 
-// UserID returns the value of the "user_id" field in the mutation.
-func (m *TranMutation) UserID() (r uuid.UUID, exists bool) {
-	v := m.user_id
+// ToAccountID returns the value of the "to_account_id" field in the mutation.
+func (m *TranMutation) ToAccountID() (r uuid.UUID, exists bool) {
+	v := m.to_account_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldUserID returns the old "user_id" field's value of the Tran entity.
+// OldToAccountID returns the old "to_account_id" field's value of the Tran entity.
 // If the Tran object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TranMutation) OldUserID(ctx context.Context) (v uuid.UUID, err error) {
+func (m *TranMutation) OldToAccountID(ctx context.Context) (v uuid.UUID, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUserID is only allowed on UpdateOne operations")
+		return v, errors.New("OldToAccountID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUserID requires an ID field in the mutation")
+		return v, errors.New("OldToAccountID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUserID: %w", err)
+		return v, fmt.Errorf("querying old value for OldToAccountID: %w", err)
 	}
-	return oldValue.UserID, nil
+	return oldValue.ToAccountID, nil
 }
 
-// ClearUserID clears the value of the "user_id" field.
-func (m *TranMutation) ClearUserID() {
-	m.user_id = nil
-	m.clearedFields[tran.FieldUserID] = struct{}{}
+// ClearToAccountID clears the value of the "to_account_id" field.
+func (m *TranMutation) ClearToAccountID() {
+	m.to_account_id = nil
+	m.clearedFields[tran.FieldToAccountID] = struct{}{}
 }
 
-// UserIDCleared returns if the "user_id" field was cleared in this mutation.
-func (m *TranMutation) UserIDCleared() bool {
-	_, ok := m.clearedFields[tran.FieldUserID]
+// ToAccountIDCleared returns if the "to_account_id" field was cleared in this mutation.
+func (m *TranMutation) ToAccountIDCleared() bool {
+	_, ok := m.clearedFields[tran.FieldToAccountID]
 	return ok
 }
 
-// ResetUserID resets all changes to the "user_id" field.
-func (m *TranMutation) ResetUserID() {
-	m.user_id = nil
-	delete(m.clearedFields, tran.FieldUserID)
+// ResetToAccountID resets all changes to the "to_account_id" field.
+func (m *TranMutation) ResetToAccountID() {
+	m.to_account_id = nil
+	delete(m.clearedFields, tran.FieldToAccountID)
 }
 
-// SetCoinTypeID sets the "coin_type_id" field.
-func (m *TranMutation) SetCoinTypeID(u uuid.UUID) {
-	m.coin_type_id = &u
+// SetAmount sets the "amount" field.
+func (m *TranMutation) SetAmount(d decimal.Decimal) {
+	m.amount = &d
 }
 
-// CoinTypeID returns the value of the "coin_type_id" field in the mutation.
-func (m *TranMutation) CoinTypeID() (r uuid.UUID, exists bool) {
-	v := m.coin_type_id
+// Amount returns the value of the "amount" field in the mutation.
+func (m *TranMutation) Amount() (r decimal.Decimal, exists bool) {
+	v := m.amount
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldCoinTypeID returns the old "coin_type_id" field's value of the Tran entity.
+// OldAmount returns the old "amount" field's value of the Tran entity.
 // If the Tran object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TranMutation) OldCoinTypeID(ctx context.Context) (v uuid.UUID, err error) {
+func (m *TranMutation) OldAmount(ctx context.Context) (v decimal.Decimal, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCoinTypeID is only allowed on UpdateOne operations")
+		return v, errors.New("OldAmount is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCoinTypeID requires an ID field in the mutation")
+		return v, errors.New("OldAmount requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCoinTypeID: %w", err)
+		return v, fmt.Errorf("querying old value for OldAmount: %w", err)
 	}
-	return oldValue.CoinTypeID, nil
+	return oldValue.Amount, nil
 }
 
-// ClearCoinTypeID clears the value of the "coin_type_id" field.
-func (m *TranMutation) ClearCoinTypeID() {
-	m.coin_type_id = nil
-	m.clearedFields[tran.FieldCoinTypeID] = struct{}{}
+// ClearAmount clears the value of the "amount" field.
+func (m *TranMutation) ClearAmount() {
+	m.amount = nil
+	m.clearedFields[tran.FieldAmount] = struct{}{}
 }
 
-// CoinTypeIDCleared returns if the "coin_type_id" field was cleared in this mutation.
-func (m *TranMutation) CoinTypeIDCleared() bool {
-	_, ok := m.clearedFields[tran.FieldCoinTypeID]
+// AmountCleared returns if the "amount" field was cleared in this mutation.
+func (m *TranMutation) AmountCleared() bool {
+	_, ok := m.clearedFields[tran.FieldAmount]
 	return ok
 }
 
-// ResetCoinTypeID resets all changes to the "coin_type_id" field.
-func (m *TranMutation) ResetCoinTypeID() {
-	m.coin_type_id = nil
-	delete(m.clearedFields, tran.FieldCoinTypeID)
+// ResetAmount resets all changes to the "amount" field.
+func (m *TranMutation) ResetAmount() {
+	m.amount = nil
+	delete(m.clearedFields, tran.FieldAmount)
 }
 
-// SetIncoming sets the "incoming" field.
-func (m *TranMutation) SetIncoming(d decimal.Decimal) {
-	m.incoming = &d
+// SetFeeAmount sets the "fee_amount" field.
+func (m *TranMutation) SetFeeAmount(d decimal.Decimal) {
+	m.fee_amount = &d
 }
 
-// Incoming returns the value of the "incoming" field in the mutation.
-func (m *TranMutation) Incoming() (r decimal.Decimal, exists bool) {
-	v := m.incoming
+// FeeAmount returns the value of the "fee_amount" field in the mutation.
+func (m *TranMutation) FeeAmount() (r decimal.Decimal, exists bool) {
+	v := m.fee_amount
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldIncoming returns the old "incoming" field's value of the Tran entity.
+// OldFeeAmount returns the old "fee_amount" field's value of the Tran entity.
 // If the Tran object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TranMutation) OldIncoming(ctx context.Context) (v decimal.Decimal, err error) {
+func (m *TranMutation) OldFeeAmount(ctx context.Context) (v decimal.Decimal, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldIncoming is only allowed on UpdateOne operations")
+		return v, errors.New("OldFeeAmount is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldIncoming requires an ID field in the mutation")
+		return v, errors.New("OldFeeAmount requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldIncoming: %w", err)
+		return v, fmt.Errorf("querying old value for OldFeeAmount: %w", err)
 	}
-	return oldValue.Incoming, nil
+	return oldValue.FeeAmount, nil
 }
 
-// ClearIncoming clears the value of the "incoming" field.
-func (m *TranMutation) ClearIncoming() {
-	m.incoming = nil
-	m.clearedFields[tran.FieldIncoming] = struct{}{}
+// ClearFeeAmount clears the value of the "fee_amount" field.
+func (m *TranMutation) ClearFeeAmount() {
+	m.fee_amount = nil
+	m.clearedFields[tran.FieldFeeAmount] = struct{}{}
 }
 
-// IncomingCleared returns if the "incoming" field was cleared in this mutation.
-func (m *TranMutation) IncomingCleared() bool {
-	_, ok := m.clearedFields[tran.FieldIncoming]
+// FeeAmountCleared returns if the "fee_amount" field was cleared in this mutation.
+func (m *TranMutation) FeeAmountCleared() bool {
+	_, ok := m.clearedFields[tran.FieldFeeAmount]
 	return ok
 }
 
-// ResetIncoming resets all changes to the "incoming" field.
-func (m *TranMutation) ResetIncoming() {
-	m.incoming = nil
-	delete(m.clearedFields, tran.FieldIncoming)
+// ResetFeeAmount resets all changes to the "fee_amount" field.
+func (m *TranMutation) ResetFeeAmount() {
+	m.fee_amount = nil
+	delete(m.clearedFields, tran.FieldFeeAmount)
 }
 
-// SetLocked sets the "locked" field.
-func (m *TranMutation) SetLocked(d decimal.Decimal) {
-	m.locked = &d
+// SetChainTxID sets the "chain_tx_id" field.
+func (m *TranMutation) SetChainTxID(s string) {
+	m.chain_tx_id = &s
 }
 
-// Locked returns the value of the "locked" field in the mutation.
-func (m *TranMutation) Locked() (r decimal.Decimal, exists bool) {
-	v := m.locked
+// ChainTxID returns the value of the "chain_tx_id" field in the mutation.
+func (m *TranMutation) ChainTxID() (r string, exists bool) {
+	v := m.chain_tx_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldLocked returns the old "locked" field's value of the Tran entity.
+// OldChainTxID returns the old "chain_tx_id" field's value of the Tran entity.
 // If the Tran object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TranMutation) OldLocked(ctx context.Context) (v decimal.Decimal, err error) {
+func (m *TranMutation) OldChainTxID(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldLocked is only allowed on UpdateOne operations")
+		return v, errors.New("OldChainTxID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldLocked requires an ID field in the mutation")
+		return v, errors.New("OldChainTxID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldLocked: %w", err)
+		return v, fmt.Errorf("querying old value for OldChainTxID: %w", err)
 	}
-	return oldValue.Locked, nil
+	return oldValue.ChainTxID, nil
 }
 
-// ClearLocked clears the value of the "locked" field.
-func (m *TranMutation) ClearLocked() {
-	m.locked = nil
-	m.clearedFields[tran.FieldLocked] = struct{}{}
+// ClearChainTxID clears the value of the "chain_tx_id" field.
+func (m *TranMutation) ClearChainTxID() {
+	m.chain_tx_id = nil
+	m.clearedFields[tran.FieldChainTxID] = struct{}{}
 }
 
-// LockedCleared returns if the "locked" field was cleared in this mutation.
-func (m *TranMutation) LockedCleared() bool {
-	_, ok := m.clearedFields[tran.FieldLocked]
+// ChainTxIDCleared returns if the "chain_tx_id" field was cleared in this mutation.
+func (m *TranMutation) ChainTxIDCleared() bool {
+	_, ok := m.clearedFields[tran.FieldChainTxID]
 	return ok
 }
 
-// ResetLocked resets all changes to the "locked" field.
-func (m *TranMutation) ResetLocked() {
-	m.locked = nil
-	delete(m.clearedFields, tran.FieldLocked)
+// ResetChainTxID resets all changes to the "chain_tx_id" field.
+func (m *TranMutation) ResetChainTxID() {
+	m.chain_tx_id = nil
+	delete(m.clearedFields, tran.FieldChainTxID)
 }
 
-// SetOutcoming sets the "outcoming" field.
-func (m *TranMutation) SetOutcoming(d decimal.Decimal) {
-	m.outcoming = &d
+// SetState sets the "state" field.
+func (m *TranMutation) SetState(s string) {
+	m.state = &s
 }
 
-// Outcoming returns the value of the "outcoming" field in the mutation.
-func (m *TranMutation) Outcoming() (r decimal.Decimal, exists bool) {
-	v := m.outcoming
+// State returns the value of the "state" field in the mutation.
+func (m *TranMutation) State() (r string, exists bool) {
+	v := m.state
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldOutcoming returns the old "outcoming" field's value of the Tran entity.
+// OldState returns the old "state" field's value of the Tran entity.
 // If the Tran object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TranMutation) OldOutcoming(ctx context.Context) (v decimal.Decimal, err error) {
+func (m *TranMutation) OldState(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldOutcoming is only allowed on UpdateOne operations")
+		return v, errors.New("OldState is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldOutcoming requires an ID field in the mutation")
+		return v, errors.New("OldState requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldOutcoming: %w", err)
+		return v, fmt.Errorf("querying old value for OldState: %w", err)
 	}
-	return oldValue.Outcoming, nil
+	return oldValue.State, nil
 }
 
-// ClearOutcoming clears the value of the "outcoming" field.
-func (m *TranMutation) ClearOutcoming() {
-	m.outcoming = nil
-	m.clearedFields[tran.FieldOutcoming] = struct{}{}
+// ClearState clears the value of the "state" field.
+func (m *TranMutation) ClearState() {
+	m.state = nil
+	m.clearedFields[tran.FieldState] = struct{}{}
 }
 
-// OutcomingCleared returns if the "outcoming" field was cleared in this mutation.
-func (m *TranMutation) OutcomingCleared() bool {
-	_, ok := m.clearedFields[tran.FieldOutcoming]
+// StateCleared returns if the "state" field was cleared in this mutation.
+func (m *TranMutation) StateCleared() bool {
+	_, ok := m.clearedFields[tran.FieldState]
 	return ok
 }
 
-// ResetOutcoming resets all changes to the "outcoming" field.
-func (m *TranMutation) ResetOutcoming() {
-	m.outcoming = nil
-	delete(m.clearedFields, tran.FieldOutcoming)
+// ResetState resets all changes to the "state" field.
+func (m *TranMutation) ResetState() {
+	m.state = nil
+	delete(m.clearedFields, tran.FieldState)
 }
 
-// SetSpendable sets the "spendable" field.
-func (m *TranMutation) SetSpendable(d decimal.Decimal) {
-	m.spendable = &d
+// SetExtra sets the "extra" field.
+func (m *TranMutation) SetExtra(s string) {
+	m.extra = &s
 }
 
-// Spendable returns the value of the "spendable" field in the mutation.
-func (m *TranMutation) Spendable() (r decimal.Decimal, exists bool) {
-	v := m.spendable
+// Extra returns the value of the "extra" field in the mutation.
+func (m *TranMutation) Extra() (r string, exists bool) {
+	v := m.extra
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldSpendable returns the old "spendable" field's value of the Tran entity.
+// OldExtra returns the old "extra" field's value of the Tran entity.
 // If the Tran object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TranMutation) OldSpendable(ctx context.Context) (v decimal.Decimal, err error) {
+func (m *TranMutation) OldExtra(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldSpendable is only allowed on UpdateOne operations")
+		return v, errors.New("OldExtra is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldSpendable requires an ID field in the mutation")
+		return v, errors.New("OldExtra requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldSpendable: %w", err)
+		return v, fmt.Errorf("querying old value for OldExtra: %w", err)
 	}
-	return oldValue.Spendable, nil
+	return oldValue.Extra, nil
 }
 
-// ClearSpendable clears the value of the "spendable" field.
-func (m *TranMutation) ClearSpendable() {
-	m.spendable = nil
-	m.clearedFields[tran.FieldSpendable] = struct{}{}
+// ClearExtra clears the value of the "extra" field.
+func (m *TranMutation) ClearExtra() {
+	m.extra = nil
+	m.clearedFields[tran.FieldExtra] = struct{}{}
 }
 
-// SpendableCleared returns if the "spendable" field was cleared in this mutation.
-func (m *TranMutation) SpendableCleared() bool {
-	_, ok := m.clearedFields[tran.FieldSpendable]
+// ExtraCleared returns if the "extra" field was cleared in this mutation.
+func (m *TranMutation) ExtraCleared() bool {
+	_, ok := m.clearedFields[tran.FieldExtra]
 	return ok
 }
 
-// ResetSpendable resets all changes to the "spendable" field.
-func (m *TranMutation) ResetSpendable() {
-	m.spendable = nil
-	delete(m.clearedFields, tran.FieldSpendable)
+// ResetExtra resets all changes to the "extra" field.
+func (m *TranMutation) ResetExtra() {
+	m.extra = nil
+	delete(m.clearedFields, tran.FieldExtra)
 }
 
 // Where appends a list predicates to the TranMutation builder.
@@ -697,26 +697,26 @@ func (m *TranMutation) Fields() []string {
 	if m.deleted_at != nil {
 		fields = append(fields, tran.FieldDeletedAt)
 	}
-	if m.app_id != nil {
-		fields = append(fields, tran.FieldAppID)
+	if m.from_account_id != nil {
+		fields = append(fields, tran.FieldFromAccountID)
 	}
-	if m.user_id != nil {
-		fields = append(fields, tran.FieldUserID)
+	if m.to_account_id != nil {
+		fields = append(fields, tran.FieldToAccountID)
 	}
-	if m.coin_type_id != nil {
-		fields = append(fields, tran.FieldCoinTypeID)
+	if m.amount != nil {
+		fields = append(fields, tran.FieldAmount)
 	}
-	if m.incoming != nil {
-		fields = append(fields, tran.FieldIncoming)
+	if m.fee_amount != nil {
+		fields = append(fields, tran.FieldFeeAmount)
 	}
-	if m.locked != nil {
-		fields = append(fields, tran.FieldLocked)
+	if m.chain_tx_id != nil {
+		fields = append(fields, tran.FieldChainTxID)
 	}
-	if m.outcoming != nil {
-		fields = append(fields, tran.FieldOutcoming)
+	if m.state != nil {
+		fields = append(fields, tran.FieldState)
 	}
-	if m.spendable != nil {
-		fields = append(fields, tran.FieldSpendable)
+	if m.extra != nil {
+		fields = append(fields, tran.FieldExtra)
 	}
 	return fields
 }
@@ -732,20 +732,20 @@ func (m *TranMutation) Field(name string) (ent.Value, bool) {
 		return m.UpdatedAt()
 	case tran.FieldDeletedAt:
 		return m.DeletedAt()
-	case tran.FieldAppID:
-		return m.AppID()
-	case tran.FieldUserID:
-		return m.UserID()
-	case tran.FieldCoinTypeID:
-		return m.CoinTypeID()
-	case tran.FieldIncoming:
-		return m.Incoming()
-	case tran.FieldLocked:
-		return m.Locked()
-	case tran.FieldOutcoming:
-		return m.Outcoming()
-	case tran.FieldSpendable:
-		return m.Spendable()
+	case tran.FieldFromAccountID:
+		return m.FromAccountID()
+	case tran.FieldToAccountID:
+		return m.ToAccountID()
+	case tran.FieldAmount:
+		return m.Amount()
+	case tran.FieldFeeAmount:
+		return m.FeeAmount()
+	case tran.FieldChainTxID:
+		return m.ChainTxID()
+	case tran.FieldState:
+		return m.State()
+	case tran.FieldExtra:
+		return m.Extra()
 	}
 	return nil, false
 }
@@ -761,20 +761,20 @@ func (m *TranMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldUpdatedAt(ctx)
 	case tran.FieldDeletedAt:
 		return m.OldDeletedAt(ctx)
-	case tran.FieldAppID:
-		return m.OldAppID(ctx)
-	case tran.FieldUserID:
-		return m.OldUserID(ctx)
-	case tran.FieldCoinTypeID:
-		return m.OldCoinTypeID(ctx)
-	case tran.FieldIncoming:
-		return m.OldIncoming(ctx)
-	case tran.FieldLocked:
-		return m.OldLocked(ctx)
-	case tran.FieldOutcoming:
-		return m.OldOutcoming(ctx)
-	case tran.FieldSpendable:
-		return m.OldSpendable(ctx)
+	case tran.FieldFromAccountID:
+		return m.OldFromAccountID(ctx)
+	case tran.FieldToAccountID:
+		return m.OldToAccountID(ctx)
+	case tran.FieldAmount:
+		return m.OldAmount(ctx)
+	case tran.FieldFeeAmount:
+		return m.OldFeeAmount(ctx)
+	case tran.FieldChainTxID:
+		return m.OldChainTxID(ctx)
+	case tran.FieldState:
+		return m.OldState(ctx)
+	case tran.FieldExtra:
+		return m.OldExtra(ctx)
 	}
 	return nil, fmt.Errorf("unknown Tran field %s", name)
 }
@@ -805,54 +805,54 @@ func (m *TranMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetDeletedAt(v)
 		return nil
-	case tran.FieldAppID:
+	case tran.FieldFromAccountID:
 		v, ok := value.(uuid.UUID)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetAppID(v)
+		m.SetFromAccountID(v)
 		return nil
-	case tran.FieldUserID:
+	case tran.FieldToAccountID:
 		v, ok := value.(uuid.UUID)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetUserID(v)
+		m.SetToAccountID(v)
 		return nil
-	case tran.FieldCoinTypeID:
-		v, ok := value.(uuid.UUID)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCoinTypeID(v)
-		return nil
-	case tran.FieldIncoming:
+	case tran.FieldAmount:
 		v, ok := value.(decimal.Decimal)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetIncoming(v)
+		m.SetAmount(v)
 		return nil
-	case tran.FieldLocked:
+	case tran.FieldFeeAmount:
 		v, ok := value.(decimal.Decimal)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetLocked(v)
+		m.SetFeeAmount(v)
 		return nil
-	case tran.FieldOutcoming:
-		v, ok := value.(decimal.Decimal)
+	case tran.FieldChainTxID:
+		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetOutcoming(v)
+		m.SetChainTxID(v)
 		return nil
-	case tran.FieldSpendable:
-		v, ok := value.(decimal.Decimal)
+	case tran.FieldState:
+		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetSpendable(v)
+		m.SetState(v)
+		return nil
+	case tran.FieldExtra:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetExtra(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Tran field %s", name)
@@ -923,26 +923,26 @@ func (m *TranMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *TranMutation) ClearedFields() []string {
 	var fields []string
-	if m.FieldCleared(tran.FieldAppID) {
-		fields = append(fields, tran.FieldAppID)
+	if m.FieldCleared(tran.FieldFromAccountID) {
+		fields = append(fields, tran.FieldFromAccountID)
 	}
-	if m.FieldCleared(tran.FieldUserID) {
-		fields = append(fields, tran.FieldUserID)
+	if m.FieldCleared(tran.FieldToAccountID) {
+		fields = append(fields, tran.FieldToAccountID)
 	}
-	if m.FieldCleared(tran.FieldCoinTypeID) {
-		fields = append(fields, tran.FieldCoinTypeID)
+	if m.FieldCleared(tran.FieldAmount) {
+		fields = append(fields, tran.FieldAmount)
 	}
-	if m.FieldCleared(tran.FieldIncoming) {
-		fields = append(fields, tran.FieldIncoming)
+	if m.FieldCleared(tran.FieldFeeAmount) {
+		fields = append(fields, tran.FieldFeeAmount)
 	}
-	if m.FieldCleared(tran.FieldLocked) {
-		fields = append(fields, tran.FieldLocked)
+	if m.FieldCleared(tran.FieldChainTxID) {
+		fields = append(fields, tran.FieldChainTxID)
 	}
-	if m.FieldCleared(tran.FieldOutcoming) {
-		fields = append(fields, tran.FieldOutcoming)
+	if m.FieldCleared(tran.FieldState) {
+		fields = append(fields, tran.FieldState)
 	}
-	if m.FieldCleared(tran.FieldSpendable) {
-		fields = append(fields, tran.FieldSpendable)
+	if m.FieldCleared(tran.FieldExtra) {
+		fields = append(fields, tran.FieldExtra)
 	}
 	return fields
 }
@@ -958,26 +958,26 @@ func (m *TranMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *TranMutation) ClearField(name string) error {
 	switch name {
-	case tran.FieldAppID:
-		m.ClearAppID()
+	case tran.FieldFromAccountID:
+		m.ClearFromAccountID()
 		return nil
-	case tran.FieldUserID:
-		m.ClearUserID()
+	case tran.FieldToAccountID:
+		m.ClearToAccountID()
 		return nil
-	case tran.FieldCoinTypeID:
-		m.ClearCoinTypeID()
+	case tran.FieldAmount:
+		m.ClearAmount()
 		return nil
-	case tran.FieldIncoming:
-		m.ClearIncoming()
+	case tran.FieldFeeAmount:
+		m.ClearFeeAmount()
 		return nil
-	case tran.FieldLocked:
-		m.ClearLocked()
+	case tran.FieldChainTxID:
+		m.ClearChainTxID()
 		return nil
-	case tran.FieldOutcoming:
-		m.ClearOutcoming()
+	case tran.FieldState:
+		m.ClearState()
 		return nil
-	case tran.FieldSpendable:
-		m.ClearSpendable()
+	case tran.FieldExtra:
+		m.ClearExtra()
 		return nil
 	}
 	return fmt.Errorf("unknown Tran nullable field %s", name)
@@ -996,26 +996,26 @@ func (m *TranMutation) ResetField(name string) error {
 	case tran.FieldDeletedAt:
 		m.ResetDeletedAt()
 		return nil
-	case tran.FieldAppID:
-		m.ResetAppID()
+	case tran.FieldFromAccountID:
+		m.ResetFromAccountID()
 		return nil
-	case tran.FieldUserID:
-		m.ResetUserID()
+	case tran.FieldToAccountID:
+		m.ResetToAccountID()
 		return nil
-	case tran.FieldCoinTypeID:
-		m.ResetCoinTypeID()
+	case tran.FieldAmount:
+		m.ResetAmount()
 		return nil
-	case tran.FieldIncoming:
-		m.ResetIncoming()
+	case tran.FieldFeeAmount:
+		m.ResetFeeAmount()
 		return nil
-	case tran.FieldLocked:
-		m.ResetLocked()
+	case tran.FieldChainTxID:
+		m.ResetChainTxID()
 		return nil
-	case tran.FieldOutcoming:
-		m.ResetOutcoming()
+	case tran.FieldState:
+		m.ResetState()
 		return nil
-	case tran.FieldSpendable:
-		m.ResetSpendable()
+	case tran.FieldExtra:
+		m.ResetExtra()
 		return nil
 	}
 	return fmt.Errorf("unknown Tran field %s", name)

@@ -9,7 +9,7 @@ import (
 	grpc2 "github.com/NpoolPlatform/go-service-framework/pkg/grpc"
 
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
-	npool "github.com/NpoolPlatform/message/npool/servicetmpl/tx"
+	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/tx"
 
 	constant "github.com/NpoolPlatform/chain-manager/pkg/message/const"
 )
@@ -66,9 +66,9 @@ func CreateTxs(ctx context.Context, in []*npool.TxReq) ([]*npool.Tx, error) {
 	return infos.([]*npool.Tx), nil
 }
 
-func AddTx(ctx context.Context, in *npool.TxReq) (*npool.Tx, error) {
+func UpdateTx(ctx context.Context, in *npool.TxReq) (*npool.Tx, error) {
 	info, err := withCRUD(ctx, func(_ctx context.Context, cli npool.ManagerClient) (cruder.Any, error) {
-		resp, err := cli.AddTx(ctx, &npool.AddTxRequest{
+		resp, err := cli.UpdateTx(ctx, &npool.UpdateTxRequest{
 			Info: in,
 		})
 		if err != nil {

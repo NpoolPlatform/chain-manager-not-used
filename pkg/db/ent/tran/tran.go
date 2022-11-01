@@ -19,20 +19,20 @@ const (
 	FieldUpdatedAt = "updated_at"
 	// FieldDeletedAt holds the string denoting the deleted_at field in the database.
 	FieldDeletedAt = "deleted_at"
-	// FieldAppID holds the string denoting the app_id field in the database.
-	FieldAppID = "app_id"
-	// FieldUserID holds the string denoting the user_id field in the database.
-	FieldUserID = "user_id"
-	// FieldCoinTypeID holds the string denoting the coin_type_id field in the database.
-	FieldCoinTypeID = "coin_type_id"
-	// FieldIncoming holds the string denoting the incoming field in the database.
-	FieldIncoming = "incoming"
-	// FieldLocked holds the string denoting the locked field in the database.
-	FieldLocked = "locked"
-	// FieldOutcoming holds the string denoting the outcoming field in the database.
-	FieldOutcoming = "outcoming"
-	// FieldSpendable holds the string denoting the spendable field in the database.
-	FieldSpendable = "spendable"
+	// FieldFromAccountID holds the string denoting the from_account_id field in the database.
+	FieldFromAccountID = "from_account_id"
+	// FieldToAccountID holds the string denoting the to_account_id field in the database.
+	FieldToAccountID = "to_account_id"
+	// FieldAmount holds the string denoting the amount field in the database.
+	FieldAmount = "amount"
+	// FieldFeeAmount holds the string denoting the fee_amount field in the database.
+	FieldFeeAmount = "fee_amount"
+	// FieldChainTxID holds the string denoting the chain_tx_id field in the database.
+	FieldChainTxID = "chain_tx_id"
+	// FieldState holds the string denoting the state field in the database.
+	FieldState = "state"
+	// FieldExtra holds the string denoting the extra field in the database.
+	FieldExtra = "extra"
 	// Table holds the table name of the tran in the database.
 	Table = "trans"
 )
@@ -43,13 +43,13 @@ var Columns = []string{
 	FieldCreatedAt,
 	FieldUpdatedAt,
 	FieldDeletedAt,
-	FieldAppID,
-	FieldUserID,
-	FieldCoinTypeID,
-	FieldIncoming,
-	FieldLocked,
-	FieldOutcoming,
-	FieldSpendable,
+	FieldFromAccountID,
+	FieldToAccountID,
+	FieldAmount,
+	FieldFeeAmount,
+	FieldChainTxID,
+	FieldState,
+	FieldExtra,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -79,20 +79,20 @@ var (
 	UpdateDefaultUpdatedAt func() uint32
 	// DefaultDeletedAt holds the default value on creation for the "deleted_at" field.
 	DefaultDeletedAt func() uint32
-	// DefaultAppID holds the default value on creation for the "app_id" field.
-	DefaultAppID func() uuid.UUID
-	// DefaultUserID holds the default value on creation for the "user_id" field.
-	DefaultUserID func() uuid.UUID
-	// DefaultCoinTypeID holds the default value on creation for the "coin_type_id" field.
-	DefaultCoinTypeID func() uuid.UUID
-	// DefaultIncoming holds the default value on creation for the "incoming" field.
-	DefaultIncoming decimal.Decimal
-	// DefaultLocked holds the default value on creation for the "locked" field.
-	DefaultLocked decimal.Decimal
-	// DefaultOutcoming holds the default value on creation for the "outcoming" field.
-	DefaultOutcoming decimal.Decimal
-	// DefaultSpendable holds the default value on creation for the "spendable" field.
-	DefaultSpendable decimal.Decimal
+	// DefaultFromAccountID holds the default value on creation for the "from_account_id" field.
+	DefaultFromAccountID func() uuid.UUID
+	// DefaultToAccountID holds the default value on creation for the "to_account_id" field.
+	DefaultToAccountID func() uuid.UUID
+	// DefaultAmount holds the default value on creation for the "amount" field.
+	DefaultAmount decimal.Decimal
+	// DefaultFeeAmount holds the default value on creation for the "fee_amount" field.
+	DefaultFeeAmount decimal.Decimal
+	// DefaultChainTxID holds the default value on creation for the "chain_tx_id" field.
+	DefaultChainTxID string
+	// DefaultState holds the default value on creation for the "state" field.
+	DefaultState string
+	// DefaultExtra holds the default value on creation for the "extra" field.
+	DefaultExtra string
 	// DefaultID holds the default value on creation for the "id" field.
 	DefaultID func() uuid.UUID
 )

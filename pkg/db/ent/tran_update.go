@@ -85,143 +85,143 @@ func (tu *TranUpdate) AddDeletedAt(u int32) *TranUpdate {
 	return tu
 }
 
-// SetAppID sets the "app_id" field.
-func (tu *TranUpdate) SetAppID(u uuid.UUID) *TranUpdate {
-	tu.mutation.SetAppID(u)
+// SetFromAccountID sets the "from_account_id" field.
+func (tu *TranUpdate) SetFromAccountID(u uuid.UUID) *TranUpdate {
+	tu.mutation.SetFromAccountID(u)
 	return tu
 }
 
-// SetNillableAppID sets the "app_id" field if the given value is not nil.
-func (tu *TranUpdate) SetNillableAppID(u *uuid.UUID) *TranUpdate {
+// SetNillableFromAccountID sets the "from_account_id" field if the given value is not nil.
+func (tu *TranUpdate) SetNillableFromAccountID(u *uuid.UUID) *TranUpdate {
 	if u != nil {
-		tu.SetAppID(*u)
+		tu.SetFromAccountID(*u)
 	}
 	return tu
 }
 
-// ClearAppID clears the value of the "app_id" field.
-func (tu *TranUpdate) ClearAppID() *TranUpdate {
-	tu.mutation.ClearAppID()
+// ClearFromAccountID clears the value of the "from_account_id" field.
+func (tu *TranUpdate) ClearFromAccountID() *TranUpdate {
+	tu.mutation.ClearFromAccountID()
 	return tu
 }
 
-// SetUserID sets the "user_id" field.
-func (tu *TranUpdate) SetUserID(u uuid.UUID) *TranUpdate {
-	tu.mutation.SetUserID(u)
+// SetToAccountID sets the "to_account_id" field.
+func (tu *TranUpdate) SetToAccountID(u uuid.UUID) *TranUpdate {
+	tu.mutation.SetToAccountID(u)
 	return tu
 }
 
-// SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (tu *TranUpdate) SetNillableUserID(u *uuid.UUID) *TranUpdate {
+// SetNillableToAccountID sets the "to_account_id" field if the given value is not nil.
+func (tu *TranUpdate) SetNillableToAccountID(u *uuid.UUID) *TranUpdate {
 	if u != nil {
-		tu.SetUserID(*u)
+		tu.SetToAccountID(*u)
 	}
 	return tu
 }
 
-// ClearUserID clears the value of the "user_id" field.
-func (tu *TranUpdate) ClearUserID() *TranUpdate {
-	tu.mutation.ClearUserID()
+// ClearToAccountID clears the value of the "to_account_id" field.
+func (tu *TranUpdate) ClearToAccountID() *TranUpdate {
+	tu.mutation.ClearToAccountID()
 	return tu
 }
 
-// SetCoinTypeID sets the "coin_type_id" field.
-func (tu *TranUpdate) SetCoinTypeID(u uuid.UUID) *TranUpdate {
-	tu.mutation.SetCoinTypeID(u)
+// SetAmount sets the "amount" field.
+func (tu *TranUpdate) SetAmount(d decimal.Decimal) *TranUpdate {
+	tu.mutation.SetAmount(d)
 	return tu
 }
 
-// SetNillableCoinTypeID sets the "coin_type_id" field if the given value is not nil.
-func (tu *TranUpdate) SetNillableCoinTypeID(u *uuid.UUID) *TranUpdate {
-	if u != nil {
-		tu.SetCoinTypeID(*u)
-	}
-	return tu
-}
-
-// ClearCoinTypeID clears the value of the "coin_type_id" field.
-func (tu *TranUpdate) ClearCoinTypeID() *TranUpdate {
-	tu.mutation.ClearCoinTypeID()
-	return tu
-}
-
-// SetIncoming sets the "incoming" field.
-func (tu *TranUpdate) SetIncoming(d decimal.Decimal) *TranUpdate {
-	tu.mutation.SetIncoming(d)
-	return tu
-}
-
-// SetNillableIncoming sets the "incoming" field if the given value is not nil.
-func (tu *TranUpdate) SetNillableIncoming(d *decimal.Decimal) *TranUpdate {
+// SetNillableAmount sets the "amount" field if the given value is not nil.
+func (tu *TranUpdate) SetNillableAmount(d *decimal.Decimal) *TranUpdate {
 	if d != nil {
-		tu.SetIncoming(*d)
+		tu.SetAmount(*d)
 	}
 	return tu
 }
 
-// ClearIncoming clears the value of the "incoming" field.
-func (tu *TranUpdate) ClearIncoming() *TranUpdate {
-	tu.mutation.ClearIncoming()
+// ClearAmount clears the value of the "amount" field.
+func (tu *TranUpdate) ClearAmount() *TranUpdate {
+	tu.mutation.ClearAmount()
 	return tu
 }
 
-// SetLocked sets the "locked" field.
-func (tu *TranUpdate) SetLocked(d decimal.Decimal) *TranUpdate {
-	tu.mutation.SetLocked(d)
+// SetFeeAmount sets the "fee_amount" field.
+func (tu *TranUpdate) SetFeeAmount(d decimal.Decimal) *TranUpdate {
+	tu.mutation.SetFeeAmount(d)
 	return tu
 }
 
-// SetNillableLocked sets the "locked" field if the given value is not nil.
-func (tu *TranUpdate) SetNillableLocked(d *decimal.Decimal) *TranUpdate {
+// SetNillableFeeAmount sets the "fee_amount" field if the given value is not nil.
+func (tu *TranUpdate) SetNillableFeeAmount(d *decimal.Decimal) *TranUpdate {
 	if d != nil {
-		tu.SetLocked(*d)
+		tu.SetFeeAmount(*d)
 	}
 	return tu
 }
 
-// ClearLocked clears the value of the "locked" field.
-func (tu *TranUpdate) ClearLocked() *TranUpdate {
-	tu.mutation.ClearLocked()
+// ClearFeeAmount clears the value of the "fee_amount" field.
+func (tu *TranUpdate) ClearFeeAmount() *TranUpdate {
+	tu.mutation.ClearFeeAmount()
 	return tu
 }
 
-// SetOutcoming sets the "outcoming" field.
-func (tu *TranUpdate) SetOutcoming(d decimal.Decimal) *TranUpdate {
-	tu.mutation.SetOutcoming(d)
+// SetChainTxID sets the "chain_tx_id" field.
+func (tu *TranUpdate) SetChainTxID(s string) *TranUpdate {
+	tu.mutation.SetChainTxID(s)
 	return tu
 }
 
-// SetNillableOutcoming sets the "outcoming" field if the given value is not nil.
-func (tu *TranUpdate) SetNillableOutcoming(d *decimal.Decimal) *TranUpdate {
-	if d != nil {
-		tu.SetOutcoming(*d)
+// SetNillableChainTxID sets the "chain_tx_id" field if the given value is not nil.
+func (tu *TranUpdate) SetNillableChainTxID(s *string) *TranUpdate {
+	if s != nil {
+		tu.SetChainTxID(*s)
 	}
 	return tu
 }
 
-// ClearOutcoming clears the value of the "outcoming" field.
-func (tu *TranUpdate) ClearOutcoming() *TranUpdate {
-	tu.mutation.ClearOutcoming()
+// ClearChainTxID clears the value of the "chain_tx_id" field.
+func (tu *TranUpdate) ClearChainTxID() *TranUpdate {
+	tu.mutation.ClearChainTxID()
 	return tu
 }
 
-// SetSpendable sets the "spendable" field.
-func (tu *TranUpdate) SetSpendable(d decimal.Decimal) *TranUpdate {
-	tu.mutation.SetSpendable(d)
+// SetState sets the "state" field.
+func (tu *TranUpdate) SetState(s string) *TranUpdate {
+	tu.mutation.SetState(s)
 	return tu
 }
 
-// SetNillableSpendable sets the "spendable" field if the given value is not nil.
-func (tu *TranUpdate) SetNillableSpendable(d *decimal.Decimal) *TranUpdate {
-	if d != nil {
-		tu.SetSpendable(*d)
+// SetNillableState sets the "state" field if the given value is not nil.
+func (tu *TranUpdate) SetNillableState(s *string) *TranUpdate {
+	if s != nil {
+		tu.SetState(*s)
 	}
 	return tu
 }
 
-// ClearSpendable clears the value of the "spendable" field.
-func (tu *TranUpdate) ClearSpendable() *TranUpdate {
-	tu.mutation.ClearSpendable()
+// ClearState clears the value of the "state" field.
+func (tu *TranUpdate) ClearState() *TranUpdate {
+	tu.mutation.ClearState()
+	return tu
+}
+
+// SetExtra sets the "extra" field.
+func (tu *TranUpdate) SetExtra(s string) *TranUpdate {
+	tu.mutation.SetExtra(s)
+	return tu
+}
+
+// SetNillableExtra sets the "extra" field if the given value is not nil.
+func (tu *TranUpdate) SetNillableExtra(s *string) *TranUpdate {
+	if s != nil {
+		tu.SetExtra(*s)
+	}
+	return tu
+}
+
+// ClearExtra clears the value of the "extra" field.
+func (tu *TranUpdate) ClearExtra() *TranUpdate {
+	tu.mutation.ClearExtra()
 	return tu
 }
 
@@ -365,95 +365,95 @@ func (tu *TranUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: tran.FieldDeletedAt,
 		})
 	}
-	if value, ok := tu.mutation.AppID(); ok {
+	if value, ok := tu.mutation.FromAccountID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
 			Value:  value,
-			Column: tran.FieldAppID,
+			Column: tran.FieldFromAccountID,
 		})
 	}
-	if tu.mutation.AppIDCleared() {
+	if tu.mutation.FromAccountIDCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
-			Column: tran.FieldAppID,
+			Column: tran.FieldFromAccountID,
 		})
 	}
-	if value, ok := tu.mutation.UserID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUUID,
-			Value:  value,
-			Column: tran.FieldUserID,
-		})
-	}
-	if tu.mutation.UserIDCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeUUID,
-			Column: tran.FieldUserID,
-		})
-	}
-	if value, ok := tu.mutation.CoinTypeID(); ok {
+	if value, ok := tu.mutation.ToAccountID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
 			Value:  value,
-			Column: tran.FieldCoinTypeID,
+			Column: tran.FieldToAccountID,
 		})
 	}
-	if tu.mutation.CoinTypeIDCleared() {
+	if tu.mutation.ToAccountIDCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
-			Column: tran.FieldCoinTypeID,
+			Column: tran.FieldToAccountID,
 		})
 	}
-	if value, ok := tu.mutation.Incoming(); ok {
+	if value, ok := tu.mutation.Amount(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeOther,
 			Value:  value,
-			Column: tran.FieldIncoming,
+			Column: tran.FieldAmount,
 		})
 	}
-	if tu.mutation.IncomingCleared() {
+	if tu.mutation.AmountCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeOther,
-			Column: tran.FieldIncoming,
+			Column: tran.FieldAmount,
 		})
 	}
-	if value, ok := tu.mutation.Locked(); ok {
+	if value, ok := tu.mutation.FeeAmount(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeOther,
 			Value:  value,
-			Column: tran.FieldLocked,
+			Column: tran.FieldFeeAmount,
 		})
 	}
-	if tu.mutation.LockedCleared() {
+	if tu.mutation.FeeAmountCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeOther,
-			Column: tran.FieldLocked,
+			Column: tran.FieldFeeAmount,
 		})
 	}
-	if value, ok := tu.mutation.Outcoming(); ok {
+	if value, ok := tu.mutation.ChainTxID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeOther,
+			Type:   field.TypeString,
 			Value:  value,
-			Column: tran.FieldOutcoming,
+			Column: tran.FieldChainTxID,
 		})
 	}
-	if tu.mutation.OutcomingCleared() {
+	if tu.mutation.ChainTxIDCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeOther,
-			Column: tran.FieldOutcoming,
+			Type:   field.TypeString,
+			Column: tran.FieldChainTxID,
 		})
 	}
-	if value, ok := tu.mutation.Spendable(); ok {
+	if value, ok := tu.mutation.State(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeOther,
+			Type:   field.TypeString,
 			Value:  value,
-			Column: tran.FieldSpendable,
+			Column: tran.FieldState,
 		})
 	}
-	if tu.mutation.SpendableCleared() {
+	if tu.mutation.StateCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeOther,
-			Column: tran.FieldSpendable,
+			Type:   field.TypeString,
+			Column: tran.FieldState,
+		})
+	}
+	if value, ok := tu.mutation.Extra(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: tran.FieldExtra,
+		})
+	}
+	if tu.mutation.ExtraCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: tran.FieldExtra,
 		})
 	}
 	_spec.Modifiers = tu.modifiers
@@ -532,143 +532,143 @@ func (tuo *TranUpdateOne) AddDeletedAt(u int32) *TranUpdateOne {
 	return tuo
 }
 
-// SetAppID sets the "app_id" field.
-func (tuo *TranUpdateOne) SetAppID(u uuid.UUID) *TranUpdateOne {
-	tuo.mutation.SetAppID(u)
+// SetFromAccountID sets the "from_account_id" field.
+func (tuo *TranUpdateOne) SetFromAccountID(u uuid.UUID) *TranUpdateOne {
+	tuo.mutation.SetFromAccountID(u)
 	return tuo
 }
 
-// SetNillableAppID sets the "app_id" field if the given value is not nil.
-func (tuo *TranUpdateOne) SetNillableAppID(u *uuid.UUID) *TranUpdateOne {
+// SetNillableFromAccountID sets the "from_account_id" field if the given value is not nil.
+func (tuo *TranUpdateOne) SetNillableFromAccountID(u *uuid.UUID) *TranUpdateOne {
 	if u != nil {
-		tuo.SetAppID(*u)
+		tuo.SetFromAccountID(*u)
 	}
 	return tuo
 }
 
-// ClearAppID clears the value of the "app_id" field.
-func (tuo *TranUpdateOne) ClearAppID() *TranUpdateOne {
-	tuo.mutation.ClearAppID()
+// ClearFromAccountID clears the value of the "from_account_id" field.
+func (tuo *TranUpdateOne) ClearFromAccountID() *TranUpdateOne {
+	tuo.mutation.ClearFromAccountID()
 	return tuo
 }
 
-// SetUserID sets the "user_id" field.
-func (tuo *TranUpdateOne) SetUserID(u uuid.UUID) *TranUpdateOne {
-	tuo.mutation.SetUserID(u)
+// SetToAccountID sets the "to_account_id" field.
+func (tuo *TranUpdateOne) SetToAccountID(u uuid.UUID) *TranUpdateOne {
+	tuo.mutation.SetToAccountID(u)
 	return tuo
 }
 
-// SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (tuo *TranUpdateOne) SetNillableUserID(u *uuid.UUID) *TranUpdateOne {
+// SetNillableToAccountID sets the "to_account_id" field if the given value is not nil.
+func (tuo *TranUpdateOne) SetNillableToAccountID(u *uuid.UUID) *TranUpdateOne {
 	if u != nil {
-		tuo.SetUserID(*u)
+		tuo.SetToAccountID(*u)
 	}
 	return tuo
 }
 
-// ClearUserID clears the value of the "user_id" field.
-func (tuo *TranUpdateOne) ClearUserID() *TranUpdateOne {
-	tuo.mutation.ClearUserID()
+// ClearToAccountID clears the value of the "to_account_id" field.
+func (tuo *TranUpdateOne) ClearToAccountID() *TranUpdateOne {
+	tuo.mutation.ClearToAccountID()
 	return tuo
 }
 
-// SetCoinTypeID sets the "coin_type_id" field.
-func (tuo *TranUpdateOne) SetCoinTypeID(u uuid.UUID) *TranUpdateOne {
-	tuo.mutation.SetCoinTypeID(u)
+// SetAmount sets the "amount" field.
+func (tuo *TranUpdateOne) SetAmount(d decimal.Decimal) *TranUpdateOne {
+	tuo.mutation.SetAmount(d)
 	return tuo
 }
 
-// SetNillableCoinTypeID sets the "coin_type_id" field if the given value is not nil.
-func (tuo *TranUpdateOne) SetNillableCoinTypeID(u *uuid.UUID) *TranUpdateOne {
-	if u != nil {
-		tuo.SetCoinTypeID(*u)
-	}
-	return tuo
-}
-
-// ClearCoinTypeID clears the value of the "coin_type_id" field.
-func (tuo *TranUpdateOne) ClearCoinTypeID() *TranUpdateOne {
-	tuo.mutation.ClearCoinTypeID()
-	return tuo
-}
-
-// SetIncoming sets the "incoming" field.
-func (tuo *TranUpdateOne) SetIncoming(d decimal.Decimal) *TranUpdateOne {
-	tuo.mutation.SetIncoming(d)
-	return tuo
-}
-
-// SetNillableIncoming sets the "incoming" field if the given value is not nil.
-func (tuo *TranUpdateOne) SetNillableIncoming(d *decimal.Decimal) *TranUpdateOne {
+// SetNillableAmount sets the "amount" field if the given value is not nil.
+func (tuo *TranUpdateOne) SetNillableAmount(d *decimal.Decimal) *TranUpdateOne {
 	if d != nil {
-		tuo.SetIncoming(*d)
+		tuo.SetAmount(*d)
 	}
 	return tuo
 }
 
-// ClearIncoming clears the value of the "incoming" field.
-func (tuo *TranUpdateOne) ClearIncoming() *TranUpdateOne {
-	tuo.mutation.ClearIncoming()
+// ClearAmount clears the value of the "amount" field.
+func (tuo *TranUpdateOne) ClearAmount() *TranUpdateOne {
+	tuo.mutation.ClearAmount()
 	return tuo
 }
 
-// SetLocked sets the "locked" field.
-func (tuo *TranUpdateOne) SetLocked(d decimal.Decimal) *TranUpdateOne {
-	tuo.mutation.SetLocked(d)
+// SetFeeAmount sets the "fee_amount" field.
+func (tuo *TranUpdateOne) SetFeeAmount(d decimal.Decimal) *TranUpdateOne {
+	tuo.mutation.SetFeeAmount(d)
 	return tuo
 }
 
-// SetNillableLocked sets the "locked" field if the given value is not nil.
-func (tuo *TranUpdateOne) SetNillableLocked(d *decimal.Decimal) *TranUpdateOne {
+// SetNillableFeeAmount sets the "fee_amount" field if the given value is not nil.
+func (tuo *TranUpdateOne) SetNillableFeeAmount(d *decimal.Decimal) *TranUpdateOne {
 	if d != nil {
-		tuo.SetLocked(*d)
+		tuo.SetFeeAmount(*d)
 	}
 	return tuo
 }
 
-// ClearLocked clears the value of the "locked" field.
-func (tuo *TranUpdateOne) ClearLocked() *TranUpdateOne {
-	tuo.mutation.ClearLocked()
+// ClearFeeAmount clears the value of the "fee_amount" field.
+func (tuo *TranUpdateOne) ClearFeeAmount() *TranUpdateOne {
+	tuo.mutation.ClearFeeAmount()
 	return tuo
 }
 
-// SetOutcoming sets the "outcoming" field.
-func (tuo *TranUpdateOne) SetOutcoming(d decimal.Decimal) *TranUpdateOne {
-	tuo.mutation.SetOutcoming(d)
+// SetChainTxID sets the "chain_tx_id" field.
+func (tuo *TranUpdateOne) SetChainTxID(s string) *TranUpdateOne {
+	tuo.mutation.SetChainTxID(s)
 	return tuo
 }
 
-// SetNillableOutcoming sets the "outcoming" field if the given value is not nil.
-func (tuo *TranUpdateOne) SetNillableOutcoming(d *decimal.Decimal) *TranUpdateOne {
-	if d != nil {
-		tuo.SetOutcoming(*d)
+// SetNillableChainTxID sets the "chain_tx_id" field if the given value is not nil.
+func (tuo *TranUpdateOne) SetNillableChainTxID(s *string) *TranUpdateOne {
+	if s != nil {
+		tuo.SetChainTxID(*s)
 	}
 	return tuo
 }
 
-// ClearOutcoming clears the value of the "outcoming" field.
-func (tuo *TranUpdateOne) ClearOutcoming() *TranUpdateOne {
-	tuo.mutation.ClearOutcoming()
+// ClearChainTxID clears the value of the "chain_tx_id" field.
+func (tuo *TranUpdateOne) ClearChainTxID() *TranUpdateOne {
+	tuo.mutation.ClearChainTxID()
 	return tuo
 }
 
-// SetSpendable sets the "spendable" field.
-func (tuo *TranUpdateOne) SetSpendable(d decimal.Decimal) *TranUpdateOne {
-	tuo.mutation.SetSpendable(d)
+// SetState sets the "state" field.
+func (tuo *TranUpdateOne) SetState(s string) *TranUpdateOne {
+	tuo.mutation.SetState(s)
 	return tuo
 }
 
-// SetNillableSpendable sets the "spendable" field if the given value is not nil.
-func (tuo *TranUpdateOne) SetNillableSpendable(d *decimal.Decimal) *TranUpdateOne {
-	if d != nil {
-		tuo.SetSpendable(*d)
+// SetNillableState sets the "state" field if the given value is not nil.
+func (tuo *TranUpdateOne) SetNillableState(s *string) *TranUpdateOne {
+	if s != nil {
+		tuo.SetState(*s)
 	}
 	return tuo
 }
 
-// ClearSpendable clears the value of the "spendable" field.
-func (tuo *TranUpdateOne) ClearSpendable() *TranUpdateOne {
-	tuo.mutation.ClearSpendable()
+// ClearState clears the value of the "state" field.
+func (tuo *TranUpdateOne) ClearState() *TranUpdateOne {
+	tuo.mutation.ClearState()
+	return tuo
+}
+
+// SetExtra sets the "extra" field.
+func (tuo *TranUpdateOne) SetExtra(s string) *TranUpdateOne {
+	tuo.mutation.SetExtra(s)
+	return tuo
+}
+
+// SetNillableExtra sets the "extra" field if the given value is not nil.
+func (tuo *TranUpdateOne) SetNillableExtra(s *string) *TranUpdateOne {
+	if s != nil {
+		tuo.SetExtra(*s)
+	}
+	return tuo
+}
+
+// ClearExtra clears the value of the "extra" field.
+func (tuo *TranUpdateOne) ClearExtra() *TranUpdateOne {
+	tuo.mutation.ClearExtra()
 	return tuo
 }
 
@@ -842,95 +842,95 @@ func (tuo *TranUpdateOne) sqlSave(ctx context.Context) (_node *Tran, err error) 
 			Column: tran.FieldDeletedAt,
 		})
 	}
-	if value, ok := tuo.mutation.AppID(); ok {
+	if value, ok := tuo.mutation.FromAccountID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
 			Value:  value,
-			Column: tran.FieldAppID,
+			Column: tran.FieldFromAccountID,
 		})
 	}
-	if tuo.mutation.AppIDCleared() {
+	if tuo.mutation.FromAccountIDCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
-			Column: tran.FieldAppID,
+			Column: tran.FieldFromAccountID,
 		})
 	}
-	if value, ok := tuo.mutation.UserID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUUID,
-			Value:  value,
-			Column: tran.FieldUserID,
-		})
-	}
-	if tuo.mutation.UserIDCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeUUID,
-			Column: tran.FieldUserID,
-		})
-	}
-	if value, ok := tuo.mutation.CoinTypeID(); ok {
+	if value, ok := tuo.mutation.ToAccountID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
 			Value:  value,
-			Column: tran.FieldCoinTypeID,
+			Column: tran.FieldToAccountID,
 		})
 	}
-	if tuo.mutation.CoinTypeIDCleared() {
+	if tuo.mutation.ToAccountIDCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
-			Column: tran.FieldCoinTypeID,
+			Column: tran.FieldToAccountID,
 		})
 	}
-	if value, ok := tuo.mutation.Incoming(); ok {
+	if value, ok := tuo.mutation.Amount(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeOther,
 			Value:  value,
-			Column: tran.FieldIncoming,
+			Column: tran.FieldAmount,
 		})
 	}
-	if tuo.mutation.IncomingCleared() {
+	if tuo.mutation.AmountCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeOther,
-			Column: tran.FieldIncoming,
+			Column: tran.FieldAmount,
 		})
 	}
-	if value, ok := tuo.mutation.Locked(); ok {
+	if value, ok := tuo.mutation.FeeAmount(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeOther,
 			Value:  value,
-			Column: tran.FieldLocked,
+			Column: tran.FieldFeeAmount,
 		})
 	}
-	if tuo.mutation.LockedCleared() {
+	if tuo.mutation.FeeAmountCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeOther,
-			Column: tran.FieldLocked,
+			Column: tran.FieldFeeAmount,
 		})
 	}
-	if value, ok := tuo.mutation.Outcoming(); ok {
+	if value, ok := tuo.mutation.ChainTxID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeOther,
+			Type:   field.TypeString,
 			Value:  value,
-			Column: tran.FieldOutcoming,
+			Column: tran.FieldChainTxID,
 		})
 	}
-	if tuo.mutation.OutcomingCleared() {
+	if tuo.mutation.ChainTxIDCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeOther,
-			Column: tran.FieldOutcoming,
+			Type:   field.TypeString,
+			Column: tran.FieldChainTxID,
 		})
 	}
-	if value, ok := tuo.mutation.Spendable(); ok {
+	if value, ok := tuo.mutation.State(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeOther,
+			Type:   field.TypeString,
 			Value:  value,
-			Column: tran.FieldSpendable,
+			Column: tran.FieldState,
 		})
 	}
-	if tuo.mutation.SpendableCleared() {
+	if tuo.mutation.StateCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeOther,
-			Column: tran.FieldSpendable,
+			Type:   field.TypeString,
+			Column: tran.FieldState,
+		})
+	}
+	if value, ok := tuo.mutation.Extra(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: tran.FieldExtra,
+		})
+	}
+	if tuo.mutation.ExtraCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: tran.FieldExtra,
 		})
 	}
 	_spec.Modifiers = tuo.modifiers

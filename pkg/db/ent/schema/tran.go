@@ -5,6 +5,7 @@ import (
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/schema/field"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/mixin"
+	tran "github.com/NpoolPlatform/message/npool/chain/mgr/v1/tx"
 	"github.com/google/uuid"
 	"github.com/shopspring/decimal"
 )
@@ -28,51 +29,43 @@ func (Tran) Fields() []ent.Field {
 			Default(uuid.New).
 			Unique(),
 		field.
-			UUID("app_id", uuid.UUID{}).
+			UUID("from_account_id", uuid.UUID{}).
 			Optional().
 			Default(func() uuid.UUID {
 				return uuid.UUID{}
 			}),
 		field.
-			UUID("user_id", uuid.UUID{}).
+			UUID("to_account_id", uuid.UUID{}).
 			Optional().
 			Default(func() uuid.UUID {
 				return uuid.UUID{}
 			}),
 		field.
-			UUID("coin_type_id", uuid.UUID{}).
-			Optional().
-			Default(func() uuid.UUID {
-				return uuid.UUID{}
-			}),
-		field.
-			Other("incoming", decimal.Decimal{}).
+			Other("amount", decimal.Decimal{}).
 			SchemaType(map[string]string{
 				dialect.MySQL: "decimal(37,18)",
 			}).
 			Optional().
 			Default(decimal.Decimal{}),
 		field.
-			Other("locked", decimal.Decimal{}).
+			Other("fee_amount", decimal.Decimal{}).
 			SchemaType(map[string]string{
 				dialect.MySQL: "decimal(37,18)",
 			}).
 			Optional().
 			Default(decimal.Decimal{}),
 		field.
-			Other("outcoming", decimal.Decimal{}).
-			SchemaType(map[string]string{
-				dialect.MySQL: "decimal(37,18)",
-			}).
+			String("chain_tx_id").
 			Optional().
-			Default(decimal.Decimal{}),
+			Default(""),
 		field.
-			Other("spendable", decimal.Decimal{}).
-			SchemaType(map[string]string{
-				dialect.MySQL: "decimal(37,18)",
-			}).
+			String("state").
 			Optional().
-			Default(decimal.Decimal{}),
+			Default(tran.TxState_DefaultTxState.String()),
+		field.
+			String("extra").
+			Optional().
+			Default(""),
 	}
 }
 

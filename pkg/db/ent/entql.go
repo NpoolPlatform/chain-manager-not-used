@@ -25,16 +25,16 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 		Type: "Tran",
 		Fields: map[string]*sqlgraph.FieldSpec{
-			tran.FieldCreatedAt:  {Type: field.TypeUint32, Column: tran.FieldCreatedAt},
-			tran.FieldUpdatedAt:  {Type: field.TypeUint32, Column: tran.FieldUpdatedAt},
-			tran.FieldDeletedAt:  {Type: field.TypeUint32, Column: tran.FieldDeletedAt},
-			tran.FieldAppID:      {Type: field.TypeUUID, Column: tran.FieldAppID},
-			tran.FieldUserID:     {Type: field.TypeUUID, Column: tran.FieldUserID},
-			tran.FieldCoinTypeID: {Type: field.TypeUUID, Column: tran.FieldCoinTypeID},
-			tran.FieldIncoming:   {Type: field.TypeOther, Column: tran.FieldIncoming},
-			tran.FieldLocked:     {Type: field.TypeOther, Column: tran.FieldLocked},
-			tran.FieldOutcoming:  {Type: field.TypeOther, Column: tran.FieldOutcoming},
-			tran.FieldSpendable:  {Type: field.TypeOther, Column: tran.FieldSpendable},
+			tran.FieldCreatedAt:     {Type: field.TypeUint32, Column: tran.FieldCreatedAt},
+			tran.FieldUpdatedAt:     {Type: field.TypeUint32, Column: tran.FieldUpdatedAt},
+			tran.FieldDeletedAt:     {Type: field.TypeUint32, Column: tran.FieldDeletedAt},
+			tran.FieldFromAccountID: {Type: field.TypeUUID, Column: tran.FieldFromAccountID},
+			tran.FieldToAccountID:   {Type: field.TypeUUID, Column: tran.FieldToAccountID},
+			tran.FieldAmount:        {Type: field.TypeOther, Column: tran.FieldAmount},
+			tran.FieldFeeAmount:     {Type: field.TypeOther, Column: tran.FieldFeeAmount},
+			tran.FieldChainTxID:     {Type: field.TypeString, Column: tran.FieldChainTxID},
+			tran.FieldState:         {Type: field.TypeString, Column: tran.FieldState},
+			tran.FieldExtra:         {Type: field.TypeString, Column: tran.FieldExtra},
 		},
 	}
 	return graph
@@ -101,37 +101,37 @@ func (f *TranFilter) WhereDeletedAt(p entql.Uint32P) {
 	f.Where(p.Field(tran.FieldDeletedAt))
 }
 
-// WhereAppID applies the entql [16]byte predicate on the app_id field.
-func (f *TranFilter) WhereAppID(p entql.ValueP) {
-	f.Where(p.Field(tran.FieldAppID))
+// WhereFromAccountID applies the entql [16]byte predicate on the from_account_id field.
+func (f *TranFilter) WhereFromAccountID(p entql.ValueP) {
+	f.Where(p.Field(tran.FieldFromAccountID))
 }
 
-// WhereUserID applies the entql [16]byte predicate on the user_id field.
-func (f *TranFilter) WhereUserID(p entql.ValueP) {
-	f.Where(p.Field(tran.FieldUserID))
+// WhereToAccountID applies the entql [16]byte predicate on the to_account_id field.
+func (f *TranFilter) WhereToAccountID(p entql.ValueP) {
+	f.Where(p.Field(tran.FieldToAccountID))
 }
 
-// WhereCoinTypeID applies the entql [16]byte predicate on the coin_type_id field.
-func (f *TranFilter) WhereCoinTypeID(p entql.ValueP) {
-	f.Where(p.Field(tran.FieldCoinTypeID))
+// WhereAmount applies the entql other predicate on the amount field.
+func (f *TranFilter) WhereAmount(p entql.OtherP) {
+	f.Where(p.Field(tran.FieldAmount))
 }
 
-// WhereIncoming applies the entql other predicate on the incoming field.
-func (f *TranFilter) WhereIncoming(p entql.OtherP) {
-	f.Where(p.Field(tran.FieldIncoming))
+// WhereFeeAmount applies the entql other predicate on the fee_amount field.
+func (f *TranFilter) WhereFeeAmount(p entql.OtherP) {
+	f.Where(p.Field(tran.FieldFeeAmount))
 }
 
-// WhereLocked applies the entql other predicate on the locked field.
-func (f *TranFilter) WhereLocked(p entql.OtherP) {
-	f.Where(p.Field(tran.FieldLocked))
+// WhereChainTxID applies the entql string predicate on the chain_tx_id field.
+func (f *TranFilter) WhereChainTxID(p entql.StringP) {
+	f.Where(p.Field(tran.FieldChainTxID))
 }
 
-// WhereOutcoming applies the entql other predicate on the outcoming field.
-func (f *TranFilter) WhereOutcoming(p entql.OtherP) {
-	f.Where(p.Field(tran.FieldOutcoming))
+// WhereState applies the entql string predicate on the state field.
+func (f *TranFilter) WhereState(p entql.StringP) {
+	f.Where(p.Field(tran.FieldState))
 }
 
-// WhereSpendable applies the entql other predicate on the spendable field.
-func (f *TranFilter) WhereSpendable(p entql.OtherP) {
-	f.Where(p.Field(tran.FieldSpendable))
+// WhereExtra applies the entql string predicate on the extra field.
+func (f *TranFilter) WhereExtra(p entql.StringP) {
+	f.Where(p.Field(tran.FieldExtra))
 }

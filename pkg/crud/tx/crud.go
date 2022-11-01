@@ -14,15 +14,43 @@ import (
 
 	"github.com/NpoolPlatform/chain-manager/pkg/db"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent"
-	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/tx"
+	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/tran"
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
 	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/tx"
 
 	"github.com/google/uuid"
 )
 
-func Create(ctx context.Context, in *npool.TxReq) (*ent.Tx, error) {
-	var info *ent.Tx
+func CreateSet(c *ent.TranCreate, in *npool.TxReq) *ent.TranCreate {
+	if in.ID != nil {
+		c.SetID(uuid.MustParse(in.GetID()))
+	}
+	if in.FromAccountID != nil {
+		c.SetFromAccountID(uuid.MustParse(in.GetFromAccountID()))
+	}
+	if in.ToAccountID != nil {
+		c.SetToAccountID(uuid.MustParse(in.GetToAccountID()))
+	}
+	if in.Amount != nil {
+		c.SetAmount(decimal.RequireFromString(in.GetAmount()))
+	}
+	if in.FeeAmount != nil {
+		c.SetFeeAmount(decimal.RequireFromString(in.GetFeeAmount()))
+	}
+	if in.ChainTxID != nil {
+		c.SetChainTxID(in.GetChainTxID())
+	}
+	if in.State != nil {
+		c.SetState(in.GetState().String())
+	}
+	if in.Extra != nil {
+		c.SetExtra(in.GetExtra())
+	}
+	return c
+}
+
+func Create(ctx context.Context, in *npool.TxReq) (*ent.Tran, error) {
+	var info *ent.Tran
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "Create")
@@ -38,27 +66,8 @@ func Create(ctx context.Context, in *npool.TxReq) (*ent.Tx, error) {
 	span = tracer.Trace(span, in)
 
 	err = db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
-		c := cli.Tx.Create()
-
-		if in.ID != nil {
-			c.SetID(uuid.MustParse(in.GetID()))
-		}
-		if in.AppID != nil {
-			c.SetAppID(uuid.MustParse(in.GetAppID()))
-		}
-		if in.UserID != nil {
-			c.SetUserID(uuid.MustParse(in.GetUserID()))
-		}
-		if in.CoinTypeID != nil {
-			c.SetCoinTypeID(uuid.MustParse(in.GetCoinTypeID()))
-		}
-
-		c.SetIncoming(decimal.NewFromInt(0))
-		c.SetLocked(decimal.NewFromInt(0))
-		c.SetOutcoming(decimal.NewFromInt(0))
-		c.SetSpendable(decimal.NewFromInt(0))
-
-		info, err = c.Save(_ctx)
+		c := cli.Tran.Create()
+		info, err = CreateSet(c, in).Save(_ctx)
 		return err
 	})
 	if err != nil {
@@ -68,8 +77,9 @@ func Create(ctx context.Context, in *npool.TxReq) (*ent.Tx, error) {
 	return info, nil
 }
 
-func CreateBulk(ctx context.Context, in []*npool.TxReq) ([]*ent.Tx, error) {
+func CreateBulk(ctx context.Context, in []*npool.TxReq) ([]*ent.Tran, error) {
 	var err error
+	rows := []*ent.Tran{}
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "CreateBulk")
 	defer span.End()
@@ -83,29 +93,12 @@ func CreateBulk(ctx context.Context, in []*npool.TxReq) ([]*ent.Tx, error) {
 
 	span = tracer.TraceMany(span, in)
 
-	rows := []*ent.Tx{}
 	err = db.WithTx(ctx, func(_ctx context.Context, tx *ent.Tx) error {
-		bulk := make([]*ent.TxCreate, len(in))
+		bulk := make([]*ent.TranCreate, len(in))
 		for i, info := range in {
-			bulk[i] = tx.Tx.Create()
-			if info.ID != nil {
-				bulk[i].SetID(uuid.MustParse(info.GetID()))
-			}
-			if info.AppID != nil {
-				bulk[i].SetAppID(uuid.MustParse(info.GetAppID()))
-			}
-			if info.UserID != nil {
-				bulk[i].SetUserID(uuid.MustParse(info.GetUserID()))
-			}
-			if info.CoinTypeID != nil {
-				bulk[i].SetCoinTypeID(uuid.MustParse(info.GetCoinTypeID()))
-			}
-			bulk[i].SetIncoming(decimal.NewFromInt(0))
-			bulk[i].SetLocked(decimal.NewFromInt(0))
-			bulk[i].SetOutcoming(decimal.NewFromInt(0))
-			bulk[i].SetSpendable(decimal.NewFromInt(0))
+			bulk[i] = CreateSet(tx.Tran.Create(), info)
 		}
-		rows, err = tx.Tx.CreateBulk(bulk...).Save(_ctx)
+		rows, err = tx.Tran.CreateBulk(bulk...).Save(_ctx)
 		return err
 	})
 	if err != nil {
@@ -114,8 +107,8 @@ func CreateBulk(ctx context.Context, in []*npool.TxReq) ([]*ent.Tx, error) {
 	return rows, nil
 }
 
-func AddFields(ctx context.Context, in *npool.TxReq) (*ent.Tx, error) { //nolint
-	var info *ent.Tx
+func Update(ctx context.Context, in *npool.TxReq) (*ent.Tran, error) {
+	var info *ent.Tran
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "Create")
@@ -131,89 +124,15 @@ func AddFields(ctx context.Context, in *npool.TxReq) (*ent.Tx, error) { //nolint
 	span = tracer.Trace(span, in)
 
 	err = db.WithTx(ctx, func(_ctx context.Context, tx *ent.Tx) error {
-		info, err = tx.Tx.Query().Where(tx.ID(uuid.MustParse(in.GetID()))).ForUpdate().Only(_ctx)
+		info, err = tx.Tran.Query().Where(tran.ID(uuid.MustParse(in.GetID()))).ForUpdate().Only(_ctx)
 		if err != nil {
 			return fmt.Errorf("fail query tx: %v", err)
 		}
 
-		incoming := decimal.NewFromInt(0)
-		if in.Incoming != nil {
-			amount, err := decimal.NewFromString(in.GetIncoming())
-			if err != nil {
-				return err
-			}
-			incoming = incoming.Add(amount)
-		}
-		locked := decimal.NewFromInt(0)
-		if in.Locked != nil {
-			amount, err := decimal.NewFromString(in.GetLocked())
-			if err != nil {
-				return err
-			}
-			locked = locked.Add(amount)
-		}
-		outcoming := decimal.NewFromInt(0)
-		if in.Outcoming != nil {
-			amount, err := decimal.NewFromString(in.GetOutcoming())
-			if err != nil {
-				return err
-			}
-			outcoming = outcoming.Add(amount)
-		}
-		spendable := decimal.NewFromInt(0)
-		if in.Spendable != nil {
-			amount, err := decimal.NewFromString(in.GetSpendable())
-			if err != nil {
-				return err
-			}
-			spendable = spendable.Add(amount)
-		}
-
-		if incoming.Add(info.Incoming).
-			Cmp(
-				locked.Add(info.Locked).
-					Add(outcoming).
-					Add(info.Outcoming).
-					Add(spendable).
-					Add(info.Spendable),
-			) < 0 {
-			return fmt.Errorf("outcoming (%v + %v) + locked (%v + %v) + spendable (%v + %v) > incoming (%v + %v)",
-				outcoming, info.Outcoming, locked, info.Locked, spendable, info.Spendable, incoming, info.Incoming)
-		}
-
-		if locked.Add(info.Locked).Cmp(decimal.NewFromInt(0)) < 0 {
-			return fmt.Errorf("locked + locked < 0")
-		}
-
-		if incoming.Cmp(decimal.NewFromInt(0)) < 0 {
-			return fmt.Errorf("incoming < 0")
-		}
-
-		if outcoming.Cmp(decimal.NewFromInt(0)) < 0 {
-			return fmt.Errorf("outcoming < 0")
-		}
-
-		if spendable.Add(info.Spendable).Cmp(decimal.NewFromInt(0)) < 0 {
-			return fmt.Errorf("spendable + spendable < 0")
-		}
-
 		stm := info.Update()
 
-		if in.Incoming != nil {
-			incoming = incoming.Add(info.Incoming)
-			stm = stm.SetIncoming(incoming)
-		}
-		if in.Outcoming != nil {
-			outcoming = outcoming.Add(info.Outcoming)
-			stm = stm.SetOutcoming(outcoming)
-		}
-		if in.Locked != nil {
-			locked = locked.Add(info.Locked)
-			stm = stm.SetLocked(locked)
-		}
-		if in.Spendable != nil {
-			spendable = spendable.Add(info.Spendable)
-			stm = stm.SetSpendable(spendable)
+		if in.State != nil {
+			stm = stm.SetState(in.GetState().String())
 		}
 
 		info, err = stm.Save(_ctx)
@@ -230,8 +149,8 @@ func AddFields(ctx context.Context, in *npool.TxReq) (*ent.Tx, error) { //nolint
 	return info, nil
 }
 
-func Row(ctx context.Context, id uuid.UUID) (*ent.Tx, error) {
-	var info *ent.Tx
+func Row(ctx context.Context, id uuid.UUID) (*ent.Tran, error) {
+	var info *ent.Tran
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "Row")
@@ -247,7 +166,7 @@ func Row(ctx context.Context, id uuid.UUID) (*ent.Tx, error) {
 	span = commontracer.TraceID(span, id.String())
 
 	err = db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
-		info, err = cli.Tx.Query().Where(tx.ID(id)).Only(_ctx)
+		info, err = cli.Tran.Query().Where(tran.ID(id)).Only(_ctx)
 		return err
 	})
 	if err != nil {
@@ -257,100 +176,51 @@ func Row(ctx context.Context, id uuid.UUID) (*ent.Tx, error) {
 	return info, nil
 }
 
-func setQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.TxQuery, error) { //nolint
-	stm := cli.Tx.Query()
+func setQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.TranQuery, error) {
+	stm := cli.Tran.Query()
 	if conds.ID != nil {
 		switch conds.GetID().GetOp() {
 		case cruder.EQ:
-			stm.Where(tx.ID(uuid.MustParse(conds.GetID().GetValue())))
+			stm.Where(tran.ID(uuid.MustParse(conds.GetID().GetValue())))
 		default:
 			return nil, fmt.Errorf("invalid tx field")
 		}
 	}
-	if conds.AppID != nil {
-		switch conds.GetAppID().GetOp() {
+	if conds.AccountID != nil {
+		switch conds.GetAccountID().GetOp() {
 		case cruder.EQ:
-			stm.Where(tx.AppID(uuid.MustParse(conds.GetAppID().GetValue())))
+			stm.Where(
+				tran.Or(
+					tran.FromAccountID(uuid.MustParse(conds.GetAccountID().GetValue())),
+					tran.ToAccountID(uuid.MustParse(conds.GetAccountID().GetValue())),
+				),
+			)
 		default:
 			return nil, fmt.Errorf("invalid tx field")
 		}
 	}
-	if conds.UserID != nil {
-		switch conds.GetUserID().GetOp() {
-		case cruder.EQ:
-			stm.Where(tx.UserID(uuid.MustParse(conds.GetUserID().GetValue())))
+	if conds.AccountIDs != nil {
+		switch conds.GetAccountIDs().GetOp() {
+		case cruder.IN:
+			ids := []uuid.UUID{}
+			for _, acc := range conds.GetAccountIDs().GetValue() {
+				ids = append(ids, uuid.MustParse(acc))
+			}
+
+			stm.Where(
+				tran.Or(
+					tran.FromAccountIDIn(ids...),
+					tran.ToAccountIDIn(ids...),
+				),
+			)
 		default:
 			return nil, fmt.Errorf("invalid tx field")
 		}
 	}
-	if conds.CoinTypeID != nil {
-		switch conds.GetCoinTypeID().GetOp() {
+	if conds.State != nil {
+		switch conds.GetState().GetOp() {
 		case cruder.EQ:
-			stm.Where(tx.CoinTypeID(uuid.MustParse(conds.GetCoinTypeID().GetValue())))
-		default:
-			return nil, fmt.Errorf("invalid tx field")
-		}
-	}
-	if conds.Incoming != nil {
-		incoming, err := decimal.NewFromString(conds.GetIncoming().GetValue())
-		if err != nil {
-			return nil, err
-		}
-		switch conds.GetIncoming().GetOp() {
-		case cruder.LT:
-			stm.Where(tx.IncomingLT(incoming))
-		case cruder.GT:
-			stm.Where(tx.IncomingGT(incoming))
-		case cruder.EQ:
-			stm.Where(tx.IncomingEQ(incoming))
-		default:
-			return nil, fmt.Errorf("invalid tx field")
-		}
-	}
-	if conds.Locked != nil {
-		locked, err := decimal.NewFromString(conds.GetLocked().GetValue())
-		if err != nil {
-			return nil, err
-		}
-		switch conds.GetLocked().GetOp() {
-		case cruder.LT:
-			stm.Where(tx.LockedLT(locked))
-		case cruder.GT:
-			stm.Where(tx.LockedGT(locked))
-		case cruder.EQ:
-			stm.Where(tx.LockedEQ(locked))
-		default:
-			return nil, fmt.Errorf("invalid tx field")
-		}
-	}
-	if conds.Outcoming != nil {
-		outcoming, err := decimal.NewFromString(conds.GetOutcoming().GetValue())
-		if err != nil {
-			return nil, err
-		}
-		switch conds.GetOutcoming().GetOp() {
-		case cruder.LT:
-			stm.Where(tx.OutcomingLT(outcoming))
-		case cruder.GT:
-			stm.Where(tx.OutcomingGT(outcoming))
-		case cruder.EQ:
-			stm.Where(tx.OutcomingEQ(outcoming))
-		default:
-			return nil, fmt.Errorf("invalid tx field")
-		}
-	}
-	if conds.Spendable != nil {
-		spendable, err := decimal.NewFromString(conds.GetSpendable().GetValue())
-		if err != nil {
-			return nil, err
-		}
-		switch conds.GetSpendable().GetOp() {
-		case cruder.LT:
-			stm.Where(tx.SpendableLT(spendable))
-		case cruder.GT:
-			stm.Where(tx.SpendableGT(spendable))
-		case cruder.EQ:
-			stm.Where(tx.SpendableEQ(spendable))
+			stm.Where(tran.State(npool.TxState(conds.GetState().GetValue()).String()))
 		default:
 			return nil, fmt.Errorf("invalid tx field")
 		}
@@ -358,7 +228,7 @@ func setQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.TxQuery, error) { 
 	return stm, nil
 }
 
-func Rows(ctx context.Context, conds *npool.Conds, offset, limit int) ([]*ent.Tx, int, error) {
+func Rows(ctx context.Context, conds *npool.Conds, offset, limit int) ([]*ent.Tran, int, error) {
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "Rows")
@@ -374,8 +244,9 @@ func Rows(ctx context.Context, conds *npool.Conds, offset, limit int) ([]*ent.Tx
 	span = tracer.TraceConds(span, conds)
 	span = commontracer.TraceOffsetLimit(span, offset, limit)
 
-	rows := []*ent.Tx{}
+	rows := []*ent.Tran{}
 	var total int
+
 	err = db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
 		stm, err := setQueryConds(conds, cli)
 		if err != nil {
@@ -389,7 +260,7 @@ func Rows(ctx context.Context, conds *npool.Conds, offset, limit int) ([]*ent.Tx
 
 		rows, err = stm.
 			Offset(offset).
-			Order(ent.Desc(tx.FieldUpdatedAt)).
+			Order(ent.Desc(tran.FieldUpdatedAt)).
 			Limit(limit).
 			All(_ctx)
 		if err != nil {
@@ -404,8 +275,8 @@ func Rows(ctx context.Context, conds *npool.Conds, offset, limit int) ([]*ent.Tx
 	return rows, total, nil
 }
 
-func RowOnly(ctx context.Context, conds *npool.Conds) (*ent.Tx, error) {
-	var info *ent.Tx
+func RowOnly(ctx context.Context, conds *npool.Conds) (*ent.Tran, error) {
+	var info *ent.Tran
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "RowOnly")
@@ -492,7 +363,7 @@ func Exist(ctx context.Context, id uuid.UUID) (bool, error) {
 	span = commontracer.TraceID(span, id.String())
 
 	err = db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
-		exist, err = cli.Tx.Query().Where(tx.ID(id)).Exist(_ctx)
+		exist, err = cli.Tran.Query().Where(tran.ID(id)).Exist(_ctx)
 		return err
 	})
 	if err != nil {
@@ -538,8 +409,8 @@ func ExistConds(ctx context.Context, conds *npool.Conds) (bool, error) {
 	return exist, nil
 }
 
-func Delete(ctx context.Context, id uuid.UUID) (*ent.Tx, error) {
-	var info *ent.Tx
+func Delete(ctx context.Context, id uuid.UUID) (*ent.Tran, error) {
+	var info *ent.Tran
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "Delete")
@@ -555,7 +426,7 @@ func Delete(ctx context.Context, id uuid.UUID) (*ent.Tx, error) {
 	span = commontracer.TraceID(span, id.String())
 
 	err = db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
-		info, err = cli.Tx.UpdateOneID(id).
+		info, err = cli.Tran.UpdateOneID(id).
 			SetDeletedAt(uint32(time.Now().Unix())).
 			Save(_ctx)
 		return err

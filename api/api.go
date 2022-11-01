@@ -1,8 +1,6 @@
 package api
 
 import (
-	"context"
-
 	chainmgr "github.com/NpoolPlatform/message/npool/chain/mgr/v1"
 
 	"github.com/NpoolPlatform/chain-manager/api/tx"

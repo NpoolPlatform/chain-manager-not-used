@@ -101,52 +101,52 @@ func DeletedAt(v uint32) predicate.Tran {
 	})
 }
 
-// AppID applies equality check predicate on the "app_id" field. It's identical to AppIDEQ.
-func AppID(v uuid.UUID) predicate.Tran {
+// FromAccountID applies equality check predicate on the "from_account_id" field. It's identical to FromAccountIDEQ.
+func FromAccountID(v uuid.UUID) predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldAppID), v))
+		s.Where(sql.EQ(s.C(FieldFromAccountID), v))
 	})
 }
 
-// UserID applies equality check predicate on the "user_id" field. It's identical to UserIDEQ.
-func UserID(v uuid.UUID) predicate.Tran {
+// ToAccountID applies equality check predicate on the "to_account_id" field. It's identical to ToAccountIDEQ.
+func ToAccountID(v uuid.UUID) predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldUserID), v))
+		s.Where(sql.EQ(s.C(FieldToAccountID), v))
 	})
 }
 
-// CoinTypeID applies equality check predicate on the "coin_type_id" field. It's identical to CoinTypeIDEQ.
-func CoinTypeID(v uuid.UUID) predicate.Tran {
+// Amount applies equality check predicate on the "amount" field. It's identical to AmountEQ.
+func Amount(v decimal.Decimal) predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldCoinTypeID), v))
+		s.Where(sql.EQ(s.C(FieldAmount), v))
 	})
 }
 
-// Incoming applies equality check predicate on the "incoming" field. It's identical to IncomingEQ.
-func Incoming(v decimal.Decimal) predicate.Tran {
+// FeeAmount applies equality check predicate on the "fee_amount" field. It's identical to FeeAmountEQ.
+func FeeAmount(v decimal.Decimal) predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldIncoming), v))
+		s.Where(sql.EQ(s.C(FieldFeeAmount), v))
 	})
 }
 
-// Locked applies equality check predicate on the "locked" field. It's identical to LockedEQ.
-func Locked(v decimal.Decimal) predicate.Tran {
+// ChainTxID applies equality check predicate on the "chain_tx_id" field. It's identical to ChainTxIDEQ.
+func ChainTxID(v string) predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldLocked), v))
+		s.Where(sql.EQ(s.C(FieldChainTxID), v))
 	})
 }
 
-// Outcoming applies equality check predicate on the "outcoming" field. It's identical to OutcomingEQ.
-func Outcoming(v decimal.Decimal) predicate.Tran {
+// State applies equality check predicate on the "state" field. It's identical to StateEQ.
+func State(v string) predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldOutcoming), v))
+		s.Where(sql.EQ(s.C(FieldState), v))
 	})
 }
 
-// Spendable applies equality check predicate on the "spendable" field. It's identical to SpendableEQ.
-func Spendable(v decimal.Decimal) predicate.Tran {
+// Extra applies equality check predicate on the "extra" field. It's identical to ExtraEQ.
+func Extra(v string) predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldSpendable), v))
+		s.Where(sql.EQ(s.C(FieldExtra), v))
 	})
 }
 
@@ -342,549 +342,654 @@ func DeletedAtLTE(v uint32) predicate.Tran {
 	})
 }
 
-// AppIDEQ applies the EQ predicate on the "app_id" field.
-func AppIDEQ(v uuid.UUID) predicate.Tran {
+// FromAccountIDEQ applies the EQ predicate on the "from_account_id" field.
+func FromAccountIDEQ(v uuid.UUID) predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldAppID), v))
+		s.Where(sql.EQ(s.C(FieldFromAccountID), v))
 	})
 }
 
-// AppIDNEQ applies the NEQ predicate on the "app_id" field.
-func AppIDNEQ(v uuid.UUID) predicate.Tran {
+// FromAccountIDNEQ applies the NEQ predicate on the "from_account_id" field.
+func FromAccountIDNEQ(v uuid.UUID) predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldAppID), v))
+		s.Where(sql.NEQ(s.C(FieldFromAccountID), v))
 	})
 }
 
-// AppIDIn applies the In predicate on the "app_id" field.
-func AppIDIn(vs ...uuid.UUID) predicate.Tran {
+// FromAccountIDIn applies the In predicate on the "from_account_id" field.
+func FromAccountIDIn(vs ...uuid.UUID) predicate.Tran {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldAppID), v...))
+		s.Where(sql.In(s.C(FieldFromAccountID), v...))
 	})
 }
 
-// AppIDNotIn applies the NotIn predicate on the "app_id" field.
-func AppIDNotIn(vs ...uuid.UUID) predicate.Tran {
+// FromAccountIDNotIn applies the NotIn predicate on the "from_account_id" field.
+func FromAccountIDNotIn(vs ...uuid.UUID) predicate.Tran {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldAppID), v...))
+		s.Where(sql.NotIn(s.C(FieldFromAccountID), v...))
 	})
 }
 
-// AppIDGT applies the GT predicate on the "app_id" field.
-func AppIDGT(v uuid.UUID) predicate.Tran {
+// FromAccountIDGT applies the GT predicate on the "from_account_id" field.
+func FromAccountIDGT(v uuid.UUID) predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldAppID), v))
+		s.Where(sql.GT(s.C(FieldFromAccountID), v))
 	})
 }
 
-// AppIDGTE applies the GTE predicate on the "app_id" field.
-func AppIDGTE(v uuid.UUID) predicate.Tran {
+// FromAccountIDGTE applies the GTE predicate on the "from_account_id" field.
+func FromAccountIDGTE(v uuid.UUID) predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldAppID), v))
+		s.Where(sql.GTE(s.C(FieldFromAccountID), v))
 	})
 }
 
-// AppIDLT applies the LT predicate on the "app_id" field.
-func AppIDLT(v uuid.UUID) predicate.Tran {
+// FromAccountIDLT applies the LT predicate on the "from_account_id" field.
+func FromAccountIDLT(v uuid.UUID) predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldAppID), v))
+		s.Where(sql.LT(s.C(FieldFromAccountID), v))
 	})
 }
 
-// AppIDLTE applies the LTE predicate on the "app_id" field.
-func AppIDLTE(v uuid.UUID) predicate.Tran {
+// FromAccountIDLTE applies the LTE predicate on the "from_account_id" field.
+func FromAccountIDLTE(v uuid.UUID) predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldAppID), v))
+		s.Where(sql.LTE(s.C(FieldFromAccountID), v))
 	})
 }
 
-// AppIDIsNil applies the IsNil predicate on the "app_id" field.
-func AppIDIsNil() predicate.Tran {
+// FromAccountIDIsNil applies the IsNil predicate on the "from_account_id" field.
+func FromAccountIDIsNil() predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldAppID)))
+		s.Where(sql.IsNull(s.C(FieldFromAccountID)))
 	})
 }
 
-// AppIDNotNil applies the NotNil predicate on the "app_id" field.
-func AppIDNotNil() predicate.Tran {
+// FromAccountIDNotNil applies the NotNil predicate on the "from_account_id" field.
+func FromAccountIDNotNil() predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldAppID)))
+		s.Where(sql.NotNull(s.C(FieldFromAccountID)))
 	})
 }
 
-// UserIDEQ applies the EQ predicate on the "user_id" field.
-func UserIDEQ(v uuid.UUID) predicate.Tran {
+// ToAccountIDEQ applies the EQ predicate on the "to_account_id" field.
+func ToAccountIDEQ(v uuid.UUID) predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldUserID), v))
+		s.Where(sql.EQ(s.C(FieldToAccountID), v))
 	})
 }
 
-// UserIDNEQ applies the NEQ predicate on the "user_id" field.
-func UserIDNEQ(v uuid.UUID) predicate.Tran {
+// ToAccountIDNEQ applies the NEQ predicate on the "to_account_id" field.
+func ToAccountIDNEQ(v uuid.UUID) predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldUserID), v))
+		s.Where(sql.NEQ(s.C(FieldToAccountID), v))
 	})
 }
 
-// UserIDIn applies the In predicate on the "user_id" field.
-func UserIDIn(vs ...uuid.UUID) predicate.Tran {
+// ToAccountIDIn applies the In predicate on the "to_account_id" field.
+func ToAccountIDIn(vs ...uuid.UUID) predicate.Tran {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldUserID), v...))
+		s.Where(sql.In(s.C(FieldToAccountID), v...))
 	})
 }
 
-// UserIDNotIn applies the NotIn predicate on the "user_id" field.
-func UserIDNotIn(vs ...uuid.UUID) predicate.Tran {
+// ToAccountIDNotIn applies the NotIn predicate on the "to_account_id" field.
+func ToAccountIDNotIn(vs ...uuid.UUID) predicate.Tran {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldUserID), v...))
+		s.Where(sql.NotIn(s.C(FieldToAccountID), v...))
 	})
 }
 
-// UserIDGT applies the GT predicate on the "user_id" field.
-func UserIDGT(v uuid.UUID) predicate.Tran {
+// ToAccountIDGT applies the GT predicate on the "to_account_id" field.
+func ToAccountIDGT(v uuid.UUID) predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldUserID), v))
+		s.Where(sql.GT(s.C(FieldToAccountID), v))
 	})
 }
 
-// UserIDGTE applies the GTE predicate on the "user_id" field.
-func UserIDGTE(v uuid.UUID) predicate.Tran {
+// ToAccountIDGTE applies the GTE predicate on the "to_account_id" field.
+func ToAccountIDGTE(v uuid.UUID) predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldUserID), v))
+		s.Where(sql.GTE(s.C(FieldToAccountID), v))
 	})
 }
 
-// UserIDLT applies the LT predicate on the "user_id" field.
-func UserIDLT(v uuid.UUID) predicate.Tran {
+// ToAccountIDLT applies the LT predicate on the "to_account_id" field.
+func ToAccountIDLT(v uuid.UUID) predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldUserID), v))
+		s.Where(sql.LT(s.C(FieldToAccountID), v))
 	})
 }
 
-// UserIDLTE applies the LTE predicate on the "user_id" field.
-func UserIDLTE(v uuid.UUID) predicate.Tran {
+// ToAccountIDLTE applies the LTE predicate on the "to_account_id" field.
+func ToAccountIDLTE(v uuid.UUID) predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldUserID), v))
+		s.Where(sql.LTE(s.C(FieldToAccountID), v))
 	})
 }
 
-// UserIDIsNil applies the IsNil predicate on the "user_id" field.
-func UserIDIsNil() predicate.Tran {
+// ToAccountIDIsNil applies the IsNil predicate on the "to_account_id" field.
+func ToAccountIDIsNil() predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldUserID)))
+		s.Where(sql.IsNull(s.C(FieldToAccountID)))
 	})
 }
 
-// UserIDNotNil applies the NotNil predicate on the "user_id" field.
-func UserIDNotNil() predicate.Tran {
+// ToAccountIDNotNil applies the NotNil predicate on the "to_account_id" field.
+func ToAccountIDNotNil() predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldUserID)))
+		s.Where(sql.NotNull(s.C(FieldToAccountID)))
 	})
 }
 
-// CoinTypeIDEQ applies the EQ predicate on the "coin_type_id" field.
-func CoinTypeIDEQ(v uuid.UUID) predicate.Tran {
+// AmountEQ applies the EQ predicate on the "amount" field.
+func AmountEQ(v decimal.Decimal) predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldCoinTypeID), v))
+		s.Where(sql.EQ(s.C(FieldAmount), v))
 	})
 }
 
-// CoinTypeIDNEQ applies the NEQ predicate on the "coin_type_id" field.
-func CoinTypeIDNEQ(v uuid.UUID) predicate.Tran {
+// AmountNEQ applies the NEQ predicate on the "amount" field.
+func AmountNEQ(v decimal.Decimal) predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldCoinTypeID), v))
+		s.Where(sql.NEQ(s.C(FieldAmount), v))
 	})
 }
 
-// CoinTypeIDIn applies the In predicate on the "coin_type_id" field.
-func CoinTypeIDIn(vs ...uuid.UUID) predicate.Tran {
+// AmountIn applies the In predicate on the "amount" field.
+func AmountIn(vs ...decimal.Decimal) predicate.Tran {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldCoinTypeID), v...))
+		s.Where(sql.In(s.C(FieldAmount), v...))
 	})
 }
 
-// CoinTypeIDNotIn applies the NotIn predicate on the "coin_type_id" field.
-func CoinTypeIDNotIn(vs ...uuid.UUID) predicate.Tran {
+// AmountNotIn applies the NotIn predicate on the "amount" field.
+func AmountNotIn(vs ...decimal.Decimal) predicate.Tran {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldCoinTypeID), v...))
+		s.Where(sql.NotIn(s.C(FieldAmount), v...))
 	})
 }
 
-// CoinTypeIDGT applies the GT predicate on the "coin_type_id" field.
-func CoinTypeIDGT(v uuid.UUID) predicate.Tran {
+// AmountGT applies the GT predicate on the "amount" field.
+func AmountGT(v decimal.Decimal) predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldCoinTypeID), v))
+		s.Where(sql.GT(s.C(FieldAmount), v))
 	})
 }
 
-// CoinTypeIDGTE applies the GTE predicate on the "coin_type_id" field.
-func CoinTypeIDGTE(v uuid.UUID) predicate.Tran {
+// AmountGTE applies the GTE predicate on the "amount" field.
+func AmountGTE(v decimal.Decimal) predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldCoinTypeID), v))
+		s.Where(sql.GTE(s.C(FieldAmount), v))
 	})
 }
 
-// CoinTypeIDLT applies the LT predicate on the "coin_type_id" field.
-func CoinTypeIDLT(v uuid.UUID) predicate.Tran {
+// AmountLT applies the LT predicate on the "amount" field.
+func AmountLT(v decimal.Decimal) predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldCoinTypeID), v))
+		s.Where(sql.LT(s.C(FieldAmount), v))
 	})
 }
 
-// CoinTypeIDLTE applies the LTE predicate on the "coin_type_id" field.
-func CoinTypeIDLTE(v uuid.UUID) predicate.Tran {
+// AmountLTE applies the LTE predicate on the "amount" field.
+func AmountLTE(v decimal.Decimal) predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldCoinTypeID), v))
+		s.Where(sql.LTE(s.C(FieldAmount), v))
 	})
 }
 
-// CoinTypeIDIsNil applies the IsNil predicate on the "coin_type_id" field.
-func CoinTypeIDIsNil() predicate.Tran {
+// AmountIsNil applies the IsNil predicate on the "amount" field.
+func AmountIsNil() predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldCoinTypeID)))
+		s.Where(sql.IsNull(s.C(FieldAmount)))
 	})
 }
 
-// CoinTypeIDNotNil applies the NotNil predicate on the "coin_type_id" field.
-func CoinTypeIDNotNil() predicate.Tran {
+// AmountNotNil applies the NotNil predicate on the "amount" field.
+func AmountNotNil() predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldCoinTypeID)))
+		s.Where(sql.NotNull(s.C(FieldAmount)))
 	})
 }
 
-// IncomingEQ applies the EQ predicate on the "incoming" field.
-func IncomingEQ(v decimal.Decimal) predicate.Tran {
+// FeeAmountEQ applies the EQ predicate on the "fee_amount" field.
+func FeeAmountEQ(v decimal.Decimal) predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldIncoming), v))
+		s.Where(sql.EQ(s.C(FieldFeeAmount), v))
 	})
 }
 
-// IncomingNEQ applies the NEQ predicate on the "incoming" field.
-func IncomingNEQ(v decimal.Decimal) predicate.Tran {
+// FeeAmountNEQ applies the NEQ predicate on the "fee_amount" field.
+func FeeAmountNEQ(v decimal.Decimal) predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldIncoming), v))
+		s.Where(sql.NEQ(s.C(FieldFeeAmount), v))
 	})
 }
 
-// IncomingIn applies the In predicate on the "incoming" field.
-func IncomingIn(vs ...decimal.Decimal) predicate.Tran {
+// FeeAmountIn applies the In predicate on the "fee_amount" field.
+func FeeAmountIn(vs ...decimal.Decimal) predicate.Tran {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldIncoming), v...))
+		s.Where(sql.In(s.C(FieldFeeAmount), v...))
 	})
 }
 
-// IncomingNotIn applies the NotIn predicate on the "incoming" field.
-func IncomingNotIn(vs ...decimal.Decimal) predicate.Tran {
+// FeeAmountNotIn applies the NotIn predicate on the "fee_amount" field.
+func FeeAmountNotIn(vs ...decimal.Decimal) predicate.Tran {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldIncoming), v...))
+		s.Where(sql.NotIn(s.C(FieldFeeAmount), v...))
 	})
 }
 
-// IncomingGT applies the GT predicate on the "incoming" field.
-func IncomingGT(v decimal.Decimal) predicate.Tran {
+// FeeAmountGT applies the GT predicate on the "fee_amount" field.
+func FeeAmountGT(v decimal.Decimal) predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldIncoming), v))
+		s.Where(sql.GT(s.C(FieldFeeAmount), v))
 	})
 }
 
-// IncomingGTE applies the GTE predicate on the "incoming" field.
-func IncomingGTE(v decimal.Decimal) predicate.Tran {
+// FeeAmountGTE applies the GTE predicate on the "fee_amount" field.
+func FeeAmountGTE(v decimal.Decimal) predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldIncoming), v))
+		s.Where(sql.GTE(s.C(FieldFeeAmount), v))
 	})
 }
 
-// IncomingLT applies the LT predicate on the "incoming" field.
-func IncomingLT(v decimal.Decimal) predicate.Tran {
+// FeeAmountLT applies the LT predicate on the "fee_amount" field.
+func FeeAmountLT(v decimal.Decimal) predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldIncoming), v))
+		s.Where(sql.LT(s.C(FieldFeeAmount), v))
 	})
 }
 
-// IncomingLTE applies the LTE predicate on the "incoming" field.
-func IncomingLTE(v decimal.Decimal) predicate.Tran {
+// FeeAmountLTE applies the LTE predicate on the "fee_amount" field.
+func FeeAmountLTE(v decimal.Decimal) predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldIncoming), v))
+		s.Where(sql.LTE(s.C(FieldFeeAmount), v))
 	})
 }
 
-// IncomingIsNil applies the IsNil predicate on the "incoming" field.
-func IncomingIsNil() predicate.Tran {
+// FeeAmountIsNil applies the IsNil predicate on the "fee_amount" field.
+func FeeAmountIsNil() predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldIncoming)))
+		s.Where(sql.IsNull(s.C(FieldFeeAmount)))
 	})
 }
 
-// IncomingNotNil applies the NotNil predicate on the "incoming" field.
-func IncomingNotNil() predicate.Tran {
+// FeeAmountNotNil applies the NotNil predicate on the "fee_amount" field.
+func FeeAmountNotNil() predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldIncoming)))
+		s.Where(sql.NotNull(s.C(FieldFeeAmount)))
 	})
 }
 
-// LockedEQ applies the EQ predicate on the "locked" field.
-func LockedEQ(v decimal.Decimal) predicate.Tran {
+// ChainTxIDEQ applies the EQ predicate on the "chain_tx_id" field.
+func ChainTxIDEQ(v string) predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldLocked), v))
+		s.Where(sql.EQ(s.C(FieldChainTxID), v))
 	})
 }
 
-// LockedNEQ applies the NEQ predicate on the "locked" field.
-func LockedNEQ(v decimal.Decimal) predicate.Tran {
+// ChainTxIDNEQ applies the NEQ predicate on the "chain_tx_id" field.
+func ChainTxIDNEQ(v string) predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldLocked), v))
+		s.Where(sql.NEQ(s.C(FieldChainTxID), v))
 	})
 }
 
-// LockedIn applies the In predicate on the "locked" field.
-func LockedIn(vs ...decimal.Decimal) predicate.Tran {
+// ChainTxIDIn applies the In predicate on the "chain_tx_id" field.
+func ChainTxIDIn(vs ...string) predicate.Tran {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldLocked), v...))
+		s.Where(sql.In(s.C(FieldChainTxID), v...))
 	})
 }
 
-// LockedNotIn applies the NotIn predicate on the "locked" field.
-func LockedNotIn(vs ...decimal.Decimal) predicate.Tran {
+// ChainTxIDNotIn applies the NotIn predicate on the "chain_tx_id" field.
+func ChainTxIDNotIn(vs ...string) predicate.Tran {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldLocked), v...))
+		s.Where(sql.NotIn(s.C(FieldChainTxID), v...))
 	})
 }
 
-// LockedGT applies the GT predicate on the "locked" field.
-func LockedGT(v decimal.Decimal) predicate.Tran {
+// ChainTxIDGT applies the GT predicate on the "chain_tx_id" field.
+func ChainTxIDGT(v string) predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldLocked), v))
+		s.Where(sql.GT(s.C(FieldChainTxID), v))
 	})
 }
 
-// LockedGTE applies the GTE predicate on the "locked" field.
-func LockedGTE(v decimal.Decimal) predicate.Tran {
+// ChainTxIDGTE applies the GTE predicate on the "chain_tx_id" field.
+func ChainTxIDGTE(v string) predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldLocked), v))
+		s.Where(sql.GTE(s.C(FieldChainTxID), v))
 	})
 }
 
-// LockedLT applies the LT predicate on the "locked" field.
-func LockedLT(v decimal.Decimal) predicate.Tran {
+// ChainTxIDLT applies the LT predicate on the "chain_tx_id" field.
+func ChainTxIDLT(v string) predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldLocked), v))
+		s.Where(sql.LT(s.C(FieldChainTxID), v))
 	})
 }
 
-// LockedLTE applies the LTE predicate on the "locked" field.
-func LockedLTE(v decimal.Decimal) predicate.Tran {
+// ChainTxIDLTE applies the LTE predicate on the "chain_tx_id" field.
+func ChainTxIDLTE(v string) predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldLocked), v))
+		s.Where(sql.LTE(s.C(FieldChainTxID), v))
 	})
 }
 
-// LockedIsNil applies the IsNil predicate on the "locked" field.
-func LockedIsNil() predicate.Tran {
+// ChainTxIDContains applies the Contains predicate on the "chain_tx_id" field.
+func ChainTxIDContains(v string) predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldLocked)))
+		s.Where(sql.Contains(s.C(FieldChainTxID), v))
 	})
 }
 
-// LockedNotNil applies the NotNil predicate on the "locked" field.
-func LockedNotNil() predicate.Tran {
+// ChainTxIDHasPrefix applies the HasPrefix predicate on the "chain_tx_id" field.
+func ChainTxIDHasPrefix(v string) predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldLocked)))
+		s.Where(sql.HasPrefix(s.C(FieldChainTxID), v))
 	})
 }
 
-// OutcomingEQ applies the EQ predicate on the "outcoming" field.
-func OutcomingEQ(v decimal.Decimal) predicate.Tran {
+// ChainTxIDHasSuffix applies the HasSuffix predicate on the "chain_tx_id" field.
+func ChainTxIDHasSuffix(v string) predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldOutcoming), v))
+		s.Where(sql.HasSuffix(s.C(FieldChainTxID), v))
 	})
 }
 
-// OutcomingNEQ applies the NEQ predicate on the "outcoming" field.
-func OutcomingNEQ(v decimal.Decimal) predicate.Tran {
+// ChainTxIDIsNil applies the IsNil predicate on the "chain_tx_id" field.
+func ChainTxIDIsNil() predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldOutcoming), v))
+		s.Where(sql.IsNull(s.C(FieldChainTxID)))
 	})
 }
 
-// OutcomingIn applies the In predicate on the "outcoming" field.
-func OutcomingIn(vs ...decimal.Decimal) predicate.Tran {
+// ChainTxIDNotNil applies the NotNil predicate on the "chain_tx_id" field.
+func ChainTxIDNotNil() predicate.Tran {
+	return predicate.Tran(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldChainTxID)))
+	})
+}
+
+// ChainTxIDEqualFold applies the EqualFold predicate on the "chain_tx_id" field.
+func ChainTxIDEqualFold(v string) predicate.Tran {
+	return predicate.Tran(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldChainTxID), v))
+	})
+}
+
+// ChainTxIDContainsFold applies the ContainsFold predicate on the "chain_tx_id" field.
+func ChainTxIDContainsFold(v string) predicate.Tran {
+	return predicate.Tran(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldChainTxID), v))
+	})
+}
+
+// StateEQ applies the EQ predicate on the "state" field.
+func StateEQ(v string) predicate.Tran {
+	return predicate.Tran(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldState), v))
+	})
+}
+
+// StateNEQ applies the NEQ predicate on the "state" field.
+func StateNEQ(v string) predicate.Tran {
+	return predicate.Tran(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldState), v))
+	})
+}
+
+// StateIn applies the In predicate on the "state" field.
+func StateIn(vs ...string) predicate.Tran {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldOutcoming), v...))
+		s.Where(sql.In(s.C(FieldState), v...))
 	})
 }
 
-// OutcomingNotIn applies the NotIn predicate on the "outcoming" field.
-func OutcomingNotIn(vs ...decimal.Decimal) predicate.Tran {
+// StateNotIn applies the NotIn predicate on the "state" field.
+func StateNotIn(vs ...string) predicate.Tran {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldOutcoming), v...))
+		s.Where(sql.NotIn(s.C(FieldState), v...))
 	})
 }
 
-// OutcomingGT applies the GT predicate on the "outcoming" field.
-func OutcomingGT(v decimal.Decimal) predicate.Tran {
+// StateGT applies the GT predicate on the "state" field.
+func StateGT(v string) predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldOutcoming), v))
+		s.Where(sql.GT(s.C(FieldState), v))
 	})
 }
 
-// OutcomingGTE applies the GTE predicate on the "outcoming" field.
-func OutcomingGTE(v decimal.Decimal) predicate.Tran {
+// StateGTE applies the GTE predicate on the "state" field.
+func StateGTE(v string) predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldOutcoming), v))
+		s.Where(sql.GTE(s.C(FieldState), v))
 	})
 }
 
-// OutcomingLT applies the LT predicate on the "outcoming" field.
-func OutcomingLT(v decimal.Decimal) predicate.Tran {
+// StateLT applies the LT predicate on the "state" field.
+func StateLT(v string) predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldOutcoming), v))
+		s.Where(sql.LT(s.C(FieldState), v))
 	})
 }
 
-// OutcomingLTE applies the LTE predicate on the "outcoming" field.
-func OutcomingLTE(v decimal.Decimal) predicate.Tran {
+// StateLTE applies the LTE predicate on the "state" field.
+func StateLTE(v string) predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldOutcoming), v))
+		s.Where(sql.LTE(s.C(FieldState), v))
 	})
 }
 
-// OutcomingIsNil applies the IsNil predicate on the "outcoming" field.
-func OutcomingIsNil() predicate.Tran {
+// StateContains applies the Contains predicate on the "state" field.
+func StateContains(v string) predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldOutcoming)))
+		s.Where(sql.Contains(s.C(FieldState), v))
 	})
 }
 
-// OutcomingNotNil applies the NotNil predicate on the "outcoming" field.
-func OutcomingNotNil() predicate.Tran {
+// StateHasPrefix applies the HasPrefix predicate on the "state" field.
+func StateHasPrefix(v string) predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldOutcoming)))
+		s.Where(sql.HasPrefix(s.C(FieldState), v))
 	})
 }
 
-// SpendableEQ applies the EQ predicate on the "spendable" field.
-func SpendableEQ(v decimal.Decimal) predicate.Tran {
+// StateHasSuffix applies the HasSuffix predicate on the "state" field.
+func StateHasSuffix(v string) predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldSpendable), v))
+		s.Where(sql.HasSuffix(s.C(FieldState), v))
 	})
 }
 
-// SpendableNEQ applies the NEQ predicate on the "spendable" field.
-func SpendableNEQ(v decimal.Decimal) predicate.Tran {
+// StateIsNil applies the IsNil predicate on the "state" field.
+func StateIsNil() predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldSpendable), v))
+		s.Where(sql.IsNull(s.C(FieldState)))
 	})
 }
 
-// SpendableIn applies the In predicate on the "spendable" field.
-func SpendableIn(vs ...decimal.Decimal) predicate.Tran {
+// StateNotNil applies the NotNil predicate on the "state" field.
+func StateNotNil() predicate.Tran {
+	return predicate.Tran(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldState)))
+	})
+}
+
+// StateEqualFold applies the EqualFold predicate on the "state" field.
+func StateEqualFold(v string) predicate.Tran {
+	return predicate.Tran(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldState), v))
+	})
+}
+
+// StateContainsFold applies the ContainsFold predicate on the "state" field.
+func StateContainsFold(v string) predicate.Tran {
+	return predicate.Tran(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldState), v))
+	})
+}
+
+// ExtraEQ applies the EQ predicate on the "extra" field.
+func ExtraEQ(v string) predicate.Tran {
+	return predicate.Tran(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldExtra), v))
+	})
+}
+
+// ExtraNEQ applies the NEQ predicate on the "extra" field.
+func ExtraNEQ(v string) predicate.Tran {
+	return predicate.Tran(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldExtra), v))
+	})
+}
+
+// ExtraIn applies the In predicate on the "extra" field.
+func ExtraIn(vs ...string) predicate.Tran {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldSpendable), v...))
+		s.Where(sql.In(s.C(FieldExtra), v...))
 	})
 }
 
-// SpendableNotIn applies the NotIn predicate on the "spendable" field.
-func SpendableNotIn(vs ...decimal.Decimal) predicate.Tran {
+// ExtraNotIn applies the NotIn predicate on the "extra" field.
+func ExtraNotIn(vs ...string) predicate.Tran {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldSpendable), v...))
+		s.Where(sql.NotIn(s.C(FieldExtra), v...))
 	})
 }
 
-// SpendableGT applies the GT predicate on the "spendable" field.
-func SpendableGT(v decimal.Decimal) predicate.Tran {
+// ExtraGT applies the GT predicate on the "extra" field.
+func ExtraGT(v string) predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldSpendable), v))
+		s.Where(sql.GT(s.C(FieldExtra), v))
 	})
 }
 
-// SpendableGTE applies the GTE predicate on the "spendable" field.
-func SpendableGTE(v decimal.Decimal) predicate.Tran {
+// ExtraGTE applies the GTE predicate on the "extra" field.
+func ExtraGTE(v string) predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldSpendable), v))
+		s.Where(sql.GTE(s.C(FieldExtra), v))
 	})
 }
 
-// SpendableLT applies the LT predicate on the "spendable" field.
-func SpendableLT(v decimal.Decimal) predicate.Tran {
+// ExtraLT applies the LT predicate on the "extra" field.
+func ExtraLT(v string) predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldSpendable), v))
+		s.Where(sql.LT(s.C(FieldExtra), v))
 	})
 }
 
-// SpendableLTE applies the LTE predicate on the "spendable" field.
-func SpendableLTE(v decimal.Decimal) predicate.Tran {
+// ExtraLTE applies the LTE predicate on the "extra" field.
+func ExtraLTE(v string) predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldSpendable), v))
+		s.Where(sql.LTE(s.C(FieldExtra), v))
 	})
 }
 
-// SpendableIsNil applies the IsNil predicate on the "spendable" field.
-func SpendableIsNil() predicate.Tran {
+// ExtraContains applies the Contains predicate on the "extra" field.
+func ExtraContains(v string) predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldSpendable)))
+		s.Where(sql.Contains(s.C(FieldExtra), v))
 	})
 }
 
-// SpendableNotNil applies the NotNil predicate on the "spendable" field.
-func SpendableNotNil() predicate.Tran {
+// ExtraHasPrefix applies the HasPrefix predicate on the "extra" field.
+func ExtraHasPrefix(v string) predicate.Tran {
 	return predicate.Tran(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldSpendable)))
+		s.Where(sql.HasPrefix(s.C(FieldExtra), v))
+	})
+}
+
+// ExtraHasSuffix applies the HasSuffix predicate on the "extra" field.
+func ExtraHasSuffix(v string) predicate.Tran {
+	return predicate.Tran(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldExtra), v))
+	})
+}
+
+// ExtraIsNil applies the IsNil predicate on the "extra" field.
+func ExtraIsNil() predicate.Tran {
+	return predicate.Tran(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldExtra)))
+	})
+}
+
+// ExtraNotNil applies the NotNil predicate on the "extra" field.
+func ExtraNotNil() predicate.Tran {
+	return predicate.Tran(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldExtra)))
+	})
+}
+
+// ExtraEqualFold applies the EqualFold predicate on the "extra" field.
+func ExtraEqualFold(v string) predicate.Tran {
+	return predicate.Tran(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldExtra), v))
+	})
+}
+
+// ExtraContainsFold applies the ContainsFold predicate on the "extra" field.
+func ExtraContainsFold(v string) predicate.Tran {
+	return predicate.Tran(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldExtra), v))
 	})
 }
 

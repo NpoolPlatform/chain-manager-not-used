@@ -66,100 +66,100 @@ func (tc *TranCreate) SetNillableDeletedAt(u *uint32) *TranCreate {
 	return tc
 }
 
-// SetAppID sets the "app_id" field.
-func (tc *TranCreate) SetAppID(u uuid.UUID) *TranCreate {
-	tc.mutation.SetAppID(u)
+// SetFromAccountID sets the "from_account_id" field.
+func (tc *TranCreate) SetFromAccountID(u uuid.UUID) *TranCreate {
+	tc.mutation.SetFromAccountID(u)
 	return tc
 }
 
-// SetNillableAppID sets the "app_id" field if the given value is not nil.
-func (tc *TranCreate) SetNillableAppID(u *uuid.UUID) *TranCreate {
+// SetNillableFromAccountID sets the "from_account_id" field if the given value is not nil.
+func (tc *TranCreate) SetNillableFromAccountID(u *uuid.UUID) *TranCreate {
 	if u != nil {
-		tc.SetAppID(*u)
+		tc.SetFromAccountID(*u)
 	}
 	return tc
 }
 
-// SetUserID sets the "user_id" field.
-func (tc *TranCreate) SetUserID(u uuid.UUID) *TranCreate {
-	tc.mutation.SetUserID(u)
+// SetToAccountID sets the "to_account_id" field.
+func (tc *TranCreate) SetToAccountID(u uuid.UUID) *TranCreate {
+	tc.mutation.SetToAccountID(u)
 	return tc
 }
 
-// SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (tc *TranCreate) SetNillableUserID(u *uuid.UUID) *TranCreate {
+// SetNillableToAccountID sets the "to_account_id" field if the given value is not nil.
+func (tc *TranCreate) SetNillableToAccountID(u *uuid.UUID) *TranCreate {
 	if u != nil {
-		tc.SetUserID(*u)
+		tc.SetToAccountID(*u)
 	}
 	return tc
 }
 
-// SetCoinTypeID sets the "coin_type_id" field.
-func (tc *TranCreate) SetCoinTypeID(u uuid.UUID) *TranCreate {
-	tc.mutation.SetCoinTypeID(u)
+// SetAmount sets the "amount" field.
+func (tc *TranCreate) SetAmount(d decimal.Decimal) *TranCreate {
+	tc.mutation.SetAmount(d)
 	return tc
 }
 
-// SetNillableCoinTypeID sets the "coin_type_id" field if the given value is not nil.
-func (tc *TranCreate) SetNillableCoinTypeID(u *uuid.UUID) *TranCreate {
-	if u != nil {
-		tc.SetCoinTypeID(*u)
-	}
-	return tc
-}
-
-// SetIncoming sets the "incoming" field.
-func (tc *TranCreate) SetIncoming(d decimal.Decimal) *TranCreate {
-	tc.mutation.SetIncoming(d)
-	return tc
-}
-
-// SetNillableIncoming sets the "incoming" field if the given value is not nil.
-func (tc *TranCreate) SetNillableIncoming(d *decimal.Decimal) *TranCreate {
+// SetNillableAmount sets the "amount" field if the given value is not nil.
+func (tc *TranCreate) SetNillableAmount(d *decimal.Decimal) *TranCreate {
 	if d != nil {
-		tc.SetIncoming(*d)
+		tc.SetAmount(*d)
 	}
 	return tc
 }
 
-// SetLocked sets the "locked" field.
-func (tc *TranCreate) SetLocked(d decimal.Decimal) *TranCreate {
-	tc.mutation.SetLocked(d)
+// SetFeeAmount sets the "fee_amount" field.
+func (tc *TranCreate) SetFeeAmount(d decimal.Decimal) *TranCreate {
+	tc.mutation.SetFeeAmount(d)
 	return tc
 }
 
-// SetNillableLocked sets the "locked" field if the given value is not nil.
-func (tc *TranCreate) SetNillableLocked(d *decimal.Decimal) *TranCreate {
+// SetNillableFeeAmount sets the "fee_amount" field if the given value is not nil.
+func (tc *TranCreate) SetNillableFeeAmount(d *decimal.Decimal) *TranCreate {
 	if d != nil {
-		tc.SetLocked(*d)
+		tc.SetFeeAmount(*d)
 	}
 	return tc
 }
 
-// SetOutcoming sets the "outcoming" field.
-func (tc *TranCreate) SetOutcoming(d decimal.Decimal) *TranCreate {
-	tc.mutation.SetOutcoming(d)
+// SetChainTxID sets the "chain_tx_id" field.
+func (tc *TranCreate) SetChainTxID(s string) *TranCreate {
+	tc.mutation.SetChainTxID(s)
 	return tc
 }
 
-// SetNillableOutcoming sets the "outcoming" field if the given value is not nil.
-func (tc *TranCreate) SetNillableOutcoming(d *decimal.Decimal) *TranCreate {
-	if d != nil {
-		tc.SetOutcoming(*d)
+// SetNillableChainTxID sets the "chain_tx_id" field if the given value is not nil.
+func (tc *TranCreate) SetNillableChainTxID(s *string) *TranCreate {
+	if s != nil {
+		tc.SetChainTxID(*s)
 	}
 	return tc
 }
 
-// SetSpendable sets the "spendable" field.
-func (tc *TranCreate) SetSpendable(d decimal.Decimal) *TranCreate {
-	tc.mutation.SetSpendable(d)
+// SetState sets the "state" field.
+func (tc *TranCreate) SetState(s string) *TranCreate {
+	tc.mutation.SetState(s)
 	return tc
 }
 
-// SetNillableSpendable sets the "spendable" field if the given value is not nil.
-func (tc *TranCreate) SetNillableSpendable(d *decimal.Decimal) *TranCreate {
-	if d != nil {
-		tc.SetSpendable(*d)
+// SetNillableState sets the "state" field if the given value is not nil.
+func (tc *TranCreate) SetNillableState(s *string) *TranCreate {
+	if s != nil {
+		tc.SetState(*s)
+	}
+	return tc
+}
+
+// SetExtra sets the "extra" field.
+func (tc *TranCreate) SetExtra(s string) *TranCreate {
+	tc.mutation.SetExtra(s)
+	return tc
+}
+
+// SetNillableExtra sets the "extra" field if the given value is not nil.
+func (tc *TranCreate) SetNillableExtra(s *string) *TranCreate {
+	if s != nil {
+		tc.SetExtra(*s)
 	}
 	return tc
 }
@@ -278,42 +278,39 @@ func (tc *TranCreate) defaults() error {
 		v := tran.DefaultDeletedAt()
 		tc.mutation.SetDeletedAt(v)
 	}
-	if _, ok := tc.mutation.AppID(); !ok {
-		if tran.DefaultAppID == nil {
-			return fmt.Errorf("ent: uninitialized tran.DefaultAppID (forgotten import ent/runtime?)")
+	if _, ok := tc.mutation.FromAccountID(); !ok {
+		if tran.DefaultFromAccountID == nil {
+			return fmt.Errorf("ent: uninitialized tran.DefaultFromAccountID (forgotten import ent/runtime?)")
 		}
-		v := tran.DefaultAppID()
-		tc.mutation.SetAppID(v)
+		v := tran.DefaultFromAccountID()
+		tc.mutation.SetFromAccountID(v)
 	}
-	if _, ok := tc.mutation.UserID(); !ok {
-		if tran.DefaultUserID == nil {
-			return fmt.Errorf("ent: uninitialized tran.DefaultUserID (forgotten import ent/runtime?)")
+	if _, ok := tc.mutation.ToAccountID(); !ok {
+		if tran.DefaultToAccountID == nil {
+			return fmt.Errorf("ent: uninitialized tran.DefaultToAccountID (forgotten import ent/runtime?)")
 		}
-		v := tran.DefaultUserID()
-		tc.mutation.SetUserID(v)
+		v := tran.DefaultToAccountID()
+		tc.mutation.SetToAccountID(v)
 	}
-	if _, ok := tc.mutation.CoinTypeID(); !ok {
-		if tran.DefaultCoinTypeID == nil {
-			return fmt.Errorf("ent: uninitialized tran.DefaultCoinTypeID (forgotten import ent/runtime?)")
-		}
-		v := tran.DefaultCoinTypeID()
-		tc.mutation.SetCoinTypeID(v)
+	if _, ok := tc.mutation.Amount(); !ok {
+		v := tran.DefaultAmount
+		tc.mutation.SetAmount(v)
 	}
-	if _, ok := tc.mutation.Incoming(); !ok {
-		v := tran.DefaultIncoming
-		tc.mutation.SetIncoming(v)
+	if _, ok := tc.mutation.FeeAmount(); !ok {
+		v := tran.DefaultFeeAmount
+		tc.mutation.SetFeeAmount(v)
 	}
-	if _, ok := tc.mutation.Locked(); !ok {
-		v := tran.DefaultLocked
-		tc.mutation.SetLocked(v)
+	if _, ok := tc.mutation.ChainTxID(); !ok {
+		v := tran.DefaultChainTxID
+		tc.mutation.SetChainTxID(v)
 	}
-	if _, ok := tc.mutation.Outcoming(); !ok {
-		v := tran.DefaultOutcoming
-		tc.mutation.SetOutcoming(v)
+	if _, ok := tc.mutation.State(); !ok {
+		v := tran.DefaultState
+		tc.mutation.SetState(v)
 	}
-	if _, ok := tc.mutation.Spendable(); !ok {
-		v := tran.DefaultSpendable
-		tc.mutation.SetSpendable(v)
+	if _, ok := tc.mutation.Extra(); !ok {
+		v := tran.DefaultExtra
+		tc.mutation.SetExtra(v)
 	}
 	if _, ok := tc.mutation.ID(); !ok {
 		if tran.DefaultID == nil {
@@ -397,61 +394,61 @@ func (tc *TranCreate) createSpec() (*Tran, *sqlgraph.CreateSpec) {
 		})
 		_node.DeletedAt = value
 	}
-	if value, ok := tc.mutation.AppID(); ok {
+	if value, ok := tc.mutation.FromAccountID(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
 			Value:  value,
-			Column: tran.FieldAppID,
+			Column: tran.FieldFromAccountID,
 		})
-		_node.AppID = value
+		_node.FromAccountID = value
 	}
-	if value, ok := tc.mutation.UserID(); ok {
+	if value, ok := tc.mutation.ToAccountID(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
 			Value:  value,
-			Column: tran.FieldUserID,
+			Column: tran.FieldToAccountID,
 		})
-		_node.UserID = value
+		_node.ToAccountID = value
 	}
-	if value, ok := tc.mutation.CoinTypeID(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUUID,
-			Value:  value,
-			Column: tran.FieldCoinTypeID,
-		})
-		_node.CoinTypeID = value
-	}
-	if value, ok := tc.mutation.Incoming(); ok {
+	if value, ok := tc.mutation.Amount(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeOther,
 			Value:  value,
-			Column: tran.FieldIncoming,
+			Column: tran.FieldAmount,
 		})
-		_node.Incoming = value
+		_node.Amount = value
 	}
-	if value, ok := tc.mutation.Locked(); ok {
+	if value, ok := tc.mutation.FeeAmount(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeOther,
 			Value:  value,
-			Column: tran.FieldLocked,
+			Column: tran.FieldFeeAmount,
 		})
-		_node.Locked = value
+		_node.FeeAmount = value
 	}
-	if value, ok := tc.mutation.Outcoming(); ok {
+	if value, ok := tc.mutation.ChainTxID(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeOther,
+			Type:   field.TypeString,
 			Value:  value,
-			Column: tran.FieldOutcoming,
+			Column: tran.FieldChainTxID,
 		})
-		_node.Outcoming = value
+		_node.ChainTxID = value
 	}
-	if value, ok := tc.mutation.Spendable(); ok {
+	if value, ok := tc.mutation.State(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeOther,
+			Type:   field.TypeString,
 			Value:  value,
-			Column: tran.FieldSpendable,
+			Column: tran.FieldState,
 		})
-		_node.Spendable = value
+		_node.State = value
+	}
+	if value, ok := tc.mutation.Extra(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: tran.FieldExtra,
+		})
+		_node.Extra = value
 	}
 	return _node, _spec
 }
@@ -561,129 +558,129 @@ func (u *TranUpsert) AddDeletedAt(v uint32) *TranUpsert {
 	return u
 }
 
-// SetAppID sets the "app_id" field.
-func (u *TranUpsert) SetAppID(v uuid.UUID) *TranUpsert {
-	u.Set(tran.FieldAppID, v)
+// SetFromAccountID sets the "from_account_id" field.
+func (u *TranUpsert) SetFromAccountID(v uuid.UUID) *TranUpsert {
+	u.Set(tran.FieldFromAccountID, v)
 	return u
 }
 
-// UpdateAppID sets the "app_id" field to the value that was provided on create.
-func (u *TranUpsert) UpdateAppID() *TranUpsert {
-	u.SetExcluded(tran.FieldAppID)
+// UpdateFromAccountID sets the "from_account_id" field to the value that was provided on create.
+func (u *TranUpsert) UpdateFromAccountID() *TranUpsert {
+	u.SetExcluded(tran.FieldFromAccountID)
 	return u
 }
 
-// ClearAppID clears the value of the "app_id" field.
-func (u *TranUpsert) ClearAppID() *TranUpsert {
-	u.SetNull(tran.FieldAppID)
+// ClearFromAccountID clears the value of the "from_account_id" field.
+func (u *TranUpsert) ClearFromAccountID() *TranUpsert {
+	u.SetNull(tran.FieldFromAccountID)
 	return u
 }
 
-// SetUserID sets the "user_id" field.
-func (u *TranUpsert) SetUserID(v uuid.UUID) *TranUpsert {
-	u.Set(tran.FieldUserID, v)
+// SetToAccountID sets the "to_account_id" field.
+func (u *TranUpsert) SetToAccountID(v uuid.UUID) *TranUpsert {
+	u.Set(tran.FieldToAccountID, v)
 	return u
 }
 
-// UpdateUserID sets the "user_id" field to the value that was provided on create.
-func (u *TranUpsert) UpdateUserID() *TranUpsert {
-	u.SetExcluded(tran.FieldUserID)
+// UpdateToAccountID sets the "to_account_id" field to the value that was provided on create.
+func (u *TranUpsert) UpdateToAccountID() *TranUpsert {
+	u.SetExcluded(tran.FieldToAccountID)
 	return u
 }
 
-// ClearUserID clears the value of the "user_id" field.
-func (u *TranUpsert) ClearUserID() *TranUpsert {
-	u.SetNull(tran.FieldUserID)
+// ClearToAccountID clears the value of the "to_account_id" field.
+func (u *TranUpsert) ClearToAccountID() *TranUpsert {
+	u.SetNull(tran.FieldToAccountID)
 	return u
 }
 
-// SetCoinTypeID sets the "coin_type_id" field.
-func (u *TranUpsert) SetCoinTypeID(v uuid.UUID) *TranUpsert {
-	u.Set(tran.FieldCoinTypeID, v)
+// SetAmount sets the "amount" field.
+func (u *TranUpsert) SetAmount(v decimal.Decimal) *TranUpsert {
+	u.Set(tran.FieldAmount, v)
 	return u
 }
 
-// UpdateCoinTypeID sets the "coin_type_id" field to the value that was provided on create.
-func (u *TranUpsert) UpdateCoinTypeID() *TranUpsert {
-	u.SetExcluded(tran.FieldCoinTypeID)
+// UpdateAmount sets the "amount" field to the value that was provided on create.
+func (u *TranUpsert) UpdateAmount() *TranUpsert {
+	u.SetExcluded(tran.FieldAmount)
 	return u
 }
 
-// ClearCoinTypeID clears the value of the "coin_type_id" field.
-func (u *TranUpsert) ClearCoinTypeID() *TranUpsert {
-	u.SetNull(tran.FieldCoinTypeID)
+// ClearAmount clears the value of the "amount" field.
+func (u *TranUpsert) ClearAmount() *TranUpsert {
+	u.SetNull(tran.FieldAmount)
 	return u
 }
 
-// SetIncoming sets the "incoming" field.
-func (u *TranUpsert) SetIncoming(v decimal.Decimal) *TranUpsert {
-	u.Set(tran.FieldIncoming, v)
+// SetFeeAmount sets the "fee_amount" field.
+func (u *TranUpsert) SetFeeAmount(v decimal.Decimal) *TranUpsert {
+	u.Set(tran.FieldFeeAmount, v)
 	return u
 }
 
-// UpdateIncoming sets the "incoming" field to the value that was provided on create.
-func (u *TranUpsert) UpdateIncoming() *TranUpsert {
-	u.SetExcluded(tran.FieldIncoming)
+// UpdateFeeAmount sets the "fee_amount" field to the value that was provided on create.
+func (u *TranUpsert) UpdateFeeAmount() *TranUpsert {
+	u.SetExcluded(tran.FieldFeeAmount)
 	return u
 }
 
-// ClearIncoming clears the value of the "incoming" field.
-func (u *TranUpsert) ClearIncoming() *TranUpsert {
-	u.SetNull(tran.FieldIncoming)
+// ClearFeeAmount clears the value of the "fee_amount" field.
+func (u *TranUpsert) ClearFeeAmount() *TranUpsert {
+	u.SetNull(tran.FieldFeeAmount)
 	return u
 }
 
-// SetLocked sets the "locked" field.
-func (u *TranUpsert) SetLocked(v decimal.Decimal) *TranUpsert {
-	u.Set(tran.FieldLocked, v)
+// SetChainTxID sets the "chain_tx_id" field.
+func (u *TranUpsert) SetChainTxID(v string) *TranUpsert {
+	u.Set(tran.FieldChainTxID, v)
 	return u
 }
 
-// UpdateLocked sets the "locked" field to the value that was provided on create.
-func (u *TranUpsert) UpdateLocked() *TranUpsert {
-	u.SetExcluded(tran.FieldLocked)
+// UpdateChainTxID sets the "chain_tx_id" field to the value that was provided on create.
+func (u *TranUpsert) UpdateChainTxID() *TranUpsert {
+	u.SetExcluded(tran.FieldChainTxID)
 	return u
 }
 
-// ClearLocked clears the value of the "locked" field.
-func (u *TranUpsert) ClearLocked() *TranUpsert {
-	u.SetNull(tran.FieldLocked)
+// ClearChainTxID clears the value of the "chain_tx_id" field.
+func (u *TranUpsert) ClearChainTxID() *TranUpsert {
+	u.SetNull(tran.FieldChainTxID)
 	return u
 }
 
-// SetOutcoming sets the "outcoming" field.
-func (u *TranUpsert) SetOutcoming(v decimal.Decimal) *TranUpsert {
-	u.Set(tran.FieldOutcoming, v)
+// SetState sets the "state" field.
+func (u *TranUpsert) SetState(v string) *TranUpsert {
+	u.Set(tran.FieldState, v)
 	return u
 }
 
-// UpdateOutcoming sets the "outcoming" field to the value that was provided on create.
-func (u *TranUpsert) UpdateOutcoming() *TranUpsert {
-	u.SetExcluded(tran.FieldOutcoming)
+// UpdateState sets the "state" field to the value that was provided on create.
+func (u *TranUpsert) UpdateState() *TranUpsert {
+	u.SetExcluded(tran.FieldState)
 	return u
 }
 
-// ClearOutcoming clears the value of the "outcoming" field.
-func (u *TranUpsert) ClearOutcoming() *TranUpsert {
-	u.SetNull(tran.FieldOutcoming)
+// ClearState clears the value of the "state" field.
+func (u *TranUpsert) ClearState() *TranUpsert {
+	u.SetNull(tran.FieldState)
 	return u
 }
 
-// SetSpendable sets the "spendable" field.
-func (u *TranUpsert) SetSpendable(v decimal.Decimal) *TranUpsert {
-	u.Set(tran.FieldSpendable, v)
+// SetExtra sets the "extra" field.
+func (u *TranUpsert) SetExtra(v string) *TranUpsert {
+	u.Set(tran.FieldExtra, v)
 	return u
 }
 
-// UpdateSpendable sets the "spendable" field to the value that was provided on create.
-func (u *TranUpsert) UpdateSpendable() *TranUpsert {
-	u.SetExcluded(tran.FieldSpendable)
+// UpdateExtra sets the "extra" field to the value that was provided on create.
+func (u *TranUpsert) UpdateExtra() *TranUpsert {
+	u.SetExcluded(tran.FieldExtra)
 	return u
 }
 
-// ClearSpendable clears the value of the "spendable" field.
-func (u *TranUpsert) ClearSpendable() *TranUpsert {
-	u.SetNull(tran.FieldSpendable)
+// ClearExtra clears the value of the "extra" field.
+func (u *TranUpsert) ClearExtra() *TranUpsert {
+	u.SetNull(tran.FieldExtra)
 	return u
 }
 
@@ -800,150 +797,150 @@ func (u *TranUpsertOne) UpdateDeletedAt() *TranUpsertOne {
 	})
 }
 
-// SetAppID sets the "app_id" field.
-func (u *TranUpsertOne) SetAppID(v uuid.UUID) *TranUpsertOne {
+// SetFromAccountID sets the "from_account_id" field.
+func (u *TranUpsertOne) SetFromAccountID(v uuid.UUID) *TranUpsertOne {
 	return u.Update(func(s *TranUpsert) {
-		s.SetAppID(v)
+		s.SetFromAccountID(v)
 	})
 }
 
-// UpdateAppID sets the "app_id" field to the value that was provided on create.
-func (u *TranUpsertOne) UpdateAppID() *TranUpsertOne {
+// UpdateFromAccountID sets the "from_account_id" field to the value that was provided on create.
+func (u *TranUpsertOne) UpdateFromAccountID() *TranUpsertOne {
 	return u.Update(func(s *TranUpsert) {
-		s.UpdateAppID()
+		s.UpdateFromAccountID()
 	})
 }
 
-// ClearAppID clears the value of the "app_id" field.
-func (u *TranUpsertOne) ClearAppID() *TranUpsertOne {
+// ClearFromAccountID clears the value of the "from_account_id" field.
+func (u *TranUpsertOne) ClearFromAccountID() *TranUpsertOne {
 	return u.Update(func(s *TranUpsert) {
-		s.ClearAppID()
+		s.ClearFromAccountID()
 	})
 }
 
-// SetUserID sets the "user_id" field.
-func (u *TranUpsertOne) SetUserID(v uuid.UUID) *TranUpsertOne {
+// SetToAccountID sets the "to_account_id" field.
+func (u *TranUpsertOne) SetToAccountID(v uuid.UUID) *TranUpsertOne {
 	return u.Update(func(s *TranUpsert) {
-		s.SetUserID(v)
+		s.SetToAccountID(v)
 	})
 }
 
-// UpdateUserID sets the "user_id" field to the value that was provided on create.
-func (u *TranUpsertOne) UpdateUserID() *TranUpsertOne {
+// UpdateToAccountID sets the "to_account_id" field to the value that was provided on create.
+func (u *TranUpsertOne) UpdateToAccountID() *TranUpsertOne {
 	return u.Update(func(s *TranUpsert) {
-		s.UpdateUserID()
+		s.UpdateToAccountID()
 	})
 }
 
-// ClearUserID clears the value of the "user_id" field.
-func (u *TranUpsertOne) ClearUserID() *TranUpsertOne {
+// ClearToAccountID clears the value of the "to_account_id" field.
+func (u *TranUpsertOne) ClearToAccountID() *TranUpsertOne {
 	return u.Update(func(s *TranUpsert) {
-		s.ClearUserID()
+		s.ClearToAccountID()
 	})
 }
 
-// SetCoinTypeID sets the "coin_type_id" field.
-func (u *TranUpsertOne) SetCoinTypeID(v uuid.UUID) *TranUpsertOne {
+// SetAmount sets the "amount" field.
+func (u *TranUpsertOne) SetAmount(v decimal.Decimal) *TranUpsertOne {
 	return u.Update(func(s *TranUpsert) {
-		s.SetCoinTypeID(v)
+		s.SetAmount(v)
 	})
 }
 
-// UpdateCoinTypeID sets the "coin_type_id" field to the value that was provided on create.
-func (u *TranUpsertOne) UpdateCoinTypeID() *TranUpsertOne {
+// UpdateAmount sets the "amount" field to the value that was provided on create.
+func (u *TranUpsertOne) UpdateAmount() *TranUpsertOne {
 	return u.Update(func(s *TranUpsert) {
-		s.UpdateCoinTypeID()
+		s.UpdateAmount()
 	})
 }
 
-// ClearCoinTypeID clears the value of the "coin_type_id" field.
-func (u *TranUpsertOne) ClearCoinTypeID() *TranUpsertOne {
+// ClearAmount clears the value of the "amount" field.
+func (u *TranUpsertOne) ClearAmount() *TranUpsertOne {
 	return u.Update(func(s *TranUpsert) {
-		s.ClearCoinTypeID()
+		s.ClearAmount()
 	})
 }
 
-// SetIncoming sets the "incoming" field.
-func (u *TranUpsertOne) SetIncoming(v decimal.Decimal) *TranUpsertOne {
+// SetFeeAmount sets the "fee_amount" field.
+func (u *TranUpsertOne) SetFeeAmount(v decimal.Decimal) *TranUpsertOne {
 	return u.Update(func(s *TranUpsert) {
-		s.SetIncoming(v)
+		s.SetFeeAmount(v)
 	})
 }
 
-// UpdateIncoming sets the "incoming" field to the value that was provided on create.
-func (u *TranUpsertOne) UpdateIncoming() *TranUpsertOne {
+// UpdateFeeAmount sets the "fee_amount" field to the value that was provided on create.
+func (u *TranUpsertOne) UpdateFeeAmount() *TranUpsertOne {
 	return u.Update(func(s *TranUpsert) {
-		s.UpdateIncoming()
+		s.UpdateFeeAmount()
 	})
 }
 
-// ClearIncoming clears the value of the "incoming" field.
-func (u *TranUpsertOne) ClearIncoming() *TranUpsertOne {
+// ClearFeeAmount clears the value of the "fee_amount" field.
+func (u *TranUpsertOne) ClearFeeAmount() *TranUpsertOne {
 	return u.Update(func(s *TranUpsert) {
-		s.ClearIncoming()
+		s.ClearFeeAmount()
 	})
 }
 
-// SetLocked sets the "locked" field.
-func (u *TranUpsertOne) SetLocked(v decimal.Decimal) *TranUpsertOne {
+// SetChainTxID sets the "chain_tx_id" field.
+func (u *TranUpsertOne) SetChainTxID(v string) *TranUpsertOne {
 	return u.Update(func(s *TranUpsert) {
-		s.SetLocked(v)
+		s.SetChainTxID(v)
 	})
 }
 
-// UpdateLocked sets the "locked" field to the value that was provided on create.
-func (u *TranUpsertOne) UpdateLocked() *TranUpsertOne {
+// UpdateChainTxID sets the "chain_tx_id" field to the value that was provided on create.
+func (u *TranUpsertOne) UpdateChainTxID() *TranUpsertOne {
 	return u.Update(func(s *TranUpsert) {
-		s.UpdateLocked()
+		s.UpdateChainTxID()
 	})
 }
 
-// ClearLocked clears the value of the "locked" field.
-func (u *TranUpsertOne) ClearLocked() *TranUpsertOne {
+// ClearChainTxID clears the value of the "chain_tx_id" field.
+func (u *TranUpsertOne) ClearChainTxID() *TranUpsertOne {
 	return u.Update(func(s *TranUpsert) {
-		s.ClearLocked()
+		s.ClearChainTxID()
 	})
 }
 
-// SetOutcoming sets the "outcoming" field.
-func (u *TranUpsertOne) SetOutcoming(v decimal.Decimal) *TranUpsertOne {
+// SetState sets the "state" field.
+func (u *TranUpsertOne) SetState(v string) *TranUpsertOne {
 	return u.Update(func(s *TranUpsert) {
-		s.SetOutcoming(v)
+		s.SetState(v)
 	})
 }
 
-// UpdateOutcoming sets the "outcoming" field to the value that was provided on create.
-func (u *TranUpsertOne) UpdateOutcoming() *TranUpsertOne {
+// UpdateState sets the "state" field to the value that was provided on create.
+func (u *TranUpsertOne) UpdateState() *TranUpsertOne {
 	return u.Update(func(s *TranUpsert) {
-		s.UpdateOutcoming()
+		s.UpdateState()
 	})
 }
 
-// ClearOutcoming clears the value of the "outcoming" field.
-func (u *TranUpsertOne) ClearOutcoming() *TranUpsertOne {
+// ClearState clears the value of the "state" field.
+func (u *TranUpsertOne) ClearState() *TranUpsertOne {
 	return u.Update(func(s *TranUpsert) {
-		s.ClearOutcoming()
+		s.ClearState()
 	})
 }
 
-// SetSpendable sets the "spendable" field.
-func (u *TranUpsertOne) SetSpendable(v decimal.Decimal) *TranUpsertOne {
+// SetExtra sets the "extra" field.
+func (u *TranUpsertOne) SetExtra(v string) *TranUpsertOne {
 	return u.Update(func(s *TranUpsert) {
-		s.SetSpendable(v)
+		s.SetExtra(v)
 	})
 }
 
-// UpdateSpendable sets the "spendable" field to the value that was provided on create.
-func (u *TranUpsertOne) UpdateSpendable() *TranUpsertOne {
+// UpdateExtra sets the "extra" field to the value that was provided on create.
+func (u *TranUpsertOne) UpdateExtra() *TranUpsertOne {
 	return u.Update(func(s *TranUpsert) {
-		s.UpdateSpendable()
+		s.UpdateExtra()
 	})
 }
 
-// ClearSpendable clears the value of the "spendable" field.
-func (u *TranUpsertOne) ClearSpendable() *TranUpsertOne {
+// ClearExtra clears the value of the "extra" field.
+func (u *TranUpsertOne) ClearExtra() *TranUpsertOne {
 	return u.Update(func(s *TranUpsert) {
-		s.ClearSpendable()
+		s.ClearExtra()
 	})
 }
 
@@ -1226,150 +1223,150 @@ func (u *TranUpsertBulk) UpdateDeletedAt() *TranUpsertBulk {
 	})
 }
 
-// SetAppID sets the "app_id" field.
-func (u *TranUpsertBulk) SetAppID(v uuid.UUID) *TranUpsertBulk {
+// SetFromAccountID sets the "from_account_id" field.
+func (u *TranUpsertBulk) SetFromAccountID(v uuid.UUID) *TranUpsertBulk {
 	return u.Update(func(s *TranUpsert) {
-		s.SetAppID(v)
+		s.SetFromAccountID(v)
 	})
 }
 
-// UpdateAppID sets the "app_id" field to the value that was provided on create.
-func (u *TranUpsertBulk) UpdateAppID() *TranUpsertBulk {
+// UpdateFromAccountID sets the "from_account_id" field to the value that was provided on create.
+func (u *TranUpsertBulk) UpdateFromAccountID() *TranUpsertBulk {
 	return u.Update(func(s *TranUpsert) {
-		s.UpdateAppID()
+		s.UpdateFromAccountID()
 	})
 }
 
-// ClearAppID clears the value of the "app_id" field.
-func (u *TranUpsertBulk) ClearAppID() *TranUpsertBulk {
+// ClearFromAccountID clears the value of the "from_account_id" field.
+func (u *TranUpsertBulk) ClearFromAccountID() *TranUpsertBulk {
 	return u.Update(func(s *TranUpsert) {
-		s.ClearAppID()
+		s.ClearFromAccountID()
 	})
 }
 
-// SetUserID sets the "user_id" field.
-func (u *TranUpsertBulk) SetUserID(v uuid.UUID) *TranUpsertBulk {
+// SetToAccountID sets the "to_account_id" field.
+func (u *TranUpsertBulk) SetToAccountID(v uuid.UUID) *TranUpsertBulk {
 	return u.Update(func(s *TranUpsert) {
-		s.SetUserID(v)
+		s.SetToAccountID(v)
 	})
 }
 
-// UpdateUserID sets the "user_id" field to the value that was provided on create.
-func (u *TranUpsertBulk) UpdateUserID() *TranUpsertBulk {
+// UpdateToAccountID sets the "to_account_id" field to the value that was provided on create.
+func (u *TranUpsertBulk) UpdateToAccountID() *TranUpsertBulk {
 	return u.Update(func(s *TranUpsert) {
-		s.UpdateUserID()
+		s.UpdateToAccountID()
 	})
 }
 
-// ClearUserID clears the value of the "user_id" field.
-func (u *TranUpsertBulk) ClearUserID() *TranUpsertBulk {
+// ClearToAccountID clears the value of the "to_account_id" field.
+func (u *TranUpsertBulk) ClearToAccountID() *TranUpsertBulk {
 	return u.Update(func(s *TranUpsert) {
-		s.ClearUserID()
+		s.ClearToAccountID()
 	})
 }
 
-// SetCoinTypeID sets the "coin_type_id" field.
-func (u *TranUpsertBulk) SetCoinTypeID(v uuid.UUID) *TranUpsertBulk {
+// SetAmount sets the "amount" field.
+func (u *TranUpsertBulk) SetAmount(v decimal.Decimal) *TranUpsertBulk {
 	return u.Update(func(s *TranUpsert) {
-		s.SetCoinTypeID(v)
+		s.SetAmount(v)
 	})
 }
 
-// UpdateCoinTypeID sets the "coin_type_id" field to the value that was provided on create.
-func (u *TranUpsertBulk) UpdateCoinTypeID() *TranUpsertBulk {
+// UpdateAmount sets the "amount" field to the value that was provided on create.
+func (u *TranUpsertBulk) UpdateAmount() *TranUpsertBulk {
 	return u.Update(func(s *TranUpsert) {
-		s.UpdateCoinTypeID()
+		s.UpdateAmount()
 	})
 }
 
-// ClearCoinTypeID clears the value of the "coin_type_id" field.
-func (u *TranUpsertBulk) ClearCoinTypeID() *TranUpsertBulk {
+// ClearAmount clears the value of the "amount" field.
+func (u *TranUpsertBulk) ClearAmount() *TranUpsertBulk {
 	return u.Update(func(s *TranUpsert) {
-		s.ClearCoinTypeID()
+		s.ClearAmount()
 	})
 }
 
-// SetIncoming sets the "incoming" field.
-func (u *TranUpsertBulk) SetIncoming(v decimal.Decimal) *TranUpsertBulk {
+// SetFeeAmount sets the "fee_amount" field.
+func (u *TranUpsertBulk) SetFeeAmount(v decimal.Decimal) *TranUpsertBulk {
 	return u.Update(func(s *TranUpsert) {
-		s.SetIncoming(v)
+		s.SetFeeAmount(v)
 	})
 }
 
-// UpdateIncoming sets the "incoming" field to the value that was provided on create.
-func (u *TranUpsertBulk) UpdateIncoming() *TranUpsertBulk {
+// UpdateFeeAmount sets the "fee_amount" field to the value that was provided on create.
+func (u *TranUpsertBulk) UpdateFeeAmount() *TranUpsertBulk {
 	return u.Update(func(s *TranUpsert) {
-		s.UpdateIncoming()
+		s.UpdateFeeAmount()
 	})
 }
 
-// ClearIncoming clears the value of the "incoming" field.
-func (u *TranUpsertBulk) ClearIncoming() *TranUpsertBulk {
+// ClearFeeAmount clears the value of the "fee_amount" field.
+func (u *TranUpsertBulk) ClearFeeAmount() *TranUpsertBulk {
 	return u.Update(func(s *TranUpsert) {
-		s.ClearIncoming()
+		s.ClearFeeAmount()
 	})
 }
 
-// SetLocked sets the "locked" field.
-func (u *TranUpsertBulk) SetLocked(v decimal.Decimal) *TranUpsertBulk {
+// SetChainTxID sets the "chain_tx_id" field.
+func (u *TranUpsertBulk) SetChainTxID(v string) *TranUpsertBulk {
 	return u.Update(func(s *TranUpsert) {
-		s.SetLocked(v)
+		s.SetChainTxID(v)
 	})
 }
 
-// UpdateLocked sets the "locked" field to the value that was provided on create.
-func (u *TranUpsertBulk) UpdateLocked() *TranUpsertBulk {
+// UpdateChainTxID sets the "chain_tx_id" field to the value that was provided on create.
+func (u *TranUpsertBulk) UpdateChainTxID() *TranUpsertBulk {
 	return u.Update(func(s *TranUpsert) {
-		s.UpdateLocked()
+		s.UpdateChainTxID()
 	})
 }
 
-// ClearLocked clears the value of the "locked" field.
-func (u *TranUpsertBulk) ClearLocked() *TranUpsertBulk {
+// ClearChainTxID clears the value of the "chain_tx_id" field.
+func (u *TranUpsertBulk) ClearChainTxID() *TranUpsertBulk {
 	return u.Update(func(s *TranUpsert) {
-		s.ClearLocked()
+		s.ClearChainTxID()
 	})
 }
 
-// SetOutcoming sets the "outcoming" field.
-func (u *TranUpsertBulk) SetOutcoming(v decimal.Decimal) *TranUpsertBulk {
+// SetState sets the "state" field.
+func (u *TranUpsertBulk) SetState(v string) *TranUpsertBulk {
 	return u.Update(func(s *TranUpsert) {
-		s.SetOutcoming(v)
+		s.SetState(v)
 	})
 }
 
-// UpdateOutcoming sets the "outcoming" field to the value that was provided on create.
-func (u *TranUpsertBulk) UpdateOutcoming() *TranUpsertBulk {
+// UpdateState sets the "state" field to the value that was provided on create.
+func (u *TranUpsertBulk) UpdateState() *TranUpsertBulk {
 	return u.Update(func(s *TranUpsert) {
-		s.UpdateOutcoming()
+		s.UpdateState()
 	})
 }
 
-// ClearOutcoming clears the value of the "outcoming" field.
-func (u *TranUpsertBulk) ClearOutcoming() *TranUpsertBulk {
+// ClearState clears the value of the "state" field.
+func (u *TranUpsertBulk) ClearState() *TranUpsertBulk {
 	return u.Update(func(s *TranUpsert) {
-		s.ClearOutcoming()
+		s.ClearState()
 	})
 }
 
-// SetSpendable sets the "spendable" field.
-func (u *TranUpsertBulk) SetSpendable(v decimal.Decimal) *TranUpsertBulk {
+// SetExtra sets the "extra" field.
+func (u *TranUpsertBulk) SetExtra(v string) *TranUpsertBulk {
 	return u.Update(func(s *TranUpsert) {
-		s.SetSpendable(v)
+		s.SetExtra(v)
 	})
 }
 
-// UpdateSpendable sets the "spendable" field to the value that was provided on create.
-func (u *TranUpsertBulk) UpdateSpendable() *TranUpsertBulk {
+// UpdateExtra sets the "extra" field to the value that was provided on create.
+func (u *TranUpsertBulk) UpdateExtra() *TranUpsertBulk {
 	return u.Update(func(s *TranUpsert) {
-		s.UpdateSpendable()
+		s.UpdateExtra()
 	})
 }
 
-// ClearSpendable clears the value of the "spendable" field.
-func (u *TranUpsertBulk) ClearSpendable() *TranUpsertBulk {
+// ClearExtra clears the value of the "extra" field.
+func (u *TranUpsertBulk) ClearExtra() *TranUpsertBulk {
 	return u.Update(func(s *TranUpsert) {
-		s.ClearSpendable()
+		s.ClearExtra()
 	})
 }
 

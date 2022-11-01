@@ -37,10 +37,7 @@ func (s *Server) CreateTx(ctx context.Context, in *npool.CreateTxRequest) (*npoo
 
 	span = tracer.Trace(span, in.GetInfo())
 
-	err = validate(in.GetInfo())
-	if err != nil {
-		return &npool.CreateTxResponse{}, err
-	}
+	// TODO: verify input
 
 	span = commontracer.TraceInvoker(span, "tx", "crud", "Create")
 
@@ -72,10 +69,7 @@ func (s *Server) CreateTxs(ctx context.Context, in *npool.CreateTxsRequest) (*np
 		return &npool.CreateTxsResponse{}, status.Error(codes.InvalidArgument, "Infos is empty")
 	}
 
-	err = duplicate(in.GetInfos())
-	if err != nil {
-		return &npool.CreateTxsResponse{}, err
-	}
+	// TODO: verify infput
 
 	span = tracer.TraceMany(span, in.GetInfos())
 	span = commontracer.TraceInvoker(span, "tx", "crud", "CreateBulk")
