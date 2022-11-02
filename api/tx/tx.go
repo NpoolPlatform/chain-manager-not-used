@@ -85,6 +85,36 @@ func (s *Server) CreateTxs(ctx context.Context, in *npool.CreateTxsRequest) (*np
 	}, nil
 }
 
+func (s *Server) UpdateTx(ctx context.Context, in *npool.UpdateTxRequest) (*npool.UpdateTxResponse, error) {
+	var err error
+
+	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "UpdateTx")
+	defer span.End()
+
+	defer func() {
+		if err != nil {
+			span.SetStatus(scodes.Error, err.Error())
+			span.RecordError(err)
+		}
+	}()
+
+	span = tracer.Trace(span, in.GetInfo())
+
+	// TODO: verify input
+
+	span = commontracer.TraceInvoker(span, "tx", "crud", "Update")
+
+	info, err := crud.Update(ctx, in.GetInfo())
+	if err != nil {
+		logger.Sugar().Errorf("fail update tx: %v", err.Error())
+		return &npool.UpdateTxResponse{}, status.Error(codes.Internal, err.Error())
+	}
+
+	return &npool.UpdateTxResponse{
+		Info: converter.Ent2Grpc(info),
+	}, nil
+}
+
 func (s *Server) GetTx(ctx context.Context, in *npool.GetTxRequest) (*npool.GetTxResponse, error) {
 	var err error
 

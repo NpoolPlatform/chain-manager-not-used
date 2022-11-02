@@ -62,6 +62,19 @@ func createTx(t *testing.T) {
 	}
 }
 
+func updateTx(t *testing.T) {
+	state := npool.TxState_StateWait
+
+	tranReq.State = &state
+	tran.State = state
+
+	info, err := UpdateTx(context.Background(), tranReq)
+	if assert.Nil(t, err) {
+		tran.UpdatedAt = info.UpdatedAt
+		assert.Equal(t, tran, info)
+	}
+}
+
 func TestClient(t *testing.T) {
 	if runByGithubAction, err := strconv.ParseBool(os.Getenv("RUN_BY_GITHUB_ACTION")); err == nil && runByGithubAction {
 		return
@@ -74,8 +87,8 @@ func TestClient(t *testing.T) {
 	})
 
 	t.Run("createTx", createTx)
+	t.Run("updateTx", updateTx)
 	/*
-		t.Run("updateTx", updateTx)
 		t.Run("createTxs", createTxs)
 		t.Run("getTx", getTx)
 		t.Run("getTxs", getTxs)
