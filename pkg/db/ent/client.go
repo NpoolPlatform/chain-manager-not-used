@@ -12,6 +12,7 @@ import (
 	"github.com/google/uuid"
 
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/coinbase"
+	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/coinextra"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/tran"
 
 	"entgo.io/ent/dialect"
@@ -25,6 +26,8 @@ type Client struct {
 	Schema *migrate.Schema
 	// CoinBase is the client for interacting with the CoinBase builders.
 	CoinBase *CoinBaseClient
+	// CoinExtra is the client for interacting with the CoinExtra builders.
+	CoinExtra *CoinExtraClient
 	// Tran is the client for interacting with the Tran builders.
 	Tran *TranClient
 }
@@ -41,6 +44,7 @@ func NewClient(opts ...Option) *Client {
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
 	c.CoinBase = NewCoinBaseClient(c.config)
+	c.CoinExtra = NewCoinExtraClient(c.config)
 	c.Tran = NewTranClient(c.config)
 }
 
@@ -73,10 +77,11 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:      ctx,
-		config:   cfg,
-		CoinBase: NewCoinBaseClient(cfg),
-		Tran:     NewTranClient(cfg),
+		ctx:       ctx,
+		config:    cfg,
+		CoinBase:  NewCoinBaseClient(cfg),
+		CoinExtra: NewCoinExtraClient(cfg),
+		Tran:      NewTranClient(cfg),
 	}, nil
 }
 
@@ -94,10 +99,11 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:      ctx,
-		config:   cfg,
-		CoinBase: NewCoinBaseClient(cfg),
-		Tran:     NewTranClient(cfg),
+		ctx:       ctx,
+		config:    cfg,
+		CoinBase:  NewCoinBaseClient(cfg),
+		CoinExtra: NewCoinExtraClient(cfg),
+		Tran:      NewTranClient(cfg),
 	}, nil
 }
 
@@ -128,6 +134,7 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	c.CoinBase.Use(hooks...)
+	c.CoinExtra.Use(hooks...)
 	c.Tran.Use(hooks...)
 }
 
@@ -220,6 +227,97 @@ func (c *CoinBaseClient) GetX(ctx context.Context, id uuid.UUID) *CoinBase {
 func (c *CoinBaseClient) Hooks() []Hook {
 	hooks := c.hooks.CoinBase
 	return append(hooks[:len(hooks):len(hooks)], coinbase.Hooks[:]...)
+}
+
+// CoinExtraClient is a client for the CoinExtra schema.
+type CoinExtraClient struct {
+	config
+}
+
+// NewCoinExtraClient returns a client for the CoinExtra from the given config.
+func NewCoinExtraClient(c config) *CoinExtraClient {
+	return &CoinExtraClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `coinextra.Hooks(f(g(h())))`.
+func (c *CoinExtraClient) Use(hooks ...Hook) {
+	c.hooks.CoinExtra = append(c.hooks.CoinExtra, hooks...)
+}
+
+// Create returns a builder for creating a CoinExtra entity.
+func (c *CoinExtraClient) Create() *CoinExtraCreate {
+	mutation := newCoinExtraMutation(c.config, OpCreate)
+	return &CoinExtraCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of CoinExtra entities.
+func (c *CoinExtraClient) CreateBulk(builders ...*CoinExtraCreate) *CoinExtraCreateBulk {
+	return &CoinExtraCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for CoinExtra.
+func (c *CoinExtraClient) Update() *CoinExtraUpdate {
+	mutation := newCoinExtraMutation(c.config, OpUpdate)
+	return &CoinExtraUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *CoinExtraClient) UpdateOne(ce *CoinExtra) *CoinExtraUpdateOne {
+	mutation := newCoinExtraMutation(c.config, OpUpdateOne, withCoinExtra(ce))
+	return &CoinExtraUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *CoinExtraClient) UpdateOneID(id uuid.UUID) *CoinExtraUpdateOne {
+	mutation := newCoinExtraMutation(c.config, OpUpdateOne, withCoinExtraID(id))
+	return &CoinExtraUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for CoinExtra.
+func (c *CoinExtraClient) Delete() *CoinExtraDelete {
+	mutation := newCoinExtraMutation(c.config, OpDelete)
+	return &CoinExtraDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *CoinExtraClient) DeleteOne(ce *CoinExtra) *CoinExtraDeleteOne {
+	return c.DeleteOneID(ce.ID)
+}
+
+// DeleteOne returns a builder for deleting the given entity by its id.
+func (c *CoinExtraClient) DeleteOneID(id uuid.UUID) *CoinExtraDeleteOne {
+	builder := c.Delete().Where(coinextra.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &CoinExtraDeleteOne{builder}
+}
+
+// Query returns a query builder for CoinExtra.
+func (c *CoinExtraClient) Query() *CoinExtraQuery {
+	return &CoinExtraQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a CoinExtra entity by its id.
+func (c *CoinExtraClient) Get(ctx context.Context, id uuid.UUID) (*CoinExtra, error) {
+	return c.Query().Where(coinextra.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *CoinExtraClient) GetX(ctx context.Context, id uuid.UUID) *CoinExtra {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *CoinExtraClient) Hooks() []Hook {
+	hooks := c.hooks.CoinExtra
+	return append(hooks[:len(hooks):len(hooks)], coinextra.Hooks[:]...)
 }
 
 // TranClient is a client for the Tran schema.

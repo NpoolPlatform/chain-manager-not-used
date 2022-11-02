@@ -28,6 +28,21 @@ var (
 		Columns:    CoinBasesColumns,
 		PrimaryKey: []*schema.Column{CoinBasesColumns[0]},
 	}
+	// CoinExtrasColumns holds the columns for the "coin_extras" table.
+	CoinExtrasColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID, Unique: true},
+		{Name: "created_at", Type: field.TypeUint32},
+		{Name: "updated_at", Type: field.TypeUint32},
+		{Name: "deleted_at", Type: field.TypeUint32},
+		{Name: "coin_type_id", Type: field.TypeUUID, Nullable: true},
+		{Name: "home_page", Type: field.TypeString, Nullable: true, Default: ""},
+	}
+	// CoinExtrasTable holds the schema information for the "coin_extras" table.
+	CoinExtrasTable = &schema.Table{
+		Name:       "coin_extras",
+		Columns:    CoinExtrasColumns,
+		PrimaryKey: []*schema.Column{CoinExtrasColumns[0]},
+	}
 	// TransColumns holds the columns for the "trans" table.
 	TransColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID, Unique: true},
@@ -51,6 +66,7 @@ var (
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
 		CoinBasesTable,
+		CoinExtrasTable,
 		TransTable,
 	}
 )

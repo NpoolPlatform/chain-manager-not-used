@@ -9,5 +9,8 @@ import (
 // CoinBase is the predicate function for coinbase builders.
 type CoinBase func(*sql.Selector)
 
+// CoinExtra is the predicate function for coinextra builders.
+type CoinExtra func(*sql.Selector)
+
 // Tran is the predicate function for tran builders.
 type Tran func(*sql.Selector)

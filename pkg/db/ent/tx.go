@@ -16,6 +16,8 @@ type Tx struct {
 	config
 	// CoinBase is the client for interacting with the CoinBase builders.
 	CoinBase *CoinBaseClient
+	// CoinExtra is the client for interacting with the CoinExtra builders.
+	CoinExtra *CoinExtraClient
 	// Tran is the client for interacting with the Tran builders.
 	Tran *TranClient
 
@@ -154,6 +156,7 @@ func (tx *Tx) Client() *Client {
 
 func (tx *Tx) init() {
 	tx.CoinBase = NewCoinBaseClient(tx.config)
+	tx.CoinExtra = NewCoinExtraClient(tx.config)
 	tx.Tran = NewTranClient(tx.config)
 }
 

@@ -6,6 +6,7 @@ import (
 	"context"
 
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/coinbase"
+	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/coinextra"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/schema"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/tran"
 	"github.com/google/uuid"
@@ -79,6 +80,46 @@ func init() {
 	coinbaseDescID := coinbaseFields[0].Descriptor()
 	// coinbase.DefaultID holds the default value on creation for the id field.
 	coinbase.DefaultID = coinbaseDescID.Default.(func() uuid.UUID)
+	coinextraMixin := schema.CoinExtra{}.Mixin()
+	coinextra.Policy = privacy.NewPolicies(coinextraMixin[0], schema.CoinExtra{})
+	coinextra.Hooks[0] = func(next ent.Mutator) ent.Mutator {
+		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+			if err := coinextra.Policy.EvalMutation(ctx, m); err != nil {
+				return nil, err
+			}
+			return next.Mutate(ctx, m)
+		})
+	}
+	coinextraMixinFields0 := coinextraMixin[0].Fields()
+	_ = coinextraMixinFields0
+	coinextraFields := schema.CoinExtra{}.Fields()
+	_ = coinextraFields
+	// coinextraDescCreatedAt is the schema descriptor for created_at field.
+	coinextraDescCreatedAt := coinextraMixinFields0[0].Descriptor()
+	// coinextra.DefaultCreatedAt holds the default value on creation for the created_at field.
+	coinextra.DefaultCreatedAt = coinextraDescCreatedAt.Default.(func() uint32)
+	// coinextraDescUpdatedAt is the schema descriptor for updated_at field.
+	coinextraDescUpdatedAt := coinextraMixinFields0[1].Descriptor()
+	// coinextra.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	coinextra.DefaultUpdatedAt = coinextraDescUpdatedAt.Default.(func() uint32)
+	// coinextra.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	coinextra.UpdateDefaultUpdatedAt = coinextraDescUpdatedAt.UpdateDefault.(func() uint32)
+	// coinextraDescDeletedAt is the schema descriptor for deleted_at field.
+	coinextraDescDeletedAt := coinextraMixinFields0[2].Descriptor()
+	// coinextra.DefaultDeletedAt holds the default value on creation for the deleted_at field.
+	coinextra.DefaultDeletedAt = coinextraDescDeletedAt.Default.(func() uint32)
+	// coinextraDescCoinTypeID is the schema descriptor for coin_type_id field.
+	coinextraDescCoinTypeID := coinextraFields[1].Descriptor()
+	// coinextra.DefaultCoinTypeID holds the default value on creation for the coin_type_id field.
+	coinextra.DefaultCoinTypeID = coinextraDescCoinTypeID.Default.(func() uuid.UUID)
+	// coinextraDescHomePage is the schema descriptor for home_page field.
+	coinextraDescHomePage := coinextraFields[2].Descriptor()
+	// coinextra.DefaultHomePage holds the default value on creation for the home_page field.
+	coinextra.DefaultHomePage = coinextraDescHomePage.Default.(string)
+	// coinextraDescID is the schema descriptor for id field.
+	coinextraDescID := coinextraFields[0].Descriptor()
+	// coinextra.DefaultID holds the default value on creation for the id field.
+	coinextra.DefaultID = coinextraDescID.Default.(func() uuid.UUID)
 	tranMixin := schema.Tran{}.Mixin()
 	tran.Policy = privacy.NewPolicies(tranMixin[0], schema.Tran{})
 	tran.Hooks[0] = func(next ent.Mutator) ent.Mutator {
