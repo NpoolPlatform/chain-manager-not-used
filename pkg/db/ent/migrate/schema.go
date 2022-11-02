@@ -8,6 +8,25 @@ import (
 )
 
 var (
+	// AppCoinsColumns holds the columns for the "app_coins" table.
+	AppCoinsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID, Unique: true},
+		{Name: "created_at", Type: field.TypeUint32},
+		{Name: "updated_at", Type: field.TypeUint32},
+		{Name: "deleted_at", Type: field.TypeUint32},
+		{Name: "app_id", Type: field.TypeUUID, Nullable: true},
+		{Name: "coin_type_id", Type: field.TypeUUID, Nullable: true},
+		{Name: "name", Type: field.TypeString, Nullable: true, Default: ""},
+		{Name: "logo", Type: field.TypeString, Nullable: true, Default: ""},
+		{Name: "for_pay", Type: field.TypeBool, Nullable: true, Default: false},
+		{Name: "withdraw_auto_review_amount", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
+	}
+	// AppCoinsTable holds the schema information for the "app_coins" table.
+	AppCoinsTable = &schema.Table{
+		Name:       "app_coins",
+		Columns:    AppCoinsColumns,
+		PrimaryKey: []*schema.Column{AppCoinsColumns[0]},
+	}
 	// CoinBasesColumns holds the columns for the "coin_bases" table.
 	CoinBasesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID, Unique: true},
@@ -65,6 +84,7 @@ var (
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
+		AppCoinsTable,
 		CoinBasesTable,
 		CoinExtrasTable,
 		TransTable,

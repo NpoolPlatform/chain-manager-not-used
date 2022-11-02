@@ -5,6 +5,7 @@ package runtime
 import (
 	"context"
 
+	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/appcoin"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/coinbase"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/coinextra"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/schema"
@@ -20,6 +21,62 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	appcoinMixin := schema.AppCoin{}.Mixin()
+	appcoin.Policy = privacy.NewPolicies(appcoinMixin[0], schema.AppCoin{})
+	appcoin.Hooks[0] = func(next ent.Mutator) ent.Mutator {
+		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+			if err := appcoin.Policy.EvalMutation(ctx, m); err != nil {
+				return nil, err
+			}
+			return next.Mutate(ctx, m)
+		})
+	}
+	appcoinMixinFields0 := appcoinMixin[0].Fields()
+	_ = appcoinMixinFields0
+	appcoinFields := schema.AppCoin{}.Fields()
+	_ = appcoinFields
+	// appcoinDescCreatedAt is the schema descriptor for created_at field.
+	appcoinDescCreatedAt := appcoinMixinFields0[0].Descriptor()
+	// appcoin.DefaultCreatedAt holds the default value on creation for the created_at field.
+	appcoin.DefaultCreatedAt = appcoinDescCreatedAt.Default.(func() uint32)
+	// appcoinDescUpdatedAt is the schema descriptor for updated_at field.
+	appcoinDescUpdatedAt := appcoinMixinFields0[1].Descriptor()
+	// appcoin.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	appcoin.DefaultUpdatedAt = appcoinDescUpdatedAt.Default.(func() uint32)
+	// appcoin.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	appcoin.UpdateDefaultUpdatedAt = appcoinDescUpdatedAt.UpdateDefault.(func() uint32)
+	// appcoinDescDeletedAt is the schema descriptor for deleted_at field.
+	appcoinDescDeletedAt := appcoinMixinFields0[2].Descriptor()
+	// appcoin.DefaultDeletedAt holds the default value on creation for the deleted_at field.
+	appcoin.DefaultDeletedAt = appcoinDescDeletedAt.Default.(func() uint32)
+	// appcoinDescAppID is the schema descriptor for app_id field.
+	appcoinDescAppID := appcoinFields[1].Descriptor()
+	// appcoin.DefaultAppID holds the default value on creation for the app_id field.
+	appcoin.DefaultAppID = appcoinDescAppID.Default.(func() uuid.UUID)
+	// appcoinDescCoinTypeID is the schema descriptor for coin_type_id field.
+	appcoinDescCoinTypeID := appcoinFields[2].Descriptor()
+	// appcoin.DefaultCoinTypeID holds the default value on creation for the coin_type_id field.
+	appcoin.DefaultCoinTypeID = appcoinDescCoinTypeID.Default.(func() uuid.UUID)
+	// appcoinDescName is the schema descriptor for name field.
+	appcoinDescName := appcoinFields[3].Descriptor()
+	// appcoin.DefaultName holds the default value on creation for the name field.
+	appcoin.DefaultName = appcoinDescName.Default.(string)
+	// appcoinDescLogo is the schema descriptor for logo field.
+	appcoinDescLogo := appcoinFields[4].Descriptor()
+	// appcoin.DefaultLogo holds the default value on creation for the logo field.
+	appcoin.DefaultLogo = appcoinDescLogo.Default.(string)
+	// appcoinDescForPay is the schema descriptor for for_pay field.
+	appcoinDescForPay := appcoinFields[5].Descriptor()
+	// appcoin.DefaultForPay holds the default value on creation for the for_pay field.
+	appcoin.DefaultForPay = appcoinDescForPay.Default.(bool)
+	// appcoinDescWithdrawAutoReviewAmount is the schema descriptor for withdraw_auto_review_amount field.
+	appcoinDescWithdrawAutoReviewAmount := appcoinFields[6].Descriptor()
+	// appcoin.DefaultWithdrawAutoReviewAmount holds the default value on creation for the withdraw_auto_review_amount field.
+	appcoin.DefaultWithdrawAutoReviewAmount = appcoinDescWithdrawAutoReviewAmount.Default.(decimal.Decimal)
+	// appcoinDescID is the schema descriptor for id field.
+	appcoinDescID := appcoinFields[0].Descriptor()
+	// appcoin.DefaultID holds the default value on creation for the id field.
+	appcoin.DefaultID = appcoinDescID.Default.(func() uuid.UUID)
 	coinbaseMixin := schema.CoinBase{}.Mixin()
 	coinbase.Policy = privacy.NewPolicies(coinbaseMixin[0], schema.CoinBase{})
 	coinbase.Hooks[0] = func(next ent.Mutator) ent.Mutator {

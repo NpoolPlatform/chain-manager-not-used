@@ -11,6 +11,7 @@ import (
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/migrate"
 	"github.com/google/uuid"
 
+	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/appcoin"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/coinbase"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/coinextra"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/tran"
@@ -24,6 +25,8 @@ type Client struct {
 	config
 	// Schema is the client for creating, migrating and dropping schema.
 	Schema *migrate.Schema
+	// AppCoin is the client for interacting with the AppCoin builders.
+	AppCoin *AppCoinClient
 	// CoinBase is the client for interacting with the CoinBase builders.
 	CoinBase *CoinBaseClient
 	// CoinExtra is the client for interacting with the CoinExtra builders.
@@ -43,6 +46,7 @@ func NewClient(opts ...Option) *Client {
 
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
+	c.AppCoin = NewAppCoinClient(c.config)
 	c.CoinBase = NewCoinBaseClient(c.config)
 	c.CoinExtra = NewCoinExtraClient(c.config)
 	c.Tran = NewTranClient(c.config)
@@ -79,6 +83,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	return &Tx{
 		ctx:       ctx,
 		config:    cfg,
+		AppCoin:   NewAppCoinClient(cfg),
 		CoinBase:  NewCoinBaseClient(cfg),
 		CoinExtra: NewCoinExtraClient(cfg),
 		Tran:      NewTranClient(cfg),
@@ -101,6 +106,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	return &Tx{
 		ctx:       ctx,
 		config:    cfg,
+		AppCoin:   NewAppCoinClient(cfg),
 		CoinBase:  NewCoinBaseClient(cfg),
 		CoinExtra: NewCoinExtraClient(cfg),
 		Tran:      NewTranClient(cfg),
@@ -110,7 +116,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 // Debug returns a new debug-client. It's used to get verbose logging on specific operations.
 //
 //	client.Debug().
-//		CoinBase.
+//		AppCoin.
 //		Query().
 //		Count(ctx)
 //
@@ -133,9 +139,101 @@ func (c *Client) Close() error {
 // Use adds the mutation hooks to all the entity clients.
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
+	c.AppCoin.Use(hooks...)
 	c.CoinBase.Use(hooks...)
 	c.CoinExtra.Use(hooks...)
 	c.Tran.Use(hooks...)
+}
+
+// AppCoinClient is a client for the AppCoin schema.
+type AppCoinClient struct {
+	config
+}
+
+// NewAppCoinClient returns a client for the AppCoin from the given config.
+func NewAppCoinClient(c config) *AppCoinClient {
+	return &AppCoinClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `appcoin.Hooks(f(g(h())))`.
+func (c *AppCoinClient) Use(hooks ...Hook) {
+	c.hooks.AppCoin = append(c.hooks.AppCoin, hooks...)
+}
+
+// Create returns a builder for creating a AppCoin entity.
+func (c *AppCoinClient) Create() *AppCoinCreate {
+	mutation := newAppCoinMutation(c.config, OpCreate)
+	return &AppCoinCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of AppCoin entities.
+func (c *AppCoinClient) CreateBulk(builders ...*AppCoinCreate) *AppCoinCreateBulk {
+	return &AppCoinCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for AppCoin.
+func (c *AppCoinClient) Update() *AppCoinUpdate {
+	mutation := newAppCoinMutation(c.config, OpUpdate)
+	return &AppCoinUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *AppCoinClient) UpdateOne(ac *AppCoin) *AppCoinUpdateOne {
+	mutation := newAppCoinMutation(c.config, OpUpdateOne, withAppCoin(ac))
+	return &AppCoinUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *AppCoinClient) UpdateOneID(id uuid.UUID) *AppCoinUpdateOne {
+	mutation := newAppCoinMutation(c.config, OpUpdateOne, withAppCoinID(id))
+	return &AppCoinUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for AppCoin.
+func (c *AppCoinClient) Delete() *AppCoinDelete {
+	mutation := newAppCoinMutation(c.config, OpDelete)
+	return &AppCoinDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *AppCoinClient) DeleteOne(ac *AppCoin) *AppCoinDeleteOne {
+	return c.DeleteOneID(ac.ID)
+}
+
+// DeleteOne returns a builder for deleting the given entity by its id.
+func (c *AppCoinClient) DeleteOneID(id uuid.UUID) *AppCoinDeleteOne {
+	builder := c.Delete().Where(appcoin.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &AppCoinDeleteOne{builder}
+}
+
+// Query returns a query builder for AppCoin.
+func (c *AppCoinClient) Query() *AppCoinQuery {
+	return &AppCoinQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a AppCoin entity by its id.
+func (c *AppCoinClient) Get(ctx context.Context, id uuid.UUID) (*AppCoin, error) {
+	return c.Query().Where(appcoin.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *AppCoinClient) GetX(ctx context.Context, id uuid.UUID) *AppCoin {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *AppCoinClient) Hooks() []Hook {
+	hooks := c.hooks.AppCoin
+	return append(hooks[:len(hooks):len(hooks)], appcoin.Hooks[:]...)
 }
 
 // CoinBaseClient is a client for the CoinBase schema.

@@ -6,6 +6,9 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
+// AppCoin is the predicate function for appcoin builders.
+type AppCoin func(*sql.Selector)
+
 // CoinBase is the predicate function for coinbase builders.
 type CoinBase func(*sql.Selector)
 

@@ -9,6 +9,19 @@ import (
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent"
 )
 
+// The AppCoinFunc type is an adapter to allow the use of ordinary
+// function as AppCoin mutator.
+type AppCoinFunc func(context.Context, *ent.AppCoinMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f AppCoinFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.AppCoinMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AppCoinMutation", m)
+	}
+	return f(ctx, mv)
+}
+
 // The CoinBaseFunc type is an adapter to allow the use of ordinary
 // function as CoinBase mutator.
 type CoinBaseFunc func(context.Context, *ent.CoinBaseMutation) (ent.Value, error)
