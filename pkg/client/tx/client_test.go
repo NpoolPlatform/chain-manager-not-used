@@ -75,6 +75,26 @@ func updateTx(t *testing.T) {
 	}
 }
 
+func createTxs(t *testing.T) {
+}
+
+func getTx(t *testing.T) {
+	info, err := GetTx(context.Background(), tran.ID)
+	if assert.Nil(t, err) {
+		assert.Equal(t, tran, info)
+	}
+}
+
+func deleteTx(t *testing.T) {
+	info, err := DeleteTx(context.Background(), tran.ID)
+	if assert.Nil(t, err) {
+		assert.Equal(t, tran, info)
+	}
+
+	_, err = GetTx(context.Background(), info.ID)
+	assert.NotNil(t, err)
+}
+
 func TestClient(t *testing.T) {
 	if runByGithubAction, err := strconv.ParseBool(os.Getenv("RUN_BY_GITHUB_ACTION")); err == nil && runByGithubAction {
 		return
@@ -88,14 +108,7 @@ func TestClient(t *testing.T) {
 
 	t.Run("createTx", createTx)
 	t.Run("updateTx", updateTx)
-	/*
-		t.Run("createTxs", createTxs)
-		t.Run("getTx", getTx)
-		t.Run("getTxs", getTxs)
-		t.Run("getTxOnly", getTxOnly)
-		t.Run("existTx", existTx)
-		t.Run("existTxConds", existTxConds)
-		t.Run("count", countTxs)
-		t.Run("delete", deleteTx)
-	*/
+	t.Run("createTxs", createTxs)
+	t.Run("getTx", getTx)
+	t.Run("deleteTx", deleteTx)
 }
