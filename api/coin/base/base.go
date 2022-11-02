@@ -85,6 +85,36 @@ func (s *Server) CreateCoinBases(ctx context.Context, in *npool.CreateCoinBasesR
 	}, nil
 }
 
+func (s *Server) UpdateCoinBase(ctx context.Context, in *npool.UpdateCoinBaseRequest) (*npool.UpdateCoinBaseResponse, error) {
+	var err error
+
+	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "UpdateCoinBase")
+	defer span.End()
+
+	defer func() {
+		if err != nil {
+			span.SetStatus(scodes.Error, err.Error())
+			span.RecordError(err)
+		}
+	}()
+
+	span = tracer.Trace(span, in.GetInfo())
+
+	// TODO: verify input
+
+	span = commontracer.TraceInvoker(span, "coinbase", "crud", "Update")
+
+	info, err := crud.Update(ctx, in.GetInfo())
+	if err != nil {
+		logger.Sugar().Errorf("fail create coinbase: %v", err.Error())
+		return &npool.UpdateCoinBaseResponse{}, status.Error(codes.Internal, err.Error())
+	}
+
+	return &npool.UpdateCoinBaseResponse{
+		Info: converter.Ent2Grpc(info),
+	}, nil
+}
+
 func (s *Server) GetCoinBase(ctx context.Context, in *npool.GetCoinBaseRequest) (*npool.GetCoinBaseResponse, error) {
 	var err error
 
