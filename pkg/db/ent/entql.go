@@ -3,6 +3,7 @@
 package ent
 
 import (
+	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/coinbase"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/tran"
 
 	"entgo.io/ent/dialect/sql"
@@ -13,8 +14,31 @@ import (
 
 // schemaGraph holds a representation of ent/schema at runtime.
 var schemaGraph = func() *sqlgraph.Schema {
-	graph := &sqlgraph.Schema{Nodes: make([]*sqlgraph.Node, 1)}
+	graph := &sqlgraph.Schema{Nodes: make([]*sqlgraph.Node, 2)}
 	graph.Nodes[0] = &sqlgraph.Node{
+		NodeSpec: sqlgraph.NodeSpec{
+			Table:   coinbase.Table,
+			Columns: coinbase.Columns,
+			ID: &sqlgraph.FieldSpec{
+				Type:   field.TypeUUID,
+				Column: coinbase.FieldID,
+			},
+		},
+		Type: "CoinBase",
+		Fields: map[string]*sqlgraph.FieldSpec{
+			coinbase.FieldCreatedAt:      {Type: field.TypeUint32, Column: coinbase.FieldCreatedAt},
+			coinbase.FieldUpdatedAt:      {Type: field.TypeUint32, Column: coinbase.FieldUpdatedAt},
+			coinbase.FieldDeletedAt:      {Type: field.TypeUint32, Column: coinbase.FieldDeletedAt},
+			coinbase.FieldName:           {Type: field.TypeString, Column: coinbase.FieldName},
+			coinbase.FieldLogo:           {Type: field.TypeString, Column: coinbase.FieldLogo},
+			coinbase.FieldPresale:        {Type: field.TypeBool, Column: coinbase.FieldPresale},
+			coinbase.FieldUnit:           {Type: field.TypeString, Column: coinbase.FieldUnit},
+			coinbase.FieldEnv:            {Type: field.TypeString, Column: coinbase.FieldEnv},
+			coinbase.FieldReservedAmount: {Type: field.TypeOther, Column: coinbase.FieldReservedAmount},
+			coinbase.FieldForPay:         {Type: field.TypeBool, Column: coinbase.FieldForPay},
+		},
+	}
+	graph.Nodes[1] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   tran.Table,
 			Columns: tran.Columns,
@@ -47,6 +71,96 @@ type predicateAdder interface {
 }
 
 // addPredicate implements the predicateAdder interface.
+func (cbq *CoinBaseQuery) addPredicate(pred func(s *sql.Selector)) {
+	cbq.predicates = append(cbq.predicates, pred)
+}
+
+// Filter returns a Filter implementation to apply filters on the CoinBaseQuery builder.
+func (cbq *CoinBaseQuery) Filter() *CoinBaseFilter {
+	return &CoinBaseFilter{config: cbq.config, predicateAdder: cbq}
+}
+
+// addPredicate implements the predicateAdder interface.
+func (m *CoinBaseMutation) addPredicate(pred func(s *sql.Selector)) {
+	m.predicates = append(m.predicates, pred)
+}
+
+// Filter returns an entql.Where implementation to apply filters on the CoinBaseMutation builder.
+func (m *CoinBaseMutation) Filter() *CoinBaseFilter {
+	return &CoinBaseFilter{config: m.config, predicateAdder: m}
+}
+
+// CoinBaseFilter provides a generic filtering capability at runtime for CoinBaseQuery.
+type CoinBaseFilter struct {
+	predicateAdder
+	config
+}
+
+// Where applies the entql predicate on the query filter.
+func (f *CoinBaseFilter) Where(p entql.P) {
+	f.addPredicate(func(s *sql.Selector) {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[0].Type, p, s); err != nil {
+			s.AddError(err)
+		}
+	})
+}
+
+// WhereID applies the entql [16]byte predicate on the id field.
+func (f *CoinBaseFilter) WhereID(p entql.ValueP) {
+	f.Where(p.Field(coinbase.FieldID))
+}
+
+// WhereCreatedAt applies the entql uint32 predicate on the created_at field.
+func (f *CoinBaseFilter) WhereCreatedAt(p entql.Uint32P) {
+	f.Where(p.Field(coinbase.FieldCreatedAt))
+}
+
+// WhereUpdatedAt applies the entql uint32 predicate on the updated_at field.
+func (f *CoinBaseFilter) WhereUpdatedAt(p entql.Uint32P) {
+	f.Where(p.Field(coinbase.FieldUpdatedAt))
+}
+
+// WhereDeletedAt applies the entql uint32 predicate on the deleted_at field.
+func (f *CoinBaseFilter) WhereDeletedAt(p entql.Uint32P) {
+	f.Where(p.Field(coinbase.FieldDeletedAt))
+}
+
+// WhereName applies the entql string predicate on the name field.
+func (f *CoinBaseFilter) WhereName(p entql.StringP) {
+	f.Where(p.Field(coinbase.FieldName))
+}
+
+// WhereLogo applies the entql string predicate on the logo field.
+func (f *CoinBaseFilter) WhereLogo(p entql.StringP) {
+	f.Where(p.Field(coinbase.FieldLogo))
+}
+
+// WherePresale applies the entql bool predicate on the presale field.
+func (f *CoinBaseFilter) WherePresale(p entql.BoolP) {
+	f.Where(p.Field(coinbase.FieldPresale))
+}
+
+// WhereUnit applies the entql string predicate on the unit field.
+func (f *CoinBaseFilter) WhereUnit(p entql.StringP) {
+	f.Where(p.Field(coinbase.FieldUnit))
+}
+
+// WhereEnv applies the entql string predicate on the env field.
+func (f *CoinBaseFilter) WhereEnv(p entql.StringP) {
+	f.Where(p.Field(coinbase.FieldEnv))
+}
+
+// WhereReservedAmount applies the entql other predicate on the reserved_amount field.
+func (f *CoinBaseFilter) WhereReservedAmount(p entql.OtherP) {
+	f.Where(p.Field(coinbase.FieldReservedAmount))
+}
+
+// WhereForPay applies the entql bool predicate on the for_pay field.
+func (f *CoinBaseFilter) WhereForPay(p entql.BoolP) {
+	f.Where(p.Field(coinbase.FieldForPay))
+}
+
+// addPredicate implements the predicateAdder interface.
 func (tq *TranQuery) addPredicate(pred func(s *sql.Selector)) {
 	tq.predicates = append(tq.predicates, pred)
 }
@@ -75,7 +189,7 @@ type TranFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *TranFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[0].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[1].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})

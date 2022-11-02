@@ -6,5 +6,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
+// CoinBase is the predicate function for coinbase builders.
+type CoinBase func(*sql.Selector)
+
 // Tran is the predicate function for tran builders.
 type Tran func(*sql.Selector)

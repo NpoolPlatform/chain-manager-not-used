@@ -9,6 +9,19 @@ import (
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent"
 )
 
+// The CoinBaseFunc type is an adapter to allow the use of ordinary
+// function as CoinBase mutator.
+type CoinBaseFunc func(context.Context, *ent.CoinBaseMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f CoinBaseFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.CoinBaseMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.CoinBaseMutation", m)
+	}
+	return f(ctx, mv)
+}
+
 // The TranFunc type is an adapter to allow the use of ordinary
 // function as Tran mutator.
 type TranFunc func(context.Context, *ent.TranMutation) (ent.Value, error)

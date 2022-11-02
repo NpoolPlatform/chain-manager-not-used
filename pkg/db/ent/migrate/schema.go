@@ -8,6 +8,26 @@ import (
 )
 
 var (
+	// CoinBasesColumns holds the columns for the "coin_bases" table.
+	CoinBasesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID, Unique: true},
+		{Name: "created_at", Type: field.TypeUint32},
+		{Name: "updated_at", Type: field.TypeUint32},
+		{Name: "deleted_at", Type: field.TypeUint32},
+		{Name: "name", Type: field.TypeString, Nullable: true, Default: ""},
+		{Name: "logo", Type: field.TypeString, Nullable: true, Default: ""},
+		{Name: "presale", Type: field.TypeBool, Nullable: true, Default: false},
+		{Name: "unit", Type: field.TypeString, Nullable: true, Default: ""},
+		{Name: "env", Type: field.TypeString, Nullable: true, Default: ""},
+		{Name: "reserved_amount", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
+		{Name: "for_pay", Type: field.TypeBool, Nullable: true, Default: false},
+	}
+	// CoinBasesTable holds the schema information for the "coin_bases" table.
+	CoinBasesTable = &schema.Table{
+		Name:       "coin_bases",
+		Columns:    CoinBasesColumns,
+		PrimaryKey: []*schema.Column{CoinBasesColumns[0]},
+	}
 	// TransColumns holds the columns for the "trans" table.
 	TransColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID, Unique: true},
@@ -30,6 +50,7 @@ var (
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
+		CoinBasesTable,
 		TransTable,
 	}
 )

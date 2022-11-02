@@ -5,6 +5,7 @@ package runtime
 import (
 	"context"
 
+	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/coinbase"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/schema"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/tran"
 	"github.com/google/uuid"
@@ -18,6 +19,66 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	coinbaseMixin := schema.CoinBase{}.Mixin()
+	coinbase.Policy = privacy.NewPolicies(coinbaseMixin[0], schema.CoinBase{})
+	coinbase.Hooks[0] = func(next ent.Mutator) ent.Mutator {
+		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+			if err := coinbase.Policy.EvalMutation(ctx, m); err != nil {
+				return nil, err
+			}
+			return next.Mutate(ctx, m)
+		})
+	}
+	coinbaseMixinFields0 := coinbaseMixin[0].Fields()
+	_ = coinbaseMixinFields0
+	coinbaseFields := schema.CoinBase{}.Fields()
+	_ = coinbaseFields
+	// coinbaseDescCreatedAt is the schema descriptor for created_at field.
+	coinbaseDescCreatedAt := coinbaseMixinFields0[0].Descriptor()
+	// coinbase.DefaultCreatedAt holds the default value on creation for the created_at field.
+	coinbase.DefaultCreatedAt = coinbaseDescCreatedAt.Default.(func() uint32)
+	// coinbaseDescUpdatedAt is the schema descriptor for updated_at field.
+	coinbaseDescUpdatedAt := coinbaseMixinFields0[1].Descriptor()
+	// coinbase.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	coinbase.DefaultUpdatedAt = coinbaseDescUpdatedAt.Default.(func() uint32)
+	// coinbase.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	coinbase.UpdateDefaultUpdatedAt = coinbaseDescUpdatedAt.UpdateDefault.(func() uint32)
+	// coinbaseDescDeletedAt is the schema descriptor for deleted_at field.
+	coinbaseDescDeletedAt := coinbaseMixinFields0[2].Descriptor()
+	// coinbase.DefaultDeletedAt holds the default value on creation for the deleted_at field.
+	coinbase.DefaultDeletedAt = coinbaseDescDeletedAt.Default.(func() uint32)
+	// coinbaseDescName is the schema descriptor for name field.
+	coinbaseDescName := coinbaseFields[1].Descriptor()
+	// coinbase.DefaultName holds the default value on creation for the name field.
+	coinbase.DefaultName = coinbaseDescName.Default.(string)
+	// coinbaseDescLogo is the schema descriptor for logo field.
+	coinbaseDescLogo := coinbaseFields[2].Descriptor()
+	// coinbase.DefaultLogo holds the default value on creation for the logo field.
+	coinbase.DefaultLogo = coinbaseDescLogo.Default.(string)
+	// coinbaseDescPresale is the schema descriptor for presale field.
+	coinbaseDescPresale := coinbaseFields[3].Descriptor()
+	// coinbase.DefaultPresale holds the default value on creation for the presale field.
+	coinbase.DefaultPresale = coinbaseDescPresale.Default.(bool)
+	// coinbaseDescUnit is the schema descriptor for unit field.
+	coinbaseDescUnit := coinbaseFields[4].Descriptor()
+	// coinbase.DefaultUnit holds the default value on creation for the unit field.
+	coinbase.DefaultUnit = coinbaseDescUnit.Default.(string)
+	// coinbaseDescEnv is the schema descriptor for env field.
+	coinbaseDescEnv := coinbaseFields[5].Descriptor()
+	// coinbase.DefaultEnv holds the default value on creation for the env field.
+	coinbase.DefaultEnv = coinbaseDescEnv.Default.(string)
+	// coinbaseDescReservedAmount is the schema descriptor for reserved_amount field.
+	coinbaseDescReservedAmount := coinbaseFields[6].Descriptor()
+	// coinbase.DefaultReservedAmount holds the default value on creation for the reserved_amount field.
+	coinbase.DefaultReservedAmount = coinbaseDescReservedAmount.Default.(decimal.Decimal)
+	// coinbaseDescForPay is the schema descriptor for for_pay field.
+	coinbaseDescForPay := coinbaseFields[7].Descriptor()
+	// coinbase.DefaultForPay holds the default value on creation for the for_pay field.
+	coinbase.DefaultForPay = coinbaseDescForPay.Default.(bool)
+	// coinbaseDescID is the schema descriptor for id field.
+	coinbaseDescID := coinbaseFields[0].Descriptor()
+	// coinbase.DefaultID holds the default value on creation for the id field.
+	coinbase.DefaultID = coinbaseDescID.Default.(func() uuid.UUID)
 	tranMixin := schema.Tran{}.Mixin()
 	tran.Policy = privacy.NewPolicies(tranMixin[0], schema.Tran{})
 	tran.Hooks[0] = func(next ent.Mutator) ent.Mutator {

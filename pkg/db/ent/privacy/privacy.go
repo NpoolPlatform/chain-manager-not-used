@@ -150,6 +150,30 @@ func DenyMutationOperationRule(op ent.Op) MutationRule {
 	return OnMutationOperation(rule, op)
 }
 
+// The CoinBaseQueryRuleFunc type is an adapter to allow the use of ordinary
+// functions as a query rule.
+type CoinBaseQueryRuleFunc func(context.Context, *ent.CoinBaseQuery) error
+
+// EvalQuery return f(ctx, q).
+func (f CoinBaseQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.CoinBaseQuery); ok {
+		return f(ctx, q)
+	}
+	return Denyf("ent/privacy: unexpected query type %T, expect *ent.CoinBaseQuery", q)
+}
+
+// The CoinBaseMutationRuleFunc type is an adapter to allow the use of ordinary
+// functions as a mutation rule.
+type CoinBaseMutationRuleFunc func(context.Context, *ent.CoinBaseMutation) error
+
+// EvalMutation calls f(ctx, m).
+func (f CoinBaseMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
+	if m, ok := m.(*ent.CoinBaseMutation); ok {
+		return f(ctx, m)
+	}
+	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.CoinBaseMutation", m)
+}
+
 // The TranQueryRuleFunc type is an adapter to allow the use of ordinary
 // functions as a query rule.
 type TranQueryRuleFunc func(context.Context, *ent.TranQuery) error
@@ -209,6 +233,8 @@ var _ QueryMutationRule = FilterFunc(nil)
 
 func queryFilter(q ent.Query) (Filter, error) {
 	switch q := q.(type) {
+	case *ent.CoinBaseQuery:
+		return q.Filter(), nil
 	case *ent.TranQuery:
 		return q.Filter(), nil
 	default:
@@ -218,6 +244,8 @@ func queryFilter(q ent.Query) (Filter, error) {
 
 func mutationFilter(m ent.Mutation) (Filter, error) {
 	switch m := m.(type) {
+	case *ent.CoinBaseMutation:
+		return m.Filter(), nil
 	case *ent.TranMutation:
 		return m.Filter(), nil
 	default:

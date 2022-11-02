@@ -11,6 +11,7 @@ import (
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/migrate"
 	"github.com/google/uuid"
 
+	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/coinbase"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/tran"
 
 	"entgo.io/ent/dialect"
@@ -22,6 +23,8 @@ type Client struct {
 	config
 	// Schema is the client for creating, migrating and dropping schema.
 	Schema *migrate.Schema
+	// CoinBase is the client for interacting with the CoinBase builders.
+	CoinBase *CoinBaseClient
 	// Tran is the client for interacting with the Tran builders.
 	Tran *TranClient
 }
@@ -37,6 +40,7 @@ func NewClient(opts ...Option) *Client {
 
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
+	c.CoinBase = NewCoinBaseClient(c.config)
 	c.Tran = NewTranClient(c.config)
 }
 
@@ -69,9 +73,10 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:    ctx,
-		config: cfg,
-		Tran:   NewTranClient(cfg),
+		ctx:      ctx,
+		config:   cfg,
+		CoinBase: NewCoinBaseClient(cfg),
+		Tran:     NewTranClient(cfg),
 	}, nil
 }
 
@@ -89,16 +94,17 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:    ctx,
-		config: cfg,
-		Tran:   NewTranClient(cfg),
+		ctx:      ctx,
+		config:   cfg,
+		CoinBase: NewCoinBaseClient(cfg),
+		Tran:     NewTranClient(cfg),
 	}, nil
 }
 
 // Debug returns a new debug-client. It's used to get verbose logging on specific operations.
 //
 //	client.Debug().
-//		Tran.
+//		CoinBase.
 //		Query().
 //		Count(ctx)
 //
@@ -121,7 +127,99 @@ func (c *Client) Close() error {
 // Use adds the mutation hooks to all the entity clients.
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
+	c.CoinBase.Use(hooks...)
 	c.Tran.Use(hooks...)
+}
+
+// CoinBaseClient is a client for the CoinBase schema.
+type CoinBaseClient struct {
+	config
+}
+
+// NewCoinBaseClient returns a client for the CoinBase from the given config.
+func NewCoinBaseClient(c config) *CoinBaseClient {
+	return &CoinBaseClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `coinbase.Hooks(f(g(h())))`.
+func (c *CoinBaseClient) Use(hooks ...Hook) {
+	c.hooks.CoinBase = append(c.hooks.CoinBase, hooks...)
+}
+
+// Create returns a builder for creating a CoinBase entity.
+func (c *CoinBaseClient) Create() *CoinBaseCreate {
+	mutation := newCoinBaseMutation(c.config, OpCreate)
+	return &CoinBaseCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of CoinBase entities.
+func (c *CoinBaseClient) CreateBulk(builders ...*CoinBaseCreate) *CoinBaseCreateBulk {
+	return &CoinBaseCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for CoinBase.
+func (c *CoinBaseClient) Update() *CoinBaseUpdate {
+	mutation := newCoinBaseMutation(c.config, OpUpdate)
+	return &CoinBaseUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *CoinBaseClient) UpdateOne(cb *CoinBase) *CoinBaseUpdateOne {
+	mutation := newCoinBaseMutation(c.config, OpUpdateOne, withCoinBase(cb))
+	return &CoinBaseUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *CoinBaseClient) UpdateOneID(id uuid.UUID) *CoinBaseUpdateOne {
+	mutation := newCoinBaseMutation(c.config, OpUpdateOne, withCoinBaseID(id))
+	return &CoinBaseUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for CoinBase.
+func (c *CoinBaseClient) Delete() *CoinBaseDelete {
+	mutation := newCoinBaseMutation(c.config, OpDelete)
+	return &CoinBaseDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *CoinBaseClient) DeleteOne(cb *CoinBase) *CoinBaseDeleteOne {
+	return c.DeleteOneID(cb.ID)
+}
+
+// DeleteOne returns a builder for deleting the given entity by its id.
+func (c *CoinBaseClient) DeleteOneID(id uuid.UUID) *CoinBaseDeleteOne {
+	builder := c.Delete().Where(coinbase.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &CoinBaseDeleteOne{builder}
+}
+
+// Query returns a query builder for CoinBase.
+func (c *CoinBaseClient) Query() *CoinBaseQuery {
+	return &CoinBaseQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a CoinBase entity by its id.
+func (c *CoinBaseClient) Get(ctx context.Context, id uuid.UUID) (*CoinBase, error) {
+	return c.Query().Where(coinbase.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *CoinBaseClient) GetX(ctx context.Context, id uuid.UUID) *CoinBase {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *CoinBaseClient) Hooks() []Hook {
+	hooks := c.hooks.CoinBase
+	return append(hooks[:len(hooks):len(hooks)], coinbase.Hooks[:]...)
 }
 
 // TranClient is a client for the Tran schema.
