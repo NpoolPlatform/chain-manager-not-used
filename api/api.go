@@ -3,6 +3,7 @@ package api
 import (
 	chainmgr "github.com/NpoolPlatform/message/npool/chain/mgr/v1"
 
+	coinbase "github.com/NpoolPlatform/chain-manager/api/coin/base"
 	"github.com/NpoolPlatform/chain-manager/api/tx"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -16,6 +17,7 @@ type Server struct {
 func Register(server grpc.ServiceRegistrar) {
 	chainmgr.RegisterManagerServer(server, &Server{})
 	tx.Register(server)
+	coinbase.Register(server)
 }
 
 func RegisterGateway(mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) error {
