@@ -81,6 +81,26 @@ var (
 		Columns:    ExchangeRatesColumns,
 		PrimaryKey: []*schema.Column{ExchangeRatesColumns[0]},
 	}
+	// FeesColumns holds the columns for the "fees" table.
+	FeesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID, Unique: true},
+		{Name: "created_at", Type: field.TypeUint32},
+		{Name: "updated_at", Type: field.TypeUint32},
+		{Name: "deleted_at", Type: field.TypeUint32},
+		{Name: "coin_type_id", Type: field.TypeUUID, Nullable: true},
+		{Name: "fee_coin_type_id", Type: field.TypeUUID, Nullable: true},
+		{Name: "withdraw_fee_by_stable_usd", Type: field.TypeBool, Nullable: true, Default: true},
+		{Name: "withdraw_fee_amount", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
+		{Name: "collect_fee_amount", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
+		{Name: "hot_wallet_fee_amount", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
+		{Name: "low_fee_amount", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
+	}
+	// FeesTable holds the schema information for the "fees" table.
+	FeesTable = &schema.Table{
+		Name:       "fees",
+		Columns:    FeesColumns,
+		PrimaryKey: []*schema.Column{FeesColumns[0]},
+	}
 	// TransColumns holds the columns for the "trans" table.
 	TransColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID, Unique: true},
@@ -107,6 +127,7 @@ var (
 		CoinBasesTable,
 		CoinExtrasTable,
 		ExchangeRatesTable,
+		FeesTable,
 		TransTable,
 	}
 )

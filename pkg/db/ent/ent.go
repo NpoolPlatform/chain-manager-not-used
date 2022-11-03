@@ -14,6 +14,7 @@ import (
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/coinbase"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/coinextra"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/exchangerate"
+	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/fee"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/tran"
 )
 
@@ -39,6 +40,7 @@ func columnChecker(table string) func(string) error {
 		coinbase.Table:     coinbase.ValidColumn,
 		coinextra.Table:    coinextra.ValidColumn,
 		exchangerate.Table: exchangerate.ValidColumn,
+		fee.Table:          fee.ValidColumn,
 		tran.Table:         tran.ValidColumn,
 	}
 	check, ok := checks[table]

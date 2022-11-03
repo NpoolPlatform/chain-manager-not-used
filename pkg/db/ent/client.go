@@ -15,6 +15,7 @@ import (
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/coinbase"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/coinextra"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/exchangerate"
+	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/fee"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/tran"
 
 	"entgo.io/ent/dialect"
@@ -34,6 +35,8 @@ type Client struct {
 	CoinExtra *CoinExtraClient
 	// ExchangeRate is the client for interacting with the ExchangeRate builders.
 	ExchangeRate *ExchangeRateClient
+	// Fee is the client for interacting with the Fee builders.
+	Fee *FeeClient
 	// Tran is the client for interacting with the Tran builders.
 	Tran *TranClient
 }
@@ -53,6 +56,7 @@ func (c *Client) init() {
 	c.CoinBase = NewCoinBaseClient(c.config)
 	c.CoinExtra = NewCoinExtraClient(c.config)
 	c.ExchangeRate = NewExchangeRateClient(c.config)
+	c.Fee = NewFeeClient(c.config)
 	c.Tran = NewTranClient(c.config)
 }
 
@@ -91,6 +95,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		CoinBase:     NewCoinBaseClient(cfg),
 		CoinExtra:    NewCoinExtraClient(cfg),
 		ExchangeRate: NewExchangeRateClient(cfg),
+		Fee:          NewFeeClient(cfg),
 		Tran:         NewTranClient(cfg),
 	}, nil
 }
@@ -115,6 +120,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		CoinBase:     NewCoinBaseClient(cfg),
 		CoinExtra:    NewCoinExtraClient(cfg),
 		ExchangeRate: NewExchangeRateClient(cfg),
+		Fee:          NewFeeClient(cfg),
 		Tran:         NewTranClient(cfg),
 	}, nil
 }
@@ -149,6 +155,7 @@ func (c *Client) Use(hooks ...Hook) {
 	c.CoinBase.Use(hooks...)
 	c.CoinExtra.Use(hooks...)
 	c.ExchangeRate.Use(hooks...)
+	c.Fee.Use(hooks...)
 	c.Tran.Use(hooks...)
 }
 
@@ -514,6 +521,97 @@ func (c *ExchangeRateClient) GetX(ctx context.Context, id uuid.UUID) *ExchangeRa
 func (c *ExchangeRateClient) Hooks() []Hook {
 	hooks := c.hooks.ExchangeRate
 	return append(hooks[:len(hooks):len(hooks)], exchangerate.Hooks[:]...)
+}
+
+// FeeClient is a client for the Fee schema.
+type FeeClient struct {
+	config
+}
+
+// NewFeeClient returns a client for the Fee from the given config.
+func NewFeeClient(c config) *FeeClient {
+	return &FeeClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `fee.Hooks(f(g(h())))`.
+func (c *FeeClient) Use(hooks ...Hook) {
+	c.hooks.Fee = append(c.hooks.Fee, hooks...)
+}
+
+// Create returns a builder for creating a Fee entity.
+func (c *FeeClient) Create() *FeeCreate {
+	mutation := newFeeMutation(c.config, OpCreate)
+	return &FeeCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Fee entities.
+func (c *FeeClient) CreateBulk(builders ...*FeeCreate) *FeeCreateBulk {
+	return &FeeCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Fee.
+func (c *FeeClient) Update() *FeeUpdate {
+	mutation := newFeeMutation(c.config, OpUpdate)
+	return &FeeUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *FeeClient) UpdateOne(f *Fee) *FeeUpdateOne {
+	mutation := newFeeMutation(c.config, OpUpdateOne, withFee(f))
+	return &FeeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *FeeClient) UpdateOneID(id uuid.UUID) *FeeUpdateOne {
+	mutation := newFeeMutation(c.config, OpUpdateOne, withFeeID(id))
+	return &FeeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Fee.
+func (c *FeeClient) Delete() *FeeDelete {
+	mutation := newFeeMutation(c.config, OpDelete)
+	return &FeeDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *FeeClient) DeleteOne(f *Fee) *FeeDeleteOne {
+	return c.DeleteOneID(f.ID)
+}
+
+// DeleteOne returns a builder for deleting the given entity by its id.
+func (c *FeeClient) DeleteOneID(id uuid.UUID) *FeeDeleteOne {
+	builder := c.Delete().Where(fee.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &FeeDeleteOne{builder}
+}
+
+// Query returns a query builder for Fee.
+func (c *FeeClient) Query() *FeeQuery {
+	return &FeeQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a Fee entity by its id.
+func (c *FeeClient) Get(ctx context.Context, id uuid.UUID) (*Fee, error) {
+	return c.Query().Where(fee.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *FeeClient) GetX(ctx context.Context, id uuid.UUID) *Fee {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *FeeClient) Hooks() []Hook {
+	hooks := c.hooks.Fee
+	return append(hooks[:len(hooks):len(hooks)], fee.Hooks[:]...)
 }
 
 // TranClient is a client for the Tran schema.

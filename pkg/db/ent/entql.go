@@ -7,6 +7,7 @@ import (
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/coinbase"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/coinextra"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/exchangerate"
+	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/fee"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/tran"
 
 	"entgo.io/ent/dialect/sql"
@@ -17,7 +18,7 @@ import (
 
 // schemaGraph holds a representation of ent/schema at runtime.
 var schemaGraph = func() *sqlgraph.Schema {
-	graph := &sqlgraph.Schema{Nodes: make([]*sqlgraph.Node, 5)}
+	graph := &sqlgraph.Schema{Nodes: make([]*sqlgraph.Node, 6)}
 	graph.Nodes[0] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   appcoin.Table,
@@ -104,6 +105,29 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 	}
 	graph.Nodes[4] = &sqlgraph.Node{
+		NodeSpec: sqlgraph.NodeSpec{
+			Table:   fee.Table,
+			Columns: fee.Columns,
+			ID: &sqlgraph.FieldSpec{
+				Type:   field.TypeUUID,
+				Column: fee.FieldID,
+			},
+		},
+		Type: "Fee",
+		Fields: map[string]*sqlgraph.FieldSpec{
+			fee.FieldCreatedAt:              {Type: field.TypeUint32, Column: fee.FieldCreatedAt},
+			fee.FieldUpdatedAt:              {Type: field.TypeUint32, Column: fee.FieldUpdatedAt},
+			fee.FieldDeletedAt:              {Type: field.TypeUint32, Column: fee.FieldDeletedAt},
+			fee.FieldCoinTypeID:             {Type: field.TypeUUID, Column: fee.FieldCoinTypeID},
+			fee.FieldFeeCoinTypeID:          {Type: field.TypeUUID, Column: fee.FieldFeeCoinTypeID},
+			fee.FieldWithdrawFeeByStableUsd: {Type: field.TypeBool, Column: fee.FieldWithdrawFeeByStableUsd},
+			fee.FieldWithdrawFeeAmount:      {Type: field.TypeOther, Column: fee.FieldWithdrawFeeAmount},
+			fee.FieldCollectFeeAmount:       {Type: field.TypeOther, Column: fee.FieldCollectFeeAmount},
+			fee.FieldHotWalletFeeAmount:     {Type: field.TypeOther, Column: fee.FieldHotWalletFeeAmount},
+			fee.FieldLowFeeAmount:           {Type: field.TypeOther, Column: fee.FieldLowFeeAmount},
+		},
+	}
+	graph.Nodes[5] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   tran.Table,
 			Columns: tran.Columns,
@@ -461,6 +485,96 @@ func (f *ExchangeRateFilter) WhereSetter(p entql.ValueP) {
 }
 
 // addPredicate implements the predicateAdder interface.
+func (fq *FeeQuery) addPredicate(pred func(s *sql.Selector)) {
+	fq.predicates = append(fq.predicates, pred)
+}
+
+// Filter returns a Filter implementation to apply filters on the FeeQuery builder.
+func (fq *FeeQuery) Filter() *FeeFilter {
+	return &FeeFilter{config: fq.config, predicateAdder: fq}
+}
+
+// addPredicate implements the predicateAdder interface.
+func (m *FeeMutation) addPredicate(pred func(s *sql.Selector)) {
+	m.predicates = append(m.predicates, pred)
+}
+
+// Filter returns an entql.Where implementation to apply filters on the FeeMutation builder.
+func (m *FeeMutation) Filter() *FeeFilter {
+	return &FeeFilter{config: m.config, predicateAdder: m}
+}
+
+// FeeFilter provides a generic filtering capability at runtime for FeeQuery.
+type FeeFilter struct {
+	predicateAdder
+	config
+}
+
+// Where applies the entql predicate on the query filter.
+func (f *FeeFilter) Where(p entql.P) {
+	f.addPredicate(func(s *sql.Selector) {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[4].Type, p, s); err != nil {
+			s.AddError(err)
+		}
+	})
+}
+
+// WhereID applies the entql [16]byte predicate on the id field.
+func (f *FeeFilter) WhereID(p entql.ValueP) {
+	f.Where(p.Field(fee.FieldID))
+}
+
+// WhereCreatedAt applies the entql uint32 predicate on the created_at field.
+func (f *FeeFilter) WhereCreatedAt(p entql.Uint32P) {
+	f.Where(p.Field(fee.FieldCreatedAt))
+}
+
+// WhereUpdatedAt applies the entql uint32 predicate on the updated_at field.
+func (f *FeeFilter) WhereUpdatedAt(p entql.Uint32P) {
+	f.Where(p.Field(fee.FieldUpdatedAt))
+}
+
+// WhereDeletedAt applies the entql uint32 predicate on the deleted_at field.
+func (f *FeeFilter) WhereDeletedAt(p entql.Uint32P) {
+	f.Where(p.Field(fee.FieldDeletedAt))
+}
+
+// WhereCoinTypeID applies the entql [16]byte predicate on the coin_type_id field.
+func (f *FeeFilter) WhereCoinTypeID(p entql.ValueP) {
+	f.Where(p.Field(fee.FieldCoinTypeID))
+}
+
+// WhereFeeCoinTypeID applies the entql [16]byte predicate on the fee_coin_type_id field.
+func (f *FeeFilter) WhereFeeCoinTypeID(p entql.ValueP) {
+	f.Where(p.Field(fee.FieldFeeCoinTypeID))
+}
+
+// WhereWithdrawFeeByStableUsd applies the entql bool predicate on the withdraw_fee_by_stable_usd field.
+func (f *FeeFilter) WhereWithdrawFeeByStableUsd(p entql.BoolP) {
+	f.Where(p.Field(fee.FieldWithdrawFeeByStableUsd))
+}
+
+// WhereWithdrawFeeAmount applies the entql other predicate on the withdraw_fee_amount field.
+func (f *FeeFilter) WhereWithdrawFeeAmount(p entql.OtherP) {
+	f.Where(p.Field(fee.FieldWithdrawFeeAmount))
+}
+
+// WhereCollectFeeAmount applies the entql other predicate on the collect_fee_amount field.
+func (f *FeeFilter) WhereCollectFeeAmount(p entql.OtherP) {
+	f.Where(p.Field(fee.FieldCollectFeeAmount))
+}
+
+// WhereHotWalletFeeAmount applies the entql other predicate on the hot_wallet_fee_amount field.
+func (f *FeeFilter) WhereHotWalletFeeAmount(p entql.OtherP) {
+	f.Where(p.Field(fee.FieldHotWalletFeeAmount))
+}
+
+// WhereLowFeeAmount applies the entql other predicate on the low_fee_amount field.
+func (f *FeeFilter) WhereLowFeeAmount(p entql.OtherP) {
+	f.Where(p.Field(fee.FieldLowFeeAmount))
+}
+
+// addPredicate implements the predicateAdder interface.
 func (tq *TranQuery) addPredicate(pred func(s *sql.Selector)) {
 	tq.predicates = append(tq.predicates, pred)
 }
@@ -489,7 +603,7 @@ type TranFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *TranFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[4].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[5].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})

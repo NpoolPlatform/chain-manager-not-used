@@ -61,6 +61,19 @@ func (f ExchangeRateFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value
 	return f(ctx, mv)
 }
 
+// The FeeFunc type is an adapter to allow the use of ordinary
+// function as Fee mutator.
+type FeeFunc func(context.Context, *ent.FeeMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f FeeFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.FeeMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.FeeMutation", m)
+	}
+	return f(ctx, mv)
+}
+
 // The TranFunc type is an adapter to allow the use of ordinary
 // function as Tran mutator.
 type TranFunc func(context.Context, *ent.TranMutation) (ent.Value, error)
