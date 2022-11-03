@@ -5,6 +5,7 @@ import (
 
 	appcoin "github.com/NpoolPlatform/chain-manager/api/coin/appcoin"
 	coinbase "github.com/NpoolPlatform/chain-manager/api/coin/base"
+	exrate "github.com/NpoolPlatform/chain-manager/api/coin/exrate"
 	coinextra "github.com/NpoolPlatform/chain-manager/api/coin/extra"
 
 	"github.com/NpoolPlatform/chain-manager/api/tx"
@@ -23,6 +24,7 @@ func Register(server grpc.ServiceRegistrar) {
 	coinbase.Register(server)
 	coinextra.Register(server)
 	appcoin.Register(server)
+	exrate.Register(server)
 }
 
 func RegisterGateway(mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) error {

@@ -8,6 +8,7 @@ import (
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/appcoin"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/coinbase"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/coinextra"
+	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/exchangerate"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/schema"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/tran"
 	"github.com/google/uuid"
@@ -177,6 +178,62 @@ func init() {
 	coinextraDescID := coinextraFields[0].Descriptor()
 	// coinextra.DefaultID holds the default value on creation for the id field.
 	coinextra.DefaultID = coinextraDescID.Default.(func() uuid.UUID)
+	exchangerateMixin := schema.ExchangeRate{}.Mixin()
+	exchangerate.Policy = privacy.NewPolicies(exchangerateMixin[0], schema.ExchangeRate{})
+	exchangerate.Hooks[0] = func(next ent.Mutator) ent.Mutator {
+		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+			if err := exchangerate.Policy.EvalMutation(ctx, m); err != nil {
+				return nil, err
+			}
+			return next.Mutate(ctx, m)
+		})
+	}
+	exchangerateMixinFields0 := exchangerateMixin[0].Fields()
+	_ = exchangerateMixinFields0
+	exchangerateFields := schema.ExchangeRate{}.Fields()
+	_ = exchangerateFields
+	// exchangerateDescCreatedAt is the schema descriptor for created_at field.
+	exchangerateDescCreatedAt := exchangerateMixinFields0[0].Descriptor()
+	// exchangerate.DefaultCreatedAt holds the default value on creation for the created_at field.
+	exchangerate.DefaultCreatedAt = exchangerateDescCreatedAt.Default.(func() uint32)
+	// exchangerateDescUpdatedAt is the schema descriptor for updated_at field.
+	exchangerateDescUpdatedAt := exchangerateMixinFields0[1].Descriptor()
+	// exchangerate.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	exchangerate.DefaultUpdatedAt = exchangerateDescUpdatedAt.Default.(func() uint32)
+	// exchangerate.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	exchangerate.UpdateDefaultUpdatedAt = exchangerateDescUpdatedAt.UpdateDefault.(func() uint32)
+	// exchangerateDescDeletedAt is the schema descriptor for deleted_at field.
+	exchangerateDescDeletedAt := exchangerateMixinFields0[2].Descriptor()
+	// exchangerate.DefaultDeletedAt holds the default value on creation for the deleted_at field.
+	exchangerate.DefaultDeletedAt = exchangerateDescDeletedAt.Default.(func() uint32)
+	// exchangerateDescAppID is the schema descriptor for app_id field.
+	exchangerateDescAppID := exchangerateFields[1].Descriptor()
+	// exchangerate.DefaultAppID holds the default value on creation for the app_id field.
+	exchangerate.DefaultAppID = exchangerateDescAppID.Default.(func() uuid.UUID)
+	// exchangerateDescCoinTypeID is the schema descriptor for coin_type_id field.
+	exchangerateDescCoinTypeID := exchangerateFields[2].Descriptor()
+	// exchangerate.DefaultCoinTypeID holds the default value on creation for the coin_type_id field.
+	exchangerate.DefaultCoinTypeID = exchangerateDescCoinTypeID.Default.(func() uuid.UUID)
+	// exchangerateDescMarketValue is the schema descriptor for market_value field.
+	exchangerateDescMarketValue := exchangerateFields[3].Descriptor()
+	// exchangerate.DefaultMarketValue holds the default value on creation for the market_value field.
+	exchangerate.DefaultMarketValue = exchangerateDescMarketValue.Default.(decimal.Decimal)
+	// exchangerateDescSettleValue is the schema descriptor for settle_value field.
+	exchangerateDescSettleValue := exchangerateFields[4].Descriptor()
+	// exchangerate.DefaultSettleValue holds the default value on creation for the settle_value field.
+	exchangerate.DefaultSettleValue = exchangerateDescSettleValue.Default.(decimal.Decimal)
+	// exchangerateDescSettlePercent is the schema descriptor for settle_percent field.
+	exchangerateDescSettlePercent := exchangerateFields[5].Descriptor()
+	// exchangerate.DefaultSettlePercent holds the default value on creation for the settle_percent field.
+	exchangerate.DefaultSettlePercent = exchangerateDescSettlePercent.Default.(uint32)
+	// exchangerateDescSetter is the schema descriptor for setter field.
+	exchangerateDescSetter := exchangerateFields[6].Descriptor()
+	// exchangerate.DefaultSetter holds the default value on creation for the setter field.
+	exchangerate.DefaultSetter = exchangerateDescSetter.Default.(func() uuid.UUID)
+	// exchangerateDescID is the schema descriptor for id field.
+	exchangerateDescID := exchangerateFields[0].Descriptor()
+	// exchangerate.DefaultID holds the default value on creation for the id field.
+	exchangerate.DefaultID = exchangerateDescID.Default.(func() uuid.UUID)
 	tranMixin := schema.Tran{}.Mixin()
 	tran.Policy = privacy.NewPolicies(tranMixin[0], schema.Tran{})
 	tran.Hooks[0] = func(next ent.Mutator) ent.Mutator {

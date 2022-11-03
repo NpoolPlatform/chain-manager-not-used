@@ -11,6 +11,7 @@ import (
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/appcoin"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/coinbase"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/coinextra"
+	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/exchangerate"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/predicate"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/tran"
 	"github.com/google/uuid"
@@ -28,10 +29,11 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeAppCoin   = "AppCoin"
-	TypeCoinBase  = "CoinBase"
-	TypeCoinExtra = "CoinExtra"
-	TypeTran      = "Tran"
+	TypeAppCoin      = "AppCoin"
+	TypeCoinBase     = "CoinBase"
+	TypeCoinExtra    = "CoinExtra"
+	TypeExchangeRate = "ExchangeRate"
+	TypeTran         = "Tran"
 )
 
 // AppCoinMutation represents an operation that mutates the AppCoin nodes in the graph.
@@ -2717,6 +2719,1008 @@ func (m *CoinExtraMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *CoinExtraMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown CoinExtra edge %s", name)
+}
+
+// ExchangeRateMutation represents an operation that mutates the ExchangeRate nodes in the graph.
+type ExchangeRateMutation struct {
+	config
+	op                Op
+	typ               string
+	id                *uuid.UUID
+	created_at        *uint32
+	addcreated_at     *int32
+	updated_at        *uint32
+	addupdated_at     *int32
+	deleted_at        *uint32
+	adddeleted_at     *int32
+	app_id            *uuid.UUID
+	coin_type_id      *uuid.UUID
+	market_value      *decimal.Decimal
+	settle_value      *decimal.Decimal
+	settle_percent    *uint32
+	addsettle_percent *int32
+	setter            *uuid.UUID
+	clearedFields     map[string]struct{}
+	done              bool
+	oldValue          func(context.Context) (*ExchangeRate, error)
+	predicates        []predicate.ExchangeRate
+}
+
+var _ ent.Mutation = (*ExchangeRateMutation)(nil)
+
+// exchangerateOption allows management of the mutation configuration using functional options.
+type exchangerateOption func(*ExchangeRateMutation)
+
+// newExchangeRateMutation creates new mutation for the ExchangeRate entity.
+func newExchangeRateMutation(c config, op Op, opts ...exchangerateOption) *ExchangeRateMutation {
+	m := &ExchangeRateMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeExchangeRate,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withExchangeRateID sets the ID field of the mutation.
+func withExchangeRateID(id uuid.UUID) exchangerateOption {
+	return func(m *ExchangeRateMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *ExchangeRate
+		)
+		m.oldValue = func(ctx context.Context) (*ExchangeRate, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().ExchangeRate.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withExchangeRate sets the old ExchangeRate of the mutation.
+func withExchangeRate(node *ExchangeRate) exchangerateOption {
+	return func(m *ExchangeRateMutation) {
+		m.oldValue = func(context.Context) (*ExchangeRate, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m ExchangeRateMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m ExchangeRateMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of ExchangeRate entities.
+func (m *ExchangeRateMutation) SetID(id uuid.UUID) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *ExchangeRateMutation) ID() (id uuid.UUID, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *ExchangeRateMutation) IDs(ctx context.Context) ([]uuid.UUID, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []uuid.UUID{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().ExchangeRate.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *ExchangeRateMutation) SetCreatedAt(u uint32) {
+	m.created_at = &u
+	m.addcreated_at = nil
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *ExchangeRateMutation) CreatedAt() (r uint32, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the ExchangeRate entity.
+// If the ExchangeRate object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ExchangeRateMutation) OldCreatedAt(ctx context.Context) (v uint32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// AddCreatedAt adds u to the "created_at" field.
+func (m *ExchangeRateMutation) AddCreatedAt(u int32) {
+	if m.addcreated_at != nil {
+		*m.addcreated_at += u
+	} else {
+		m.addcreated_at = &u
+	}
+}
+
+// AddedCreatedAt returns the value that was added to the "created_at" field in this mutation.
+func (m *ExchangeRateMutation) AddedCreatedAt() (r int32, exists bool) {
+	v := m.addcreated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *ExchangeRateMutation) ResetCreatedAt() {
+	m.created_at = nil
+	m.addcreated_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *ExchangeRateMutation) SetUpdatedAt(u uint32) {
+	m.updated_at = &u
+	m.addupdated_at = nil
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *ExchangeRateMutation) UpdatedAt() (r uint32, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the ExchangeRate entity.
+// If the ExchangeRate object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ExchangeRateMutation) OldUpdatedAt(ctx context.Context) (v uint32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// AddUpdatedAt adds u to the "updated_at" field.
+func (m *ExchangeRateMutation) AddUpdatedAt(u int32) {
+	if m.addupdated_at != nil {
+		*m.addupdated_at += u
+	} else {
+		m.addupdated_at = &u
+	}
+}
+
+// AddedUpdatedAt returns the value that was added to the "updated_at" field in this mutation.
+func (m *ExchangeRateMutation) AddedUpdatedAt() (r int32, exists bool) {
+	v := m.addupdated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *ExchangeRateMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+	m.addupdated_at = nil
+}
+
+// SetDeletedAt sets the "deleted_at" field.
+func (m *ExchangeRateMutation) SetDeletedAt(u uint32) {
+	m.deleted_at = &u
+	m.adddeleted_at = nil
+}
+
+// DeletedAt returns the value of the "deleted_at" field in the mutation.
+func (m *ExchangeRateMutation) DeletedAt() (r uint32, exists bool) {
+	v := m.deleted_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDeletedAt returns the old "deleted_at" field's value of the ExchangeRate entity.
+// If the ExchangeRate object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ExchangeRateMutation) OldDeletedAt(ctx context.Context) (v uint32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDeletedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDeletedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDeletedAt: %w", err)
+	}
+	return oldValue.DeletedAt, nil
+}
+
+// AddDeletedAt adds u to the "deleted_at" field.
+func (m *ExchangeRateMutation) AddDeletedAt(u int32) {
+	if m.adddeleted_at != nil {
+		*m.adddeleted_at += u
+	} else {
+		m.adddeleted_at = &u
+	}
+}
+
+// AddedDeletedAt returns the value that was added to the "deleted_at" field in this mutation.
+func (m *ExchangeRateMutation) AddedDeletedAt() (r int32, exists bool) {
+	v := m.adddeleted_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetDeletedAt resets all changes to the "deleted_at" field.
+func (m *ExchangeRateMutation) ResetDeletedAt() {
+	m.deleted_at = nil
+	m.adddeleted_at = nil
+}
+
+// SetAppID sets the "app_id" field.
+func (m *ExchangeRateMutation) SetAppID(u uuid.UUID) {
+	m.app_id = &u
+}
+
+// AppID returns the value of the "app_id" field in the mutation.
+func (m *ExchangeRateMutation) AppID() (r uuid.UUID, exists bool) {
+	v := m.app_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldAppID returns the old "app_id" field's value of the ExchangeRate entity.
+// If the ExchangeRate object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ExchangeRateMutation) OldAppID(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldAppID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldAppID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldAppID: %w", err)
+	}
+	return oldValue.AppID, nil
+}
+
+// ClearAppID clears the value of the "app_id" field.
+func (m *ExchangeRateMutation) ClearAppID() {
+	m.app_id = nil
+	m.clearedFields[exchangerate.FieldAppID] = struct{}{}
+}
+
+// AppIDCleared returns if the "app_id" field was cleared in this mutation.
+func (m *ExchangeRateMutation) AppIDCleared() bool {
+	_, ok := m.clearedFields[exchangerate.FieldAppID]
+	return ok
+}
+
+// ResetAppID resets all changes to the "app_id" field.
+func (m *ExchangeRateMutation) ResetAppID() {
+	m.app_id = nil
+	delete(m.clearedFields, exchangerate.FieldAppID)
+}
+
+// SetCoinTypeID sets the "coin_type_id" field.
+func (m *ExchangeRateMutation) SetCoinTypeID(u uuid.UUID) {
+	m.coin_type_id = &u
+}
+
+// CoinTypeID returns the value of the "coin_type_id" field in the mutation.
+func (m *ExchangeRateMutation) CoinTypeID() (r uuid.UUID, exists bool) {
+	v := m.coin_type_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCoinTypeID returns the old "coin_type_id" field's value of the ExchangeRate entity.
+// If the ExchangeRate object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ExchangeRateMutation) OldCoinTypeID(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCoinTypeID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCoinTypeID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCoinTypeID: %w", err)
+	}
+	return oldValue.CoinTypeID, nil
+}
+
+// ClearCoinTypeID clears the value of the "coin_type_id" field.
+func (m *ExchangeRateMutation) ClearCoinTypeID() {
+	m.coin_type_id = nil
+	m.clearedFields[exchangerate.FieldCoinTypeID] = struct{}{}
+}
+
+// CoinTypeIDCleared returns if the "coin_type_id" field was cleared in this mutation.
+func (m *ExchangeRateMutation) CoinTypeIDCleared() bool {
+	_, ok := m.clearedFields[exchangerate.FieldCoinTypeID]
+	return ok
+}
+
+// ResetCoinTypeID resets all changes to the "coin_type_id" field.
+func (m *ExchangeRateMutation) ResetCoinTypeID() {
+	m.coin_type_id = nil
+	delete(m.clearedFields, exchangerate.FieldCoinTypeID)
+}
+
+// SetMarketValue sets the "market_value" field.
+func (m *ExchangeRateMutation) SetMarketValue(d decimal.Decimal) {
+	m.market_value = &d
+}
+
+// MarketValue returns the value of the "market_value" field in the mutation.
+func (m *ExchangeRateMutation) MarketValue() (r decimal.Decimal, exists bool) {
+	v := m.market_value
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldMarketValue returns the old "market_value" field's value of the ExchangeRate entity.
+// If the ExchangeRate object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ExchangeRateMutation) OldMarketValue(ctx context.Context) (v decimal.Decimal, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldMarketValue is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldMarketValue requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldMarketValue: %w", err)
+	}
+	return oldValue.MarketValue, nil
+}
+
+// ClearMarketValue clears the value of the "market_value" field.
+func (m *ExchangeRateMutation) ClearMarketValue() {
+	m.market_value = nil
+	m.clearedFields[exchangerate.FieldMarketValue] = struct{}{}
+}
+
+// MarketValueCleared returns if the "market_value" field was cleared in this mutation.
+func (m *ExchangeRateMutation) MarketValueCleared() bool {
+	_, ok := m.clearedFields[exchangerate.FieldMarketValue]
+	return ok
+}
+
+// ResetMarketValue resets all changes to the "market_value" field.
+func (m *ExchangeRateMutation) ResetMarketValue() {
+	m.market_value = nil
+	delete(m.clearedFields, exchangerate.FieldMarketValue)
+}
+
+// SetSettleValue sets the "settle_value" field.
+func (m *ExchangeRateMutation) SetSettleValue(d decimal.Decimal) {
+	m.settle_value = &d
+}
+
+// SettleValue returns the value of the "settle_value" field in the mutation.
+func (m *ExchangeRateMutation) SettleValue() (r decimal.Decimal, exists bool) {
+	v := m.settle_value
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSettleValue returns the old "settle_value" field's value of the ExchangeRate entity.
+// If the ExchangeRate object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ExchangeRateMutation) OldSettleValue(ctx context.Context) (v decimal.Decimal, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSettleValue is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSettleValue requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSettleValue: %w", err)
+	}
+	return oldValue.SettleValue, nil
+}
+
+// ClearSettleValue clears the value of the "settle_value" field.
+func (m *ExchangeRateMutation) ClearSettleValue() {
+	m.settle_value = nil
+	m.clearedFields[exchangerate.FieldSettleValue] = struct{}{}
+}
+
+// SettleValueCleared returns if the "settle_value" field was cleared in this mutation.
+func (m *ExchangeRateMutation) SettleValueCleared() bool {
+	_, ok := m.clearedFields[exchangerate.FieldSettleValue]
+	return ok
+}
+
+// ResetSettleValue resets all changes to the "settle_value" field.
+func (m *ExchangeRateMutation) ResetSettleValue() {
+	m.settle_value = nil
+	delete(m.clearedFields, exchangerate.FieldSettleValue)
+}
+
+// SetSettlePercent sets the "settle_percent" field.
+func (m *ExchangeRateMutation) SetSettlePercent(u uint32) {
+	m.settle_percent = &u
+	m.addsettle_percent = nil
+}
+
+// SettlePercent returns the value of the "settle_percent" field in the mutation.
+func (m *ExchangeRateMutation) SettlePercent() (r uint32, exists bool) {
+	v := m.settle_percent
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSettlePercent returns the old "settle_percent" field's value of the ExchangeRate entity.
+// If the ExchangeRate object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ExchangeRateMutation) OldSettlePercent(ctx context.Context) (v uint32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSettlePercent is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSettlePercent requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSettlePercent: %w", err)
+	}
+	return oldValue.SettlePercent, nil
+}
+
+// AddSettlePercent adds u to the "settle_percent" field.
+func (m *ExchangeRateMutation) AddSettlePercent(u int32) {
+	if m.addsettle_percent != nil {
+		*m.addsettle_percent += u
+	} else {
+		m.addsettle_percent = &u
+	}
+}
+
+// AddedSettlePercent returns the value that was added to the "settle_percent" field in this mutation.
+func (m *ExchangeRateMutation) AddedSettlePercent() (r int32, exists bool) {
+	v := m.addsettle_percent
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearSettlePercent clears the value of the "settle_percent" field.
+func (m *ExchangeRateMutation) ClearSettlePercent() {
+	m.settle_percent = nil
+	m.addsettle_percent = nil
+	m.clearedFields[exchangerate.FieldSettlePercent] = struct{}{}
+}
+
+// SettlePercentCleared returns if the "settle_percent" field was cleared in this mutation.
+func (m *ExchangeRateMutation) SettlePercentCleared() bool {
+	_, ok := m.clearedFields[exchangerate.FieldSettlePercent]
+	return ok
+}
+
+// ResetSettlePercent resets all changes to the "settle_percent" field.
+func (m *ExchangeRateMutation) ResetSettlePercent() {
+	m.settle_percent = nil
+	m.addsettle_percent = nil
+	delete(m.clearedFields, exchangerate.FieldSettlePercent)
+}
+
+// SetSetter sets the "setter" field.
+func (m *ExchangeRateMutation) SetSetter(u uuid.UUID) {
+	m.setter = &u
+}
+
+// Setter returns the value of the "setter" field in the mutation.
+func (m *ExchangeRateMutation) Setter() (r uuid.UUID, exists bool) {
+	v := m.setter
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSetter returns the old "setter" field's value of the ExchangeRate entity.
+// If the ExchangeRate object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ExchangeRateMutation) OldSetter(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSetter is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSetter requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSetter: %w", err)
+	}
+	return oldValue.Setter, nil
+}
+
+// ClearSetter clears the value of the "setter" field.
+func (m *ExchangeRateMutation) ClearSetter() {
+	m.setter = nil
+	m.clearedFields[exchangerate.FieldSetter] = struct{}{}
+}
+
+// SetterCleared returns if the "setter" field was cleared in this mutation.
+func (m *ExchangeRateMutation) SetterCleared() bool {
+	_, ok := m.clearedFields[exchangerate.FieldSetter]
+	return ok
+}
+
+// ResetSetter resets all changes to the "setter" field.
+func (m *ExchangeRateMutation) ResetSetter() {
+	m.setter = nil
+	delete(m.clearedFields, exchangerate.FieldSetter)
+}
+
+// Where appends a list predicates to the ExchangeRateMutation builder.
+func (m *ExchangeRateMutation) Where(ps ...predicate.ExchangeRate) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// Op returns the operation name.
+func (m *ExchangeRateMutation) Op() Op {
+	return m.op
+}
+
+// Type returns the node type of this mutation (ExchangeRate).
+func (m *ExchangeRateMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *ExchangeRateMutation) Fields() []string {
+	fields := make([]string, 0, 9)
+	if m.created_at != nil {
+		fields = append(fields, exchangerate.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, exchangerate.FieldUpdatedAt)
+	}
+	if m.deleted_at != nil {
+		fields = append(fields, exchangerate.FieldDeletedAt)
+	}
+	if m.app_id != nil {
+		fields = append(fields, exchangerate.FieldAppID)
+	}
+	if m.coin_type_id != nil {
+		fields = append(fields, exchangerate.FieldCoinTypeID)
+	}
+	if m.market_value != nil {
+		fields = append(fields, exchangerate.FieldMarketValue)
+	}
+	if m.settle_value != nil {
+		fields = append(fields, exchangerate.FieldSettleValue)
+	}
+	if m.settle_percent != nil {
+		fields = append(fields, exchangerate.FieldSettlePercent)
+	}
+	if m.setter != nil {
+		fields = append(fields, exchangerate.FieldSetter)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *ExchangeRateMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case exchangerate.FieldCreatedAt:
+		return m.CreatedAt()
+	case exchangerate.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case exchangerate.FieldDeletedAt:
+		return m.DeletedAt()
+	case exchangerate.FieldAppID:
+		return m.AppID()
+	case exchangerate.FieldCoinTypeID:
+		return m.CoinTypeID()
+	case exchangerate.FieldMarketValue:
+		return m.MarketValue()
+	case exchangerate.FieldSettleValue:
+		return m.SettleValue()
+	case exchangerate.FieldSettlePercent:
+		return m.SettlePercent()
+	case exchangerate.FieldSetter:
+		return m.Setter()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *ExchangeRateMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case exchangerate.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case exchangerate.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case exchangerate.FieldDeletedAt:
+		return m.OldDeletedAt(ctx)
+	case exchangerate.FieldAppID:
+		return m.OldAppID(ctx)
+	case exchangerate.FieldCoinTypeID:
+		return m.OldCoinTypeID(ctx)
+	case exchangerate.FieldMarketValue:
+		return m.OldMarketValue(ctx)
+	case exchangerate.FieldSettleValue:
+		return m.OldSettleValue(ctx)
+	case exchangerate.FieldSettlePercent:
+		return m.OldSettlePercent(ctx)
+	case exchangerate.FieldSetter:
+		return m.OldSetter(ctx)
+	}
+	return nil, fmt.Errorf("unknown ExchangeRate field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *ExchangeRateMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case exchangerate.FieldCreatedAt:
+		v, ok := value.(uint32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case exchangerate.FieldUpdatedAt:
+		v, ok := value.(uint32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case exchangerate.FieldDeletedAt:
+		v, ok := value.(uint32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDeletedAt(v)
+		return nil
+	case exchangerate.FieldAppID:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAppID(v)
+		return nil
+	case exchangerate.FieldCoinTypeID:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCoinTypeID(v)
+		return nil
+	case exchangerate.FieldMarketValue:
+		v, ok := value.(decimal.Decimal)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetMarketValue(v)
+		return nil
+	case exchangerate.FieldSettleValue:
+		v, ok := value.(decimal.Decimal)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSettleValue(v)
+		return nil
+	case exchangerate.FieldSettlePercent:
+		v, ok := value.(uint32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSettlePercent(v)
+		return nil
+	case exchangerate.FieldSetter:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSetter(v)
+		return nil
+	}
+	return fmt.Errorf("unknown ExchangeRate field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *ExchangeRateMutation) AddedFields() []string {
+	var fields []string
+	if m.addcreated_at != nil {
+		fields = append(fields, exchangerate.FieldCreatedAt)
+	}
+	if m.addupdated_at != nil {
+		fields = append(fields, exchangerate.FieldUpdatedAt)
+	}
+	if m.adddeleted_at != nil {
+		fields = append(fields, exchangerate.FieldDeletedAt)
+	}
+	if m.addsettle_percent != nil {
+		fields = append(fields, exchangerate.FieldSettlePercent)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *ExchangeRateMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case exchangerate.FieldCreatedAt:
+		return m.AddedCreatedAt()
+	case exchangerate.FieldUpdatedAt:
+		return m.AddedUpdatedAt()
+	case exchangerate.FieldDeletedAt:
+		return m.AddedDeletedAt()
+	case exchangerate.FieldSettlePercent:
+		return m.AddedSettlePercent()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *ExchangeRateMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case exchangerate.FieldCreatedAt:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddCreatedAt(v)
+		return nil
+	case exchangerate.FieldUpdatedAt:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddUpdatedAt(v)
+		return nil
+	case exchangerate.FieldDeletedAt:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddDeletedAt(v)
+		return nil
+	case exchangerate.FieldSettlePercent:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddSettlePercent(v)
+		return nil
+	}
+	return fmt.Errorf("unknown ExchangeRate numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *ExchangeRateMutation) ClearedFields() []string {
+	var fields []string
+	if m.FieldCleared(exchangerate.FieldAppID) {
+		fields = append(fields, exchangerate.FieldAppID)
+	}
+	if m.FieldCleared(exchangerate.FieldCoinTypeID) {
+		fields = append(fields, exchangerate.FieldCoinTypeID)
+	}
+	if m.FieldCleared(exchangerate.FieldMarketValue) {
+		fields = append(fields, exchangerate.FieldMarketValue)
+	}
+	if m.FieldCleared(exchangerate.FieldSettleValue) {
+		fields = append(fields, exchangerate.FieldSettleValue)
+	}
+	if m.FieldCleared(exchangerate.FieldSettlePercent) {
+		fields = append(fields, exchangerate.FieldSettlePercent)
+	}
+	if m.FieldCleared(exchangerate.FieldSetter) {
+		fields = append(fields, exchangerate.FieldSetter)
+	}
+	return fields
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *ExchangeRateMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *ExchangeRateMutation) ClearField(name string) error {
+	switch name {
+	case exchangerate.FieldAppID:
+		m.ClearAppID()
+		return nil
+	case exchangerate.FieldCoinTypeID:
+		m.ClearCoinTypeID()
+		return nil
+	case exchangerate.FieldMarketValue:
+		m.ClearMarketValue()
+		return nil
+	case exchangerate.FieldSettleValue:
+		m.ClearSettleValue()
+		return nil
+	case exchangerate.FieldSettlePercent:
+		m.ClearSettlePercent()
+		return nil
+	case exchangerate.FieldSetter:
+		m.ClearSetter()
+		return nil
+	}
+	return fmt.Errorf("unknown ExchangeRate nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *ExchangeRateMutation) ResetField(name string) error {
+	switch name {
+	case exchangerate.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case exchangerate.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case exchangerate.FieldDeletedAt:
+		m.ResetDeletedAt()
+		return nil
+	case exchangerate.FieldAppID:
+		m.ResetAppID()
+		return nil
+	case exchangerate.FieldCoinTypeID:
+		m.ResetCoinTypeID()
+		return nil
+	case exchangerate.FieldMarketValue:
+		m.ResetMarketValue()
+		return nil
+	case exchangerate.FieldSettleValue:
+		m.ResetSettleValue()
+		return nil
+	case exchangerate.FieldSettlePercent:
+		m.ResetSettlePercent()
+		return nil
+	case exchangerate.FieldSetter:
+		m.ResetSetter()
+		return nil
+	}
+	return fmt.Errorf("unknown ExchangeRate field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *ExchangeRateMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *ExchangeRateMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *ExchangeRateMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *ExchangeRateMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *ExchangeRateMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *ExchangeRateMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *ExchangeRateMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown ExchangeRate unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *ExchangeRateMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown ExchangeRate edge %s", name)
 }
 
 // TranMutation represents an operation that mutates the Tran nodes in the graph.

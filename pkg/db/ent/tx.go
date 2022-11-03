@@ -20,6 +20,8 @@ type Tx struct {
 	CoinBase *CoinBaseClient
 	// CoinExtra is the client for interacting with the CoinExtra builders.
 	CoinExtra *CoinExtraClient
+	// ExchangeRate is the client for interacting with the ExchangeRate builders.
+	ExchangeRate *ExchangeRateClient
 	// Tran is the client for interacting with the Tran builders.
 	Tran *TranClient
 
@@ -160,6 +162,7 @@ func (tx *Tx) init() {
 	tx.AppCoin = NewAppCoinClient(tx.config)
 	tx.CoinBase = NewCoinBaseClient(tx.config)
 	tx.CoinExtra = NewCoinExtraClient(tx.config)
+	tx.ExchangeRate = NewExchangeRateClient(tx.config)
 	tx.Tran = NewTranClient(tx.config)
 }
 

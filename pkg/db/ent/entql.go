@@ -6,6 +6,7 @@ import (
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/appcoin"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/coinbase"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/coinextra"
+	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/exchangerate"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/tran"
 
 	"entgo.io/ent/dialect/sql"
@@ -16,7 +17,7 @@ import (
 
 // schemaGraph holds a representation of ent/schema at runtime.
 var schemaGraph = func() *sqlgraph.Schema {
-	graph := &sqlgraph.Schema{Nodes: make([]*sqlgraph.Node, 4)}
+	graph := &sqlgraph.Schema{Nodes: make([]*sqlgraph.Node, 5)}
 	graph.Nodes[0] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   appcoin.Table,
@@ -81,6 +82,28 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 	}
 	graph.Nodes[3] = &sqlgraph.Node{
+		NodeSpec: sqlgraph.NodeSpec{
+			Table:   exchangerate.Table,
+			Columns: exchangerate.Columns,
+			ID: &sqlgraph.FieldSpec{
+				Type:   field.TypeUUID,
+				Column: exchangerate.FieldID,
+			},
+		},
+		Type: "ExchangeRate",
+		Fields: map[string]*sqlgraph.FieldSpec{
+			exchangerate.FieldCreatedAt:     {Type: field.TypeUint32, Column: exchangerate.FieldCreatedAt},
+			exchangerate.FieldUpdatedAt:     {Type: field.TypeUint32, Column: exchangerate.FieldUpdatedAt},
+			exchangerate.FieldDeletedAt:     {Type: field.TypeUint32, Column: exchangerate.FieldDeletedAt},
+			exchangerate.FieldAppID:         {Type: field.TypeUUID, Column: exchangerate.FieldAppID},
+			exchangerate.FieldCoinTypeID:    {Type: field.TypeUUID, Column: exchangerate.FieldCoinTypeID},
+			exchangerate.FieldMarketValue:   {Type: field.TypeOther, Column: exchangerate.FieldMarketValue},
+			exchangerate.FieldSettleValue:   {Type: field.TypeOther, Column: exchangerate.FieldSettleValue},
+			exchangerate.FieldSettlePercent: {Type: field.TypeUint32, Column: exchangerate.FieldSettlePercent},
+			exchangerate.FieldSetter:        {Type: field.TypeUUID, Column: exchangerate.FieldSetter},
+		},
+	}
+	graph.Nodes[4] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   tran.Table,
 			Columns: tran.Columns,
@@ -353,6 +376,91 @@ func (f *CoinExtraFilter) WhereHomePage(p entql.StringP) {
 }
 
 // addPredicate implements the predicateAdder interface.
+func (erq *ExchangeRateQuery) addPredicate(pred func(s *sql.Selector)) {
+	erq.predicates = append(erq.predicates, pred)
+}
+
+// Filter returns a Filter implementation to apply filters on the ExchangeRateQuery builder.
+func (erq *ExchangeRateQuery) Filter() *ExchangeRateFilter {
+	return &ExchangeRateFilter{config: erq.config, predicateAdder: erq}
+}
+
+// addPredicate implements the predicateAdder interface.
+func (m *ExchangeRateMutation) addPredicate(pred func(s *sql.Selector)) {
+	m.predicates = append(m.predicates, pred)
+}
+
+// Filter returns an entql.Where implementation to apply filters on the ExchangeRateMutation builder.
+func (m *ExchangeRateMutation) Filter() *ExchangeRateFilter {
+	return &ExchangeRateFilter{config: m.config, predicateAdder: m}
+}
+
+// ExchangeRateFilter provides a generic filtering capability at runtime for ExchangeRateQuery.
+type ExchangeRateFilter struct {
+	predicateAdder
+	config
+}
+
+// Where applies the entql predicate on the query filter.
+func (f *ExchangeRateFilter) Where(p entql.P) {
+	f.addPredicate(func(s *sql.Selector) {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[3].Type, p, s); err != nil {
+			s.AddError(err)
+		}
+	})
+}
+
+// WhereID applies the entql [16]byte predicate on the id field.
+func (f *ExchangeRateFilter) WhereID(p entql.ValueP) {
+	f.Where(p.Field(exchangerate.FieldID))
+}
+
+// WhereCreatedAt applies the entql uint32 predicate on the created_at field.
+func (f *ExchangeRateFilter) WhereCreatedAt(p entql.Uint32P) {
+	f.Where(p.Field(exchangerate.FieldCreatedAt))
+}
+
+// WhereUpdatedAt applies the entql uint32 predicate on the updated_at field.
+func (f *ExchangeRateFilter) WhereUpdatedAt(p entql.Uint32P) {
+	f.Where(p.Field(exchangerate.FieldUpdatedAt))
+}
+
+// WhereDeletedAt applies the entql uint32 predicate on the deleted_at field.
+func (f *ExchangeRateFilter) WhereDeletedAt(p entql.Uint32P) {
+	f.Where(p.Field(exchangerate.FieldDeletedAt))
+}
+
+// WhereAppID applies the entql [16]byte predicate on the app_id field.
+func (f *ExchangeRateFilter) WhereAppID(p entql.ValueP) {
+	f.Where(p.Field(exchangerate.FieldAppID))
+}
+
+// WhereCoinTypeID applies the entql [16]byte predicate on the coin_type_id field.
+func (f *ExchangeRateFilter) WhereCoinTypeID(p entql.ValueP) {
+	f.Where(p.Field(exchangerate.FieldCoinTypeID))
+}
+
+// WhereMarketValue applies the entql other predicate on the market_value field.
+func (f *ExchangeRateFilter) WhereMarketValue(p entql.OtherP) {
+	f.Where(p.Field(exchangerate.FieldMarketValue))
+}
+
+// WhereSettleValue applies the entql other predicate on the settle_value field.
+func (f *ExchangeRateFilter) WhereSettleValue(p entql.OtherP) {
+	f.Where(p.Field(exchangerate.FieldSettleValue))
+}
+
+// WhereSettlePercent applies the entql uint32 predicate on the settle_percent field.
+func (f *ExchangeRateFilter) WhereSettlePercent(p entql.Uint32P) {
+	f.Where(p.Field(exchangerate.FieldSettlePercent))
+}
+
+// WhereSetter applies the entql [16]byte predicate on the setter field.
+func (f *ExchangeRateFilter) WhereSetter(p entql.ValueP) {
+	f.Where(p.Field(exchangerate.FieldSetter))
+}
+
+// addPredicate implements the predicateAdder interface.
 func (tq *TranQuery) addPredicate(pred func(s *sql.Selector)) {
 	tq.predicates = append(tq.predicates, pred)
 }
@@ -381,7 +489,7 @@ type TranFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *TranFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[3].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[4].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})

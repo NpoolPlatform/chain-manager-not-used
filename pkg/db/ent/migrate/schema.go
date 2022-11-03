@@ -62,6 +62,25 @@ var (
 		Columns:    CoinExtrasColumns,
 		PrimaryKey: []*schema.Column{CoinExtrasColumns[0]},
 	}
+	// ExchangeRatesColumns holds the columns for the "exchange_rates" table.
+	ExchangeRatesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID, Unique: true},
+		{Name: "created_at", Type: field.TypeUint32},
+		{Name: "updated_at", Type: field.TypeUint32},
+		{Name: "deleted_at", Type: field.TypeUint32},
+		{Name: "app_id", Type: field.TypeUUID, Nullable: true},
+		{Name: "coin_type_id", Type: field.TypeUUID, Nullable: true},
+		{Name: "market_value", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
+		{Name: "settle_value", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
+		{Name: "settle_percent", Type: field.TypeUint32, Nullable: true, Default: 100},
+		{Name: "setter", Type: field.TypeUUID, Nullable: true},
+	}
+	// ExchangeRatesTable holds the schema information for the "exchange_rates" table.
+	ExchangeRatesTable = &schema.Table{
+		Name:       "exchange_rates",
+		Columns:    ExchangeRatesColumns,
+		PrimaryKey: []*schema.Column{ExchangeRatesColumns[0]},
+	}
 	// TransColumns holds the columns for the "trans" table.
 	TransColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID, Unique: true},
@@ -87,6 +106,7 @@ var (
 		AppCoinsTable,
 		CoinBasesTable,
 		CoinExtrasTable,
+		ExchangeRatesTable,
 		TransTable,
 	}
 )

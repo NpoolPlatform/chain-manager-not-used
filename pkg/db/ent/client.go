@@ -14,6 +14,7 @@ import (
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/appcoin"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/coinbase"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/coinextra"
+	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/exchangerate"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/tran"
 
 	"entgo.io/ent/dialect"
@@ -31,6 +32,8 @@ type Client struct {
 	CoinBase *CoinBaseClient
 	// CoinExtra is the client for interacting with the CoinExtra builders.
 	CoinExtra *CoinExtraClient
+	// ExchangeRate is the client for interacting with the ExchangeRate builders.
+	ExchangeRate *ExchangeRateClient
 	// Tran is the client for interacting with the Tran builders.
 	Tran *TranClient
 }
@@ -49,6 +52,7 @@ func (c *Client) init() {
 	c.AppCoin = NewAppCoinClient(c.config)
 	c.CoinBase = NewCoinBaseClient(c.config)
 	c.CoinExtra = NewCoinExtraClient(c.config)
+	c.ExchangeRate = NewExchangeRateClient(c.config)
 	c.Tran = NewTranClient(c.config)
 }
 
@@ -81,12 +85,13 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:       ctx,
-		config:    cfg,
-		AppCoin:   NewAppCoinClient(cfg),
-		CoinBase:  NewCoinBaseClient(cfg),
-		CoinExtra: NewCoinExtraClient(cfg),
-		Tran:      NewTranClient(cfg),
+		ctx:          ctx,
+		config:       cfg,
+		AppCoin:      NewAppCoinClient(cfg),
+		CoinBase:     NewCoinBaseClient(cfg),
+		CoinExtra:    NewCoinExtraClient(cfg),
+		ExchangeRate: NewExchangeRateClient(cfg),
+		Tran:         NewTranClient(cfg),
 	}, nil
 }
 
@@ -104,12 +109,13 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:       ctx,
-		config:    cfg,
-		AppCoin:   NewAppCoinClient(cfg),
-		CoinBase:  NewCoinBaseClient(cfg),
-		CoinExtra: NewCoinExtraClient(cfg),
-		Tran:      NewTranClient(cfg),
+		ctx:          ctx,
+		config:       cfg,
+		AppCoin:      NewAppCoinClient(cfg),
+		CoinBase:     NewCoinBaseClient(cfg),
+		CoinExtra:    NewCoinExtraClient(cfg),
+		ExchangeRate: NewExchangeRateClient(cfg),
+		Tran:         NewTranClient(cfg),
 	}, nil
 }
 
@@ -142,6 +148,7 @@ func (c *Client) Use(hooks ...Hook) {
 	c.AppCoin.Use(hooks...)
 	c.CoinBase.Use(hooks...)
 	c.CoinExtra.Use(hooks...)
+	c.ExchangeRate.Use(hooks...)
 	c.Tran.Use(hooks...)
 }
 
@@ -416,6 +423,97 @@ func (c *CoinExtraClient) GetX(ctx context.Context, id uuid.UUID) *CoinExtra {
 func (c *CoinExtraClient) Hooks() []Hook {
 	hooks := c.hooks.CoinExtra
 	return append(hooks[:len(hooks):len(hooks)], coinextra.Hooks[:]...)
+}
+
+// ExchangeRateClient is a client for the ExchangeRate schema.
+type ExchangeRateClient struct {
+	config
+}
+
+// NewExchangeRateClient returns a client for the ExchangeRate from the given config.
+func NewExchangeRateClient(c config) *ExchangeRateClient {
+	return &ExchangeRateClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `exchangerate.Hooks(f(g(h())))`.
+func (c *ExchangeRateClient) Use(hooks ...Hook) {
+	c.hooks.ExchangeRate = append(c.hooks.ExchangeRate, hooks...)
+}
+
+// Create returns a builder for creating a ExchangeRate entity.
+func (c *ExchangeRateClient) Create() *ExchangeRateCreate {
+	mutation := newExchangeRateMutation(c.config, OpCreate)
+	return &ExchangeRateCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of ExchangeRate entities.
+func (c *ExchangeRateClient) CreateBulk(builders ...*ExchangeRateCreate) *ExchangeRateCreateBulk {
+	return &ExchangeRateCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for ExchangeRate.
+func (c *ExchangeRateClient) Update() *ExchangeRateUpdate {
+	mutation := newExchangeRateMutation(c.config, OpUpdate)
+	return &ExchangeRateUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *ExchangeRateClient) UpdateOne(er *ExchangeRate) *ExchangeRateUpdateOne {
+	mutation := newExchangeRateMutation(c.config, OpUpdateOne, withExchangeRate(er))
+	return &ExchangeRateUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *ExchangeRateClient) UpdateOneID(id uuid.UUID) *ExchangeRateUpdateOne {
+	mutation := newExchangeRateMutation(c.config, OpUpdateOne, withExchangeRateID(id))
+	return &ExchangeRateUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for ExchangeRate.
+func (c *ExchangeRateClient) Delete() *ExchangeRateDelete {
+	mutation := newExchangeRateMutation(c.config, OpDelete)
+	return &ExchangeRateDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *ExchangeRateClient) DeleteOne(er *ExchangeRate) *ExchangeRateDeleteOne {
+	return c.DeleteOneID(er.ID)
+}
+
+// DeleteOne returns a builder for deleting the given entity by its id.
+func (c *ExchangeRateClient) DeleteOneID(id uuid.UUID) *ExchangeRateDeleteOne {
+	builder := c.Delete().Where(exchangerate.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &ExchangeRateDeleteOne{builder}
+}
+
+// Query returns a query builder for ExchangeRate.
+func (c *ExchangeRateClient) Query() *ExchangeRateQuery {
+	return &ExchangeRateQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a ExchangeRate entity by its id.
+func (c *ExchangeRateClient) Get(ctx context.Context, id uuid.UUID) (*ExchangeRate, error) {
+	return c.Query().Where(exchangerate.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *ExchangeRateClient) GetX(ctx context.Context, id uuid.UUID) *ExchangeRate {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *ExchangeRateClient) Hooks() []Hook {
+	hooks := c.hooks.ExchangeRate
+	return append(hooks[:len(hooks):len(hooks)], exchangerate.Hooks[:]...)
 }
 
 // TranClient is a client for the Tran schema.
