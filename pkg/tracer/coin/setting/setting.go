@@ -1,4 +1,4 @@
-package fee
+package setting
 
 import (
 	"fmt"
@@ -6,10 +6,10 @@ import (
 	"go.opentelemetry.io/otel/attribute"
 	trace1 "go.opentelemetry.io/otel/trace"
 
-	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/coin/fee"
+	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/coin/setting"
 )
 
-func trace(span trace1.Span, in *npool.FeeReq, index int) trace1.Span {
+func trace(span trace1.Span, in *npool.SettingReq, index int) trace1.Span {
 	span.SetAttributes(
 		attribute.String(fmt.Sprintf("ID.%v", index), in.GetID()),
 		attribute.String(fmt.Sprintf("CoinTypeID.%v", index), in.GetCoinTypeID()),
@@ -23,7 +23,7 @@ func trace(span trace1.Span, in *npool.FeeReq, index int) trace1.Span {
 	return span
 }
 
-func Trace(span trace1.Span, in *npool.FeeReq) trace1.Span {
+func Trace(span trace1.Span, in *npool.SettingReq) trace1.Span {
 	return trace(span, in, 0)
 }
 
@@ -39,7 +39,7 @@ func TraceConds(span trace1.Span, in *npool.Conds) trace1.Span {
 	return span
 }
 
-func TraceMany(span trace1.Span, infos []*npool.FeeReq) trace1.Span {
+func TraceMany(span trace1.Span, infos []*npool.SettingReq) trace1.Span {
 	for index, info := range infos {
 		span = trace(span, info, index)
 	}

@@ -12,8 +12,8 @@ import (
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/coinbase"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/coinextra"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/exchangerate"
-	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/fee"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/predicate"
+	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/setting"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/tran"
 	"github.com/google/uuid"
 	"github.com/shopspring/decimal"
@@ -34,7 +34,7 @@ const (
 	TypeCoinBase     = "CoinBase"
 	TypeCoinExtra    = "CoinExtra"
 	TypeExchangeRate = "ExchangeRate"
-	TypeFee          = "Fee"
+	TypeSetting      = "Setting"
 	TypeTran         = "Tran"
 )
 
@@ -3725,42 +3725,44 @@ func (m *ExchangeRateMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown ExchangeRate edge %s", name)
 }
 
-// FeeMutation represents an operation that mutates the Fee nodes in the graph.
-type FeeMutation struct {
+// SettingMutation represents an operation that mutates the Setting nodes in the graph.
+type SettingMutation struct {
 	config
-	op                         Op
-	typ                        string
-	id                         *uuid.UUID
-	created_at                 *uint32
-	addcreated_at              *int32
-	updated_at                 *uint32
-	addupdated_at              *int32
-	deleted_at                 *uint32
-	adddeleted_at              *int32
-	coin_type_id               *uuid.UUID
-	fee_coin_type_id           *uuid.UUID
-	withdraw_fee_by_stable_usd *bool
-	withdraw_fee_amount        *decimal.Decimal
-	collect_fee_amount         *decimal.Decimal
-	hot_wallet_fee_amount      *decimal.Decimal
-	low_fee_amount             *decimal.Decimal
-	clearedFields              map[string]struct{}
-	done                       bool
-	oldValue                   func(context.Context) (*Fee, error)
-	predicates                 []predicate.Fee
+	op                             Op
+	typ                            string
+	id                             *uuid.UUID
+	created_at                     *uint32
+	addcreated_at                  *int32
+	updated_at                     *uint32
+	addupdated_at                  *int32
+	deleted_at                     *uint32
+	adddeleted_at                  *int32
+	coin_type_id                   *uuid.UUID
+	fee_coin_type_id               *uuid.UUID
+	withdraw_fee_by_stable_usd     *bool
+	withdraw_fee_amount            *decimal.Decimal
+	collect_fee_amount             *decimal.Decimal
+	hot_wallet_fee_amount          *decimal.Decimal
+	low_fee_amount                 *decimal.Decimal
+	warm_account_amount            *decimal.Decimal
+	payment_account_collect_amount *decimal.Decimal
+	clearedFields                  map[string]struct{}
+	done                           bool
+	oldValue                       func(context.Context) (*Setting, error)
+	predicates                     []predicate.Setting
 }
 
-var _ ent.Mutation = (*FeeMutation)(nil)
+var _ ent.Mutation = (*SettingMutation)(nil)
 
-// feeOption allows management of the mutation configuration using functional options.
-type feeOption func(*FeeMutation)
+// settingOption allows management of the mutation configuration using functional options.
+type settingOption func(*SettingMutation)
 
-// newFeeMutation creates new mutation for the Fee entity.
-func newFeeMutation(c config, op Op, opts ...feeOption) *FeeMutation {
-	m := &FeeMutation{
+// newSettingMutation creates new mutation for the Setting entity.
+func newSettingMutation(c config, op Op, opts ...settingOption) *SettingMutation {
+	m := &SettingMutation{
 		config:        c,
 		op:            op,
-		typ:           TypeFee,
+		typ:           TypeSetting,
 		clearedFields: make(map[string]struct{}),
 	}
 	for _, opt := range opts {
@@ -3769,20 +3771,20 @@ func newFeeMutation(c config, op Op, opts ...feeOption) *FeeMutation {
 	return m
 }
 
-// withFeeID sets the ID field of the mutation.
-func withFeeID(id uuid.UUID) feeOption {
-	return func(m *FeeMutation) {
+// withSettingID sets the ID field of the mutation.
+func withSettingID(id uuid.UUID) settingOption {
+	return func(m *SettingMutation) {
 		var (
 			err   error
 			once  sync.Once
-			value *Fee
+			value *Setting
 		)
-		m.oldValue = func(ctx context.Context) (*Fee, error) {
+		m.oldValue = func(ctx context.Context) (*Setting, error) {
 			once.Do(func() {
 				if m.done {
 					err = errors.New("querying old values post mutation is not allowed")
 				} else {
-					value, err = m.Client().Fee.Get(ctx, id)
+					value, err = m.Client().Setting.Get(ctx, id)
 				}
 			})
 			return value, err
@@ -3791,10 +3793,10 @@ func withFeeID(id uuid.UUID) feeOption {
 	}
 }
 
-// withFee sets the old Fee of the mutation.
-func withFee(node *Fee) feeOption {
-	return func(m *FeeMutation) {
-		m.oldValue = func(context.Context) (*Fee, error) {
+// withSetting sets the old Setting of the mutation.
+func withSetting(node *Setting) settingOption {
+	return func(m *SettingMutation) {
+		m.oldValue = func(context.Context) (*Setting, error) {
 			return node, nil
 		}
 		m.id = &node.ID
@@ -3803,7 +3805,7 @@ func withFee(node *Fee) feeOption {
 
 // Client returns a new `ent.Client` from the mutation. If the mutation was
 // executed in a transaction (ent.Tx), a transactional client is returned.
-func (m FeeMutation) Client() *Client {
+func (m SettingMutation) Client() *Client {
 	client := &Client{config: m.config}
 	client.init()
 	return client
@@ -3811,7 +3813,7 @@ func (m FeeMutation) Client() *Client {
 
 // Tx returns an `ent.Tx` for mutations that were executed in transactions;
 // it returns an error otherwise.
-func (m FeeMutation) Tx() (*Tx, error) {
+func (m SettingMutation) Tx() (*Tx, error) {
 	if _, ok := m.driver.(*txDriver); !ok {
 		return nil, errors.New("ent: mutation is not running in a transaction")
 	}
@@ -3821,14 +3823,14 @@ func (m FeeMutation) Tx() (*Tx, error) {
 }
 
 // SetID sets the value of the id field. Note that this
-// operation is only accepted on creation of Fee entities.
-func (m *FeeMutation) SetID(id uuid.UUID) {
+// operation is only accepted on creation of Setting entities.
+func (m *SettingMutation) SetID(id uuid.UUID) {
 	m.id = &id
 }
 
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *FeeMutation) ID() (id uuid.UUID, exists bool) {
+func (m *SettingMutation) ID() (id uuid.UUID, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -3839,7 +3841,7 @@ func (m *FeeMutation) ID() (id uuid.UUID, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *FeeMutation) IDs(ctx context.Context) ([]uuid.UUID, error) {
+func (m *SettingMutation) IDs(ctx context.Context) ([]uuid.UUID, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
@@ -3848,20 +3850,20 @@ func (m *FeeMutation) IDs(ctx context.Context) ([]uuid.UUID, error) {
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().Fee.Query().Where(m.predicates...).IDs(ctx)
+		return m.Client().Setting.Query().Where(m.predicates...).IDs(ctx)
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (m *FeeMutation) SetCreatedAt(u uint32) {
+func (m *SettingMutation) SetCreatedAt(u uint32) {
 	m.created_at = &u
 	m.addcreated_at = nil
 }
 
 // CreatedAt returns the value of the "created_at" field in the mutation.
-func (m *FeeMutation) CreatedAt() (r uint32, exists bool) {
+func (m *SettingMutation) CreatedAt() (r uint32, exists bool) {
 	v := m.created_at
 	if v == nil {
 		return
@@ -3869,10 +3871,10 @@ func (m *FeeMutation) CreatedAt() (r uint32, exists bool) {
 	return *v, true
 }
 
-// OldCreatedAt returns the old "created_at" field's value of the Fee entity.
-// If the Fee object wasn't provided to the builder, the object is fetched from the database.
+// OldCreatedAt returns the old "created_at" field's value of the Setting entity.
+// If the Setting object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FeeMutation) OldCreatedAt(ctx context.Context) (v uint32, err error) {
+func (m *SettingMutation) OldCreatedAt(ctx context.Context) (v uint32, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
 	}
@@ -3887,7 +3889,7 @@ func (m *FeeMutation) OldCreatedAt(ctx context.Context) (v uint32, err error) {
 }
 
 // AddCreatedAt adds u to the "created_at" field.
-func (m *FeeMutation) AddCreatedAt(u int32) {
+func (m *SettingMutation) AddCreatedAt(u int32) {
 	if m.addcreated_at != nil {
 		*m.addcreated_at += u
 	} else {
@@ -3896,7 +3898,7 @@ func (m *FeeMutation) AddCreatedAt(u int32) {
 }
 
 // AddedCreatedAt returns the value that was added to the "created_at" field in this mutation.
-func (m *FeeMutation) AddedCreatedAt() (r int32, exists bool) {
+func (m *SettingMutation) AddedCreatedAt() (r int32, exists bool) {
 	v := m.addcreated_at
 	if v == nil {
 		return
@@ -3905,19 +3907,19 @@ func (m *FeeMutation) AddedCreatedAt() (r int32, exists bool) {
 }
 
 // ResetCreatedAt resets all changes to the "created_at" field.
-func (m *FeeMutation) ResetCreatedAt() {
+func (m *SettingMutation) ResetCreatedAt() {
 	m.created_at = nil
 	m.addcreated_at = nil
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (m *FeeMutation) SetUpdatedAt(u uint32) {
+func (m *SettingMutation) SetUpdatedAt(u uint32) {
 	m.updated_at = &u
 	m.addupdated_at = nil
 }
 
 // UpdatedAt returns the value of the "updated_at" field in the mutation.
-func (m *FeeMutation) UpdatedAt() (r uint32, exists bool) {
+func (m *SettingMutation) UpdatedAt() (r uint32, exists bool) {
 	v := m.updated_at
 	if v == nil {
 		return
@@ -3925,10 +3927,10 @@ func (m *FeeMutation) UpdatedAt() (r uint32, exists bool) {
 	return *v, true
 }
 
-// OldUpdatedAt returns the old "updated_at" field's value of the Fee entity.
-// If the Fee object wasn't provided to the builder, the object is fetched from the database.
+// OldUpdatedAt returns the old "updated_at" field's value of the Setting entity.
+// If the Setting object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FeeMutation) OldUpdatedAt(ctx context.Context) (v uint32, err error) {
+func (m *SettingMutation) OldUpdatedAt(ctx context.Context) (v uint32, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
 	}
@@ -3943,7 +3945,7 @@ func (m *FeeMutation) OldUpdatedAt(ctx context.Context) (v uint32, err error) {
 }
 
 // AddUpdatedAt adds u to the "updated_at" field.
-func (m *FeeMutation) AddUpdatedAt(u int32) {
+func (m *SettingMutation) AddUpdatedAt(u int32) {
 	if m.addupdated_at != nil {
 		*m.addupdated_at += u
 	} else {
@@ -3952,7 +3954,7 @@ func (m *FeeMutation) AddUpdatedAt(u int32) {
 }
 
 // AddedUpdatedAt returns the value that was added to the "updated_at" field in this mutation.
-func (m *FeeMutation) AddedUpdatedAt() (r int32, exists bool) {
+func (m *SettingMutation) AddedUpdatedAt() (r int32, exists bool) {
 	v := m.addupdated_at
 	if v == nil {
 		return
@@ -3961,19 +3963,19 @@ func (m *FeeMutation) AddedUpdatedAt() (r int32, exists bool) {
 }
 
 // ResetUpdatedAt resets all changes to the "updated_at" field.
-func (m *FeeMutation) ResetUpdatedAt() {
+func (m *SettingMutation) ResetUpdatedAt() {
 	m.updated_at = nil
 	m.addupdated_at = nil
 }
 
 // SetDeletedAt sets the "deleted_at" field.
-func (m *FeeMutation) SetDeletedAt(u uint32) {
+func (m *SettingMutation) SetDeletedAt(u uint32) {
 	m.deleted_at = &u
 	m.adddeleted_at = nil
 }
 
 // DeletedAt returns the value of the "deleted_at" field in the mutation.
-func (m *FeeMutation) DeletedAt() (r uint32, exists bool) {
+func (m *SettingMutation) DeletedAt() (r uint32, exists bool) {
 	v := m.deleted_at
 	if v == nil {
 		return
@@ -3981,10 +3983,10 @@ func (m *FeeMutation) DeletedAt() (r uint32, exists bool) {
 	return *v, true
 }
 
-// OldDeletedAt returns the old "deleted_at" field's value of the Fee entity.
-// If the Fee object wasn't provided to the builder, the object is fetched from the database.
+// OldDeletedAt returns the old "deleted_at" field's value of the Setting entity.
+// If the Setting object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FeeMutation) OldDeletedAt(ctx context.Context) (v uint32, err error) {
+func (m *SettingMutation) OldDeletedAt(ctx context.Context) (v uint32, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldDeletedAt is only allowed on UpdateOne operations")
 	}
@@ -3999,7 +4001,7 @@ func (m *FeeMutation) OldDeletedAt(ctx context.Context) (v uint32, err error) {
 }
 
 // AddDeletedAt adds u to the "deleted_at" field.
-func (m *FeeMutation) AddDeletedAt(u int32) {
+func (m *SettingMutation) AddDeletedAt(u int32) {
 	if m.adddeleted_at != nil {
 		*m.adddeleted_at += u
 	} else {
@@ -4008,7 +4010,7 @@ func (m *FeeMutation) AddDeletedAt(u int32) {
 }
 
 // AddedDeletedAt returns the value that was added to the "deleted_at" field in this mutation.
-func (m *FeeMutation) AddedDeletedAt() (r int32, exists bool) {
+func (m *SettingMutation) AddedDeletedAt() (r int32, exists bool) {
 	v := m.adddeleted_at
 	if v == nil {
 		return
@@ -4017,18 +4019,18 @@ func (m *FeeMutation) AddedDeletedAt() (r int32, exists bool) {
 }
 
 // ResetDeletedAt resets all changes to the "deleted_at" field.
-func (m *FeeMutation) ResetDeletedAt() {
+func (m *SettingMutation) ResetDeletedAt() {
 	m.deleted_at = nil
 	m.adddeleted_at = nil
 }
 
 // SetCoinTypeID sets the "coin_type_id" field.
-func (m *FeeMutation) SetCoinTypeID(u uuid.UUID) {
+func (m *SettingMutation) SetCoinTypeID(u uuid.UUID) {
 	m.coin_type_id = &u
 }
 
 // CoinTypeID returns the value of the "coin_type_id" field in the mutation.
-func (m *FeeMutation) CoinTypeID() (r uuid.UUID, exists bool) {
+func (m *SettingMutation) CoinTypeID() (r uuid.UUID, exists bool) {
 	v := m.coin_type_id
 	if v == nil {
 		return
@@ -4036,10 +4038,10 @@ func (m *FeeMutation) CoinTypeID() (r uuid.UUID, exists bool) {
 	return *v, true
 }
 
-// OldCoinTypeID returns the old "coin_type_id" field's value of the Fee entity.
-// If the Fee object wasn't provided to the builder, the object is fetched from the database.
+// OldCoinTypeID returns the old "coin_type_id" field's value of the Setting entity.
+// If the Setting object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FeeMutation) OldCoinTypeID(ctx context.Context) (v uuid.UUID, err error) {
+func (m *SettingMutation) OldCoinTypeID(ctx context.Context) (v uuid.UUID, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldCoinTypeID is only allowed on UpdateOne operations")
 	}
@@ -4054,30 +4056,30 @@ func (m *FeeMutation) OldCoinTypeID(ctx context.Context) (v uuid.UUID, err error
 }
 
 // ClearCoinTypeID clears the value of the "coin_type_id" field.
-func (m *FeeMutation) ClearCoinTypeID() {
+func (m *SettingMutation) ClearCoinTypeID() {
 	m.coin_type_id = nil
-	m.clearedFields[fee.FieldCoinTypeID] = struct{}{}
+	m.clearedFields[setting.FieldCoinTypeID] = struct{}{}
 }
 
 // CoinTypeIDCleared returns if the "coin_type_id" field was cleared in this mutation.
-func (m *FeeMutation) CoinTypeIDCleared() bool {
-	_, ok := m.clearedFields[fee.FieldCoinTypeID]
+func (m *SettingMutation) CoinTypeIDCleared() bool {
+	_, ok := m.clearedFields[setting.FieldCoinTypeID]
 	return ok
 }
 
 // ResetCoinTypeID resets all changes to the "coin_type_id" field.
-func (m *FeeMutation) ResetCoinTypeID() {
+func (m *SettingMutation) ResetCoinTypeID() {
 	m.coin_type_id = nil
-	delete(m.clearedFields, fee.FieldCoinTypeID)
+	delete(m.clearedFields, setting.FieldCoinTypeID)
 }
 
 // SetFeeCoinTypeID sets the "fee_coin_type_id" field.
-func (m *FeeMutation) SetFeeCoinTypeID(u uuid.UUID) {
+func (m *SettingMutation) SetFeeCoinTypeID(u uuid.UUID) {
 	m.fee_coin_type_id = &u
 }
 
 // FeeCoinTypeID returns the value of the "fee_coin_type_id" field in the mutation.
-func (m *FeeMutation) FeeCoinTypeID() (r uuid.UUID, exists bool) {
+func (m *SettingMutation) FeeCoinTypeID() (r uuid.UUID, exists bool) {
 	v := m.fee_coin_type_id
 	if v == nil {
 		return
@@ -4085,10 +4087,10 @@ func (m *FeeMutation) FeeCoinTypeID() (r uuid.UUID, exists bool) {
 	return *v, true
 }
 
-// OldFeeCoinTypeID returns the old "fee_coin_type_id" field's value of the Fee entity.
-// If the Fee object wasn't provided to the builder, the object is fetched from the database.
+// OldFeeCoinTypeID returns the old "fee_coin_type_id" field's value of the Setting entity.
+// If the Setting object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FeeMutation) OldFeeCoinTypeID(ctx context.Context) (v uuid.UUID, err error) {
+func (m *SettingMutation) OldFeeCoinTypeID(ctx context.Context) (v uuid.UUID, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldFeeCoinTypeID is only allowed on UpdateOne operations")
 	}
@@ -4103,30 +4105,30 @@ func (m *FeeMutation) OldFeeCoinTypeID(ctx context.Context) (v uuid.UUID, err er
 }
 
 // ClearFeeCoinTypeID clears the value of the "fee_coin_type_id" field.
-func (m *FeeMutation) ClearFeeCoinTypeID() {
+func (m *SettingMutation) ClearFeeCoinTypeID() {
 	m.fee_coin_type_id = nil
-	m.clearedFields[fee.FieldFeeCoinTypeID] = struct{}{}
+	m.clearedFields[setting.FieldFeeCoinTypeID] = struct{}{}
 }
 
 // FeeCoinTypeIDCleared returns if the "fee_coin_type_id" field was cleared in this mutation.
-func (m *FeeMutation) FeeCoinTypeIDCleared() bool {
-	_, ok := m.clearedFields[fee.FieldFeeCoinTypeID]
+func (m *SettingMutation) FeeCoinTypeIDCleared() bool {
+	_, ok := m.clearedFields[setting.FieldFeeCoinTypeID]
 	return ok
 }
 
 // ResetFeeCoinTypeID resets all changes to the "fee_coin_type_id" field.
-func (m *FeeMutation) ResetFeeCoinTypeID() {
+func (m *SettingMutation) ResetFeeCoinTypeID() {
 	m.fee_coin_type_id = nil
-	delete(m.clearedFields, fee.FieldFeeCoinTypeID)
+	delete(m.clearedFields, setting.FieldFeeCoinTypeID)
 }
 
 // SetWithdrawFeeByStableUsd sets the "withdraw_fee_by_stable_usd" field.
-func (m *FeeMutation) SetWithdrawFeeByStableUsd(b bool) {
+func (m *SettingMutation) SetWithdrawFeeByStableUsd(b bool) {
 	m.withdraw_fee_by_stable_usd = &b
 }
 
 // WithdrawFeeByStableUsd returns the value of the "withdraw_fee_by_stable_usd" field in the mutation.
-func (m *FeeMutation) WithdrawFeeByStableUsd() (r bool, exists bool) {
+func (m *SettingMutation) WithdrawFeeByStableUsd() (r bool, exists bool) {
 	v := m.withdraw_fee_by_stable_usd
 	if v == nil {
 		return
@@ -4134,10 +4136,10 @@ func (m *FeeMutation) WithdrawFeeByStableUsd() (r bool, exists bool) {
 	return *v, true
 }
 
-// OldWithdrawFeeByStableUsd returns the old "withdraw_fee_by_stable_usd" field's value of the Fee entity.
-// If the Fee object wasn't provided to the builder, the object is fetched from the database.
+// OldWithdrawFeeByStableUsd returns the old "withdraw_fee_by_stable_usd" field's value of the Setting entity.
+// If the Setting object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FeeMutation) OldWithdrawFeeByStableUsd(ctx context.Context) (v bool, err error) {
+func (m *SettingMutation) OldWithdrawFeeByStableUsd(ctx context.Context) (v bool, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldWithdrawFeeByStableUsd is only allowed on UpdateOne operations")
 	}
@@ -4152,30 +4154,30 @@ func (m *FeeMutation) OldWithdrawFeeByStableUsd(ctx context.Context) (v bool, er
 }
 
 // ClearWithdrawFeeByStableUsd clears the value of the "withdraw_fee_by_stable_usd" field.
-func (m *FeeMutation) ClearWithdrawFeeByStableUsd() {
+func (m *SettingMutation) ClearWithdrawFeeByStableUsd() {
 	m.withdraw_fee_by_stable_usd = nil
-	m.clearedFields[fee.FieldWithdrawFeeByStableUsd] = struct{}{}
+	m.clearedFields[setting.FieldWithdrawFeeByStableUsd] = struct{}{}
 }
 
 // WithdrawFeeByStableUsdCleared returns if the "withdraw_fee_by_stable_usd" field was cleared in this mutation.
-func (m *FeeMutation) WithdrawFeeByStableUsdCleared() bool {
-	_, ok := m.clearedFields[fee.FieldWithdrawFeeByStableUsd]
+func (m *SettingMutation) WithdrawFeeByStableUsdCleared() bool {
+	_, ok := m.clearedFields[setting.FieldWithdrawFeeByStableUsd]
 	return ok
 }
 
 // ResetWithdrawFeeByStableUsd resets all changes to the "withdraw_fee_by_stable_usd" field.
-func (m *FeeMutation) ResetWithdrawFeeByStableUsd() {
+func (m *SettingMutation) ResetWithdrawFeeByStableUsd() {
 	m.withdraw_fee_by_stable_usd = nil
-	delete(m.clearedFields, fee.FieldWithdrawFeeByStableUsd)
+	delete(m.clearedFields, setting.FieldWithdrawFeeByStableUsd)
 }
 
 // SetWithdrawFeeAmount sets the "withdraw_fee_amount" field.
-func (m *FeeMutation) SetWithdrawFeeAmount(d decimal.Decimal) {
+func (m *SettingMutation) SetWithdrawFeeAmount(d decimal.Decimal) {
 	m.withdraw_fee_amount = &d
 }
 
 // WithdrawFeeAmount returns the value of the "withdraw_fee_amount" field in the mutation.
-func (m *FeeMutation) WithdrawFeeAmount() (r decimal.Decimal, exists bool) {
+func (m *SettingMutation) WithdrawFeeAmount() (r decimal.Decimal, exists bool) {
 	v := m.withdraw_fee_amount
 	if v == nil {
 		return
@@ -4183,10 +4185,10 @@ func (m *FeeMutation) WithdrawFeeAmount() (r decimal.Decimal, exists bool) {
 	return *v, true
 }
 
-// OldWithdrawFeeAmount returns the old "withdraw_fee_amount" field's value of the Fee entity.
-// If the Fee object wasn't provided to the builder, the object is fetched from the database.
+// OldWithdrawFeeAmount returns the old "withdraw_fee_amount" field's value of the Setting entity.
+// If the Setting object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FeeMutation) OldWithdrawFeeAmount(ctx context.Context) (v decimal.Decimal, err error) {
+func (m *SettingMutation) OldWithdrawFeeAmount(ctx context.Context) (v decimal.Decimal, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldWithdrawFeeAmount is only allowed on UpdateOne operations")
 	}
@@ -4201,30 +4203,30 @@ func (m *FeeMutation) OldWithdrawFeeAmount(ctx context.Context) (v decimal.Decim
 }
 
 // ClearWithdrawFeeAmount clears the value of the "withdraw_fee_amount" field.
-func (m *FeeMutation) ClearWithdrawFeeAmount() {
+func (m *SettingMutation) ClearWithdrawFeeAmount() {
 	m.withdraw_fee_amount = nil
-	m.clearedFields[fee.FieldWithdrawFeeAmount] = struct{}{}
+	m.clearedFields[setting.FieldWithdrawFeeAmount] = struct{}{}
 }
 
 // WithdrawFeeAmountCleared returns if the "withdraw_fee_amount" field was cleared in this mutation.
-func (m *FeeMutation) WithdrawFeeAmountCleared() bool {
-	_, ok := m.clearedFields[fee.FieldWithdrawFeeAmount]
+func (m *SettingMutation) WithdrawFeeAmountCleared() bool {
+	_, ok := m.clearedFields[setting.FieldWithdrawFeeAmount]
 	return ok
 }
 
 // ResetWithdrawFeeAmount resets all changes to the "withdraw_fee_amount" field.
-func (m *FeeMutation) ResetWithdrawFeeAmount() {
+func (m *SettingMutation) ResetWithdrawFeeAmount() {
 	m.withdraw_fee_amount = nil
-	delete(m.clearedFields, fee.FieldWithdrawFeeAmount)
+	delete(m.clearedFields, setting.FieldWithdrawFeeAmount)
 }
 
 // SetCollectFeeAmount sets the "collect_fee_amount" field.
-func (m *FeeMutation) SetCollectFeeAmount(d decimal.Decimal) {
+func (m *SettingMutation) SetCollectFeeAmount(d decimal.Decimal) {
 	m.collect_fee_amount = &d
 }
 
 // CollectFeeAmount returns the value of the "collect_fee_amount" field in the mutation.
-func (m *FeeMutation) CollectFeeAmount() (r decimal.Decimal, exists bool) {
+func (m *SettingMutation) CollectFeeAmount() (r decimal.Decimal, exists bool) {
 	v := m.collect_fee_amount
 	if v == nil {
 		return
@@ -4232,10 +4234,10 @@ func (m *FeeMutation) CollectFeeAmount() (r decimal.Decimal, exists bool) {
 	return *v, true
 }
 
-// OldCollectFeeAmount returns the old "collect_fee_amount" field's value of the Fee entity.
-// If the Fee object wasn't provided to the builder, the object is fetched from the database.
+// OldCollectFeeAmount returns the old "collect_fee_amount" field's value of the Setting entity.
+// If the Setting object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FeeMutation) OldCollectFeeAmount(ctx context.Context) (v decimal.Decimal, err error) {
+func (m *SettingMutation) OldCollectFeeAmount(ctx context.Context) (v decimal.Decimal, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldCollectFeeAmount is only allowed on UpdateOne operations")
 	}
@@ -4250,30 +4252,30 @@ func (m *FeeMutation) OldCollectFeeAmount(ctx context.Context) (v decimal.Decima
 }
 
 // ClearCollectFeeAmount clears the value of the "collect_fee_amount" field.
-func (m *FeeMutation) ClearCollectFeeAmount() {
+func (m *SettingMutation) ClearCollectFeeAmount() {
 	m.collect_fee_amount = nil
-	m.clearedFields[fee.FieldCollectFeeAmount] = struct{}{}
+	m.clearedFields[setting.FieldCollectFeeAmount] = struct{}{}
 }
 
 // CollectFeeAmountCleared returns if the "collect_fee_amount" field was cleared in this mutation.
-func (m *FeeMutation) CollectFeeAmountCleared() bool {
-	_, ok := m.clearedFields[fee.FieldCollectFeeAmount]
+func (m *SettingMutation) CollectFeeAmountCleared() bool {
+	_, ok := m.clearedFields[setting.FieldCollectFeeAmount]
 	return ok
 }
 
 // ResetCollectFeeAmount resets all changes to the "collect_fee_amount" field.
-func (m *FeeMutation) ResetCollectFeeAmount() {
+func (m *SettingMutation) ResetCollectFeeAmount() {
 	m.collect_fee_amount = nil
-	delete(m.clearedFields, fee.FieldCollectFeeAmount)
+	delete(m.clearedFields, setting.FieldCollectFeeAmount)
 }
 
 // SetHotWalletFeeAmount sets the "hot_wallet_fee_amount" field.
-func (m *FeeMutation) SetHotWalletFeeAmount(d decimal.Decimal) {
+func (m *SettingMutation) SetHotWalletFeeAmount(d decimal.Decimal) {
 	m.hot_wallet_fee_amount = &d
 }
 
 // HotWalletFeeAmount returns the value of the "hot_wallet_fee_amount" field in the mutation.
-func (m *FeeMutation) HotWalletFeeAmount() (r decimal.Decimal, exists bool) {
+func (m *SettingMutation) HotWalletFeeAmount() (r decimal.Decimal, exists bool) {
 	v := m.hot_wallet_fee_amount
 	if v == nil {
 		return
@@ -4281,10 +4283,10 @@ func (m *FeeMutation) HotWalletFeeAmount() (r decimal.Decimal, exists bool) {
 	return *v, true
 }
 
-// OldHotWalletFeeAmount returns the old "hot_wallet_fee_amount" field's value of the Fee entity.
-// If the Fee object wasn't provided to the builder, the object is fetched from the database.
+// OldHotWalletFeeAmount returns the old "hot_wallet_fee_amount" field's value of the Setting entity.
+// If the Setting object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FeeMutation) OldHotWalletFeeAmount(ctx context.Context) (v decimal.Decimal, err error) {
+func (m *SettingMutation) OldHotWalletFeeAmount(ctx context.Context) (v decimal.Decimal, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldHotWalletFeeAmount is only allowed on UpdateOne operations")
 	}
@@ -4299,30 +4301,30 @@ func (m *FeeMutation) OldHotWalletFeeAmount(ctx context.Context) (v decimal.Deci
 }
 
 // ClearHotWalletFeeAmount clears the value of the "hot_wallet_fee_amount" field.
-func (m *FeeMutation) ClearHotWalletFeeAmount() {
+func (m *SettingMutation) ClearHotWalletFeeAmount() {
 	m.hot_wallet_fee_amount = nil
-	m.clearedFields[fee.FieldHotWalletFeeAmount] = struct{}{}
+	m.clearedFields[setting.FieldHotWalletFeeAmount] = struct{}{}
 }
 
 // HotWalletFeeAmountCleared returns if the "hot_wallet_fee_amount" field was cleared in this mutation.
-func (m *FeeMutation) HotWalletFeeAmountCleared() bool {
-	_, ok := m.clearedFields[fee.FieldHotWalletFeeAmount]
+func (m *SettingMutation) HotWalletFeeAmountCleared() bool {
+	_, ok := m.clearedFields[setting.FieldHotWalletFeeAmount]
 	return ok
 }
 
 // ResetHotWalletFeeAmount resets all changes to the "hot_wallet_fee_amount" field.
-func (m *FeeMutation) ResetHotWalletFeeAmount() {
+func (m *SettingMutation) ResetHotWalletFeeAmount() {
 	m.hot_wallet_fee_amount = nil
-	delete(m.clearedFields, fee.FieldHotWalletFeeAmount)
+	delete(m.clearedFields, setting.FieldHotWalletFeeAmount)
 }
 
 // SetLowFeeAmount sets the "low_fee_amount" field.
-func (m *FeeMutation) SetLowFeeAmount(d decimal.Decimal) {
+func (m *SettingMutation) SetLowFeeAmount(d decimal.Decimal) {
 	m.low_fee_amount = &d
 }
 
 // LowFeeAmount returns the value of the "low_fee_amount" field in the mutation.
-func (m *FeeMutation) LowFeeAmount() (r decimal.Decimal, exists bool) {
+func (m *SettingMutation) LowFeeAmount() (r decimal.Decimal, exists bool) {
 	v := m.low_fee_amount
 	if v == nil {
 		return
@@ -4330,10 +4332,10 @@ func (m *FeeMutation) LowFeeAmount() (r decimal.Decimal, exists bool) {
 	return *v, true
 }
 
-// OldLowFeeAmount returns the old "low_fee_amount" field's value of the Fee entity.
-// If the Fee object wasn't provided to the builder, the object is fetched from the database.
+// OldLowFeeAmount returns the old "low_fee_amount" field's value of the Setting entity.
+// If the Setting object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FeeMutation) OldLowFeeAmount(ctx context.Context) (v decimal.Decimal, err error) {
+func (m *SettingMutation) OldLowFeeAmount(ctx context.Context) (v decimal.Decimal, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldLowFeeAmount is only allowed on UpdateOne operations")
 	}
@@ -4348,72 +4350,176 @@ func (m *FeeMutation) OldLowFeeAmount(ctx context.Context) (v decimal.Decimal, e
 }
 
 // ClearLowFeeAmount clears the value of the "low_fee_amount" field.
-func (m *FeeMutation) ClearLowFeeAmount() {
+func (m *SettingMutation) ClearLowFeeAmount() {
 	m.low_fee_amount = nil
-	m.clearedFields[fee.FieldLowFeeAmount] = struct{}{}
+	m.clearedFields[setting.FieldLowFeeAmount] = struct{}{}
 }
 
 // LowFeeAmountCleared returns if the "low_fee_amount" field was cleared in this mutation.
-func (m *FeeMutation) LowFeeAmountCleared() bool {
-	_, ok := m.clearedFields[fee.FieldLowFeeAmount]
+func (m *SettingMutation) LowFeeAmountCleared() bool {
+	_, ok := m.clearedFields[setting.FieldLowFeeAmount]
 	return ok
 }
 
 // ResetLowFeeAmount resets all changes to the "low_fee_amount" field.
-func (m *FeeMutation) ResetLowFeeAmount() {
+func (m *SettingMutation) ResetLowFeeAmount() {
 	m.low_fee_amount = nil
-	delete(m.clearedFields, fee.FieldLowFeeAmount)
+	delete(m.clearedFields, setting.FieldLowFeeAmount)
 }
 
-// Where appends a list predicates to the FeeMutation builder.
-func (m *FeeMutation) Where(ps ...predicate.Fee) {
+// SetWarmAccountAmount sets the "warm_account_amount" field.
+func (m *SettingMutation) SetWarmAccountAmount(d decimal.Decimal) {
+	m.warm_account_amount = &d
+}
+
+// WarmAccountAmount returns the value of the "warm_account_amount" field in the mutation.
+func (m *SettingMutation) WarmAccountAmount() (r decimal.Decimal, exists bool) {
+	v := m.warm_account_amount
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldWarmAccountAmount returns the old "warm_account_amount" field's value of the Setting entity.
+// If the Setting object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SettingMutation) OldWarmAccountAmount(ctx context.Context) (v decimal.Decimal, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldWarmAccountAmount is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldWarmAccountAmount requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldWarmAccountAmount: %w", err)
+	}
+	return oldValue.WarmAccountAmount, nil
+}
+
+// ClearWarmAccountAmount clears the value of the "warm_account_amount" field.
+func (m *SettingMutation) ClearWarmAccountAmount() {
+	m.warm_account_amount = nil
+	m.clearedFields[setting.FieldWarmAccountAmount] = struct{}{}
+}
+
+// WarmAccountAmountCleared returns if the "warm_account_amount" field was cleared in this mutation.
+func (m *SettingMutation) WarmAccountAmountCleared() bool {
+	_, ok := m.clearedFields[setting.FieldWarmAccountAmount]
+	return ok
+}
+
+// ResetWarmAccountAmount resets all changes to the "warm_account_amount" field.
+func (m *SettingMutation) ResetWarmAccountAmount() {
+	m.warm_account_amount = nil
+	delete(m.clearedFields, setting.FieldWarmAccountAmount)
+}
+
+// SetPaymentAccountCollectAmount sets the "payment_account_collect_amount" field.
+func (m *SettingMutation) SetPaymentAccountCollectAmount(d decimal.Decimal) {
+	m.payment_account_collect_amount = &d
+}
+
+// PaymentAccountCollectAmount returns the value of the "payment_account_collect_amount" field in the mutation.
+func (m *SettingMutation) PaymentAccountCollectAmount() (r decimal.Decimal, exists bool) {
+	v := m.payment_account_collect_amount
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPaymentAccountCollectAmount returns the old "payment_account_collect_amount" field's value of the Setting entity.
+// If the Setting object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SettingMutation) OldPaymentAccountCollectAmount(ctx context.Context) (v decimal.Decimal, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPaymentAccountCollectAmount is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPaymentAccountCollectAmount requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPaymentAccountCollectAmount: %w", err)
+	}
+	return oldValue.PaymentAccountCollectAmount, nil
+}
+
+// ClearPaymentAccountCollectAmount clears the value of the "payment_account_collect_amount" field.
+func (m *SettingMutation) ClearPaymentAccountCollectAmount() {
+	m.payment_account_collect_amount = nil
+	m.clearedFields[setting.FieldPaymentAccountCollectAmount] = struct{}{}
+}
+
+// PaymentAccountCollectAmountCleared returns if the "payment_account_collect_amount" field was cleared in this mutation.
+func (m *SettingMutation) PaymentAccountCollectAmountCleared() bool {
+	_, ok := m.clearedFields[setting.FieldPaymentAccountCollectAmount]
+	return ok
+}
+
+// ResetPaymentAccountCollectAmount resets all changes to the "payment_account_collect_amount" field.
+func (m *SettingMutation) ResetPaymentAccountCollectAmount() {
+	m.payment_account_collect_amount = nil
+	delete(m.clearedFields, setting.FieldPaymentAccountCollectAmount)
+}
+
+// Where appends a list predicates to the SettingMutation builder.
+func (m *SettingMutation) Where(ps ...predicate.Setting) {
 	m.predicates = append(m.predicates, ps...)
 }
 
 // Op returns the operation name.
-func (m *FeeMutation) Op() Op {
+func (m *SettingMutation) Op() Op {
 	return m.op
 }
 
-// Type returns the node type of this mutation (Fee).
-func (m *FeeMutation) Type() string {
+// Type returns the node type of this mutation (Setting).
+func (m *SettingMutation) Type() string {
 	return m.typ
 }
 
 // Fields returns all fields that were changed during this mutation. Note that in
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
-func (m *FeeMutation) Fields() []string {
-	fields := make([]string, 0, 10)
+func (m *SettingMutation) Fields() []string {
+	fields := make([]string, 0, 12)
 	if m.created_at != nil {
-		fields = append(fields, fee.FieldCreatedAt)
+		fields = append(fields, setting.FieldCreatedAt)
 	}
 	if m.updated_at != nil {
-		fields = append(fields, fee.FieldUpdatedAt)
+		fields = append(fields, setting.FieldUpdatedAt)
 	}
 	if m.deleted_at != nil {
-		fields = append(fields, fee.FieldDeletedAt)
+		fields = append(fields, setting.FieldDeletedAt)
 	}
 	if m.coin_type_id != nil {
-		fields = append(fields, fee.FieldCoinTypeID)
+		fields = append(fields, setting.FieldCoinTypeID)
 	}
 	if m.fee_coin_type_id != nil {
-		fields = append(fields, fee.FieldFeeCoinTypeID)
+		fields = append(fields, setting.FieldFeeCoinTypeID)
 	}
 	if m.withdraw_fee_by_stable_usd != nil {
-		fields = append(fields, fee.FieldWithdrawFeeByStableUsd)
+		fields = append(fields, setting.FieldWithdrawFeeByStableUsd)
 	}
 	if m.withdraw_fee_amount != nil {
-		fields = append(fields, fee.FieldWithdrawFeeAmount)
+		fields = append(fields, setting.FieldWithdrawFeeAmount)
 	}
 	if m.collect_fee_amount != nil {
-		fields = append(fields, fee.FieldCollectFeeAmount)
+		fields = append(fields, setting.FieldCollectFeeAmount)
 	}
 	if m.hot_wallet_fee_amount != nil {
-		fields = append(fields, fee.FieldHotWalletFeeAmount)
+		fields = append(fields, setting.FieldHotWalletFeeAmount)
 	}
 	if m.low_fee_amount != nil {
-		fields = append(fields, fee.FieldLowFeeAmount)
+		fields = append(fields, setting.FieldLowFeeAmount)
+	}
+	if m.warm_account_amount != nil {
+		fields = append(fields, setting.FieldWarmAccountAmount)
+	}
+	if m.payment_account_collect_amount != nil {
+		fields = append(fields, setting.FieldPaymentAccountCollectAmount)
 	}
 	return fields
 }
@@ -4421,28 +4527,32 @@ func (m *FeeMutation) Fields() []string {
 // Field returns the value of a field with the given name. The second boolean
 // return value indicates that this field was not set, or was not defined in the
 // schema.
-func (m *FeeMutation) Field(name string) (ent.Value, bool) {
+func (m *SettingMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case fee.FieldCreatedAt:
+	case setting.FieldCreatedAt:
 		return m.CreatedAt()
-	case fee.FieldUpdatedAt:
+	case setting.FieldUpdatedAt:
 		return m.UpdatedAt()
-	case fee.FieldDeletedAt:
+	case setting.FieldDeletedAt:
 		return m.DeletedAt()
-	case fee.FieldCoinTypeID:
+	case setting.FieldCoinTypeID:
 		return m.CoinTypeID()
-	case fee.FieldFeeCoinTypeID:
+	case setting.FieldFeeCoinTypeID:
 		return m.FeeCoinTypeID()
-	case fee.FieldWithdrawFeeByStableUsd:
+	case setting.FieldWithdrawFeeByStableUsd:
 		return m.WithdrawFeeByStableUsd()
-	case fee.FieldWithdrawFeeAmount:
+	case setting.FieldWithdrawFeeAmount:
 		return m.WithdrawFeeAmount()
-	case fee.FieldCollectFeeAmount:
+	case setting.FieldCollectFeeAmount:
 		return m.CollectFeeAmount()
-	case fee.FieldHotWalletFeeAmount:
+	case setting.FieldHotWalletFeeAmount:
 		return m.HotWalletFeeAmount()
-	case fee.FieldLowFeeAmount:
+	case setting.FieldLowFeeAmount:
 		return m.LowFeeAmount()
+	case setting.FieldWarmAccountAmount:
+		return m.WarmAccountAmount()
+	case setting.FieldPaymentAccountCollectAmount:
+		return m.PaymentAccountCollectAmount()
 	}
 	return nil, false
 }
@@ -4450,123 +4560,141 @@ func (m *FeeMutation) Field(name string) (ent.Value, bool) {
 // OldField returns the old value of the field from the database. An error is
 // returned if the mutation operation is not UpdateOne, or the query to the
 // database failed.
-func (m *FeeMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+func (m *SettingMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case fee.FieldCreatedAt:
+	case setting.FieldCreatedAt:
 		return m.OldCreatedAt(ctx)
-	case fee.FieldUpdatedAt:
+	case setting.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
-	case fee.FieldDeletedAt:
+	case setting.FieldDeletedAt:
 		return m.OldDeletedAt(ctx)
-	case fee.FieldCoinTypeID:
+	case setting.FieldCoinTypeID:
 		return m.OldCoinTypeID(ctx)
-	case fee.FieldFeeCoinTypeID:
+	case setting.FieldFeeCoinTypeID:
 		return m.OldFeeCoinTypeID(ctx)
-	case fee.FieldWithdrawFeeByStableUsd:
+	case setting.FieldWithdrawFeeByStableUsd:
 		return m.OldWithdrawFeeByStableUsd(ctx)
-	case fee.FieldWithdrawFeeAmount:
+	case setting.FieldWithdrawFeeAmount:
 		return m.OldWithdrawFeeAmount(ctx)
-	case fee.FieldCollectFeeAmount:
+	case setting.FieldCollectFeeAmount:
 		return m.OldCollectFeeAmount(ctx)
-	case fee.FieldHotWalletFeeAmount:
+	case setting.FieldHotWalletFeeAmount:
 		return m.OldHotWalletFeeAmount(ctx)
-	case fee.FieldLowFeeAmount:
+	case setting.FieldLowFeeAmount:
 		return m.OldLowFeeAmount(ctx)
+	case setting.FieldWarmAccountAmount:
+		return m.OldWarmAccountAmount(ctx)
+	case setting.FieldPaymentAccountCollectAmount:
+		return m.OldPaymentAccountCollectAmount(ctx)
 	}
-	return nil, fmt.Errorf("unknown Fee field %s", name)
+	return nil, fmt.Errorf("unknown Setting field %s", name)
 }
 
 // SetField sets the value of a field with the given name. It returns an error if
 // the field is not defined in the schema, or if the type mismatched the field
 // type.
-func (m *FeeMutation) SetField(name string, value ent.Value) error {
+func (m *SettingMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case fee.FieldCreatedAt:
+	case setting.FieldCreatedAt:
 		v, ok := value.(uint32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetCreatedAt(v)
 		return nil
-	case fee.FieldUpdatedAt:
+	case setting.FieldUpdatedAt:
 		v, ok := value.(uint32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUpdatedAt(v)
 		return nil
-	case fee.FieldDeletedAt:
+	case setting.FieldDeletedAt:
 		v, ok := value.(uint32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetDeletedAt(v)
 		return nil
-	case fee.FieldCoinTypeID:
+	case setting.FieldCoinTypeID:
 		v, ok := value.(uuid.UUID)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetCoinTypeID(v)
 		return nil
-	case fee.FieldFeeCoinTypeID:
+	case setting.FieldFeeCoinTypeID:
 		v, ok := value.(uuid.UUID)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetFeeCoinTypeID(v)
 		return nil
-	case fee.FieldWithdrawFeeByStableUsd:
+	case setting.FieldWithdrawFeeByStableUsd:
 		v, ok := value.(bool)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetWithdrawFeeByStableUsd(v)
 		return nil
-	case fee.FieldWithdrawFeeAmount:
+	case setting.FieldWithdrawFeeAmount:
 		v, ok := value.(decimal.Decimal)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetWithdrawFeeAmount(v)
 		return nil
-	case fee.FieldCollectFeeAmount:
+	case setting.FieldCollectFeeAmount:
 		v, ok := value.(decimal.Decimal)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetCollectFeeAmount(v)
 		return nil
-	case fee.FieldHotWalletFeeAmount:
+	case setting.FieldHotWalletFeeAmount:
 		v, ok := value.(decimal.Decimal)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetHotWalletFeeAmount(v)
 		return nil
-	case fee.FieldLowFeeAmount:
+	case setting.FieldLowFeeAmount:
 		v, ok := value.(decimal.Decimal)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetLowFeeAmount(v)
 		return nil
+	case setting.FieldWarmAccountAmount:
+		v, ok := value.(decimal.Decimal)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetWarmAccountAmount(v)
+		return nil
+	case setting.FieldPaymentAccountCollectAmount:
+		v, ok := value.(decimal.Decimal)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPaymentAccountCollectAmount(v)
+		return nil
 	}
-	return fmt.Errorf("unknown Fee field %s", name)
+	return fmt.Errorf("unknown Setting field %s", name)
 }
 
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
-func (m *FeeMutation) AddedFields() []string {
+func (m *SettingMutation) AddedFields() []string {
 	var fields []string
 	if m.addcreated_at != nil {
-		fields = append(fields, fee.FieldCreatedAt)
+		fields = append(fields, setting.FieldCreatedAt)
 	}
 	if m.addupdated_at != nil {
-		fields = append(fields, fee.FieldUpdatedAt)
+		fields = append(fields, setting.FieldUpdatedAt)
 	}
 	if m.adddeleted_at != nil {
-		fields = append(fields, fee.FieldDeletedAt)
+		fields = append(fields, setting.FieldDeletedAt)
 	}
 	return fields
 }
@@ -4574,13 +4702,13 @@ func (m *FeeMutation) AddedFields() []string {
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
-func (m *FeeMutation) AddedField(name string) (ent.Value, bool) {
+func (m *SettingMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
-	case fee.FieldCreatedAt:
+	case setting.FieldCreatedAt:
 		return m.AddedCreatedAt()
-	case fee.FieldUpdatedAt:
+	case setting.FieldUpdatedAt:
 		return m.AddedUpdatedAt()
-	case fee.FieldDeletedAt:
+	case setting.FieldDeletedAt:
 		return m.AddedDeletedAt()
 	}
 	return nil, false
@@ -4589,23 +4717,23 @@ func (m *FeeMutation) AddedField(name string) (ent.Value, bool) {
 // AddField adds the value to the field with the given name. It returns an error if
 // the field is not defined in the schema, or if the type mismatched the field
 // type.
-func (m *FeeMutation) AddField(name string, value ent.Value) error {
+func (m *SettingMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case fee.FieldCreatedAt:
+	case setting.FieldCreatedAt:
 		v, ok := value.(int32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddCreatedAt(v)
 		return nil
-	case fee.FieldUpdatedAt:
+	case setting.FieldUpdatedAt:
 		v, ok := value.(int32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddUpdatedAt(v)
 		return nil
-	case fee.FieldDeletedAt:
+	case setting.FieldDeletedAt:
 		v, ok := value.(int32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
@@ -4613,157 +4741,175 @@ func (m *FeeMutation) AddField(name string, value ent.Value) error {
 		m.AddDeletedAt(v)
 		return nil
 	}
-	return fmt.Errorf("unknown Fee numeric field %s", name)
+	return fmt.Errorf("unknown Setting numeric field %s", name)
 }
 
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
-func (m *FeeMutation) ClearedFields() []string {
+func (m *SettingMutation) ClearedFields() []string {
 	var fields []string
-	if m.FieldCleared(fee.FieldCoinTypeID) {
-		fields = append(fields, fee.FieldCoinTypeID)
+	if m.FieldCleared(setting.FieldCoinTypeID) {
+		fields = append(fields, setting.FieldCoinTypeID)
 	}
-	if m.FieldCleared(fee.FieldFeeCoinTypeID) {
-		fields = append(fields, fee.FieldFeeCoinTypeID)
+	if m.FieldCleared(setting.FieldFeeCoinTypeID) {
+		fields = append(fields, setting.FieldFeeCoinTypeID)
 	}
-	if m.FieldCleared(fee.FieldWithdrawFeeByStableUsd) {
-		fields = append(fields, fee.FieldWithdrawFeeByStableUsd)
+	if m.FieldCleared(setting.FieldWithdrawFeeByStableUsd) {
+		fields = append(fields, setting.FieldWithdrawFeeByStableUsd)
 	}
-	if m.FieldCleared(fee.FieldWithdrawFeeAmount) {
-		fields = append(fields, fee.FieldWithdrawFeeAmount)
+	if m.FieldCleared(setting.FieldWithdrawFeeAmount) {
+		fields = append(fields, setting.FieldWithdrawFeeAmount)
 	}
-	if m.FieldCleared(fee.FieldCollectFeeAmount) {
-		fields = append(fields, fee.FieldCollectFeeAmount)
+	if m.FieldCleared(setting.FieldCollectFeeAmount) {
+		fields = append(fields, setting.FieldCollectFeeAmount)
 	}
-	if m.FieldCleared(fee.FieldHotWalletFeeAmount) {
-		fields = append(fields, fee.FieldHotWalletFeeAmount)
+	if m.FieldCleared(setting.FieldHotWalletFeeAmount) {
+		fields = append(fields, setting.FieldHotWalletFeeAmount)
 	}
-	if m.FieldCleared(fee.FieldLowFeeAmount) {
-		fields = append(fields, fee.FieldLowFeeAmount)
+	if m.FieldCleared(setting.FieldLowFeeAmount) {
+		fields = append(fields, setting.FieldLowFeeAmount)
+	}
+	if m.FieldCleared(setting.FieldWarmAccountAmount) {
+		fields = append(fields, setting.FieldWarmAccountAmount)
+	}
+	if m.FieldCleared(setting.FieldPaymentAccountCollectAmount) {
+		fields = append(fields, setting.FieldPaymentAccountCollectAmount)
 	}
 	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
 // cleared in this mutation.
-func (m *FeeMutation) FieldCleared(name string) bool {
+func (m *SettingMutation) FieldCleared(name string) bool {
 	_, ok := m.clearedFields[name]
 	return ok
 }
 
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
-func (m *FeeMutation) ClearField(name string) error {
+func (m *SettingMutation) ClearField(name string) error {
 	switch name {
-	case fee.FieldCoinTypeID:
+	case setting.FieldCoinTypeID:
 		m.ClearCoinTypeID()
 		return nil
-	case fee.FieldFeeCoinTypeID:
+	case setting.FieldFeeCoinTypeID:
 		m.ClearFeeCoinTypeID()
 		return nil
-	case fee.FieldWithdrawFeeByStableUsd:
+	case setting.FieldWithdrawFeeByStableUsd:
 		m.ClearWithdrawFeeByStableUsd()
 		return nil
-	case fee.FieldWithdrawFeeAmount:
+	case setting.FieldWithdrawFeeAmount:
 		m.ClearWithdrawFeeAmount()
 		return nil
-	case fee.FieldCollectFeeAmount:
+	case setting.FieldCollectFeeAmount:
 		m.ClearCollectFeeAmount()
 		return nil
-	case fee.FieldHotWalletFeeAmount:
+	case setting.FieldHotWalletFeeAmount:
 		m.ClearHotWalletFeeAmount()
 		return nil
-	case fee.FieldLowFeeAmount:
+	case setting.FieldLowFeeAmount:
 		m.ClearLowFeeAmount()
 		return nil
+	case setting.FieldWarmAccountAmount:
+		m.ClearWarmAccountAmount()
+		return nil
+	case setting.FieldPaymentAccountCollectAmount:
+		m.ClearPaymentAccountCollectAmount()
+		return nil
 	}
-	return fmt.Errorf("unknown Fee nullable field %s", name)
+	return fmt.Errorf("unknown Setting nullable field %s", name)
 }
 
 // ResetField resets all changes in the mutation for the field with the given name.
 // It returns an error if the field is not defined in the schema.
-func (m *FeeMutation) ResetField(name string) error {
+func (m *SettingMutation) ResetField(name string) error {
 	switch name {
-	case fee.FieldCreatedAt:
+	case setting.FieldCreatedAt:
 		m.ResetCreatedAt()
 		return nil
-	case fee.FieldUpdatedAt:
+	case setting.FieldUpdatedAt:
 		m.ResetUpdatedAt()
 		return nil
-	case fee.FieldDeletedAt:
+	case setting.FieldDeletedAt:
 		m.ResetDeletedAt()
 		return nil
-	case fee.FieldCoinTypeID:
+	case setting.FieldCoinTypeID:
 		m.ResetCoinTypeID()
 		return nil
-	case fee.FieldFeeCoinTypeID:
+	case setting.FieldFeeCoinTypeID:
 		m.ResetFeeCoinTypeID()
 		return nil
-	case fee.FieldWithdrawFeeByStableUsd:
+	case setting.FieldWithdrawFeeByStableUsd:
 		m.ResetWithdrawFeeByStableUsd()
 		return nil
-	case fee.FieldWithdrawFeeAmount:
+	case setting.FieldWithdrawFeeAmount:
 		m.ResetWithdrawFeeAmount()
 		return nil
-	case fee.FieldCollectFeeAmount:
+	case setting.FieldCollectFeeAmount:
 		m.ResetCollectFeeAmount()
 		return nil
-	case fee.FieldHotWalletFeeAmount:
+	case setting.FieldHotWalletFeeAmount:
 		m.ResetHotWalletFeeAmount()
 		return nil
-	case fee.FieldLowFeeAmount:
+	case setting.FieldLowFeeAmount:
 		m.ResetLowFeeAmount()
 		return nil
+	case setting.FieldWarmAccountAmount:
+		m.ResetWarmAccountAmount()
+		return nil
+	case setting.FieldPaymentAccountCollectAmount:
+		m.ResetPaymentAccountCollectAmount()
+		return nil
 	}
-	return fmt.Errorf("unknown Fee field %s", name)
+	return fmt.Errorf("unknown Setting field %s", name)
 }
 
 // AddedEdges returns all edge names that were set/added in this mutation.
-func (m *FeeMutation) AddedEdges() []string {
+func (m *SettingMutation) AddedEdges() []string {
 	edges := make([]string, 0, 0)
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
-func (m *FeeMutation) AddedIDs(name string) []ent.Value {
+func (m *SettingMutation) AddedIDs(name string) []ent.Value {
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
-func (m *FeeMutation) RemovedEdges() []string {
+func (m *SettingMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 0)
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
-func (m *FeeMutation) RemovedIDs(name string) []ent.Value {
+func (m *SettingMutation) RemovedIDs(name string) []ent.Value {
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *FeeMutation) ClearedEdges() []string {
+func (m *SettingMutation) ClearedEdges() []string {
 	edges := make([]string, 0, 0)
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
-func (m *FeeMutation) EdgeCleared(name string) bool {
+func (m *SettingMutation) EdgeCleared(name string) bool {
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
-func (m *FeeMutation) ClearEdge(name string) error {
-	return fmt.Errorf("unknown Fee unique edge %s", name)
+func (m *SettingMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown Setting unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
-func (m *FeeMutation) ResetEdge(name string) error {
-	return fmt.Errorf("unknown Fee edge %s", name)
+func (m *SettingMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown Setting edge %s", name)
 }
 
 // TranMutation represents an operation that mutates the Tran nodes in the graph.

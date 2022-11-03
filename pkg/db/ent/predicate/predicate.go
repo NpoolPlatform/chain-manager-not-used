@@ -18,8 +18,8 @@ type CoinExtra func(*sql.Selector)
 // ExchangeRate is the predicate function for exchangerate builders.
 type ExchangeRate func(*sql.Selector)
 
-// Fee is the predicate function for fee builders.
-type Fee func(*sql.Selector)
+// Setting is the predicate function for setting builders.
+type Setting func(*sql.Selector)
 
 // Tran is the predicate function for tran builders.
 type Tran func(*sql.Selector)

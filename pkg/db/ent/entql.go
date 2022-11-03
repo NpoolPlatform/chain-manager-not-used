@@ -7,7 +7,7 @@ import (
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/coinbase"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/coinextra"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/exchangerate"
-	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/fee"
+	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/setting"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/tran"
 
 	"entgo.io/ent/dialect/sql"
@@ -106,25 +106,27 @@ var schemaGraph = func() *sqlgraph.Schema {
 	}
 	graph.Nodes[4] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
-			Table:   fee.Table,
-			Columns: fee.Columns,
+			Table:   setting.Table,
+			Columns: setting.Columns,
 			ID: &sqlgraph.FieldSpec{
 				Type:   field.TypeUUID,
-				Column: fee.FieldID,
+				Column: setting.FieldID,
 			},
 		},
-		Type: "Fee",
+		Type: "Setting",
 		Fields: map[string]*sqlgraph.FieldSpec{
-			fee.FieldCreatedAt:              {Type: field.TypeUint32, Column: fee.FieldCreatedAt},
-			fee.FieldUpdatedAt:              {Type: field.TypeUint32, Column: fee.FieldUpdatedAt},
-			fee.FieldDeletedAt:              {Type: field.TypeUint32, Column: fee.FieldDeletedAt},
-			fee.FieldCoinTypeID:             {Type: field.TypeUUID, Column: fee.FieldCoinTypeID},
-			fee.FieldFeeCoinTypeID:          {Type: field.TypeUUID, Column: fee.FieldFeeCoinTypeID},
-			fee.FieldWithdrawFeeByStableUsd: {Type: field.TypeBool, Column: fee.FieldWithdrawFeeByStableUsd},
-			fee.FieldWithdrawFeeAmount:      {Type: field.TypeOther, Column: fee.FieldWithdrawFeeAmount},
-			fee.FieldCollectFeeAmount:       {Type: field.TypeOther, Column: fee.FieldCollectFeeAmount},
-			fee.FieldHotWalletFeeAmount:     {Type: field.TypeOther, Column: fee.FieldHotWalletFeeAmount},
-			fee.FieldLowFeeAmount:           {Type: field.TypeOther, Column: fee.FieldLowFeeAmount},
+			setting.FieldCreatedAt:                   {Type: field.TypeUint32, Column: setting.FieldCreatedAt},
+			setting.FieldUpdatedAt:                   {Type: field.TypeUint32, Column: setting.FieldUpdatedAt},
+			setting.FieldDeletedAt:                   {Type: field.TypeUint32, Column: setting.FieldDeletedAt},
+			setting.FieldCoinTypeID:                  {Type: field.TypeUUID, Column: setting.FieldCoinTypeID},
+			setting.FieldFeeCoinTypeID:               {Type: field.TypeUUID, Column: setting.FieldFeeCoinTypeID},
+			setting.FieldWithdrawFeeByStableUsd:      {Type: field.TypeBool, Column: setting.FieldWithdrawFeeByStableUsd},
+			setting.FieldWithdrawFeeAmount:           {Type: field.TypeOther, Column: setting.FieldWithdrawFeeAmount},
+			setting.FieldCollectFeeAmount:            {Type: field.TypeOther, Column: setting.FieldCollectFeeAmount},
+			setting.FieldHotWalletFeeAmount:          {Type: field.TypeOther, Column: setting.FieldHotWalletFeeAmount},
+			setting.FieldLowFeeAmount:                {Type: field.TypeOther, Column: setting.FieldLowFeeAmount},
+			setting.FieldWarmAccountAmount:           {Type: field.TypeOther, Column: setting.FieldWarmAccountAmount},
+			setting.FieldPaymentAccountCollectAmount: {Type: field.TypeOther, Column: setting.FieldPaymentAccountCollectAmount},
 		},
 	}
 	graph.Nodes[5] = &sqlgraph.Node{
@@ -485,33 +487,33 @@ func (f *ExchangeRateFilter) WhereSetter(p entql.ValueP) {
 }
 
 // addPredicate implements the predicateAdder interface.
-func (fq *FeeQuery) addPredicate(pred func(s *sql.Selector)) {
-	fq.predicates = append(fq.predicates, pred)
+func (sq *SettingQuery) addPredicate(pred func(s *sql.Selector)) {
+	sq.predicates = append(sq.predicates, pred)
 }
 
-// Filter returns a Filter implementation to apply filters on the FeeQuery builder.
-func (fq *FeeQuery) Filter() *FeeFilter {
-	return &FeeFilter{config: fq.config, predicateAdder: fq}
+// Filter returns a Filter implementation to apply filters on the SettingQuery builder.
+func (sq *SettingQuery) Filter() *SettingFilter {
+	return &SettingFilter{config: sq.config, predicateAdder: sq}
 }
 
 // addPredicate implements the predicateAdder interface.
-func (m *FeeMutation) addPredicate(pred func(s *sql.Selector)) {
+func (m *SettingMutation) addPredicate(pred func(s *sql.Selector)) {
 	m.predicates = append(m.predicates, pred)
 }
 
-// Filter returns an entql.Where implementation to apply filters on the FeeMutation builder.
-func (m *FeeMutation) Filter() *FeeFilter {
-	return &FeeFilter{config: m.config, predicateAdder: m}
+// Filter returns an entql.Where implementation to apply filters on the SettingMutation builder.
+func (m *SettingMutation) Filter() *SettingFilter {
+	return &SettingFilter{config: m.config, predicateAdder: m}
 }
 
-// FeeFilter provides a generic filtering capability at runtime for FeeQuery.
-type FeeFilter struct {
+// SettingFilter provides a generic filtering capability at runtime for SettingQuery.
+type SettingFilter struct {
 	predicateAdder
 	config
 }
 
 // Where applies the entql predicate on the query filter.
-func (f *FeeFilter) Where(p entql.P) {
+func (f *SettingFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
 		if err := schemaGraph.EvalP(schemaGraph.Nodes[4].Type, p, s); err != nil {
 			s.AddError(err)
@@ -520,58 +522,68 @@ func (f *FeeFilter) Where(p entql.P) {
 }
 
 // WhereID applies the entql [16]byte predicate on the id field.
-func (f *FeeFilter) WhereID(p entql.ValueP) {
-	f.Where(p.Field(fee.FieldID))
+func (f *SettingFilter) WhereID(p entql.ValueP) {
+	f.Where(p.Field(setting.FieldID))
 }
 
 // WhereCreatedAt applies the entql uint32 predicate on the created_at field.
-func (f *FeeFilter) WhereCreatedAt(p entql.Uint32P) {
-	f.Where(p.Field(fee.FieldCreatedAt))
+func (f *SettingFilter) WhereCreatedAt(p entql.Uint32P) {
+	f.Where(p.Field(setting.FieldCreatedAt))
 }
 
 // WhereUpdatedAt applies the entql uint32 predicate on the updated_at field.
-func (f *FeeFilter) WhereUpdatedAt(p entql.Uint32P) {
-	f.Where(p.Field(fee.FieldUpdatedAt))
+func (f *SettingFilter) WhereUpdatedAt(p entql.Uint32P) {
+	f.Where(p.Field(setting.FieldUpdatedAt))
 }
 
 // WhereDeletedAt applies the entql uint32 predicate on the deleted_at field.
-func (f *FeeFilter) WhereDeletedAt(p entql.Uint32P) {
-	f.Where(p.Field(fee.FieldDeletedAt))
+func (f *SettingFilter) WhereDeletedAt(p entql.Uint32P) {
+	f.Where(p.Field(setting.FieldDeletedAt))
 }
 
 // WhereCoinTypeID applies the entql [16]byte predicate on the coin_type_id field.
-func (f *FeeFilter) WhereCoinTypeID(p entql.ValueP) {
-	f.Where(p.Field(fee.FieldCoinTypeID))
+func (f *SettingFilter) WhereCoinTypeID(p entql.ValueP) {
+	f.Where(p.Field(setting.FieldCoinTypeID))
 }
 
 // WhereFeeCoinTypeID applies the entql [16]byte predicate on the fee_coin_type_id field.
-func (f *FeeFilter) WhereFeeCoinTypeID(p entql.ValueP) {
-	f.Where(p.Field(fee.FieldFeeCoinTypeID))
+func (f *SettingFilter) WhereFeeCoinTypeID(p entql.ValueP) {
+	f.Where(p.Field(setting.FieldFeeCoinTypeID))
 }
 
 // WhereWithdrawFeeByStableUsd applies the entql bool predicate on the withdraw_fee_by_stable_usd field.
-func (f *FeeFilter) WhereWithdrawFeeByStableUsd(p entql.BoolP) {
-	f.Where(p.Field(fee.FieldWithdrawFeeByStableUsd))
+func (f *SettingFilter) WhereWithdrawFeeByStableUsd(p entql.BoolP) {
+	f.Where(p.Field(setting.FieldWithdrawFeeByStableUsd))
 }
 
 // WhereWithdrawFeeAmount applies the entql other predicate on the withdraw_fee_amount field.
-func (f *FeeFilter) WhereWithdrawFeeAmount(p entql.OtherP) {
-	f.Where(p.Field(fee.FieldWithdrawFeeAmount))
+func (f *SettingFilter) WhereWithdrawFeeAmount(p entql.OtherP) {
+	f.Where(p.Field(setting.FieldWithdrawFeeAmount))
 }
 
 // WhereCollectFeeAmount applies the entql other predicate on the collect_fee_amount field.
-func (f *FeeFilter) WhereCollectFeeAmount(p entql.OtherP) {
-	f.Where(p.Field(fee.FieldCollectFeeAmount))
+func (f *SettingFilter) WhereCollectFeeAmount(p entql.OtherP) {
+	f.Where(p.Field(setting.FieldCollectFeeAmount))
 }
 
 // WhereHotWalletFeeAmount applies the entql other predicate on the hot_wallet_fee_amount field.
-func (f *FeeFilter) WhereHotWalletFeeAmount(p entql.OtherP) {
-	f.Where(p.Field(fee.FieldHotWalletFeeAmount))
+func (f *SettingFilter) WhereHotWalletFeeAmount(p entql.OtherP) {
+	f.Where(p.Field(setting.FieldHotWalletFeeAmount))
 }
 
 // WhereLowFeeAmount applies the entql other predicate on the low_fee_amount field.
-func (f *FeeFilter) WhereLowFeeAmount(p entql.OtherP) {
-	f.Where(p.Field(fee.FieldLowFeeAmount))
+func (f *SettingFilter) WhereLowFeeAmount(p entql.OtherP) {
+	f.Where(p.Field(setting.FieldLowFeeAmount))
+}
+
+// WhereWarmAccountAmount applies the entql other predicate on the warm_account_amount field.
+func (f *SettingFilter) WhereWarmAccountAmount(p entql.OtherP) {
+	f.Where(p.Field(setting.FieldWarmAccountAmount))
+}
+
+// WherePaymentAccountCollectAmount applies the entql other predicate on the payment_account_collect_amount field.
+func (f *SettingFilter) WherePaymentAccountCollectAmount(p entql.OtherP) {
+	f.Where(p.Field(setting.FieldPaymentAccountCollectAmount))
 }
 
 // addPredicate implements the predicateAdder interface.

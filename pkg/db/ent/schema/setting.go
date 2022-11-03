@@ -9,19 +9,19 @@ import (
 	"github.com/shopspring/decimal"
 )
 
-// Fee holds the schema definition for the Fee entity.
-type Fee struct {
+// Setting holds the schema definition for the Setting entity.
+type Setting struct {
 	ent.Schema
 }
 
-func (Fee) Mixin() []ent.Mixin {
+func (Setting) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		mixin.TimeMixin{},
 	}
 }
 
-// Fields of the Fee.
-func (Fee) Fields() []ent.Field {
+// Fields of the Setting.
+func (Setting) Fields() []ent.Field {
 	return []ent.Field{
 		field.
 			UUID("id", uuid.UUID{}).
@@ -67,10 +67,24 @@ func (Fee) Fields() []ent.Field {
 			}).
 			Optional().
 			Default(decimal.Decimal{}),
+		field.
+			Other("warm_account_amount", decimal.Decimal{}).
+			SchemaType(map[string]string{
+				dialect.MySQL: "decimal(37,18)",
+			}).
+			Optional().
+			Default(decimal.Decimal{}),
+		field.
+			Other("payment_account_collect_amount", decimal.Decimal{}).
+			SchemaType(map[string]string{
+				dialect.MySQL: "decimal(37,18)",
+			}).
+			Optional().
+			Default(decimal.Decimal{}),
 	}
 }
 
-// Edges of the Fee.
-func (Fee) Edges() []ent.Edge {
+// Edges of the Setting.
+func (Setting) Edges() []ent.Edge {
 	return nil
 }

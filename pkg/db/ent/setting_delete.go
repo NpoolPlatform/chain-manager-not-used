@@ -9,49 +9,49 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/fee"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/predicate"
+	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/setting"
 )
 
-// FeeDelete is the builder for deleting a Fee entity.
-type FeeDelete struct {
+// SettingDelete is the builder for deleting a Setting entity.
+type SettingDelete struct {
 	config
 	hooks    []Hook
-	mutation *FeeMutation
+	mutation *SettingMutation
 }
 
-// Where appends a list predicates to the FeeDelete builder.
-func (fd *FeeDelete) Where(ps ...predicate.Fee) *FeeDelete {
-	fd.mutation.Where(ps...)
-	return fd
+// Where appends a list predicates to the SettingDelete builder.
+func (sd *SettingDelete) Where(ps ...predicate.Setting) *SettingDelete {
+	sd.mutation.Where(ps...)
+	return sd
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (fd *FeeDelete) Exec(ctx context.Context) (int, error) {
+func (sd *SettingDelete) Exec(ctx context.Context) (int, error) {
 	var (
 		err      error
 		affected int
 	)
-	if len(fd.hooks) == 0 {
-		affected, err = fd.sqlExec(ctx)
+	if len(sd.hooks) == 0 {
+		affected, err = sd.sqlExec(ctx)
 	} else {
 		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
-			mutation, ok := m.(*FeeMutation)
+			mutation, ok := m.(*SettingMutation)
 			if !ok {
 				return nil, fmt.Errorf("unexpected mutation type %T", m)
 			}
-			fd.mutation = mutation
-			affected, err = fd.sqlExec(ctx)
+			sd.mutation = mutation
+			affected, err = sd.sqlExec(ctx)
 			mutation.done = true
 			return affected, err
 		})
-		for i := len(fd.hooks) - 1; i >= 0; i-- {
-			if fd.hooks[i] == nil {
+		for i := len(sd.hooks) - 1; i >= 0; i-- {
+			if sd.hooks[i] == nil {
 				return 0, fmt.Errorf("ent: uninitialized hook (forgotten import ent/runtime?)")
 			}
-			mut = fd.hooks[i](mut)
+			mut = sd.hooks[i](mut)
 		}
-		if _, err := mut.Mutate(ctx, fd.mutation); err != nil {
+		if _, err := mut.Mutate(ctx, sd.mutation); err != nil {
 			return 0, err
 		}
 	}
@@ -59,57 +59,57 @@ func (fd *FeeDelete) Exec(ctx context.Context) (int, error) {
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (fd *FeeDelete) ExecX(ctx context.Context) int {
-	n, err := fd.Exec(ctx)
+func (sd *SettingDelete) ExecX(ctx context.Context) int {
+	n, err := sd.Exec(ctx)
 	if err != nil {
 		panic(err)
 	}
 	return n
 }
 
-func (fd *FeeDelete) sqlExec(ctx context.Context) (int, error) {
+func (sd *SettingDelete) sqlExec(ctx context.Context) (int, error) {
 	_spec := &sqlgraph.DeleteSpec{
 		Node: &sqlgraph.NodeSpec{
-			Table: fee.Table,
+			Table: setting.Table,
 			ID: &sqlgraph.FieldSpec{
 				Type:   field.TypeUUID,
-				Column: fee.FieldID,
+				Column: setting.FieldID,
 			},
 		},
 	}
-	if ps := fd.mutation.predicates; len(ps) > 0 {
+	if ps := sd.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	affected, err := sqlgraph.DeleteNodes(ctx, fd.driver, _spec)
+	affected, err := sqlgraph.DeleteNodes(ctx, sd.driver, _spec)
 	if err != nil && sqlgraph.IsConstraintError(err) {
 		err = &ConstraintError{msg: err.Error(), wrap: err}
 	}
 	return affected, err
 }
 
-// FeeDeleteOne is the builder for deleting a single Fee entity.
-type FeeDeleteOne struct {
-	fd *FeeDelete
+// SettingDeleteOne is the builder for deleting a single Setting entity.
+type SettingDeleteOne struct {
+	sd *SettingDelete
 }
 
 // Exec executes the deletion query.
-func (fdo *FeeDeleteOne) Exec(ctx context.Context) error {
-	n, err := fdo.fd.Exec(ctx)
+func (sdo *SettingDeleteOne) Exec(ctx context.Context) error {
+	n, err := sdo.sd.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
 	case n == 0:
-		return &NotFoundError{fee.Label}
+		return &NotFoundError{setting.Label}
 	default:
 		return nil
 	}
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (fdo *FeeDeleteOne) ExecX(ctx context.Context) {
-	fdo.fd.ExecX(ctx)
+func (sdo *SettingDeleteOne) ExecX(ctx context.Context) {
+	sdo.sd.ExecX(ctx)
 }

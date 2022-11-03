@@ -7,13 +7,13 @@ import (
 	"strings"
 
 	"entgo.io/ent/dialect/sql"
-	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/fee"
+	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/setting"
 	"github.com/google/uuid"
 	"github.com/shopspring/decimal"
 )
 
-// Fee is the model entity for the Fee schema.
-type Fee struct {
+// Setting is the model entity for the Setting schema.
+type Setting struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID uuid.UUID `json:"id,omitempty"`
@@ -37,168 +37,190 @@ type Fee struct {
 	HotWalletFeeAmount decimal.Decimal `json:"hot_wallet_fee_amount,omitempty"`
 	// LowFeeAmount holds the value of the "low_fee_amount" field.
 	LowFeeAmount decimal.Decimal `json:"low_fee_amount,omitempty"`
+	// WarmAccountAmount holds the value of the "warm_account_amount" field.
+	WarmAccountAmount decimal.Decimal `json:"warm_account_amount,omitempty"`
+	// PaymentAccountCollectAmount holds the value of the "payment_account_collect_amount" field.
+	PaymentAccountCollectAmount decimal.Decimal `json:"payment_account_collect_amount,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
-func (*Fee) scanValues(columns []string) ([]interface{}, error) {
+func (*Setting) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case fee.FieldWithdrawFeeAmount, fee.FieldCollectFeeAmount, fee.FieldHotWalletFeeAmount, fee.FieldLowFeeAmount:
+		case setting.FieldWithdrawFeeAmount, setting.FieldCollectFeeAmount, setting.FieldHotWalletFeeAmount, setting.FieldLowFeeAmount, setting.FieldWarmAccountAmount, setting.FieldPaymentAccountCollectAmount:
 			values[i] = new(decimal.Decimal)
-		case fee.FieldWithdrawFeeByStableUsd:
+		case setting.FieldWithdrawFeeByStableUsd:
 			values[i] = new(sql.NullBool)
-		case fee.FieldCreatedAt, fee.FieldUpdatedAt, fee.FieldDeletedAt:
+		case setting.FieldCreatedAt, setting.FieldUpdatedAt, setting.FieldDeletedAt:
 			values[i] = new(sql.NullInt64)
-		case fee.FieldID, fee.FieldCoinTypeID, fee.FieldFeeCoinTypeID:
+		case setting.FieldID, setting.FieldCoinTypeID, setting.FieldFeeCoinTypeID:
 			values[i] = new(uuid.UUID)
 		default:
-			return nil, fmt.Errorf("unexpected column %q for type Fee", columns[i])
+			return nil, fmt.Errorf("unexpected column %q for type Setting", columns[i])
 		}
 	}
 	return values, nil
 }
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
-// to the Fee fields.
-func (f *Fee) assignValues(columns []string, values []interface{}) error {
+// to the Setting fields.
+func (s *Setting) assignValues(columns []string, values []interface{}) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
 	for i := range columns {
 		switch columns[i] {
-		case fee.FieldID:
+		case setting.FieldID:
 			if value, ok := values[i].(*uuid.UUID); !ok {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value != nil {
-				f.ID = *value
+				s.ID = *value
 			}
-		case fee.FieldCreatedAt:
+		case setting.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				f.CreatedAt = uint32(value.Int64)
+				s.CreatedAt = uint32(value.Int64)
 			}
-		case fee.FieldUpdatedAt:
+		case setting.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				f.UpdatedAt = uint32(value.Int64)
+				s.UpdatedAt = uint32(value.Int64)
 			}
-		case fee.FieldDeletedAt:
+		case setting.FieldDeletedAt:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field deleted_at", values[i])
 			} else if value.Valid {
-				f.DeletedAt = uint32(value.Int64)
+				s.DeletedAt = uint32(value.Int64)
 			}
-		case fee.FieldCoinTypeID:
+		case setting.FieldCoinTypeID:
 			if value, ok := values[i].(*uuid.UUID); !ok {
 				return fmt.Errorf("unexpected type %T for field coin_type_id", values[i])
 			} else if value != nil {
-				f.CoinTypeID = *value
+				s.CoinTypeID = *value
 			}
-		case fee.FieldFeeCoinTypeID:
+		case setting.FieldFeeCoinTypeID:
 			if value, ok := values[i].(*uuid.UUID); !ok {
 				return fmt.Errorf("unexpected type %T for field fee_coin_type_id", values[i])
 			} else if value != nil {
-				f.FeeCoinTypeID = *value
+				s.FeeCoinTypeID = *value
 			}
-		case fee.FieldWithdrawFeeByStableUsd:
+		case setting.FieldWithdrawFeeByStableUsd:
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field withdraw_fee_by_stable_usd", values[i])
 			} else if value.Valid {
-				f.WithdrawFeeByStableUsd = value.Bool
+				s.WithdrawFeeByStableUsd = value.Bool
 			}
-		case fee.FieldWithdrawFeeAmount:
+		case setting.FieldWithdrawFeeAmount:
 			if value, ok := values[i].(*decimal.Decimal); !ok {
 				return fmt.Errorf("unexpected type %T for field withdraw_fee_amount", values[i])
 			} else if value != nil {
-				f.WithdrawFeeAmount = *value
+				s.WithdrawFeeAmount = *value
 			}
-		case fee.FieldCollectFeeAmount:
+		case setting.FieldCollectFeeAmount:
 			if value, ok := values[i].(*decimal.Decimal); !ok {
 				return fmt.Errorf("unexpected type %T for field collect_fee_amount", values[i])
 			} else if value != nil {
-				f.CollectFeeAmount = *value
+				s.CollectFeeAmount = *value
 			}
-		case fee.FieldHotWalletFeeAmount:
+		case setting.FieldHotWalletFeeAmount:
 			if value, ok := values[i].(*decimal.Decimal); !ok {
 				return fmt.Errorf("unexpected type %T for field hot_wallet_fee_amount", values[i])
 			} else if value != nil {
-				f.HotWalletFeeAmount = *value
+				s.HotWalletFeeAmount = *value
 			}
-		case fee.FieldLowFeeAmount:
+		case setting.FieldLowFeeAmount:
 			if value, ok := values[i].(*decimal.Decimal); !ok {
 				return fmt.Errorf("unexpected type %T for field low_fee_amount", values[i])
 			} else if value != nil {
-				f.LowFeeAmount = *value
+				s.LowFeeAmount = *value
+			}
+		case setting.FieldWarmAccountAmount:
+			if value, ok := values[i].(*decimal.Decimal); !ok {
+				return fmt.Errorf("unexpected type %T for field warm_account_amount", values[i])
+			} else if value != nil {
+				s.WarmAccountAmount = *value
+			}
+		case setting.FieldPaymentAccountCollectAmount:
+			if value, ok := values[i].(*decimal.Decimal); !ok {
+				return fmt.Errorf("unexpected type %T for field payment_account_collect_amount", values[i])
+			} else if value != nil {
+				s.PaymentAccountCollectAmount = *value
 			}
 		}
 	}
 	return nil
 }
 
-// Update returns a builder for updating this Fee.
-// Note that you need to call Fee.Unwrap() before calling this method if this Fee
+// Update returns a builder for updating this Setting.
+// Note that you need to call Setting.Unwrap() before calling this method if this Setting
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (f *Fee) Update() *FeeUpdateOne {
-	return (&FeeClient{config: f.config}).UpdateOne(f)
+func (s *Setting) Update() *SettingUpdateOne {
+	return (&SettingClient{config: s.config}).UpdateOne(s)
 }
 
-// Unwrap unwraps the Fee entity that was returned from a transaction after it was closed,
+// Unwrap unwraps the Setting entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (f *Fee) Unwrap() *Fee {
-	_tx, ok := f.config.driver.(*txDriver)
+func (s *Setting) Unwrap() *Setting {
+	_tx, ok := s.config.driver.(*txDriver)
 	if !ok {
-		panic("ent: Fee is not a transactional entity")
+		panic("ent: Setting is not a transactional entity")
 	}
-	f.config.driver = _tx.drv
-	return f
+	s.config.driver = _tx.drv
+	return s
 }
 
 // String implements the fmt.Stringer.
-func (f *Fee) String() string {
+func (s *Setting) String() string {
 	var builder strings.Builder
-	builder.WriteString("Fee(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", f.ID))
+	builder.WriteString("Setting(")
+	builder.WriteString(fmt.Sprintf("id=%v, ", s.ID))
 	builder.WriteString("created_at=")
-	builder.WriteString(fmt.Sprintf("%v", f.CreatedAt))
+	builder.WriteString(fmt.Sprintf("%v", s.CreatedAt))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(fmt.Sprintf("%v", f.UpdatedAt))
+	builder.WriteString(fmt.Sprintf("%v", s.UpdatedAt))
 	builder.WriteString(", ")
 	builder.WriteString("deleted_at=")
-	builder.WriteString(fmt.Sprintf("%v", f.DeletedAt))
+	builder.WriteString(fmt.Sprintf("%v", s.DeletedAt))
 	builder.WriteString(", ")
 	builder.WriteString("coin_type_id=")
-	builder.WriteString(fmt.Sprintf("%v", f.CoinTypeID))
+	builder.WriteString(fmt.Sprintf("%v", s.CoinTypeID))
 	builder.WriteString(", ")
 	builder.WriteString("fee_coin_type_id=")
-	builder.WriteString(fmt.Sprintf("%v", f.FeeCoinTypeID))
+	builder.WriteString(fmt.Sprintf("%v", s.FeeCoinTypeID))
 	builder.WriteString(", ")
 	builder.WriteString("withdraw_fee_by_stable_usd=")
-	builder.WriteString(fmt.Sprintf("%v", f.WithdrawFeeByStableUsd))
+	builder.WriteString(fmt.Sprintf("%v", s.WithdrawFeeByStableUsd))
 	builder.WriteString(", ")
 	builder.WriteString("withdraw_fee_amount=")
-	builder.WriteString(fmt.Sprintf("%v", f.WithdrawFeeAmount))
+	builder.WriteString(fmt.Sprintf("%v", s.WithdrawFeeAmount))
 	builder.WriteString(", ")
 	builder.WriteString("collect_fee_amount=")
-	builder.WriteString(fmt.Sprintf("%v", f.CollectFeeAmount))
+	builder.WriteString(fmt.Sprintf("%v", s.CollectFeeAmount))
 	builder.WriteString(", ")
 	builder.WriteString("hot_wallet_fee_amount=")
-	builder.WriteString(fmt.Sprintf("%v", f.HotWalletFeeAmount))
+	builder.WriteString(fmt.Sprintf("%v", s.HotWalletFeeAmount))
 	builder.WriteString(", ")
 	builder.WriteString("low_fee_amount=")
-	builder.WriteString(fmt.Sprintf("%v", f.LowFeeAmount))
+	builder.WriteString(fmt.Sprintf("%v", s.LowFeeAmount))
+	builder.WriteString(", ")
+	builder.WriteString("warm_account_amount=")
+	builder.WriteString(fmt.Sprintf("%v", s.WarmAccountAmount))
+	builder.WriteString(", ")
+	builder.WriteString("payment_account_collect_amount=")
+	builder.WriteString(fmt.Sprintf("%v", s.PaymentAccountCollectAmount))
 	builder.WriteByte(')')
 	return builder.String()
 }
 
-// Fees is a parsable slice of Fee.
-type Fees []*Fee
+// Settings is a parsable slice of Setting.
+type Settings []*Setting
 
-func (f Fees) config(cfg config) {
-	for _i := range f {
-		f[_i].config = cfg
+func (s Settings) config(cfg config) {
+	for _i := range s {
+		s[_i].config = cfg
 	}
 }

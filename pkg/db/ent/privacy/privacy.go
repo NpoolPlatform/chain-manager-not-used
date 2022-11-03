@@ -246,28 +246,28 @@ func (f ExchangeRateMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mu
 	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.ExchangeRateMutation", m)
 }
 
-// The FeeQueryRuleFunc type is an adapter to allow the use of ordinary
+// The SettingQueryRuleFunc type is an adapter to allow the use of ordinary
 // functions as a query rule.
-type FeeQueryRuleFunc func(context.Context, *ent.FeeQuery) error
+type SettingQueryRuleFunc func(context.Context, *ent.SettingQuery) error
 
 // EvalQuery return f(ctx, q).
-func (f FeeQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
-	if q, ok := q.(*ent.FeeQuery); ok {
+func (f SettingQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.SettingQuery); ok {
 		return f(ctx, q)
 	}
-	return Denyf("ent/privacy: unexpected query type %T, expect *ent.FeeQuery", q)
+	return Denyf("ent/privacy: unexpected query type %T, expect *ent.SettingQuery", q)
 }
 
-// The FeeMutationRuleFunc type is an adapter to allow the use of ordinary
+// The SettingMutationRuleFunc type is an adapter to allow the use of ordinary
 // functions as a mutation rule.
-type FeeMutationRuleFunc func(context.Context, *ent.FeeMutation) error
+type SettingMutationRuleFunc func(context.Context, *ent.SettingMutation) error
 
 // EvalMutation calls f(ctx, m).
-func (f FeeMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
-	if m, ok := m.(*ent.FeeMutation); ok {
+func (f SettingMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
+	if m, ok := m.(*ent.SettingMutation); ok {
 		return f(ctx, m)
 	}
-	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.FeeMutation", m)
+	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.SettingMutation", m)
 }
 
 // The TranQueryRuleFunc type is an adapter to allow the use of ordinary
@@ -337,7 +337,7 @@ func queryFilter(q ent.Query) (Filter, error) {
 		return q.Filter(), nil
 	case *ent.ExchangeRateQuery:
 		return q.Filter(), nil
-	case *ent.FeeQuery:
+	case *ent.SettingQuery:
 		return q.Filter(), nil
 	case *ent.TranQuery:
 		return q.Filter(), nil
@@ -356,7 +356,7 @@ func mutationFilter(m ent.Mutation) (Filter, error) {
 		return m.Filter(), nil
 	case *ent.ExchangeRateMutation:
 		return m.Filter(), nil
-	case *ent.FeeMutation:
+	case *ent.SettingMutation:
 		return m.Filter(), nil
 	case *ent.TranMutation:
 		return m.Filter(), nil

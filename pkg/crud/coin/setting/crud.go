@@ -1,4 +1,4 @@
-package fee
+package setting
 
 import (
 	"context"
@@ -7,21 +7,21 @@ import (
 
 	constant "github.com/NpoolPlatform/chain-manager/pkg/message/const"
 	commontracer "github.com/NpoolPlatform/chain-manager/pkg/tracer"
-	tracer "github.com/NpoolPlatform/chain-manager/pkg/tracer/coin/fee"
+	tracer "github.com/NpoolPlatform/chain-manager/pkg/tracer/coin/setting"
 	"github.com/shopspring/decimal"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/codes"
 
 	"github.com/NpoolPlatform/chain-manager/pkg/db"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent"
-	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/fee"
+	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/setting"
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
-	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/coin/fee"
+	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/coin/setting"
 
 	"github.com/google/uuid"
 )
 
-func CreateSet(c *ent.FeeCreate, in *npool.FeeReq) *ent.FeeCreate {
+func CreateSet(c *ent.SettingCreate, in *npool.SettingReq) *ent.SettingCreate {
 	if in.ID != nil {
 		c.SetID(uuid.MustParse(in.GetID()))
 	}
@@ -46,11 +46,17 @@ func CreateSet(c *ent.FeeCreate, in *npool.FeeReq) *ent.FeeCreate {
 	if in.LowFeeAmount != nil {
 		c.SetLowFeeAmount(decimal.RequireFromString(in.GetLowFeeAmount()))
 	}
+	if in.WarmAccountAmount != nil {
+		c.SetWarmAccountAmount(decimal.RequireFromString(in.GetWarmAccountAmount()))
+	}
+	if in.PaymentAccountCollectAmount != nil {
+		c.SetPaymentAccountCollectAmount(decimal.RequireFromString(in.GetPaymentAccountCollectAmount()))
+	}
 	return c
 }
 
-func Create(ctx context.Context, in *npool.FeeReq) (*ent.Fee, error) {
-	var info *ent.Fee
+func Create(ctx context.Context, in *npool.SettingReq) (*ent.Setting, error) {
+	var info *ent.Setting
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "Create")
@@ -66,7 +72,7 @@ func Create(ctx context.Context, in *npool.FeeReq) (*ent.Fee, error) {
 	span = tracer.Trace(span, in)
 
 	err = db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
-		c := cli.Fee.Create()
+		c := cli.Setting.Create()
 		info, err = CreateSet(c, in).Save(_ctx)
 		return err
 	})
@@ -77,9 +83,9 @@ func Create(ctx context.Context, in *npool.FeeReq) (*ent.Fee, error) {
 	return info, nil
 }
 
-func CreateBulk(ctx context.Context, in []*npool.FeeReq) ([]*ent.Fee, error) {
+func CreateBulk(ctx context.Context, in []*npool.SettingReq) ([]*ent.Setting, error) {
 	var err error
-	rows := []*ent.Fee{}
+	rows := []*ent.Setting{}
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "CreateBulk")
 	defer span.End()
@@ -94,11 +100,11 @@ func CreateBulk(ctx context.Context, in []*npool.FeeReq) ([]*ent.Fee, error) {
 	span = tracer.TraceMany(span, in)
 
 	err = db.WithTx(ctx, func(_ctx context.Context, tx *ent.Tx) error {
-		bulk := make([]*ent.FeeCreate, len(in))
+		bulk := make([]*ent.SettingCreate, len(in))
 		for i, info := range in {
-			bulk[i] = CreateSet(tx.Fee.Create(), info)
+			bulk[i] = CreateSet(tx.Setting.Create(), info)
 		}
-		rows, err = tx.Fee.CreateBulk(bulk...).Save(_ctx)
+		rows, err = tx.Setting.CreateBulk(bulk...).Save(_ctx)
 		return err
 	})
 	if err != nil {
@@ -107,8 +113,8 @@ func CreateBulk(ctx context.Context, in []*npool.FeeReq) ([]*ent.Fee, error) {
 	return rows, nil
 }
 
-func Update(ctx context.Context, in *npool.FeeReq) (*ent.Fee, error) {
-	var info *ent.Fee
+func Update(ctx context.Context, in *npool.SettingReq) (*ent.Setting, error) {
+	var info *ent.Setting
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "Create")
@@ -124,9 +130,9 @@ func Update(ctx context.Context, in *npool.FeeReq) (*ent.Fee, error) {
 	span = tracer.Trace(span, in)
 
 	err = db.WithTx(ctx, func(_ctx context.Context, tx *ent.Tx) error {
-		info, err = tx.Fee.Query().Where(fee.ID(uuid.MustParse(in.GetID()))).ForUpdate().Only(_ctx)
+		info, err = tx.Setting.Query().Where(setting.ID(uuid.MustParse(in.GetID()))).ForUpdate().Only(_ctx)
 		if err != nil {
-			return fmt.Errorf("fail query fee: %v", err)
+			return fmt.Errorf("fail query setting: %v", err)
 		}
 
 		stm := info.Update()
@@ -146,23 +152,29 @@ func Update(ctx context.Context, in *npool.FeeReq) (*ent.Fee, error) {
 		if in.LowFeeAmount != nil {
 			stm.SetLowFeeAmount(decimal.RequireFromString(in.GetLowFeeAmount()))
 		}
+		if in.WarmAccountAmount != nil {
+			stm.SetWarmAccountAmount(decimal.RequireFromString(in.GetWarmAccountAmount()))
+		}
+		if in.PaymentAccountCollectAmount != nil {
+			stm.SetPaymentAccountCollectAmount(decimal.RequireFromString(in.GetPaymentAccountCollectAmount()))
+		}
 
 		info, err = stm.Save(_ctx)
 		if err != nil {
-			return fmt.Errorf("fail update fee: %v", err)
+			return fmt.Errorf("fail update setting: %v", err)
 		}
 
 		return nil
 	})
 	if err != nil {
-		return nil, fmt.Errorf("fail update fee: %v", err)
+		return nil, fmt.Errorf("fail update setting: %v", err)
 	}
 
 	return info, nil
 }
 
-func Row(ctx context.Context, id uuid.UUID) (*ent.Fee, error) {
-	var info *ent.Fee
+func Row(ctx context.Context, id uuid.UUID) (*ent.Setting, error) {
+	var info *ent.Setting
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "Row")
@@ -178,7 +190,7 @@ func Row(ctx context.Context, id uuid.UUID) (*ent.Fee, error) {
 	span = commontracer.TraceID(span, id.String())
 
 	err = db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
-		info, err = cli.Fee.Query().Where(fee.ID(id)).Only(_ctx)
+		info, err = cli.Setting.Query().Where(setting.ID(id)).Only(_ctx)
 		return err
 	})
 	if err != nil {
@@ -188,36 +200,36 @@ func Row(ctx context.Context, id uuid.UUID) (*ent.Fee, error) {
 	return info, nil
 }
 
-func setQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.FeeQuery, error) {
-	stm := cli.Fee.Query()
+func setQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.SettingQuery, error) {
+	stm := cli.Setting.Query()
 	if conds.ID != nil {
 		switch conds.GetID().GetOp() {
 		case cruder.EQ:
-			stm.Where(fee.ID(uuid.MustParse(conds.GetID().GetValue())))
+			stm.Where(setting.ID(uuid.MustParse(conds.GetID().GetValue())))
 		default:
-			return nil, fmt.Errorf("invalid fee field")
+			return nil, fmt.Errorf("invalid setting field")
 		}
 	}
 	if conds.CoinTypeID != nil {
 		switch conds.GetCoinTypeID().GetOp() {
 		case cruder.EQ:
-			stm.Where(fee.CoinTypeID(uuid.MustParse(conds.GetCoinTypeID().GetValue())))
+			stm.Where(setting.CoinTypeID(uuid.MustParse(conds.GetCoinTypeID().GetValue())))
 		default:
-			return nil, fmt.Errorf("invalid fee field")
+			return nil, fmt.Errorf("invalid setting field")
 		}
 	}
 	if conds.FeeCoinTypeID != nil {
 		switch conds.GetFeeCoinTypeID().GetOp() {
 		case cruder.EQ:
-			stm.Where(fee.FeeCoinTypeID(uuid.MustParse(conds.GetFeeCoinTypeID().GetValue())))
+			stm.Where(setting.FeeCoinTypeID(uuid.MustParse(conds.GetFeeCoinTypeID().GetValue())))
 		default:
-			return nil, fmt.Errorf("invalid fee field")
+			return nil, fmt.Errorf("invalid setting field")
 		}
 	}
 	return stm, nil
 }
 
-func Rows(ctx context.Context, conds *npool.Conds, offset, limit int) ([]*ent.Fee, int, error) {
+func Rows(ctx context.Context, conds *npool.Conds, offset, limit int) ([]*ent.Setting, int, error) {
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "Rows")
@@ -233,7 +245,7 @@ func Rows(ctx context.Context, conds *npool.Conds, offset, limit int) ([]*ent.Fe
 	span = tracer.TraceConds(span, conds)
 	span = commontracer.TraceOffsetLimit(span, offset, limit)
 
-	rows := []*ent.Fee{}
+	rows := []*ent.Setting{}
 	var total int
 
 	err = db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
@@ -249,7 +261,7 @@ func Rows(ctx context.Context, conds *npool.Conds, offset, limit int) ([]*ent.Fe
 
 		rows, err = stm.
 			Offset(offset).
-			Order(ent.Desc(fee.FieldUpdatedAt)).
+			Order(ent.Desc(setting.FieldUpdatedAt)).
 			Limit(limit).
 			All(_ctx)
 		if err != nil {
@@ -264,8 +276,8 @@ func Rows(ctx context.Context, conds *npool.Conds, offset, limit int) ([]*ent.Fe
 	return rows, total, nil
 }
 
-func RowOnly(ctx context.Context, conds *npool.Conds) (*ent.Fee, error) {
-	var info *ent.Fee
+func RowOnly(ctx context.Context, conds *npool.Conds) (*ent.Setting, error) {
+	var info *ent.Setting
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "RowOnly")
@@ -352,7 +364,7 @@ func Exist(ctx context.Context, id uuid.UUID) (bool, error) {
 	span = commontracer.TraceID(span, id.String())
 
 	err = db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
-		exist, err = cli.Fee.Query().Where(fee.ID(id)).Exist(_ctx)
+		exist, err = cli.Setting.Query().Where(setting.ID(id)).Exist(_ctx)
 		return err
 	})
 	if err != nil {
@@ -398,8 +410,8 @@ func ExistConds(ctx context.Context, conds *npool.Conds) (bool, error) {
 	return exist, nil
 }
 
-func Delete(ctx context.Context, id uuid.UUID) (*ent.Fee, error) {
-	var info *ent.Fee
+func Delete(ctx context.Context, id uuid.UUID) (*ent.Setting, error) {
+	var info *ent.Setting
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "Delete")
@@ -415,7 +427,7 @@ func Delete(ctx context.Context, id uuid.UUID) (*ent.Fee, error) {
 	span = commontracer.TraceID(span, id.String())
 
 	err = db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
-		info, err = cli.Fee.UpdateOneID(id).
+		info, err = cli.Setting.UpdateOneID(id).
 			SetDeletedAt(uint32(time.Now().Unix())).
 			Save(_ctx)
 		return err

@@ -9,8 +9,8 @@ import (
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/coinbase"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/coinextra"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/exchangerate"
-	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/fee"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/schema"
+	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/setting"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/tran"
 	"github.com/google/uuid"
 	"github.com/shopspring/decimal"
@@ -235,66 +235,74 @@ func init() {
 	exchangerateDescID := exchangerateFields[0].Descriptor()
 	// exchangerate.DefaultID holds the default value on creation for the id field.
 	exchangerate.DefaultID = exchangerateDescID.Default.(func() uuid.UUID)
-	feeMixin := schema.Fee{}.Mixin()
-	fee.Policy = privacy.NewPolicies(feeMixin[0], schema.Fee{})
-	fee.Hooks[0] = func(next ent.Mutator) ent.Mutator {
+	settingMixin := schema.Setting{}.Mixin()
+	setting.Policy = privacy.NewPolicies(settingMixin[0], schema.Setting{})
+	setting.Hooks[0] = func(next ent.Mutator) ent.Mutator {
 		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-			if err := fee.Policy.EvalMutation(ctx, m); err != nil {
+			if err := setting.Policy.EvalMutation(ctx, m); err != nil {
 				return nil, err
 			}
 			return next.Mutate(ctx, m)
 		})
 	}
-	feeMixinFields0 := feeMixin[0].Fields()
-	_ = feeMixinFields0
-	feeFields := schema.Fee{}.Fields()
-	_ = feeFields
-	// feeDescCreatedAt is the schema descriptor for created_at field.
-	feeDescCreatedAt := feeMixinFields0[0].Descriptor()
-	// fee.DefaultCreatedAt holds the default value on creation for the created_at field.
-	fee.DefaultCreatedAt = feeDescCreatedAt.Default.(func() uint32)
-	// feeDescUpdatedAt is the schema descriptor for updated_at field.
-	feeDescUpdatedAt := feeMixinFields0[1].Descriptor()
-	// fee.DefaultUpdatedAt holds the default value on creation for the updated_at field.
-	fee.DefaultUpdatedAt = feeDescUpdatedAt.Default.(func() uint32)
-	// fee.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
-	fee.UpdateDefaultUpdatedAt = feeDescUpdatedAt.UpdateDefault.(func() uint32)
-	// feeDescDeletedAt is the schema descriptor for deleted_at field.
-	feeDescDeletedAt := feeMixinFields0[2].Descriptor()
-	// fee.DefaultDeletedAt holds the default value on creation for the deleted_at field.
-	fee.DefaultDeletedAt = feeDescDeletedAt.Default.(func() uint32)
-	// feeDescCoinTypeID is the schema descriptor for coin_type_id field.
-	feeDescCoinTypeID := feeFields[1].Descriptor()
-	// fee.DefaultCoinTypeID holds the default value on creation for the coin_type_id field.
-	fee.DefaultCoinTypeID = feeDescCoinTypeID.Default.(func() uuid.UUID)
-	// feeDescFeeCoinTypeID is the schema descriptor for fee_coin_type_id field.
-	feeDescFeeCoinTypeID := feeFields[2].Descriptor()
-	// fee.DefaultFeeCoinTypeID holds the default value on creation for the fee_coin_type_id field.
-	fee.DefaultFeeCoinTypeID = feeDescFeeCoinTypeID.Default.(func() uuid.UUID)
-	// feeDescWithdrawFeeByStableUsd is the schema descriptor for withdraw_fee_by_stable_usd field.
-	feeDescWithdrawFeeByStableUsd := feeFields[3].Descriptor()
-	// fee.DefaultWithdrawFeeByStableUsd holds the default value on creation for the withdraw_fee_by_stable_usd field.
-	fee.DefaultWithdrawFeeByStableUsd = feeDescWithdrawFeeByStableUsd.Default.(bool)
-	// feeDescWithdrawFeeAmount is the schema descriptor for withdraw_fee_amount field.
-	feeDescWithdrawFeeAmount := feeFields[4].Descriptor()
-	// fee.DefaultWithdrawFeeAmount holds the default value on creation for the withdraw_fee_amount field.
-	fee.DefaultWithdrawFeeAmount = feeDescWithdrawFeeAmount.Default.(decimal.Decimal)
-	// feeDescCollectFeeAmount is the schema descriptor for collect_fee_amount field.
-	feeDescCollectFeeAmount := feeFields[5].Descriptor()
-	// fee.DefaultCollectFeeAmount holds the default value on creation for the collect_fee_amount field.
-	fee.DefaultCollectFeeAmount = feeDescCollectFeeAmount.Default.(decimal.Decimal)
-	// feeDescHotWalletFeeAmount is the schema descriptor for hot_wallet_fee_amount field.
-	feeDescHotWalletFeeAmount := feeFields[6].Descriptor()
-	// fee.DefaultHotWalletFeeAmount holds the default value on creation for the hot_wallet_fee_amount field.
-	fee.DefaultHotWalletFeeAmount = feeDescHotWalletFeeAmount.Default.(decimal.Decimal)
-	// feeDescLowFeeAmount is the schema descriptor for low_fee_amount field.
-	feeDescLowFeeAmount := feeFields[7].Descriptor()
-	// fee.DefaultLowFeeAmount holds the default value on creation for the low_fee_amount field.
-	fee.DefaultLowFeeAmount = feeDescLowFeeAmount.Default.(decimal.Decimal)
-	// feeDescID is the schema descriptor for id field.
-	feeDescID := feeFields[0].Descriptor()
-	// fee.DefaultID holds the default value on creation for the id field.
-	fee.DefaultID = feeDescID.Default.(func() uuid.UUID)
+	settingMixinFields0 := settingMixin[0].Fields()
+	_ = settingMixinFields0
+	settingFields := schema.Setting{}.Fields()
+	_ = settingFields
+	// settingDescCreatedAt is the schema descriptor for created_at field.
+	settingDescCreatedAt := settingMixinFields0[0].Descriptor()
+	// setting.DefaultCreatedAt holds the default value on creation for the created_at field.
+	setting.DefaultCreatedAt = settingDescCreatedAt.Default.(func() uint32)
+	// settingDescUpdatedAt is the schema descriptor for updated_at field.
+	settingDescUpdatedAt := settingMixinFields0[1].Descriptor()
+	// setting.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	setting.DefaultUpdatedAt = settingDescUpdatedAt.Default.(func() uint32)
+	// setting.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	setting.UpdateDefaultUpdatedAt = settingDescUpdatedAt.UpdateDefault.(func() uint32)
+	// settingDescDeletedAt is the schema descriptor for deleted_at field.
+	settingDescDeletedAt := settingMixinFields0[2].Descriptor()
+	// setting.DefaultDeletedAt holds the default value on creation for the deleted_at field.
+	setting.DefaultDeletedAt = settingDescDeletedAt.Default.(func() uint32)
+	// settingDescCoinTypeID is the schema descriptor for coin_type_id field.
+	settingDescCoinTypeID := settingFields[1].Descriptor()
+	// setting.DefaultCoinTypeID holds the default value on creation for the coin_type_id field.
+	setting.DefaultCoinTypeID = settingDescCoinTypeID.Default.(func() uuid.UUID)
+	// settingDescFeeCoinTypeID is the schema descriptor for fee_coin_type_id field.
+	settingDescFeeCoinTypeID := settingFields[2].Descriptor()
+	// setting.DefaultFeeCoinTypeID holds the default value on creation for the fee_coin_type_id field.
+	setting.DefaultFeeCoinTypeID = settingDescFeeCoinTypeID.Default.(func() uuid.UUID)
+	// settingDescWithdrawFeeByStableUsd is the schema descriptor for withdraw_fee_by_stable_usd field.
+	settingDescWithdrawFeeByStableUsd := settingFields[3].Descriptor()
+	// setting.DefaultWithdrawFeeByStableUsd holds the default value on creation for the withdraw_fee_by_stable_usd field.
+	setting.DefaultWithdrawFeeByStableUsd = settingDescWithdrawFeeByStableUsd.Default.(bool)
+	// settingDescWithdrawFeeAmount is the schema descriptor for withdraw_fee_amount field.
+	settingDescWithdrawFeeAmount := settingFields[4].Descriptor()
+	// setting.DefaultWithdrawFeeAmount holds the default value on creation for the withdraw_fee_amount field.
+	setting.DefaultWithdrawFeeAmount = settingDescWithdrawFeeAmount.Default.(decimal.Decimal)
+	// settingDescCollectFeeAmount is the schema descriptor for collect_fee_amount field.
+	settingDescCollectFeeAmount := settingFields[5].Descriptor()
+	// setting.DefaultCollectFeeAmount holds the default value on creation for the collect_fee_amount field.
+	setting.DefaultCollectFeeAmount = settingDescCollectFeeAmount.Default.(decimal.Decimal)
+	// settingDescHotWalletFeeAmount is the schema descriptor for hot_wallet_fee_amount field.
+	settingDescHotWalletFeeAmount := settingFields[6].Descriptor()
+	// setting.DefaultHotWalletFeeAmount holds the default value on creation for the hot_wallet_fee_amount field.
+	setting.DefaultHotWalletFeeAmount = settingDescHotWalletFeeAmount.Default.(decimal.Decimal)
+	// settingDescLowFeeAmount is the schema descriptor for low_fee_amount field.
+	settingDescLowFeeAmount := settingFields[7].Descriptor()
+	// setting.DefaultLowFeeAmount holds the default value on creation for the low_fee_amount field.
+	setting.DefaultLowFeeAmount = settingDescLowFeeAmount.Default.(decimal.Decimal)
+	// settingDescWarmAccountAmount is the schema descriptor for warm_account_amount field.
+	settingDescWarmAccountAmount := settingFields[8].Descriptor()
+	// setting.DefaultWarmAccountAmount holds the default value on creation for the warm_account_amount field.
+	setting.DefaultWarmAccountAmount = settingDescWarmAccountAmount.Default.(decimal.Decimal)
+	// settingDescPaymentAccountCollectAmount is the schema descriptor for payment_account_collect_amount field.
+	settingDescPaymentAccountCollectAmount := settingFields[9].Descriptor()
+	// setting.DefaultPaymentAccountCollectAmount holds the default value on creation for the payment_account_collect_amount field.
+	setting.DefaultPaymentAccountCollectAmount = settingDescPaymentAccountCollectAmount.Default.(decimal.Decimal)
+	// settingDescID is the schema descriptor for id field.
+	settingDescID := settingFields[0].Descriptor()
+	// setting.DefaultID holds the default value on creation for the id field.
+	setting.DefaultID = settingDescID.Default.(func() uuid.UUID)
 	tranMixin := schema.Tran{}.Mixin()
 	tran.Policy = privacy.NewPolicies(tranMixin[0], schema.Tran{})
 	tran.Hooks[0] = func(next ent.Mutator) ent.Mutator {

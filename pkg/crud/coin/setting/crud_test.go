@@ -1,4 +1,4 @@
-package fee
+package setting
 
 import (
 	"context"
@@ -14,7 +14,7 @@ import (
 
 	testinit "github.com/NpoolPlatform/chain-manager/pkg/testinit"
 	valuedef "github.com/NpoolPlatform/message/npool"
-	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/coin/fee"
+	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/coin/setting"
 	"github.com/google/uuid"
 
 	"github.com/stretchr/testify/assert"
@@ -29,40 +29,46 @@ func init() {
 	}
 }
 
-var entity = ent.Fee{
-	ID:                     uuid.New(),
-	CoinTypeID:             uuid.New(),
-	FeeCoinTypeID:          uuid.New(),
-	WithdrawFeeByStableUsd: true,
-	WithdrawFeeAmount:      decimal.RequireFromString("2.01"),
-	CollectFeeAmount:       decimal.RequireFromString("2.01"),
-	HotWalletFeeAmount:     decimal.RequireFromString("2.01"),
-	LowFeeAmount:           decimal.RequireFromString("0.201"),
+var entity = ent.Setting{
+	ID:                          uuid.New(),
+	CoinTypeID:                  uuid.New(),
+	FeeCoinTypeID:               uuid.New(),
+	WithdrawFeeByStableUsd:      true,
+	WithdrawFeeAmount:           decimal.RequireFromString("2.01"),
+	CollectFeeAmount:            decimal.RequireFromString("2.01"),
+	HotWalletFeeAmount:          decimal.RequireFromString("2.01"),
+	LowFeeAmount:                decimal.RequireFromString("0.201"),
+	WarmAccountAmount:           decimal.RequireFromString("0.201"),
+	PaymentAccountCollectAmount: decimal.RequireFromString("0.201"),
 }
 
 var (
-	id                     = entity.ID.String()
-	coinTypeID             = entity.CoinTypeID.String()
-	feeCoinTypeID          = entity.FeeCoinTypeID.String()
-	withdrawFeeByStableUSD = entity.WithdrawFeeByStableUsd
-	withdrawFeeAmount      = entity.WithdrawFeeAmount.String()
-	collectFeeAmount       = entity.CollectFeeAmount.String()
-	hotWalletFeeAmount     = entity.HotWalletFeeAmount.String()
-	lowFeeAmount           = entity.LowFeeAmount.String()
+	id                          = entity.ID.String()
+	coinTypeID                  = entity.CoinTypeID.String()
+	settingCoinTypeID           = entity.FeeCoinTypeID.String()
+	withdrawFeeByStableUSD      = entity.WithdrawFeeByStableUsd
+	withdrawFeeAmount           = entity.WithdrawFeeAmount.String()
+	collectFeeAmount            = entity.CollectFeeAmount.String()
+	hotWalletFeeAmount          = entity.HotWalletFeeAmount.String()
+	lowFeeAmount                = entity.LowFeeAmount.String()
+	warmAccountAmount           = entity.WarmAccountAmount.String()
+	paymentAccountCollectAmount = entity.PaymentAccountCollectAmount.String()
 
-	req = npool.FeeReq{
-		ID:                     &id,
-		CoinTypeID:             &coinTypeID,
-		FeeCoinTypeID:          &feeCoinTypeID,
-		WithdrawFeeByStableUSD: &withdrawFeeByStableUSD,
-		WithdrawFeeAmount:      &withdrawFeeAmount,
-		CollectFeeAmount:       &collectFeeAmount,
-		HotWalletFeeAmount:     &hotWalletFeeAmount,
-		LowFeeAmount:           &lowFeeAmount,
+	req = npool.SettingReq{
+		ID:                          &id,
+		CoinTypeID:                  &coinTypeID,
+		FeeCoinTypeID:               &settingCoinTypeID,
+		WithdrawFeeByStableUSD:      &withdrawFeeByStableUSD,
+		WithdrawFeeAmount:           &withdrawFeeAmount,
+		CollectFeeAmount:            &collectFeeAmount,
+		HotWalletFeeAmount:          &hotWalletFeeAmount,
+		LowFeeAmount:                &lowFeeAmount,
+		WarmAccountAmount:           &warmAccountAmount,
+		PaymentAccountCollectAmount: &paymentAccountCollectAmount,
 	}
 )
 
-var info *ent.Fee
+var info *ent.Setting
 
 func create(t *testing.T) {
 	var err error
@@ -75,49 +81,57 @@ func create(t *testing.T) {
 }
 
 func createBulk(t *testing.T) {
-	entities := []*ent.Fee{
+	entities := []*ent.Setting{
 		{
-			ID:                     uuid.New(),
-			CoinTypeID:             uuid.New(),
-			FeeCoinTypeID:          uuid.New(),
-			WithdrawFeeByStableUsd: false,
-			WithdrawFeeAmount:      decimal.RequireFromString("2.02"),
-			CollectFeeAmount:       decimal.RequireFromString("2.02"),
-			HotWalletFeeAmount:     decimal.RequireFromString("2.03"),
-			LowFeeAmount:           decimal.RequireFromString("0.202"),
+			ID:                          uuid.New(),
+			CoinTypeID:                  uuid.New(),
+			FeeCoinTypeID:               uuid.New(),
+			WithdrawFeeByStableUsd:      false,
+			WithdrawFeeAmount:           decimal.RequireFromString("2.02"),
+			CollectFeeAmount:            decimal.RequireFromString("2.02"),
+			HotWalletFeeAmount:          decimal.RequireFromString("2.03"),
+			LowFeeAmount:                decimal.RequireFromString("0.202"),
+			WarmAccountAmount:           decimal.RequireFromString("0.201"),
+			PaymentAccountCollectAmount: decimal.RequireFromString("0.201"),
 		},
 		{
-			ID:                     uuid.New(),
-			CoinTypeID:             uuid.New(),
-			FeeCoinTypeID:          uuid.New(),
-			WithdrawFeeByStableUsd: true,
-			WithdrawFeeAmount:      decimal.RequireFromString("2.03"),
-			CollectFeeAmount:       decimal.RequireFromString("2.03"),
-			HotWalletFeeAmount:     decimal.RequireFromString("2.02"),
-			LowFeeAmount:           decimal.RequireFromString("0.201"),
+			ID:                          uuid.New(),
+			CoinTypeID:                  uuid.New(),
+			FeeCoinTypeID:               uuid.New(),
+			WithdrawFeeByStableUsd:      true,
+			WithdrawFeeAmount:           decimal.RequireFromString("2.03"),
+			CollectFeeAmount:            decimal.RequireFromString("2.03"),
+			HotWalletFeeAmount:          decimal.RequireFromString("2.02"),
+			LowFeeAmount:                decimal.RequireFromString("0.201"),
+			WarmAccountAmount:           decimal.RequireFromString("0.201"),
+			PaymentAccountCollectAmount: decimal.RequireFromString("0.201"),
 		},
 	}
 
-	reqs := []*npool.FeeReq{}
+	reqs := []*npool.SettingReq{}
 	for _, _entity := range entities {
 		_id := _entity.ID.String()
 		_coinTypeID := _entity.CoinTypeID.String()
-		_feeCoinTypeID := _entity.FeeCoinTypeID.String()
+		_settingCoinTypeID := _entity.FeeCoinTypeID.String()
 		_withdrawFeeByStableUSD := _entity.WithdrawFeeByStableUsd
 		_withdrawFeeAmount := _entity.WithdrawFeeAmount.String()
 		_collectFeeAmount := _entity.CollectFeeAmount.String()
 		_hotWalletFeeAmount := _entity.HotWalletFeeAmount.String()
 		_lowFeeAmount := _entity.LowFeeAmount.String()
+		_warmAccountAmount := _entity.WarmAccountAmount.String()
+		_paymentAccountCollectAmount := _entity.PaymentAccountCollectAmount.String()
 
-		reqs = append(reqs, &npool.FeeReq{
-			ID:                     &_id,
-			CoinTypeID:             &_coinTypeID,
-			FeeCoinTypeID:          &_feeCoinTypeID,
-			WithdrawFeeByStableUSD: &_withdrawFeeByStableUSD,
-			WithdrawFeeAmount:      &_withdrawFeeAmount,
-			CollectFeeAmount:       &_collectFeeAmount,
-			HotWalletFeeAmount:     &_hotWalletFeeAmount,
-			LowFeeAmount:           &_lowFeeAmount,
+		reqs = append(reqs, &npool.SettingReq{
+			ID:                          &_id,
+			CoinTypeID:                  &_coinTypeID,
+			FeeCoinTypeID:               &_settingCoinTypeID,
+			WithdrawFeeByStableUSD:      &_withdrawFeeByStableUSD,
+			WithdrawFeeAmount:           &_withdrawFeeAmount,
+			CollectFeeAmount:            &_collectFeeAmount,
+			HotWalletFeeAmount:          &_hotWalletFeeAmount,
+			LowFeeAmount:                &_lowFeeAmount,
+			WarmAccountAmount:           &_warmAccountAmount,
+			PaymentAccountCollectAmount: &_paymentAccountCollectAmount,
 		})
 	}
 	infos, err := CreateBulk(context.Background(), reqs)
