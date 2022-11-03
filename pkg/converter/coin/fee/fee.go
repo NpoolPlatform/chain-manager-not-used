@@ -11,15 +11,16 @@ func Ent2Grpc(row *ent.Fee) *npool.Fee {
 	}
 
 	return &npool.Fee{
-		ID:                 row.ID.String(),
-		CoinTypeID:         row.CoinTypeID.String(),
-		FeeCoinTypeID:      row.FeeCoinTypeID.String(),
-		WithdrawFeeAmount:  row.WithdrawFeeAmount.String(),
-		CollectFeeAmount:   row.CollectFeeAmount.String(),
-		HotWalletFeeAmount: row.HotWalletFeeAmount.String(),
-		LowFeeAmount:       row.LowFeeAmount.String(),
-		CreatedAt:          row.CreatedAt,
-		UpdatedAt:          row.UpdatedAt,
+		ID:                     row.ID.String(),
+		CoinTypeID:             row.CoinTypeID.String(),
+		FeeCoinTypeID:          row.FeeCoinTypeID.String(),
+		WithdrawFeeByStableUSD: row.WithdrawFeeByStableUsd,
+		WithdrawFeeAmount:      row.WithdrawFeeAmount.String(),
+		CollectFeeAmount:       row.CollectFeeAmount.String(),
+		HotWalletFeeAmount:     row.HotWalletFeeAmount.String(),
+		LowFeeAmount:           row.LowFeeAmount.String(),
+		CreatedAt:              row.CreatedAt,
+		UpdatedAt:              row.UpdatedAt,
 	}
 }
 
