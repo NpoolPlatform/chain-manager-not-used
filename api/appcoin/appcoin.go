@@ -4,10 +4,10 @@ package appcoin
 import (
 	"context"
 
-	converter "github.com/NpoolPlatform/chain-manager/pkg/converter/coin/appcoin"
-	crud "github.com/NpoolPlatform/chain-manager/pkg/crud/coin/appcoin"
+	converter "github.com/NpoolPlatform/chain-manager/pkg/converter/appcoin"
+	crud "github.com/NpoolPlatform/chain-manager/pkg/crud/appcoin"
 	commontracer "github.com/NpoolPlatform/chain-manager/pkg/tracer"
-	tracer "github.com/NpoolPlatform/chain-manager/pkg/tracer/coin/appcoin"
+	tracer "github.com/NpoolPlatform/chain-manager/pkg/tracer/appcoin"
 
 	constant "github.com/NpoolPlatform/chain-manager/pkg/message/const"
 
@@ -17,7 +17,7 @@ import (
 	"google.golang.org/grpc/status"
 
 	"github.com/NpoolPlatform/go-service-framework/pkg/logger"
-	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/coin/appcoin"
+	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/appcoin"
 
 	"github.com/google/uuid"
 )

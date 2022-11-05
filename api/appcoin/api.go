@@ -1,7 +1,7 @@
 package appcoin
 
 import (
-	appcoin "github.com/NpoolPlatform/message/npool/chain/mgr/v1/coin/appcoin"
+	appcoin "github.com/NpoolPlatform/message/npool/chain/mgr/v1/appcoin"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"

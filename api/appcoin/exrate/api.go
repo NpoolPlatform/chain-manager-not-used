@@ -1,7 +1,7 @@
 package exrate
 
 import (
-	exrate "github.com/NpoolPlatform/message/npool/chain/mgr/v1/coin/exrate"
+	exrate "github.com/NpoolPlatform/message/npool/chain/mgr/v1/appcoin/exrate"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"

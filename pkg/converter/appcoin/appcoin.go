@@ -2,7 +2,7 @@ package appcoin
 
 import (
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent"
-	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/coin/appcoin"
+	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/appcoin"
 )
 
 func Ent2Grpc(row *ent.AppCoin) *npool.AppCoin {

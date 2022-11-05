@@ -4,10 +4,10 @@ package exrate
 import (
 	"context"
 
-	converter "github.com/NpoolPlatform/chain-manager/pkg/converter/coin/exrate"
-	crud "github.com/NpoolPlatform/chain-manager/pkg/crud/coin/exrate"
+	converter "github.com/NpoolPlatform/chain-manager/pkg/converter/appcoin/exrate"
+	crud "github.com/NpoolPlatform/chain-manager/pkg/crud/appcoin/exrate"
 	commontracer "github.com/NpoolPlatform/chain-manager/pkg/tracer"
-	tracer "github.com/NpoolPlatform/chain-manager/pkg/tracer/coin/exrate"
+	tracer "github.com/NpoolPlatform/chain-manager/pkg/tracer/appcoin/exrate"
 
 	constant "github.com/NpoolPlatform/chain-manager/pkg/message/const"
 
@@ -17,7 +17,7 @@ import (
 	"google.golang.org/grpc/status"
 
 	"github.com/NpoolPlatform/go-service-framework/pkg/logger"
-	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/coin/exrate"
+	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/appcoin/exrate"
 
 	"github.com/google/uuid"
 )

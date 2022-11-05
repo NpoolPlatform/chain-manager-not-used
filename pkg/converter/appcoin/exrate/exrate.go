@@ -2,7 +2,7 @@ package exrate
 
 import (
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent"
-	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/coin/exrate"
+	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/appcoin/exrate"
 )
 
 func Ent2Grpc(row *ent.ExchangeRate) *npool.ExchangeRate {

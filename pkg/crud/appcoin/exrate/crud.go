@@ -7,7 +7,7 @@ import (
 
 	constant "github.com/NpoolPlatform/chain-manager/pkg/message/const"
 	commontracer "github.com/NpoolPlatform/chain-manager/pkg/tracer"
-	tracer "github.com/NpoolPlatform/chain-manager/pkg/tracer/coin/exrate"
+	tracer "github.com/NpoolPlatform/chain-manager/pkg/tracer/appcoin/exrate"
 	"github.com/shopspring/decimal"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/codes"
@@ -16,7 +16,7 @@ import (
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent"
 	exrate "github.com/NpoolPlatform/chain-manager/pkg/db/ent/exchangerate"
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
-	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/coin/exrate"
+	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/appcoin/exrate"
 
 	"github.com/google/uuid"
 )

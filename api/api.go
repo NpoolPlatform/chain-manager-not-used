@@ -3,9 +3,9 @@ package api
 import (
 	chainmgr "github.com/NpoolPlatform/message/npool/chain/mgr/v1"
 
-	appcoin "github.com/NpoolPlatform/chain-manager/api/coin/appcoin"
+	appcoin "github.com/NpoolPlatform/chain-manager/api/appcoin"
+	exrate "github.com/NpoolPlatform/chain-manager/api/appcoin/exrate"
 	coinbase "github.com/NpoolPlatform/chain-manager/api/coin/base"
-	exrate "github.com/NpoolPlatform/chain-manager/api/coin/exrate"
 	coinextra "github.com/NpoolPlatform/chain-manager/api/coin/extra"
 	setting "github.com/NpoolPlatform/chain-manager/api/coin/setting"
 

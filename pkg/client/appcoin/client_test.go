@@ -16,7 +16,7 @@ import (
 
 	"github.com/NpoolPlatform/chain-manager/pkg/testinit"
 
-	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/coin/appcoin"
+	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/appcoin"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/google/uuid"

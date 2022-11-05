@@ -1,4 +1,4 @@
-package appcoin
+package exrate
 
 import (
 	"context"
@@ -14,7 +14,7 @@ import (
 
 	testinit "github.com/NpoolPlatform/chain-manager/pkg/testinit"
 	valuedef "github.com/NpoolPlatform/message/npool"
-	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/coin/appcoin"
+	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/appcoin/exrate"
 	"github.com/google/uuid"
 
 	"github.com/stretchr/testify/assert"
@@ -29,37 +29,37 @@ func init() {
 	}
 }
 
-var entity = ent.AppCoin{
-	ID:                       uuid.New(),
-	AppID:                    uuid.New(),
-	CoinTypeID:               uuid.New(),
-	Name:                     uuid.NewString(),
-	Logo:                     uuid.NewString(),
-	ForPay:                   false,
-	WithdrawAutoReviewAmount: decimal.RequireFromString("89.000"),
+var entity = ent.ExchangeRate{
+	ID:            uuid.New(),
+	AppID:         uuid.New(),
+	CoinTypeID:    uuid.New(),
+	MarketValue:   decimal.RequireFromString("89.123"),
+	SettleValue:   decimal.RequireFromString("88.123"),
+	SettlePercent: 80,
+	Setter:        uuid.New(),
 }
 
 var (
-	id                        = entity.ID.String()
-	appID                     = entity.AppID.String()
-	coinTypeID                = entity.CoinTypeID.String()
-	name                      = entity.Name
-	logo                      = entity.Logo
-	forPay                    = entity.ForPay
-	withdrawAutoReviewdAmount = entity.WithdrawAutoReviewAmount.String()
+	id            = entity.ID.String()
+	appID         = entity.AppID.String()
+	coinTypeID    = entity.CoinTypeID.String()
+	marketValue   = entity.MarketValue.String()
+	settleValue   = entity.SettleValue.String()
+	settlePercent = entity.SettlePercent
+	setter        = entity.Setter.String()
 
-	req = npool.AppCoinReq{
-		ID:                       &id,
-		AppID:                    &appID,
-		CoinTypeID:               &coinTypeID,
-		Name:                     &name,
-		Logo:                     &logo,
-		ForPay:                   &forPay,
-		WithdrawAutoReviewAmount: &withdrawAutoReviewdAmount,
+	req = npool.ExchangeRateReq{
+		ID:            &id,
+		AppID:         &appID,
+		CoinTypeID:    &coinTypeID,
+		MarketValue:   &marketValue,
+		SettleValue:   &settleValue,
+		SettlePercent: &settlePercent,
+		Setter:        &setter,
 	}
 )
 
-var info *ent.AppCoin
+var info *ent.ExchangeRate
 
 func create(t *testing.T) {
 	var err error
@@ -72,45 +72,45 @@ func create(t *testing.T) {
 }
 
 func createBulk(t *testing.T) {
-	entities := []*ent.AppCoin{
+	entities := []*ent.ExchangeRate{
 		{
-			ID:                       uuid.New(),
-			AppID:                    entity.AppID,
-			CoinTypeID:               uuid.New(),
-			Name:                     uuid.NewString(),
-			Logo:                     uuid.NewString(),
-			ForPay:                   false,
-			WithdrawAutoReviewAmount: decimal.RequireFromString("89.000"),
+			ID:            uuid.New(),
+			AppID:         entity.AppID,
+			CoinTypeID:    uuid.New(),
+			MarketValue:   decimal.RequireFromString("99.123"),
+			SettleValue:   decimal.RequireFromString("88.123"),
+			SettlePercent: 80,
+			Setter:        uuid.New(),
 		},
 		{
-			ID:                       uuid.New(),
-			AppID:                    entity.AppID,
-			CoinTypeID:               uuid.New(),
-			Name:                     uuid.NewString(),
-			Logo:                     uuid.NewString(),
-			ForPay:                   true,
-			WithdrawAutoReviewAmount: decimal.RequireFromString("90.000"),
+			ID:            uuid.New(),
+			AppID:         entity.AppID,
+			CoinTypeID:    uuid.New(),
+			MarketValue:   decimal.RequireFromString("89.123"),
+			SettleValue:   decimal.RequireFromString("78.123"),
+			SettlePercent: 80,
+			Setter:        uuid.New(),
 		},
 	}
 
-	reqs := []*npool.AppCoinReq{}
+	reqs := []*npool.ExchangeRateReq{}
 	for _, _entity := range entities {
 		_id := _entity.ID.String()
 		_appID := _entity.AppID.String()
 		_coinTypeID := _entity.CoinTypeID.String()
-		_name := _entity.Name
-		_logo := _entity.Logo
-		_forPay := _entity.ForPay
-		_withdrawAutoReviewdAmount := _entity.WithdrawAutoReviewAmount.String()
+		_marketValue := _entity.MarketValue.String()
+		_settleValue := _entity.SettleValue.String()
+		_settlePercent := _entity.SettlePercent
+		_setter := _entity.Setter.String()
 
-		reqs = append(reqs, &npool.AppCoinReq{
-			ID:                       &_id,
-			AppID:                    &_appID,
-			CoinTypeID:               &_coinTypeID,
-			Name:                     &_name,
-			Logo:                     &_logo,
-			ForPay:                   &_forPay,
-			WithdrawAutoReviewAmount: &_withdrawAutoReviewdAmount,
+		reqs = append(reqs, &npool.ExchangeRateReq{
+			ID:            &_id,
+			AppID:         &_appID,
+			CoinTypeID:    &_coinTypeID,
+			MarketValue:   &_marketValue,
+			SettleValue:   &_settleValue,
+			SettlePercent: &_settlePercent,
+			Setter:        &_setter,
 		})
 	}
 	infos, err := CreateBulk(context.Background(), reqs)
@@ -120,17 +120,17 @@ func createBulk(t *testing.T) {
 }
 
 func add(t *testing.T) {
-	name := uuid.NewString()
-	withdrawAutoReviewdAmount := "81.0234"
-	forPay := true
+	marketValue := "1000.001"
+	settleValue := "900.001"
+	settlePercent := uint32(90)
 
-	req.Name = &name
-	req.WithdrawAutoReviewAmount = &withdrawAutoReviewdAmount
-	req.ForPay = &forPay
+	req.MarketValue = &marketValue
+	req.SettleValue = &settleValue
+	req.SettlePercent = &settlePercent
 
-	entity.Name = name
-	entity.WithdrawAutoReviewAmount = decimal.RequireFromString(withdrawAutoReviewdAmount)
-	entity.ForPay = forPay
+	entity.MarketValue = decimal.RequireFromString(marketValue)
+	entity.SettleValue = decimal.RequireFromString(settleValue)
+	entity.SettlePercent = settlePercent
 
 	info, err := Update(context.Background(), &req)
 	if assert.Nil(t, err) {
