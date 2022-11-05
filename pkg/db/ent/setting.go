@@ -37,8 +37,8 @@ type Setting struct {
 	HotWalletFeeAmount decimal.Decimal `json:"hot_wallet_fee_amount,omitempty"`
 	// LowFeeAmount holds the value of the "low_fee_amount" field.
 	LowFeeAmount decimal.Decimal `json:"low_fee_amount,omitempty"`
-	// WarmAccountAmount holds the value of the "warm_account_amount" field.
-	WarmAccountAmount decimal.Decimal `json:"warm_account_amount,omitempty"`
+	// HotWalletAccountAmount holds the value of the "hot_wallet_account_amount" field.
+	HotWalletAccountAmount decimal.Decimal `json:"hot_wallet_account_amount,omitempty"`
 	// PaymentAccountCollectAmount holds the value of the "payment_account_collect_amount" field.
 	PaymentAccountCollectAmount decimal.Decimal `json:"payment_account_collect_amount,omitempty"`
 }
@@ -48,7 +48,7 @@ func (*Setting) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case setting.FieldWithdrawFeeAmount, setting.FieldCollectFeeAmount, setting.FieldHotWalletFeeAmount, setting.FieldLowFeeAmount, setting.FieldWarmAccountAmount, setting.FieldPaymentAccountCollectAmount:
+		case setting.FieldWithdrawFeeAmount, setting.FieldCollectFeeAmount, setting.FieldHotWalletFeeAmount, setting.FieldLowFeeAmount, setting.FieldHotWalletAccountAmount, setting.FieldPaymentAccountCollectAmount:
 			values[i] = new(decimal.Decimal)
 		case setting.FieldWithdrawFeeByStableUsd:
 			values[i] = new(sql.NullBool)
@@ -137,11 +137,11 @@ func (s *Setting) assignValues(columns []string, values []interface{}) error {
 			} else if value != nil {
 				s.LowFeeAmount = *value
 			}
-		case setting.FieldWarmAccountAmount:
+		case setting.FieldHotWalletAccountAmount:
 			if value, ok := values[i].(*decimal.Decimal); !ok {
-				return fmt.Errorf("unexpected type %T for field warm_account_amount", values[i])
+				return fmt.Errorf("unexpected type %T for field hot_wallet_account_amount", values[i])
 			} else if value != nil {
-				s.WarmAccountAmount = *value
+				s.HotWalletAccountAmount = *value
 			}
 		case setting.FieldPaymentAccountCollectAmount:
 			if value, ok := values[i].(*decimal.Decimal); !ok {
@@ -207,8 +207,8 @@ func (s *Setting) String() string {
 	builder.WriteString("low_fee_amount=")
 	builder.WriteString(fmt.Sprintf("%v", s.LowFeeAmount))
 	builder.WriteString(", ")
-	builder.WriteString("warm_account_amount=")
-	builder.WriteString(fmt.Sprintf("%v", s.WarmAccountAmount))
+	builder.WriteString("hot_wallet_account_amount=")
+	builder.WriteString(fmt.Sprintf("%v", s.HotWalletAccountAmount))
 	builder.WriteString(", ")
 	builder.WriteString("payment_account_collect_amount=")
 	builder.WriteString(fmt.Sprintf("%v", s.PaymentAccountCollectAmount))

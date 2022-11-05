@@ -40,7 +40,7 @@ var setting = &npool.Setting{
 	CollectFeeAmount:            "2.01",
 	HotWalletFeeAmount:          "2.01",
 	LowFeeAmount:                "0.201",
-	WarmAccountAmount:           "9000.123",
+	HotWalletAccountAmount:      "9000.123",
 	PaymentAccountCollectAmount: "9000.123",
 }
 
@@ -53,7 +53,7 @@ var settingReq = &npool.SettingReq{
 	CollectFeeAmount:            &setting.CollectFeeAmount,
 	HotWalletFeeAmount:          &setting.HotWalletFeeAmount,
 	LowFeeAmount:                &setting.LowFeeAmount,
-	WarmAccountAmount:           &setting.WarmAccountAmount,
+	HotWalletAccountAmount:      &setting.HotWalletAccountAmount,
 	PaymentAccountCollectAmount: &setting.PaymentAccountCollectAmount,
 }
 

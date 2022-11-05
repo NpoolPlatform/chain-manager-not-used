@@ -113,7 +113,7 @@ var (
 		{Name: "collect_fee_amount", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
 		{Name: "hot_wallet_fee_amount", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
 		{Name: "low_fee_amount", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
-		{Name: "warm_account_amount", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
+		{Name: "hot_wallet_account_amount", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
 		{Name: "payment_account_collect_amount", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
 	}
 	// SettingsTable holds the schema information for the "settings" table.
@@ -135,6 +135,7 @@ var (
 		{Name: "chain_tx_id", Type: field.TypeString, Nullable: true, Default: ""},
 		{Name: "state", Type: field.TypeString, Nullable: true, Default: "DefaultTxState"},
 		{Name: "extra", Type: field.TypeString, Nullable: true, Default: ""},
+		{Name: "type", Type: field.TypeString, Nullable: true, Default: "DefaultTxType"},
 	}
 	// TransTable holds the schema information for the "trans" table.
 	TransTable = &schema.Table{

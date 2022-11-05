@@ -4714,7 +4714,7 @@ type SettingMutation struct {
 	collect_fee_amount             *decimal.Decimal
 	hot_wallet_fee_amount          *decimal.Decimal
 	low_fee_amount                 *decimal.Decimal
-	warm_account_amount            *decimal.Decimal
+	hot_wallet_account_amount      *decimal.Decimal
 	payment_account_collect_amount *decimal.Decimal
 	clearedFields                  map[string]struct{}
 	done                           bool
@@ -5337,53 +5337,53 @@ func (m *SettingMutation) ResetLowFeeAmount() {
 	delete(m.clearedFields, setting.FieldLowFeeAmount)
 }
 
-// SetWarmAccountAmount sets the "warm_account_amount" field.
-func (m *SettingMutation) SetWarmAccountAmount(d decimal.Decimal) {
-	m.warm_account_amount = &d
+// SetHotWalletAccountAmount sets the "hot_wallet_account_amount" field.
+func (m *SettingMutation) SetHotWalletAccountAmount(d decimal.Decimal) {
+	m.hot_wallet_account_amount = &d
 }
 
-// WarmAccountAmount returns the value of the "warm_account_amount" field in the mutation.
-func (m *SettingMutation) WarmAccountAmount() (r decimal.Decimal, exists bool) {
-	v := m.warm_account_amount
+// HotWalletAccountAmount returns the value of the "hot_wallet_account_amount" field in the mutation.
+func (m *SettingMutation) HotWalletAccountAmount() (r decimal.Decimal, exists bool) {
+	v := m.hot_wallet_account_amount
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldWarmAccountAmount returns the old "warm_account_amount" field's value of the Setting entity.
+// OldHotWalletAccountAmount returns the old "hot_wallet_account_amount" field's value of the Setting entity.
 // If the Setting object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *SettingMutation) OldWarmAccountAmount(ctx context.Context) (v decimal.Decimal, err error) {
+func (m *SettingMutation) OldHotWalletAccountAmount(ctx context.Context) (v decimal.Decimal, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldWarmAccountAmount is only allowed on UpdateOne operations")
+		return v, errors.New("OldHotWalletAccountAmount is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldWarmAccountAmount requires an ID field in the mutation")
+		return v, errors.New("OldHotWalletAccountAmount requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldWarmAccountAmount: %w", err)
+		return v, fmt.Errorf("querying old value for OldHotWalletAccountAmount: %w", err)
 	}
-	return oldValue.WarmAccountAmount, nil
+	return oldValue.HotWalletAccountAmount, nil
 }
 
-// ClearWarmAccountAmount clears the value of the "warm_account_amount" field.
-func (m *SettingMutation) ClearWarmAccountAmount() {
-	m.warm_account_amount = nil
-	m.clearedFields[setting.FieldWarmAccountAmount] = struct{}{}
+// ClearHotWalletAccountAmount clears the value of the "hot_wallet_account_amount" field.
+func (m *SettingMutation) ClearHotWalletAccountAmount() {
+	m.hot_wallet_account_amount = nil
+	m.clearedFields[setting.FieldHotWalletAccountAmount] = struct{}{}
 }
 
-// WarmAccountAmountCleared returns if the "warm_account_amount" field was cleared in this mutation.
-func (m *SettingMutation) WarmAccountAmountCleared() bool {
-	_, ok := m.clearedFields[setting.FieldWarmAccountAmount]
+// HotWalletAccountAmountCleared returns if the "hot_wallet_account_amount" field was cleared in this mutation.
+func (m *SettingMutation) HotWalletAccountAmountCleared() bool {
+	_, ok := m.clearedFields[setting.FieldHotWalletAccountAmount]
 	return ok
 }
 
-// ResetWarmAccountAmount resets all changes to the "warm_account_amount" field.
-func (m *SettingMutation) ResetWarmAccountAmount() {
-	m.warm_account_amount = nil
-	delete(m.clearedFields, setting.FieldWarmAccountAmount)
+// ResetHotWalletAccountAmount resets all changes to the "hot_wallet_account_amount" field.
+func (m *SettingMutation) ResetHotWalletAccountAmount() {
+	m.hot_wallet_account_amount = nil
+	delete(m.clearedFields, setting.FieldHotWalletAccountAmount)
 }
 
 // SetPaymentAccountCollectAmount sets the "payment_account_collect_amount" field.
@@ -5485,8 +5485,8 @@ func (m *SettingMutation) Fields() []string {
 	if m.low_fee_amount != nil {
 		fields = append(fields, setting.FieldLowFeeAmount)
 	}
-	if m.warm_account_amount != nil {
-		fields = append(fields, setting.FieldWarmAccountAmount)
+	if m.hot_wallet_account_amount != nil {
+		fields = append(fields, setting.FieldHotWalletAccountAmount)
 	}
 	if m.payment_account_collect_amount != nil {
 		fields = append(fields, setting.FieldPaymentAccountCollectAmount)
@@ -5519,8 +5519,8 @@ func (m *SettingMutation) Field(name string) (ent.Value, bool) {
 		return m.HotWalletFeeAmount()
 	case setting.FieldLowFeeAmount:
 		return m.LowFeeAmount()
-	case setting.FieldWarmAccountAmount:
-		return m.WarmAccountAmount()
+	case setting.FieldHotWalletAccountAmount:
+		return m.HotWalletAccountAmount()
 	case setting.FieldPaymentAccountCollectAmount:
 		return m.PaymentAccountCollectAmount()
 	}
@@ -5552,8 +5552,8 @@ func (m *SettingMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldHotWalletFeeAmount(ctx)
 	case setting.FieldLowFeeAmount:
 		return m.OldLowFeeAmount(ctx)
-	case setting.FieldWarmAccountAmount:
-		return m.OldWarmAccountAmount(ctx)
+	case setting.FieldHotWalletAccountAmount:
+		return m.OldHotWalletAccountAmount(ctx)
 	case setting.FieldPaymentAccountCollectAmount:
 		return m.OldPaymentAccountCollectAmount(ctx)
 	}
@@ -5635,12 +5635,12 @@ func (m *SettingMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetLowFeeAmount(v)
 		return nil
-	case setting.FieldWarmAccountAmount:
+	case setting.FieldHotWalletAccountAmount:
 		v, ok := value.(decimal.Decimal)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetWarmAccountAmount(v)
+		m.SetHotWalletAccountAmount(v)
 		return nil
 	case setting.FieldPaymentAccountCollectAmount:
 		v, ok := value.(decimal.Decimal)
@@ -5739,8 +5739,8 @@ func (m *SettingMutation) ClearedFields() []string {
 	if m.FieldCleared(setting.FieldLowFeeAmount) {
 		fields = append(fields, setting.FieldLowFeeAmount)
 	}
-	if m.FieldCleared(setting.FieldWarmAccountAmount) {
-		fields = append(fields, setting.FieldWarmAccountAmount)
+	if m.FieldCleared(setting.FieldHotWalletAccountAmount) {
+		fields = append(fields, setting.FieldHotWalletAccountAmount)
 	}
 	if m.FieldCleared(setting.FieldPaymentAccountCollectAmount) {
 		fields = append(fields, setting.FieldPaymentAccountCollectAmount)
@@ -5780,8 +5780,8 @@ func (m *SettingMutation) ClearField(name string) error {
 	case setting.FieldLowFeeAmount:
 		m.ClearLowFeeAmount()
 		return nil
-	case setting.FieldWarmAccountAmount:
-		m.ClearWarmAccountAmount()
+	case setting.FieldHotWalletAccountAmount:
+		m.ClearHotWalletAccountAmount()
 		return nil
 	case setting.FieldPaymentAccountCollectAmount:
 		m.ClearPaymentAccountCollectAmount()
@@ -5824,8 +5824,8 @@ func (m *SettingMutation) ResetField(name string) error {
 	case setting.FieldLowFeeAmount:
 		m.ResetLowFeeAmount()
 		return nil
-	case setting.FieldWarmAccountAmount:
-		m.ResetWarmAccountAmount()
+	case setting.FieldHotWalletAccountAmount:
+		m.ResetHotWalletAccountAmount()
 		return nil
 	case setting.FieldPaymentAccountCollectAmount:
 		m.ResetPaymentAccountCollectAmount()
@@ -5901,6 +5901,7 @@ type TranMutation struct {
 	chain_tx_id     *string
 	state           *string
 	extra           *string
+	_type           *string
 	clearedFields   map[string]struct{}
 	done            bool
 	oldValue        func(context.Context) (*Tran, error)
@@ -6522,6 +6523,55 @@ func (m *TranMutation) ResetExtra() {
 	delete(m.clearedFields, tran.FieldExtra)
 }
 
+// SetType sets the "type" field.
+func (m *TranMutation) SetType(s string) {
+	m._type = &s
+}
+
+// GetType returns the value of the "type" field in the mutation.
+func (m *TranMutation) GetType() (r string, exists bool) {
+	v := m._type
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldType returns the old "type" field's value of the Tran entity.
+// If the Tran object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TranMutation) OldType(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldType is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldType requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldType: %w", err)
+	}
+	return oldValue.Type, nil
+}
+
+// ClearType clears the value of the "type" field.
+func (m *TranMutation) ClearType() {
+	m._type = nil
+	m.clearedFields[tran.FieldType] = struct{}{}
+}
+
+// TypeCleared returns if the "type" field was cleared in this mutation.
+func (m *TranMutation) TypeCleared() bool {
+	_, ok := m.clearedFields[tran.FieldType]
+	return ok
+}
+
+// ResetType resets all changes to the "type" field.
+func (m *TranMutation) ResetType() {
+	m._type = nil
+	delete(m.clearedFields, tran.FieldType)
+}
+
 // Where appends a list predicates to the TranMutation builder.
 func (m *TranMutation) Where(ps ...predicate.Tran) {
 	m.predicates = append(m.predicates, ps...)
@@ -6541,7 +6591,7 @@ func (m *TranMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *TranMutation) Fields() []string {
-	fields := make([]string, 0, 10)
+	fields := make([]string, 0, 11)
 	if m.created_at != nil {
 		fields = append(fields, tran.FieldCreatedAt)
 	}
@@ -6572,6 +6622,9 @@ func (m *TranMutation) Fields() []string {
 	if m.extra != nil {
 		fields = append(fields, tran.FieldExtra)
 	}
+	if m._type != nil {
+		fields = append(fields, tran.FieldType)
+	}
 	return fields
 }
 
@@ -6600,6 +6653,8 @@ func (m *TranMutation) Field(name string) (ent.Value, bool) {
 		return m.State()
 	case tran.FieldExtra:
 		return m.Extra()
+	case tran.FieldType:
+		return m.GetType()
 	}
 	return nil, false
 }
@@ -6629,6 +6684,8 @@ func (m *TranMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldState(ctx)
 	case tran.FieldExtra:
 		return m.OldExtra(ctx)
+	case tran.FieldType:
+		return m.OldType(ctx)
 	}
 	return nil, fmt.Errorf("unknown Tran field %s", name)
 }
@@ -6707,6 +6764,13 @@ func (m *TranMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetExtra(v)
+		return nil
+	case tran.FieldType:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetType(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Tran field %s", name)
@@ -6798,6 +6862,9 @@ func (m *TranMutation) ClearedFields() []string {
 	if m.FieldCleared(tran.FieldExtra) {
 		fields = append(fields, tran.FieldExtra)
 	}
+	if m.FieldCleared(tran.FieldType) {
+		fields = append(fields, tran.FieldType)
+	}
 	return fields
 }
 
@@ -6832,6 +6899,9 @@ func (m *TranMutation) ClearField(name string) error {
 		return nil
 	case tran.FieldExtra:
 		m.ClearExtra()
+		return nil
+	case tran.FieldType:
+		m.ClearType()
 		return nil
 	}
 	return fmt.Errorf("unknown Tran nullable field %s", name)
@@ -6870,6 +6940,9 @@ func (m *TranMutation) ResetField(name string) error {
 		return nil
 	case tran.FieldExtra:
 		m.ResetExtra()
+		return nil
+	case tran.FieldType:
+		m.ResetType()
 		return nil
 	}
 	return fmt.Errorf("unknown Tran field %s", name)

@@ -38,7 +38,7 @@ var entity = ent.Setting{
 	CollectFeeAmount:            decimal.RequireFromString("2.01"),
 	HotWalletFeeAmount:          decimal.RequireFromString("2.01"),
 	LowFeeAmount:                decimal.RequireFromString("0.201"),
-	WarmAccountAmount:           decimal.RequireFromString("0.201"),
+	HotWalletAccountAmount:      decimal.RequireFromString("0.201"),
 	PaymentAccountCollectAmount: decimal.RequireFromString("0.201"),
 }
 
@@ -51,7 +51,7 @@ var (
 	collectFeeAmount            = entity.CollectFeeAmount.String()
 	hotWalletFeeAmount          = entity.HotWalletFeeAmount.String()
 	lowFeeAmount                = entity.LowFeeAmount.String()
-	warmAccountAmount           = entity.WarmAccountAmount.String()
+	hotWalletAccountAmount      = entity.HotWalletAccountAmount.String()
 	paymentAccountCollectAmount = entity.PaymentAccountCollectAmount.String()
 
 	req = npool.SettingReq{
@@ -63,7 +63,7 @@ var (
 		CollectFeeAmount:            &collectFeeAmount,
 		HotWalletFeeAmount:          &hotWalletFeeAmount,
 		LowFeeAmount:                &lowFeeAmount,
-		WarmAccountAmount:           &warmAccountAmount,
+		HotWalletAccountAmount:      &hotWalletAccountAmount,
 		PaymentAccountCollectAmount: &paymentAccountCollectAmount,
 	}
 )
@@ -91,7 +91,7 @@ func createBulk(t *testing.T) {
 			CollectFeeAmount:            decimal.RequireFromString("2.02"),
 			HotWalletFeeAmount:          decimal.RequireFromString("2.03"),
 			LowFeeAmount:                decimal.RequireFromString("0.202"),
-			WarmAccountAmount:           decimal.RequireFromString("0.201"),
+			HotWalletAccountAmount:      decimal.RequireFromString("0.201"),
 			PaymentAccountCollectAmount: decimal.RequireFromString("0.201"),
 		},
 		{
@@ -103,7 +103,7 @@ func createBulk(t *testing.T) {
 			CollectFeeAmount:            decimal.RequireFromString("2.03"),
 			HotWalletFeeAmount:          decimal.RequireFromString("2.02"),
 			LowFeeAmount:                decimal.RequireFromString("0.201"),
-			WarmAccountAmount:           decimal.RequireFromString("0.201"),
+			HotWalletAccountAmount:      decimal.RequireFromString("0.201"),
 			PaymentAccountCollectAmount: decimal.RequireFromString("0.201"),
 		},
 	}
@@ -118,7 +118,7 @@ func createBulk(t *testing.T) {
 		_collectFeeAmount := _entity.CollectFeeAmount.String()
 		_hotWalletFeeAmount := _entity.HotWalletFeeAmount.String()
 		_lowFeeAmount := _entity.LowFeeAmount.String()
-		_warmAccountAmount := _entity.WarmAccountAmount.String()
+		_hotWalletAccountAmount := _entity.HotWalletAccountAmount.String()
 		_paymentAccountCollectAmount := _entity.PaymentAccountCollectAmount.String()
 
 		reqs = append(reqs, &npool.SettingReq{
@@ -130,7 +130,7 @@ func createBulk(t *testing.T) {
 			CollectFeeAmount:            &_collectFeeAmount,
 			HotWalletFeeAmount:          &_hotWalletFeeAmount,
 			LowFeeAmount:                &_lowFeeAmount,
-			WarmAccountAmount:           &_warmAccountAmount,
+			HotWalletAccountAmount:      &_hotWalletAccountAmount,
 			PaymentAccountCollectAmount: &_paymentAccountCollectAmount,
 		})
 	}

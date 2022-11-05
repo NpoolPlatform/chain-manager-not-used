@@ -148,7 +148,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			setting.FieldCollectFeeAmount:            {Type: field.TypeOther, Column: setting.FieldCollectFeeAmount},
 			setting.FieldHotWalletFeeAmount:          {Type: field.TypeOther, Column: setting.FieldHotWalletFeeAmount},
 			setting.FieldLowFeeAmount:                {Type: field.TypeOther, Column: setting.FieldLowFeeAmount},
-			setting.FieldWarmAccountAmount:           {Type: field.TypeOther, Column: setting.FieldWarmAccountAmount},
+			setting.FieldHotWalletAccountAmount:      {Type: field.TypeOther, Column: setting.FieldHotWalletAccountAmount},
 			setting.FieldPaymentAccountCollectAmount: {Type: field.TypeOther, Column: setting.FieldPaymentAccountCollectAmount},
 		},
 	}
@@ -173,6 +173,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			tran.FieldChainTxID:     {Type: field.TypeString, Column: tran.FieldChainTxID},
 			tran.FieldState:         {Type: field.TypeString, Column: tran.FieldState},
 			tran.FieldExtra:         {Type: field.TypeString, Column: tran.FieldExtra},
+			tran.FieldType:          {Type: field.TypeString, Column: tran.FieldType},
 		},
 	}
 	return graph
@@ -684,9 +685,9 @@ func (f *SettingFilter) WhereLowFeeAmount(p entql.OtherP) {
 	f.Where(p.Field(setting.FieldLowFeeAmount))
 }
 
-// WhereWarmAccountAmount applies the entql other predicate on the warm_account_amount field.
-func (f *SettingFilter) WhereWarmAccountAmount(p entql.OtherP) {
-	f.Where(p.Field(setting.FieldWarmAccountAmount))
+// WhereHotWalletAccountAmount applies the entql other predicate on the hot_wallet_account_amount field.
+func (f *SettingFilter) WhereHotWalletAccountAmount(p entql.OtherP) {
+	f.Where(p.Field(setting.FieldHotWalletAccountAmount))
 }
 
 // WherePaymentAccountCollectAmount applies the entql other predicate on the payment_account_collect_amount field.
@@ -782,4 +783,9 @@ func (f *TranFilter) WhereState(p entql.StringP) {
 // WhereExtra applies the entql string predicate on the extra field.
 func (f *TranFilter) WhereExtra(p entql.StringP) {
 	f.Where(p.Field(tran.FieldExtra))
+}
+
+// WhereType applies the entql string predicate on the type field.
+func (f *TranFilter) WhereType(p entql.StringP) {
+	f.Where(p.Field(tran.FieldType))
 }

@@ -68,7 +68,7 @@ func (Setting) Fields() []ent.Field {
 			Optional().
 			Default(decimal.Decimal{}),
 		field.
-			Other("warm_account_amount", decimal.Decimal{}).
+			Other("hot_wallet_account_amount", decimal.Decimal{}).
 			SchemaType(map[string]string{
 				dialect.MySQL: "decimal(37,18)",
 			}).

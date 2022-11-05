@@ -225,23 +225,23 @@ func (su *SettingUpdate) ClearLowFeeAmount() *SettingUpdate {
 	return su
 }
 
-// SetWarmAccountAmount sets the "warm_account_amount" field.
-func (su *SettingUpdate) SetWarmAccountAmount(d decimal.Decimal) *SettingUpdate {
-	su.mutation.SetWarmAccountAmount(d)
+// SetHotWalletAccountAmount sets the "hot_wallet_account_amount" field.
+func (su *SettingUpdate) SetHotWalletAccountAmount(d decimal.Decimal) *SettingUpdate {
+	su.mutation.SetHotWalletAccountAmount(d)
 	return su
 }
 
-// SetNillableWarmAccountAmount sets the "warm_account_amount" field if the given value is not nil.
-func (su *SettingUpdate) SetNillableWarmAccountAmount(d *decimal.Decimal) *SettingUpdate {
+// SetNillableHotWalletAccountAmount sets the "hot_wallet_account_amount" field if the given value is not nil.
+func (su *SettingUpdate) SetNillableHotWalletAccountAmount(d *decimal.Decimal) *SettingUpdate {
 	if d != nil {
-		su.SetWarmAccountAmount(*d)
+		su.SetHotWalletAccountAmount(*d)
 	}
 	return su
 }
 
-// ClearWarmAccountAmount clears the value of the "warm_account_amount" field.
-func (su *SettingUpdate) ClearWarmAccountAmount() *SettingUpdate {
-	su.mutation.ClearWarmAccountAmount()
+// ClearHotWalletAccountAmount clears the value of the "hot_wallet_account_amount" field.
+func (su *SettingUpdate) ClearHotWalletAccountAmount() *SettingUpdate {
+	su.mutation.ClearHotWalletAccountAmount()
 	return su
 }
 
@@ -496,17 +496,17 @@ func (su *SettingUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: setting.FieldLowFeeAmount,
 		})
 	}
-	if value, ok := su.mutation.WarmAccountAmount(); ok {
+	if value, ok := su.mutation.HotWalletAccountAmount(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeOther,
 			Value:  value,
-			Column: setting.FieldWarmAccountAmount,
+			Column: setting.FieldHotWalletAccountAmount,
 		})
 	}
-	if su.mutation.WarmAccountAmountCleared() {
+	if su.mutation.HotWalletAccountAmountCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeOther,
-			Column: setting.FieldWarmAccountAmount,
+			Column: setting.FieldHotWalletAccountAmount,
 		})
 	}
 	if value, ok := su.mutation.PaymentAccountCollectAmount(); ok {
@@ -738,23 +738,23 @@ func (suo *SettingUpdateOne) ClearLowFeeAmount() *SettingUpdateOne {
 	return suo
 }
 
-// SetWarmAccountAmount sets the "warm_account_amount" field.
-func (suo *SettingUpdateOne) SetWarmAccountAmount(d decimal.Decimal) *SettingUpdateOne {
-	suo.mutation.SetWarmAccountAmount(d)
+// SetHotWalletAccountAmount sets the "hot_wallet_account_amount" field.
+func (suo *SettingUpdateOne) SetHotWalletAccountAmount(d decimal.Decimal) *SettingUpdateOne {
+	suo.mutation.SetHotWalletAccountAmount(d)
 	return suo
 }
 
-// SetNillableWarmAccountAmount sets the "warm_account_amount" field if the given value is not nil.
-func (suo *SettingUpdateOne) SetNillableWarmAccountAmount(d *decimal.Decimal) *SettingUpdateOne {
+// SetNillableHotWalletAccountAmount sets the "hot_wallet_account_amount" field if the given value is not nil.
+func (suo *SettingUpdateOne) SetNillableHotWalletAccountAmount(d *decimal.Decimal) *SettingUpdateOne {
 	if d != nil {
-		suo.SetWarmAccountAmount(*d)
+		suo.SetHotWalletAccountAmount(*d)
 	}
 	return suo
 }
 
-// ClearWarmAccountAmount clears the value of the "warm_account_amount" field.
-func (suo *SettingUpdateOne) ClearWarmAccountAmount() *SettingUpdateOne {
-	suo.mutation.ClearWarmAccountAmount()
+// ClearHotWalletAccountAmount clears the value of the "hot_wallet_account_amount" field.
+func (suo *SettingUpdateOne) ClearHotWalletAccountAmount() *SettingUpdateOne {
+	suo.mutation.ClearHotWalletAccountAmount()
 	return suo
 }
 
@@ -1039,17 +1039,17 @@ func (suo *SettingUpdateOne) sqlSave(ctx context.Context) (_node *Setting, err e
 			Column: setting.FieldLowFeeAmount,
 		})
 	}
-	if value, ok := suo.mutation.WarmAccountAmount(); ok {
+	if value, ok := suo.mutation.HotWalletAccountAmount(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeOther,
 			Value:  value,
-			Column: setting.FieldWarmAccountAmount,
+			Column: setting.FieldHotWalletAccountAmount,
 		})
 	}
-	if suo.mutation.WarmAccountAmountCleared() {
+	if suo.mutation.HotWalletAccountAmountCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeOther,
-			Column: setting.FieldWarmAccountAmount,
+			Column: setting.FieldHotWalletAccountAmount,
 		})
 	}
 	if value, ok := suo.mutation.PaymentAccountCollectAmount(); ok {

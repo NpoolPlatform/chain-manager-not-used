@@ -38,6 +38,7 @@ var entity = ent.Tran{
 	ChainTxID:     uuid.NewString(),
 	State:         npool.TxState_StateCreated.String(),
 	Extra:         uuid.NewString(),
+	Type:          npool.TxType_TxWithdraw.String(),
 }
 
 var (
@@ -49,6 +50,7 @@ var (
 	chainTxID     = entity.ChainTxID
 	state         = npool.TxState(npool.TxState_value[entity.State])
 	extra         = entity.Extra
+	tyep          = npool.TxType(npool.TxType_value[entity.Type])
 
 	req = npool.TxReq{
 		ID:            &id,
@@ -59,6 +61,7 @@ var (
 		ChainTxID:     &chainTxID,
 		State:         &state,
 		Extra:         &extra,
+		Type:          &tyep,
 	}
 )
 
@@ -85,6 +88,7 @@ func createBulk(t *testing.T) {
 			ChainTxID:     uuid.NewString(),
 			State:         npool.TxState_StateTransferring.String(),
 			Extra:         uuid.NewString(),
+			Type:          npool.TxType_TxPaymentCollect.String(),
 		},
 		{
 			ID:            uuid.New(),
@@ -95,6 +99,7 @@ func createBulk(t *testing.T) {
 			ChainTxID:     uuid.NewString(),
 			State:         npool.TxState_StateWait.String(),
 			Extra:         uuid.NewString(),
+			Type:          npool.TxType_TxFeedGas.String(),
 		},
 	}
 
@@ -108,6 +113,7 @@ func createBulk(t *testing.T) {
 		_chainTxID := _entity.ChainTxID
 		_state := npool.TxState(npool.TxState_value[_entity.State])
 		_extra := _entity.Extra
+		_type := npool.TxType(npool.TxType_value[_entity.Type])
 
 		reqs = append(reqs, &npool.TxReq{
 			ID:            &_id,
@@ -118,6 +124,7 @@ func createBulk(t *testing.T) {
 			ChainTxID:     &_chainTxID,
 			State:         &_state,
 			Extra:         &_extra,
+			Type:          &_type,
 		})
 	}
 	infos, err := CreateBulk(context.Background(), reqs)

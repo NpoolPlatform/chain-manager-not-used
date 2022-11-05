@@ -150,10 +150,10 @@ func LowFeeAmount(v decimal.Decimal) predicate.Setting {
 	})
 }
 
-// WarmAccountAmount applies equality check predicate on the "warm_account_amount" field. It's identical to WarmAccountAmountEQ.
-func WarmAccountAmount(v decimal.Decimal) predicate.Setting {
+// HotWalletAccountAmount applies equality check predicate on the "hot_wallet_account_amount" field. It's identical to HotWalletAccountAmountEQ.
+func HotWalletAccountAmount(v decimal.Decimal) predicate.Setting {
 	return predicate.Setting(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldWarmAccountAmount), v))
+		s.Where(sql.EQ(s.C(FieldHotWalletAccountAmount), v))
 	})
 }
 
@@ -852,81 +852,81 @@ func LowFeeAmountNotNil() predicate.Setting {
 	})
 }
 
-// WarmAccountAmountEQ applies the EQ predicate on the "warm_account_amount" field.
-func WarmAccountAmountEQ(v decimal.Decimal) predicate.Setting {
+// HotWalletAccountAmountEQ applies the EQ predicate on the "hot_wallet_account_amount" field.
+func HotWalletAccountAmountEQ(v decimal.Decimal) predicate.Setting {
 	return predicate.Setting(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldWarmAccountAmount), v))
+		s.Where(sql.EQ(s.C(FieldHotWalletAccountAmount), v))
 	})
 }
 
-// WarmAccountAmountNEQ applies the NEQ predicate on the "warm_account_amount" field.
-func WarmAccountAmountNEQ(v decimal.Decimal) predicate.Setting {
+// HotWalletAccountAmountNEQ applies the NEQ predicate on the "hot_wallet_account_amount" field.
+func HotWalletAccountAmountNEQ(v decimal.Decimal) predicate.Setting {
 	return predicate.Setting(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldWarmAccountAmount), v))
+		s.Where(sql.NEQ(s.C(FieldHotWalletAccountAmount), v))
 	})
 }
 
-// WarmAccountAmountIn applies the In predicate on the "warm_account_amount" field.
-func WarmAccountAmountIn(vs ...decimal.Decimal) predicate.Setting {
+// HotWalletAccountAmountIn applies the In predicate on the "hot_wallet_account_amount" field.
+func HotWalletAccountAmountIn(vs ...decimal.Decimal) predicate.Setting {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.Setting(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldWarmAccountAmount), v...))
+		s.Where(sql.In(s.C(FieldHotWalletAccountAmount), v...))
 	})
 }
 
-// WarmAccountAmountNotIn applies the NotIn predicate on the "warm_account_amount" field.
-func WarmAccountAmountNotIn(vs ...decimal.Decimal) predicate.Setting {
+// HotWalletAccountAmountNotIn applies the NotIn predicate on the "hot_wallet_account_amount" field.
+func HotWalletAccountAmountNotIn(vs ...decimal.Decimal) predicate.Setting {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.Setting(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldWarmAccountAmount), v...))
+		s.Where(sql.NotIn(s.C(FieldHotWalletAccountAmount), v...))
 	})
 }
 
-// WarmAccountAmountGT applies the GT predicate on the "warm_account_amount" field.
-func WarmAccountAmountGT(v decimal.Decimal) predicate.Setting {
+// HotWalletAccountAmountGT applies the GT predicate on the "hot_wallet_account_amount" field.
+func HotWalletAccountAmountGT(v decimal.Decimal) predicate.Setting {
 	return predicate.Setting(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldWarmAccountAmount), v))
+		s.Where(sql.GT(s.C(FieldHotWalletAccountAmount), v))
 	})
 }
 
-// WarmAccountAmountGTE applies the GTE predicate on the "warm_account_amount" field.
-func WarmAccountAmountGTE(v decimal.Decimal) predicate.Setting {
+// HotWalletAccountAmountGTE applies the GTE predicate on the "hot_wallet_account_amount" field.
+func HotWalletAccountAmountGTE(v decimal.Decimal) predicate.Setting {
 	return predicate.Setting(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldWarmAccountAmount), v))
+		s.Where(sql.GTE(s.C(FieldHotWalletAccountAmount), v))
 	})
 }
 
-// WarmAccountAmountLT applies the LT predicate on the "warm_account_amount" field.
-func WarmAccountAmountLT(v decimal.Decimal) predicate.Setting {
+// HotWalletAccountAmountLT applies the LT predicate on the "hot_wallet_account_amount" field.
+func HotWalletAccountAmountLT(v decimal.Decimal) predicate.Setting {
 	return predicate.Setting(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldWarmAccountAmount), v))
+		s.Where(sql.LT(s.C(FieldHotWalletAccountAmount), v))
 	})
 }
 
-// WarmAccountAmountLTE applies the LTE predicate on the "warm_account_amount" field.
-func WarmAccountAmountLTE(v decimal.Decimal) predicate.Setting {
+// HotWalletAccountAmountLTE applies the LTE predicate on the "hot_wallet_account_amount" field.
+func HotWalletAccountAmountLTE(v decimal.Decimal) predicate.Setting {
 	return predicate.Setting(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldWarmAccountAmount), v))
+		s.Where(sql.LTE(s.C(FieldHotWalletAccountAmount), v))
 	})
 }
 
-// WarmAccountAmountIsNil applies the IsNil predicate on the "warm_account_amount" field.
-func WarmAccountAmountIsNil() predicate.Setting {
+// HotWalletAccountAmountIsNil applies the IsNil predicate on the "hot_wallet_account_amount" field.
+func HotWalletAccountAmountIsNil() predicate.Setting {
 	return predicate.Setting(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldWarmAccountAmount)))
+		s.Where(sql.IsNull(s.C(FieldHotWalletAccountAmount)))
 	})
 }
 
-// WarmAccountAmountNotNil applies the NotNil predicate on the "warm_account_amount" field.
-func WarmAccountAmountNotNil() predicate.Setting {
+// HotWalletAccountAmountNotNil applies the NotNil predicate on the "hot_wallet_account_amount" field.
+func HotWalletAccountAmountNotNil() predicate.Setting {
 	return predicate.Setting(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldWarmAccountAmount)))
+		s.Where(sql.NotNull(s.C(FieldHotWalletAccountAmount)))
 	})
 }
 

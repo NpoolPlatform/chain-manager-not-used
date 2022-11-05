@@ -40,6 +40,7 @@ var tran = &npool.Tx{
 	ChainTxID:     uuid.UUID{}.String(),
 	State:         npool.TxState_StateCreated,
 	Extra:         uuid.NewString(),
+	Type:          npool.TxType_TxPaymentCollect,
 }
 
 var tranReq = &npool.TxReq{
@@ -51,6 +52,7 @@ var tranReq = &npool.TxReq{
 	ChainTxID:     &tran.ChainTxID,
 	State:         &tran.State,
 	Extra:         &tran.Extra,
+	Type:          &tran.Type,
 }
 
 func createTx(t *testing.T) {

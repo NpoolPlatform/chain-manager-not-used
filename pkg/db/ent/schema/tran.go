@@ -66,6 +66,10 @@ func (Tran) Fields() []ent.Field {
 			String("extra").
 			Optional().
 			Default(""),
+		field.
+			String("type").
+			Optional().
+			Default(tran.TxType_DefaultTxType.String()),
 	}
 }
 

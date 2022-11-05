@@ -225,6 +225,26 @@ func (tu *TranUpdate) ClearExtra() *TranUpdate {
 	return tu
 }
 
+// SetType sets the "type" field.
+func (tu *TranUpdate) SetType(s string) *TranUpdate {
+	tu.mutation.SetType(s)
+	return tu
+}
+
+// SetNillableType sets the "type" field if the given value is not nil.
+func (tu *TranUpdate) SetNillableType(s *string) *TranUpdate {
+	if s != nil {
+		tu.SetType(*s)
+	}
+	return tu
+}
+
+// ClearType clears the value of the "type" field.
+func (tu *TranUpdate) ClearType() *TranUpdate {
+	tu.mutation.ClearType()
+	return tu
+}
+
 // Mutation returns the TranMutation object of the builder.
 func (tu *TranUpdate) Mutation() *TranMutation {
 	return tu.mutation
@@ -456,6 +476,19 @@ func (tu *TranUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: tran.FieldExtra,
 		})
 	}
+	if value, ok := tu.mutation.GetType(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: tran.FieldType,
+		})
+	}
+	if tu.mutation.TypeCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: tran.FieldType,
+		})
+	}
 	_spec.Modifiers = tu.modifiers
 	if n, err = sqlgraph.UpdateNodes(ctx, tu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -669,6 +702,26 @@ func (tuo *TranUpdateOne) SetNillableExtra(s *string) *TranUpdateOne {
 // ClearExtra clears the value of the "extra" field.
 func (tuo *TranUpdateOne) ClearExtra() *TranUpdateOne {
 	tuo.mutation.ClearExtra()
+	return tuo
+}
+
+// SetType sets the "type" field.
+func (tuo *TranUpdateOne) SetType(s string) *TranUpdateOne {
+	tuo.mutation.SetType(s)
+	return tuo
+}
+
+// SetNillableType sets the "type" field if the given value is not nil.
+func (tuo *TranUpdateOne) SetNillableType(s *string) *TranUpdateOne {
+	if s != nil {
+		tuo.SetType(*s)
+	}
+	return tuo
+}
+
+// ClearType clears the value of the "type" field.
+func (tuo *TranUpdateOne) ClearType() *TranUpdateOne {
+	tuo.mutation.ClearType()
 	return tuo
 }
 
@@ -931,6 +984,19 @@ func (tuo *TranUpdateOne) sqlSave(ctx context.Context) (_node *Tran, err error) 
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Column: tran.FieldExtra,
+		})
+	}
+	if value, ok := tuo.mutation.GetType(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: tran.FieldType,
+		})
+	}
+	if tuo.mutation.TypeCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: tran.FieldType,
 		})
 	}
 	_spec.Modifiers = tuo.modifiers

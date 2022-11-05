@@ -33,6 +33,8 @@ const (
 	FieldState = "state"
 	// FieldExtra holds the string denoting the extra field in the database.
 	FieldExtra = "extra"
+	// FieldType holds the string denoting the type field in the database.
+	FieldType = "type"
 	// Table holds the table name of the tran in the database.
 	Table = "trans"
 )
@@ -50,6 +52,7 @@ var Columns = []string{
 	FieldChainTxID,
 	FieldState,
 	FieldExtra,
+	FieldType,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -93,6 +96,8 @@ var (
 	DefaultState string
 	// DefaultExtra holds the default value on creation for the "extra" field.
 	DefaultExtra string
+	// DefaultType holds the default value on creation for the "type" field.
+	DefaultType string
 	// DefaultID holds the default value on creation for the "id" field.
 	DefaultID func() uuid.UUID
 )

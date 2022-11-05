@@ -164,16 +164,16 @@ func (sc *SettingCreate) SetNillableLowFeeAmount(d *decimal.Decimal) *SettingCre
 	return sc
 }
 
-// SetWarmAccountAmount sets the "warm_account_amount" field.
-func (sc *SettingCreate) SetWarmAccountAmount(d decimal.Decimal) *SettingCreate {
-	sc.mutation.SetWarmAccountAmount(d)
+// SetHotWalletAccountAmount sets the "hot_wallet_account_amount" field.
+func (sc *SettingCreate) SetHotWalletAccountAmount(d decimal.Decimal) *SettingCreate {
+	sc.mutation.SetHotWalletAccountAmount(d)
 	return sc
 }
 
-// SetNillableWarmAccountAmount sets the "warm_account_amount" field if the given value is not nil.
-func (sc *SettingCreate) SetNillableWarmAccountAmount(d *decimal.Decimal) *SettingCreate {
+// SetNillableHotWalletAccountAmount sets the "hot_wallet_account_amount" field if the given value is not nil.
+func (sc *SettingCreate) SetNillableHotWalletAccountAmount(d *decimal.Decimal) *SettingCreate {
 	if d != nil {
-		sc.SetWarmAccountAmount(*d)
+		sc.SetHotWalletAccountAmount(*d)
 	}
 	return sc
 }
@@ -340,9 +340,9 @@ func (sc *SettingCreate) defaults() error {
 		v := setting.DefaultLowFeeAmount
 		sc.mutation.SetLowFeeAmount(v)
 	}
-	if _, ok := sc.mutation.WarmAccountAmount(); !ok {
-		v := setting.DefaultWarmAccountAmount
-		sc.mutation.SetWarmAccountAmount(v)
+	if _, ok := sc.mutation.HotWalletAccountAmount(); !ok {
+		v := setting.DefaultHotWalletAccountAmount
+		sc.mutation.SetHotWalletAccountAmount(v)
 	}
 	if _, ok := sc.mutation.PaymentAccountCollectAmount(); !ok {
 		v := setting.DefaultPaymentAccountCollectAmount
@@ -486,13 +486,13 @@ func (sc *SettingCreate) createSpec() (*Setting, *sqlgraph.CreateSpec) {
 		})
 		_node.LowFeeAmount = value
 	}
-	if value, ok := sc.mutation.WarmAccountAmount(); ok {
+	if value, ok := sc.mutation.HotWalletAccountAmount(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeOther,
 			Value:  value,
-			Column: setting.FieldWarmAccountAmount,
+			Column: setting.FieldHotWalletAccountAmount,
 		})
-		_node.WarmAccountAmount = value
+		_node.HotWalletAccountAmount = value
 	}
 	if value, ok := sc.mutation.PaymentAccountCollectAmount(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -736,21 +736,21 @@ func (u *SettingUpsert) ClearLowFeeAmount() *SettingUpsert {
 	return u
 }
 
-// SetWarmAccountAmount sets the "warm_account_amount" field.
-func (u *SettingUpsert) SetWarmAccountAmount(v decimal.Decimal) *SettingUpsert {
-	u.Set(setting.FieldWarmAccountAmount, v)
+// SetHotWalletAccountAmount sets the "hot_wallet_account_amount" field.
+func (u *SettingUpsert) SetHotWalletAccountAmount(v decimal.Decimal) *SettingUpsert {
+	u.Set(setting.FieldHotWalletAccountAmount, v)
 	return u
 }
 
-// UpdateWarmAccountAmount sets the "warm_account_amount" field to the value that was provided on create.
-func (u *SettingUpsert) UpdateWarmAccountAmount() *SettingUpsert {
-	u.SetExcluded(setting.FieldWarmAccountAmount)
+// UpdateHotWalletAccountAmount sets the "hot_wallet_account_amount" field to the value that was provided on create.
+func (u *SettingUpsert) UpdateHotWalletAccountAmount() *SettingUpsert {
+	u.SetExcluded(setting.FieldHotWalletAccountAmount)
 	return u
 }
 
-// ClearWarmAccountAmount clears the value of the "warm_account_amount" field.
-func (u *SettingUpsert) ClearWarmAccountAmount() *SettingUpsert {
-	u.SetNull(setting.FieldWarmAccountAmount)
+// ClearHotWalletAccountAmount clears the value of the "hot_wallet_account_amount" field.
+func (u *SettingUpsert) ClearHotWalletAccountAmount() *SettingUpsert {
+	u.SetNull(setting.FieldHotWalletAccountAmount)
 	return u
 }
 
@@ -1032,24 +1032,24 @@ func (u *SettingUpsertOne) ClearLowFeeAmount() *SettingUpsertOne {
 	})
 }
 
-// SetWarmAccountAmount sets the "warm_account_amount" field.
-func (u *SettingUpsertOne) SetWarmAccountAmount(v decimal.Decimal) *SettingUpsertOne {
+// SetHotWalletAccountAmount sets the "hot_wallet_account_amount" field.
+func (u *SettingUpsertOne) SetHotWalletAccountAmount(v decimal.Decimal) *SettingUpsertOne {
 	return u.Update(func(s *SettingUpsert) {
-		s.SetWarmAccountAmount(v)
+		s.SetHotWalletAccountAmount(v)
 	})
 }
 
-// UpdateWarmAccountAmount sets the "warm_account_amount" field to the value that was provided on create.
-func (u *SettingUpsertOne) UpdateWarmAccountAmount() *SettingUpsertOne {
+// UpdateHotWalletAccountAmount sets the "hot_wallet_account_amount" field to the value that was provided on create.
+func (u *SettingUpsertOne) UpdateHotWalletAccountAmount() *SettingUpsertOne {
 	return u.Update(func(s *SettingUpsert) {
-		s.UpdateWarmAccountAmount()
+		s.UpdateHotWalletAccountAmount()
 	})
 }
 
-// ClearWarmAccountAmount clears the value of the "warm_account_amount" field.
-func (u *SettingUpsertOne) ClearWarmAccountAmount() *SettingUpsertOne {
+// ClearHotWalletAccountAmount clears the value of the "hot_wallet_account_amount" field.
+func (u *SettingUpsertOne) ClearHotWalletAccountAmount() *SettingUpsertOne {
 	return u.Update(func(s *SettingUpsert) {
-		s.ClearWarmAccountAmount()
+		s.ClearHotWalletAccountAmount()
 	})
 }
 
@@ -1500,24 +1500,24 @@ func (u *SettingUpsertBulk) ClearLowFeeAmount() *SettingUpsertBulk {
 	})
 }
 
-// SetWarmAccountAmount sets the "warm_account_amount" field.
-func (u *SettingUpsertBulk) SetWarmAccountAmount(v decimal.Decimal) *SettingUpsertBulk {
+// SetHotWalletAccountAmount sets the "hot_wallet_account_amount" field.
+func (u *SettingUpsertBulk) SetHotWalletAccountAmount(v decimal.Decimal) *SettingUpsertBulk {
 	return u.Update(func(s *SettingUpsert) {
-		s.SetWarmAccountAmount(v)
+		s.SetHotWalletAccountAmount(v)
 	})
 }
 
-// UpdateWarmAccountAmount sets the "warm_account_amount" field to the value that was provided on create.
-func (u *SettingUpsertBulk) UpdateWarmAccountAmount() *SettingUpsertBulk {
+// UpdateHotWalletAccountAmount sets the "hot_wallet_account_amount" field to the value that was provided on create.
+func (u *SettingUpsertBulk) UpdateHotWalletAccountAmount() *SettingUpsertBulk {
 	return u.Update(func(s *SettingUpsert) {
-		s.UpdateWarmAccountAmount()
+		s.UpdateHotWalletAccountAmount()
 	})
 }
 
-// ClearWarmAccountAmount clears the value of the "warm_account_amount" field.
-func (u *SettingUpsertBulk) ClearWarmAccountAmount() *SettingUpsertBulk {
+// ClearHotWalletAccountAmount clears the value of the "hot_wallet_account_amount" field.
+func (u *SettingUpsertBulk) ClearHotWalletAccountAmount() *SettingUpsertBulk {
 	return u.Update(func(s *SettingUpsert) {
-		s.ClearWarmAccountAmount()
+		s.ClearHotWalletAccountAmount()
 	})
 }
 

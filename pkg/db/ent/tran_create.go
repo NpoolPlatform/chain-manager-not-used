@@ -164,6 +164,20 @@ func (tc *TranCreate) SetNillableExtra(s *string) *TranCreate {
 	return tc
 }
 
+// SetType sets the "type" field.
+func (tc *TranCreate) SetType(s string) *TranCreate {
+	tc.mutation.SetType(s)
+	return tc
+}
+
+// SetNillableType sets the "type" field if the given value is not nil.
+func (tc *TranCreate) SetNillableType(s *string) *TranCreate {
+	if s != nil {
+		tc.SetType(*s)
+	}
+	return tc
+}
+
 // SetID sets the "id" field.
 func (tc *TranCreate) SetID(u uuid.UUID) *TranCreate {
 	tc.mutation.SetID(u)
@@ -312,6 +326,10 @@ func (tc *TranCreate) defaults() error {
 		v := tran.DefaultExtra
 		tc.mutation.SetExtra(v)
 	}
+	if _, ok := tc.mutation.GetType(); !ok {
+		v := tran.DefaultType
+		tc.mutation.SetType(v)
+	}
 	if _, ok := tc.mutation.ID(); !ok {
 		if tran.DefaultID == nil {
 			return fmt.Errorf("ent: uninitialized tran.DefaultID (forgotten import ent/runtime?)")
@@ -449,6 +467,14 @@ func (tc *TranCreate) createSpec() (*Tran, *sqlgraph.CreateSpec) {
 			Column: tran.FieldExtra,
 		})
 		_node.Extra = value
+	}
+	if value, ok := tc.mutation.GetType(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: tran.FieldType,
+		})
+		_node.Type = value
 	}
 	return _node, _spec
 }
@@ -681,6 +707,24 @@ func (u *TranUpsert) UpdateExtra() *TranUpsert {
 // ClearExtra clears the value of the "extra" field.
 func (u *TranUpsert) ClearExtra() *TranUpsert {
 	u.SetNull(tran.FieldExtra)
+	return u
+}
+
+// SetType sets the "type" field.
+func (u *TranUpsert) SetType(v string) *TranUpsert {
+	u.Set(tran.FieldType, v)
+	return u
+}
+
+// UpdateType sets the "type" field to the value that was provided on create.
+func (u *TranUpsert) UpdateType() *TranUpsert {
+	u.SetExcluded(tran.FieldType)
+	return u
+}
+
+// ClearType clears the value of the "type" field.
+func (u *TranUpsert) ClearType() *TranUpsert {
+	u.SetNull(tran.FieldType)
 	return u
 }
 
@@ -941,6 +985,27 @@ func (u *TranUpsertOne) UpdateExtra() *TranUpsertOne {
 func (u *TranUpsertOne) ClearExtra() *TranUpsertOne {
 	return u.Update(func(s *TranUpsert) {
 		s.ClearExtra()
+	})
+}
+
+// SetType sets the "type" field.
+func (u *TranUpsertOne) SetType(v string) *TranUpsertOne {
+	return u.Update(func(s *TranUpsert) {
+		s.SetType(v)
+	})
+}
+
+// UpdateType sets the "type" field to the value that was provided on create.
+func (u *TranUpsertOne) UpdateType() *TranUpsertOne {
+	return u.Update(func(s *TranUpsert) {
+		s.UpdateType()
+	})
+}
+
+// ClearType clears the value of the "type" field.
+func (u *TranUpsertOne) ClearType() *TranUpsertOne {
+	return u.Update(func(s *TranUpsert) {
+		s.ClearType()
 	})
 }
 
@@ -1367,6 +1432,27 @@ func (u *TranUpsertBulk) UpdateExtra() *TranUpsertBulk {
 func (u *TranUpsertBulk) ClearExtra() *TranUpsertBulk {
 	return u.Update(func(s *TranUpsert) {
 		s.ClearExtra()
+	})
+}
+
+// SetType sets the "type" field.
+func (u *TranUpsertBulk) SetType(v string) *TranUpsertBulk {
+	return u.Update(func(s *TranUpsert) {
+		s.SetType(v)
+	})
+}
+
+// UpdateType sets the "type" field to the value that was provided on create.
+func (u *TranUpsertBulk) UpdateType() *TranUpsertBulk {
+	return u.Update(func(s *TranUpsert) {
+		s.UpdateType()
+	})
+}
+
+// ClearType clears the value of the "type" field.
+func (u *TranUpsertBulk) ClearType() *TranUpsertBulk {
+	return u.Update(func(s *TranUpsert) {
+		s.ClearType()
 	})
 }
 

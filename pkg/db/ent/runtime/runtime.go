@@ -348,10 +348,10 @@ func init() {
 	settingDescLowFeeAmount := settingFields[7].Descriptor()
 	// setting.DefaultLowFeeAmount holds the default value on creation for the low_fee_amount field.
 	setting.DefaultLowFeeAmount = settingDescLowFeeAmount.Default.(decimal.Decimal)
-	// settingDescWarmAccountAmount is the schema descriptor for warm_account_amount field.
-	settingDescWarmAccountAmount := settingFields[8].Descriptor()
-	// setting.DefaultWarmAccountAmount holds the default value on creation for the warm_account_amount field.
-	setting.DefaultWarmAccountAmount = settingDescWarmAccountAmount.Default.(decimal.Decimal)
+	// settingDescHotWalletAccountAmount is the schema descriptor for hot_wallet_account_amount field.
+	settingDescHotWalletAccountAmount := settingFields[8].Descriptor()
+	// setting.DefaultHotWalletAccountAmount holds the default value on creation for the hot_wallet_account_amount field.
+	setting.DefaultHotWalletAccountAmount = settingDescHotWalletAccountAmount.Default.(decimal.Decimal)
 	// settingDescPaymentAccountCollectAmount is the schema descriptor for payment_account_collect_amount field.
 	settingDescPaymentAccountCollectAmount := settingFields[9].Descriptor()
 	// setting.DefaultPaymentAccountCollectAmount holds the default value on creation for the payment_account_collect_amount field.
@@ -416,6 +416,10 @@ func init() {
 	tranDescExtra := tranFields[7].Descriptor()
 	// tran.DefaultExtra holds the default value on creation for the extra field.
 	tran.DefaultExtra = tranDescExtra.Default.(string)
+	// tranDescType is the schema descriptor for type field.
+	tranDescType := tranFields[8].Descriptor()
+	// tran.DefaultType holds the default value on creation for the type field.
+	tran.DefaultType = tranDescType.Default.(string)
 	// tranDescID is the schema descriptor for id field.
 	tranDescID := tranFields[0].Descriptor()
 	// tran.DefaultID holds the default value on creation for the id field.

@@ -37,6 +37,8 @@ type Tran struct {
 	State string `json:"state,omitempty"`
 	// Extra holds the value of the "extra" field.
 	Extra string `json:"extra,omitempty"`
+	// Type holds the value of the "type" field.
+	Type string `json:"type,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -48,7 +50,7 @@ func (*Tran) scanValues(columns []string) ([]interface{}, error) {
 			values[i] = new(decimal.Decimal)
 		case tran.FieldCreatedAt, tran.FieldUpdatedAt, tran.FieldDeletedAt:
 			values[i] = new(sql.NullInt64)
-		case tran.FieldChainTxID, tran.FieldState, tran.FieldExtra:
+		case tran.FieldChainTxID, tran.FieldState, tran.FieldExtra, tran.FieldType:
 			values[i] = new(sql.NullString)
 		case tran.FieldID, tran.FieldFromAccountID, tran.FieldToAccountID:
 			values[i] = new(uuid.UUID)
@@ -133,6 +135,12 @@ func (t *Tran) assignValues(columns []string, values []interface{}) error {
 			} else if value.Valid {
 				t.Extra = value.String
 			}
+		case tran.FieldType:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field type", values[i])
+			} else if value.Valid {
+				t.Type = value.String
+			}
 		}
 	}
 	return nil
@@ -190,6 +198,9 @@ func (t *Tran) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("extra=")
 	builder.WriteString(t.Extra)
+	builder.WriteString(", ")
+	builder.WriteString("type=")
+	builder.WriteString(t.Type)
 	builder.WriteByte(')')
 	return builder.String()
 }

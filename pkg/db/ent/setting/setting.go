@@ -33,8 +33,8 @@ const (
 	FieldHotWalletFeeAmount = "hot_wallet_fee_amount"
 	// FieldLowFeeAmount holds the string denoting the low_fee_amount field in the database.
 	FieldLowFeeAmount = "low_fee_amount"
-	// FieldWarmAccountAmount holds the string denoting the warm_account_amount field in the database.
-	FieldWarmAccountAmount = "warm_account_amount"
+	// FieldHotWalletAccountAmount holds the string denoting the hot_wallet_account_amount field in the database.
+	FieldHotWalletAccountAmount = "hot_wallet_account_amount"
 	// FieldPaymentAccountCollectAmount holds the string denoting the payment_account_collect_amount field in the database.
 	FieldPaymentAccountCollectAmount = "payment_account_collect_amount"
 	// Table holds the table name of the setting in the database.
@@ -54,7 +54,7 @@ var Columns = []string{
 	FieldCollectFeeAmount,
 	FieldHotWalletFeeAmount,
 	FieldLowFeeAmount,
-	FieldWarmAccountAmount,
+	FieldHotWalletAccountAmount,
 	FieldPaymentAccountCollectAmount,
 }
 
@@ -99,8 +99,8 @@ var (
 	DefaultHotWalletFeeAmount decimal.Decimal
 	// DefaultLowFeeAmount holds the default value on creation for the "low_fee_amount" field.
 	DefaultLowFeeAmount decimal.Decimal
-	// DefaultWarmAccountAmount holds the default value on creation for the "warm_account_amount" field.
-	DefaultWarmAccountAmount decimal.Decimal
+	// DefaultHotWalletAccountAmount holds the default value on creation for the "hot_wallet_account_amount" field.
+	DefaultHotWalletAccountAmount decimal.Decimal
 	// DefaultPaymentAccountCollectAmount holds the default value on creation for the "payment_account_collect_amount" field.
 	DefaultPaymentAccountCollectAmount decimal.Decimal
 	// DefaultID holds the default value on creation for the "id" field.

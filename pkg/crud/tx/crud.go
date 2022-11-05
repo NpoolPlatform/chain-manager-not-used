@@ -46,6 +46,9 @@ func CreateSet(c *ent.TranCreate, in *npool.TxReq) *ent.TranCreate {
 	if in.Extra != nil {
 		c.SetExtra(in.GetExtra())
 	}
+	if in.Type != nil {
+		c.SetType(in.GetType().String())
+	}
 	return c
 }
 
@@ -221,6 +224,14 @@ func setQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.TranQuery, error) 
 		switch conds.GetState().GetOp() {
 		case cruder.EQ:
 			stm.Where(tran.State(npool.TxState(conds.GetState().GetValue()).String()))
+		default:
+			return nil, fmt.Errorf("invalid tx field")
+		}
+	}
+	if conds.Type != nil {
+		switch conds.GetType().GetOp() {
+		case cruder.EQ:
+			stm.Where(tran.Type(npool.TxType(conds.GetType().GetValue()).String()))
 		default:
 			return nil, fmt.Errorf("invalid tx field")
 		}
