@@ -2061,6 +2061,7 @@ type CoinExtraMutation struct {
 	adddeleted_at *int32
 	coin_type_id  *uuid.UUID
 	home_page     *string
+	specs         *string
 	clearedFields map[string]struct{}
 	done          bool
 	oldValue      func(context.Context) (*CoinExtra, error)
@@ -2437,6 +2438,55 @@ func (m *CoinExtraMutation) ResetHomePage() {
 	delete(m.clearedFields, coinextra.FieldHomePage)
 }
 
+// SetSpecs sets the "specs" field.
+func (m *CoinExtraMutation) SetSpecs(s string) {
+	m.specs = &s
+}
+
+// Specs returns the value of the "specs" field in the mutation.
+func (m *CoinExtraMutation) Specs() (r string, exists bool) {
+	v := m.specs
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSpecs returns the old "specs" field's value of the CoinExtra entity.
+// If the CoinExtra object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CoinExtraMutation) OldSpecs(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSpecs is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSpecs requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSpecs: %w", err)
+	}
+	return oldValue.Specs, nil
+}
+
+// ClearSpecs clears the value of the "specs" field.
+func (m *CoinExtraMutation) ClearSpecs() {
+	m.specs = nil
+	m.clearedFields[coinextra.FieldSpecs] = struct{}{}
+}
+
+// SpecsCleared returns if the "specs" field was cleared in this mutation.
+func (m *CoinExtraMutation) SpecsCleared() bool {
+	_, ok := m.clearedFields[coinextra.FieldSpecs]
+	return ok
+}
+
+// ResetSpecs resets all changes to the "specs" field.
+func (m *CoinExtraMutation) ResetSpecs() {
+	m.specs = nil
+	delete(m.clearedFields, coinextra.FieldSpecs)
+}
+
 // Where appends a list predicates to the CoinExtraMutation builder.
 func (m *CoinExtraMutation) Where(ps ...predicate.CoinExtra) {
 	m.predicates = append(m.predicates, ps...)
@@ -2456,7 +2506,7 @@ func (m *CoinExtraMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *CoinExtraMutation) Fields() []string {
-	fields := make([]string, 0, 5)
+	fields := make([]string, 0, 6)
 	if m.created_at != nil {
 		fields = append(fields, coinextra.FieldCreatedAt)
 	}
@@ -2471,6 +2521,9 @@ func (m *CoinExtraMutation) Fields() []string {
 	}
 	if m.home_page != nil {
 		fields = append(fields, coinextra.FieldHomePage)
+	}
+	if m.specs != nil {
+		fields = append(fields, coinextra.FieldSpecs)
 	}
 	return fields
 }
@@ -2490,6 +2543,8 @@ func (m *CoinExtraMutation) Field(name string) (ent.Value, bool) {
 		return m.CoinTypeID()
 	case coinextra.FieldHomePage:
 		return m.HomePage()
+	case coinextra.FieldSpecs:
+		return m.Specs()
 	}
 	return nil, false
 }
@@ -2509,6 +2564,8 @@ func (m *CoinExtraMutation) OldField(ctx context.Context, name string) (ent.Valu
 		return m.OldCoinTypeID(ctx)
 	case coinextra.FieldHomePage:
 		return m.OldHomePage(ctx)
+	case coinextra.FieldSpecs:
+		return m.OldSpecs(ctx)
 	}
 	return nil, fmt.Errorf("unknown CoinExtra field %s", name)
 }
@@ -2552,6 +2609,13 @@ func (m *CoinExtraMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetHomePage(v)
+		return nil
+	case coinextra.FieldSpecs:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSpecs(v)
 		return nil
 	}
 	return fmt.Errorf("unknown CoinExtra field %s", name)
@@ -2628,6 +2692,9 @@ func (m *CoinExtraMutation) ClearedFields() []string {
 	if m.FieldCleared(coinextra.FieldHomePage) {
 		fields = append(fields, coinextra.FieldHomePage)
 	}
+	if m.FieldCleared(coinextra.FieldSpecs) {
+		fields = append(fields, coinextra.FieldSpecs)
+	}
 	return fields
 }
 
@@ -2647,6 +2714,9 @@ func (m *CoinExtraMutation) ClearField(name string) error {
 		return nil
 	case coinextra.FieldHomePage:
 		m.ClearHomePage()
+		return nil
+	case coinextra.FieldSpecs:
+		m.ClearSpecs()
 		return nil
 	}
 	return fmt.Errorf("unknown CoinExtra nullable field %s", name)
@@ -2670,6 +2740,9 @@ func (m *CoinExtraMutation) ResetField(name string) error {
 		return nil
 	case coinextra.FieldHomePage:
 		m.ResetHomePage()
+		return nil
+	case coinextra.FieldSpecs:
+		m.ResetSpecs()
 		return nil
 	}
 	return fmt.Errorf("unknown CoinExtra field %s", name)

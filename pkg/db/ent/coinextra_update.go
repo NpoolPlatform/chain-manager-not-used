@@ -124,6 +124,26 @@ func (ceu *CoinExtraUpdate) ClearHomePage() *CoinExtraUpdate {
 	return ceu
 }
 
+// SetSpecs sets the "specs" field.
+func (ceu *CoinExtraUpdate) SetSpecs(s string) *CoinExtraUpdate {
+	ceu.mutation.SetSpecs(s)
+	return ceu
+}
+
+// SetNillableSpecs sets the "specs" field if the given value is not nil.
+func (ceu *CoinExtraUpdate) SetNillableSpecs(s *string) *CoinExtraUpdate {
+	if s != nil {
+		ceu.SetSpecs(*s)
+	}
+	return ceu
+}
+
+// ClearSpecs clears the value of the "specs" field.
+func (ceu *CoinExtraUpdate) ClearSpecs() *CoinExtraUpdate {
+	ceu.mutation.ClearSpecs()
+	return ceu
+}
+
 // Mutation returns the CoinExtraMutation object of the builder.
 func (ceu *CoinExtraUpdate) Mutation() *CoinExtraMutation {
 	return ceu.mutation
@@ -290,6 +310,19 @@ func (ceu *CoinExtraUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: coinextra.FieldHomePage,
 		})
 	}
+	if value, ok := ceu.mutation.Specs(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: coinextra.FieldSpecs,
+		})
+	}
+	if ceu.mutation.SpecsCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: coinextra.FieldSpecs,
+		})
+	}
 	_spec.Modifiers = ceu.modifiers
 	if n, err = sqlgraph.UpdateNodes(ctx, ceu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -403,6 +436,26 @@ func (ceuo *CoinExtraUpdateOne) SetNillableHomePage(s *string) *CoinExtraUpdateO
 // ClearHomePage clears the value of the "home_page" field.
 func (ceuo *CoinExtraUpdateOne) ClearHomePage() *CoinExtraUpdateOne {
 	ceuo.mutation.ClearHomePage()
+	return ceuo
+}
+
+// SetSpecs sets the "specs" field.
+func (ceuo *CoinExtraUpdateOne) SetSpecs(s string) *CoinExtraUpdateOne {
+	ceuo.mutation.SetSpecs(s)
+	return ceuo
+}
+
+// SetNillableSpecs sets the "specs" field if the given value is not nil.
+func (ceuo *CoinExtraUpdateOne) SetNillableSpecs(s *string) *CoinExtraUpdateOne {
+	if s != nil {
+		ceuo.SetSpecs(*s)
+	}
+	return ceuo
+}
+
+// ClearSpecs clears the value of the "specs" field.
+func (ceuo *CoinExtraUpdateOne) ClearSpecs() *CoinExtraUpdateOne {
+	ceuo.mutation.ClearSpecs()
 	return ceuo
 }
 
@@ -600,6 +653,19 @@ func (ceuo *CoinExtraUpdateOne) sqlSave(ctx context.Context) (_node *CoinExtra, 
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Column: coinextra.FieldHomePage,
+		})
+	}
+	if value, ok := ceuo.mutation.Specs(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: coinextra.FieldSpecs,
+		})
+	}
+	if ceuo.mutation.SpecsCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: coinextra.FieldSpecs,
 		})
 	}
 	_spec.Modifiers = ceuo.modifiers

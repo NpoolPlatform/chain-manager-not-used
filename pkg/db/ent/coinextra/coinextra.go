@@ -22,6 +22,8 @@ const (
 	FieldCoinTypeID = "coin_type_id"
 	// FieldHomePage holds the string denoting the home_page field in the database.
 	FieldHomePage = "home_page"
+	// FieldSpecs holds the string denoting the specs field in the database.
+	FieldSpecs = "specs"
 	// Table holds the table name of the coinextra in the database.
 	Table = "coin_extras"
 )
@@ -34,6 +36,7 @@ var Columns = []string{
 	FieldDeletedAt,
 	FieldCoinTypeID,
 	FieldHomePage,
+	FieldSpecs,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -67,6 +70,8 @@ var (
 	DefaultCoinTypeID func() uuid.UUID
 	// DefaultHomePage holds the default value on creation for the "home_page" field.
 	DefaultHomePage string
+	// DefaultSpecs holds the default value on creation for the "specs" field.
+	DefaultSpecs string
 	// DefaultID holds the default value on creation for the "id" field.
 	DefaultID func() uuid.UUID
 )

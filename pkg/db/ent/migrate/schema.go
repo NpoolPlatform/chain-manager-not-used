@@ -55,6 +55,7 @@ var (
 		{Name: "deleted_at", Type: field.TypeUint32},
 		{Name: "coin_type_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "home_page", Type: field.TypeString, Nullable: true, Default: ""},
+		{Name: "specs", Type: field.TypeString, Nullable: true, Default: ""},
 	}
 	// CoinExtrasTable holds the schema information for the "coin_extras" table.
 	CoinExtrasTable = &schema.Table{

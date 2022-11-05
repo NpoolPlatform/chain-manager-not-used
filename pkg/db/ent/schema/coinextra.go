@@ -33,6 +33,10 @@ func (CoinExtra) Fields() []ent.Field {
 			String("home_page").
 			Optional().
 			Default(""),
+		field.
+			String("specs").
+			Optional().
+			Default(""),
 	}
 }
 

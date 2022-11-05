@@ -26,6 +26,8 @@ type CoinExtra struct {
 	CoinTypeID uuid.UUID `json:"coin_type_id,omitempty"`
 	// HomePage holds the value of the "home_page" field.
 	HomePage string `json:"home_page,omitempty"`
+	// Specs holds the value of the "specs" field.
+	Specs string `json:"specs,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -35,7 +37,7 @@ func (*CoinExtra) scanValues(columns []string) ([]interface{}, error) {
 		switch columns[i] {
 		case coinextra.FieldCreatedAt, coinextra.FieldUpdatedAt, coinextra.FieldDeletedAt:
 			values[i] = new(sql.NullInt64)
-		case coinextra.FieldHomePage:
+		case coinextra.FieldHomePage, coinextra.FieldSpecs:
 			values[i] = new(sql.NullString)
 		case coinextra.FieldID, coinextra.FieldCoinTypeID:
 			values[i] = new(uuid.UUID)
@@ -90,6 +92,12 @@ func (ce *CoinExtra) assignValues(columns []string, values []interface{}) error 
 			} else if value.Valid {
 				ce.HomePage = value.String
 			}
+		case coinextra.FieldSpecs:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field specs", values[i])
+			} else if value.Valid {
+				ce.Specs = value.String
+			}
 		}
 	}
 	return nil
@@ -132,6 +140,9 @@ func (ce *CoinExtra) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("home_page=")
 	builder.WriteString(ce.HomePage)
+	builder.WriteString(", ")
+	builder.WriteString("specs=")
+	builder.WriteString(ce.Specs)
 	builder.WriteByte(')')
 	return builder.String()
 }

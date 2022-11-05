@@ -175,6 +175,10 @@ func init() {
 	coinextraDescHomePage := coinextraFields[2].Descriptor()
 	// coinextra.DefaultHomePage holds the default value on creation for the home_page field.
 	coinextra.DefaultHomePage = coinextraDescHomePage.Default.(string)
+	// coinextraDescSpecs is the schema descriptor for specs field.
+	coinextraDescSpecs := coinextraFields[3].Descriptor()
+	// coinextra.DefaultSpecs holds the default value on creation for the specs field.
+	coinextra.DefaultSpecs = coinextraDescSpecs.Default.(string)
 	// coinextraDescID is the schema descriptor for id field.
 	coinextraDescID := coinextraFields[0].Descriptor()
 	// coinextra.DefaultID holds the default value on creation for the id field.

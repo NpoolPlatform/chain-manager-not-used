@@ -114,6 +114,13 @@ func HomePage(v string) predicate.CoinExtra {
 	})
 }
 
+// Specs applies equality check predicate on the "specs" field. It's identical to SpecsEQ.
+func Specs(v string) predicate.CoinExtra {
+	return predicate.CoinExtra(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldSpecs), v))
+	})
+}
+
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
 func CreatedAtEQ(v uint32) predicate.CoinExtra {
 	return predicate.CoinExtra(func(s *sql.Selector) {
@@ -494,6 +501,119 @@ func HomePageEqualFold(v string) predicate.CoinExtra {
 func HomePageContainsFold(v string) predicate.CoinExtra {
 	return predicate.CoinExtra(func(s *sql.Selector) {
 		s.Where(sql.ContainsFold(s.C(FieldHomePage), v))
+	})
+}
+
+// SpecsEQ applies the EQ predicate on the "specs" field.
+func SpecsEQ(v string) predicate.CoinExtra {
+	return predicate.CoinExtra(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldSpecs), v))
+	})
+}
+
+// SpecsNEQ applies the NEQ predicate on the "specs" field.
+func SpecsNEQ(v string) predicate.CoinExtra {
+	return predicate.CoinExtra(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldSpecs), v))
+	})
+}
+
+// SpecsIn applies the In predicate on the "specs" field.
+func SpecsIn(vs ...string) predicate.CoinExtra {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.CoinExtra(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldSpecs), v...))
+	})
+}
+
+// SpecsNotIn applies the NotIn predicate on the "specs" field.
+func SpecsNotIn(vs ...string) predicate.CoinExtra {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.CoinExtra(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldSpecs), v...))
+	})
+}
+
+// SpecsGT applies the GT predicate on the "specs" field.
+func SpecsGT(v string) predicate.CoinExtra {
+	return predicate.CoinExtra(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldSpecs), v))
+	})
+}
+
+// SpecsGTE applies the GTE predicate on the "specs" field.
+func SpecsGTE(v string) predicate.CoinExtra {
+	return predicate.CoinExtra(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldSpecs), v))
+	})
+}
+
+// SpecsLT applies the LT predicate on the "specs" field.
+func SpecsLT(v string) predicate.CoinExtra {
+	return predicate.CoinExtra(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldSpecs), v))
+	})
+}
+
+// SpecsLTE applies the LTE predicate on the "specs" field.
+func SpecsLTE(v string) predicate.CoinExtra {
+	return predicate.CoinExtra(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldSpecs), v))
+	})
+}
+
+// SpecsContains applies the Contains predicate on the "specs" field.
+func SpecsContains(v string) predicate.CoinExtra {
+	return predicate.CoinExtra(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldSpecs), v))
+	})
+}
+
+// SpecsHasPrefix applies the HasPrefix predicate on the "specs" field.
+func SpecsHasPrefix(v string) predicate.CoinExtra {
+	return predicate.CoinExtra(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldSpecs), v))
+	})
+}
+
+// SpecsHasSuffix applies the HasSuffix predicate on the "specs" field.
+func SpecsHasSuffix(v string) predicate.CoinExtra {
+	return predicate.CoinExtra(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldSpecs), v))
+	})
+}
+
+// SpecsIsNil applies the IsNil predicate on the "specs" field.
+func SpecsIsNil() predicate.CoinExtra {
+	return predicate.CoinExtra(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldSpecs)))
+	})
+}
+
+// SpecsNotNil applies the NotNil predicate on the "specs" field.
+func SpecsNotNil() predicate.CoinExtra {
+	return predicate.CoinExtra(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldSpecs)))
+	})
+}
+
+// SpecsEqualFold applies the EqualFold predicate on the "specs" field.
+func SpecsEqualFold(v string) predicate.CoinExtra {
+	return predicate.CoinExtra(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldSpecs), v))
+	})
+}
+
+// SpecsContainsFold applies the ContainsFold predicate on the "specs" field.
+func SpecsContainsFold(v string) predicate.CoinExtra {
+	return predicate.CoinExtra(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldSpecs), v))
 	})
 }
 

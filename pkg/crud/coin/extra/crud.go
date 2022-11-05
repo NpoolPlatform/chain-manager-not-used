@@ -30,6 +30,9 @@ func CreateSet(c *ent.CoinExtraCreate, in *npool.CoinExtraReq) *ent.CoinExtraCre
 	if in.HomePage != nil {
 		c.SetHomePage(in.GetHomePage())
 	}
+	if in.Specs != nil {
+		c.SetSpecs(in.GetSpecs())
+	}
 	return c
 }
 
@@ -117,6 +120,9 @@ func Update(ctx context.Context, in *npool.CoinExtraReq) (*ent.CoinExtra, error)
 
 		if in.HomePage != nil {
 			stm = stm.SetHomePage(in.GetHomePage())
+		}
+		if in.Specs != nil {
+			stm = stm.SetSpecs(in.GetSpecs())
 		}
 
 		info, err = stm.Save(_ctx)

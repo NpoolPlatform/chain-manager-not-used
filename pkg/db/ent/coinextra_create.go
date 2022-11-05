@@ -93,6 +93,20 @@ func (cec *CoinExtraCreate) SetNillableHomePage(s *string) *CoinExtraCreate {
 	return cec
 }
 
+// SetSpecs sets the "specs" field.
+func (cec *CoinExtraCreate) SetSpecs(s string) *CoinExtraCreate {
+	cec.mutation.SetSpecs(s)
+	return cec
+}
+
+// SetNillableSpecs sets the "specs" field if the given value is not nil.
+func (cec *CoinExtraCreate) SetNillableSpecs(s *string) *CoinExtraCreate {
+	if s != nil {
+		cec.SetSpecs(*s)
+	}
+	return cec
+}
+
 // SetID sets the "id" field.
 func (cec *CoinExtraCreate) SetID(u uuid.UUID) *CoinExtraCreate {
 	cec.mutation.SetID(u)
@@ -218,6 +232,10 @@ func (cec *CoinExtraCreate) defaults() error {
 		v := coinextra.DefaultHomePage
 		cec.mutation.SetHomePage(v)
 	}
+	if _, ok := cec.mutation.Specs(); !ok {
+		v := coinextra.DefaultSpecs
+		cec.mutation.SetSpecs(v)
+	}
 	if _, ok := cec.mutation.ID(); !ok {
 		if coinextra.DefaultID == nil {
 			return fmt.Errorf("ent: uninitialized coinextra.DefaultID (forgotten import ent/runtime?)")
@@ -315,6 +333,14 @@ func (cec *CoinExtraCreate) createSpec() (*CoinExtra, *sqlgraph.CreateSpec) {
 			Column: coinextra.FieldHomePage,
 		})
 		_node.HomePage = value
+	}
+	if value, ok := cec.mutation.Specs(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: coinextra.FieldSpecs,
+		})
+		_node.Specs = value
 	}
 	return _node, _spec
 }
@@ -457,6 +483,24 @@ func (u *CoinExtraUpsert) UpdateHomePage() *CoinExtraUpsert {
 // ClearHomePage clears the value of the "home_page" field.
 func (u *CoinExtraUpsert) ClearHomePage() *CoinExtraUpsert {
 	u.SetNull(coinextra.FieldHomePage)
+	return u
+}
+
+// SetSpecs sets the "specs" field.
+func (u *CoinExtraUpsert) SetSpecs(v string) *CoinExtraUpsert {
+	u.Set(coinextra.FieldSpecs, v)
+	return u
+}
+
+// UpdateSpecs sets the "specs" field to the value that was provided on create.
+func (u *CoinExtraUpsert) UpdateSpecs() *CoinExtraUpsert {
+	u.SetExcluded(coinextra.FieldSpecs)
+	return u
+}
+
+// ClearSpecs clears the value of the "specs" field.
+func (u *CoinExtraUpsert) ClearSpecs() *CoinExtraUpsert {
+	u.SetNull(coinextra.FieldSpecs)
 	return u
 }
 
@@ -612,6 +656,27 @@ func (u *CoinExtraUpsertOne) UpdateHomePage() *CoinExtraUpsertOne {
 func (u *CoinExtraUpsertOne) ClearHomePage() *CoinExtraUpsertOne {
 	return u.Update(func(s *CoinExtraUpsert) {
 		s.ClearHomePage()
+	})
+}
+
+// SetSpecs sets the "specs" field.
+func (u *CoinExtraUpsertOne) SetSpecs(v string) *CoinExtraUpsertOne {
+	return u.Update(func(s *CoinExtraUpsert) {
+		s.SetSpecs(v)
+	})
+}
+
+// UpdateSpecs sets the "specs" field to the value that was provided on create.
+func (u *CoinExtraUpsertOne) UpdateSpecs() *CoinExtraUpsertOne {
+	return u.Update(func(s *CoinExtraUpsert) {
+		s.UpdateSpecs()
+	})
+}
+
+// ClearSpecs clears the value of the "specs" field.
+func (u *CoinExtraUpsertOne) ClearSpecs() *CoinExtraUpsertOne {
+	return u.Update(func(s *CoinExtraUpsert) {
+		s.ClearSpecs()
 	})
 }
 
@@ -933,6 +998,27 @@ func (u *CoinExtraUpsertBulk) UpdateHomePage() *CoinExtraUpsertBulk {
 func (u *CoinExtraUpsertBulk) ClearHomePage() *CoinExtraUpsertBulk {
 	return u.Update(func(s *CoinExtraUpsert) {
 		s.ClearHomePage()
+	})
+}
+
+// SetSpecs sets the "specs" field.
+func (u *CoinExtraUpsertBulk) SetSpecs(v string) *CoinExtraUpsertBulk {
+	return u.Update(func(s *CoinExtraUpsert) {
+		s.SetSpecs(v)
+	})
+}
+
+// UpdateSpecs sets the "specs" field to the value that was provided on create.
+func (u *CoinExtraUpsertBulk) UpdateSpecs() *CoinExtraUpsertBulk {
+	return u.Update(func(s *CoinExtraUpsert) {
+		s.UpdateSpecs()
+	})
+}
+
+// ClearSpecs clears the value of the "specs" field.
+func (u *CoinExtraUpsertBulk) ClearSpecs() *CoinExtraUpsertBulk {
+	return u.Update(func(s *CoinExtraUpsert) {
+		s.ClearSpecs()
 	})
 }
 

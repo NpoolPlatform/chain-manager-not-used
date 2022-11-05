@@ -80,6 +80,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			coinextra.FieldDeletedAt:  {Type: field.TypeUint32, Column: coinextra.FieldDeletedAt},
 			coinextra.FieldCoinTypeID: {Type: field.TypeUUID, Column: coinextra.FieldCoinTypeID},
 			coinextra.FieldHomePage:   {Type: field.TypeString, Column: coinextra.FieldHomePage},
+			coinextra.FieldSpecs:      {Type: field.TypeString, Column: coinextra.FieldSpecs},
 		},
 	}
 	graph.Nodes[3] = &sqlgraph.Node{
@@ -399,6 +400,11 @@ func (f *CoinExtraFilter) WhereCoinTypeID(p entql.ValueP) {
 // WhereHomePage applies the entql string predicate on the home_page field.
 func (f *CoinExtraFilter) WhereHomePage(p entql.StringP) {
 	f.Where(p.Field(coinextra.FieldHomePage))
+}
+
+// WhereSpecs applies the entql string predicate on the specs field.
+func (f *CoinExtraFilter) WhereSpecs(p entql.StringP) {
+	f.Where(p.Field(coinextra.FieldSpecs))
 }
 
 // addPredicate implements the predicateAdder interface.

@@ -14,6 +14,7 @@ func Ent2Grpc(row *ent.CoinExtra) *npool.CoinExtra {
 		ID:         row.ID.String(),
 		CoinTypeID: row.CoinTypeID.String(),
 		HomePage:   row.HomePage,
+		Specs:      row.Specs,
 		CreatedAt:  row.CreatedAt,
 		UpdatedAt:  row.UpdatedAt,
 	}
