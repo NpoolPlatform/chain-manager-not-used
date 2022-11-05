@@ -12,6 +12,9 @@ type AppCoin func(*sql.Selector)
 // CoinBase is the predicate function for coinbase builders.
 type CoinBase func(*sql.Selector)
 
+// CoinDescription is the predicate function for coindescription builders.
+type CoinDescription func(*sql.Selector)
+
 // CoinExtra is the predicate function for coinextra builders.
 type CoinExtra func(*sql.Selector)
 

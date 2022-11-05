@@ -13,6 +13,7 @@ import (
 
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/appcoin"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/coinbase"
+	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/coindescription"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/coinextra"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/exchangerate"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/setting"
@@ -31,6 +32,8 @@ type Client struct {
 	AppCoin *AppCoinClient
 	// CoinBase is the client for interacting with the CoinBase builders.
 	CoinBase *CoinBaseClient
+	// CoinDescription is the client for interacting with the CoinDescription builders.
+	CoinDescription *CoinDescriptionClient
 	// CoinExtra is the client for interacting with the CoinExtra builders.
 	CoinExtra *CoinExtraClient
 	// ExchangeRate is the client for interacting with the ExchangeRate builders.
@@ -54,6 +57,7 @@ func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
 	c.AppCoin = NewAppCoinClient(c.config)
 	c.CoinBase = NewCoinBaseClient(c.config)
+	c.CoinDescription = NewCoinDescriptionClient(c.config)
 	c.CoinExtra = NewCoinExtraClient(c.config)
 	c.ExchangeRate = NewExchangeRateClient(c.config)
 	c.Setting = NewSettingClient(c.config)
@@ -89,14 +93,15 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:          ctx,
-		config:       cfg,
-		AppCoin:      NewAppCoinClient(cfg),
-		CoinBase:     NewCoinBaseClient(cfg),
-		CoinExtra:    NewCoinExtraClient(cfg),
-		ExchangeRate: NewExchangeRateClient(cfg),
-		Setting:      NewSettingClient(cfg),
-		Tran:         NewTranClient(cfg),
+		ctx:             ctx,
+		config:          cfg,
+		AppCoin:         NewAppCoinClient(cfg),
+		CoinBase:        NewCoinBaseClient(cfg),
+		CoinDescription: NewCoinDescriptionClient(cfg),
+		CoinExtra:       NewCoinExtraClient(cfg),
+		ExchangeRate:    NewExchangeRateClient(cfg),
+		Setting:         NewSettingClient(cfg),
+		Tran:            NewTranClient(cfg),
 	}, nil
 }
 
@@ -114,14 +119,15 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:          ctx,
-		config:       cfg,
-		AppCoin:      NewAppCoinClient(cfg),
-		CoinBase:     NewCoinBaseClient(cfg),
-		CoinExtra:    NewCoinExtraClient(cfg),
-		ExchangeRate: NewExchangeRateClient(cfg),
-		Setting:      NewSettingClient(cfg),
-		Tran:         NewTranClient(cfg),
+		ctx:             ctx,
+		config:          cfg,
+		AppCoin:         NewAppCoinClient(cfg),
+		CoinBase:        NewCoinBaseClient(cfg),
+		CoinDescription: NewCoinDescriptionClient(cfg),
+		CoinExtra:       NewCoinExtraClient(cfg),
+		ExchangeRate:    NewExchangeRateClient(cfg),
+		Setting:         NewSettingClient(cfg),
+		Tran:            NewTranClient(cfg),
 	}, nil
 }
 
@@ -153,6 +159,7 @@ func (c *Client) Close() error {
 func (c *Client) Use(hooks ...Hook) {
 	c.AppCoin.Use(hooks...)
 	c.CoinBase.Use(hooks...)
+	c.CoinDescription.Use(hooks...)
 	c.CoinExtra.Use(hooks...)
 	c.ExchangeRate.Use(hooks...)
 	c.Setting.Use(hooks...)
@@ -339,6 +346,97 @@ func (c *CoinBaseClient) GetX(ctx context.Context, id uuid.UUID) *CoinBase {
 func (c *CoinBaseClient) Hooks() []Hook {
 	hooks := c.hooks.CoinBase
 	return append(hooks[:len(hooks):len(hooks)], coinbase.Hooks[:]...)
+}
+
+// CoinDescriptionClient is a client for the CoinDescription schema.
+type CoinDescriptionClient struct {
+	config
+}
+
+// NewCoinDescriptionClient returns a client for the CoinDescription from the given config.
+func NewCoinDescriptionClient(c config) *CoinDescriptionClient {
+	return &CoinDescriptionClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `coindescription.Hooks(f(g(h())))`.
+func (c *CoinDescriptionClient) Use(hooks ...Hook) {
+	c.hooks.CoinDescription = append(c.hooks.CoinDescription, hooks...)
+}
+
+// Create returns a builder for creating a CoinDescription entity.
+func (c *CoinDescriptionClient) Create() *CoinDescriptionCreate {
+	mutation := newCoinDescriptionMutation(c.config, OpCreate)
+	return &CoinDescriptionCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of CoinDescription entities.
+func (c *CoinDescriptionClient) CreateBulk(builders ...*CoinDescriptionCreate) *CoinDescriptionCreateBulk {
+	return &CoinDescriptionCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for CoinDescription.
+func (c *CoinDescriptionClient) Update() *CoinDescriptionUpdate {
+	mutation := newCoinDescriptionMutation(c.config, OpUpdate)
+	return &CoinDescriptionUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *CoinDescriptionClient) UpdateOne(cd *CoinDescription) *CoinDescriptionUpdateOne {
+	mutation := newCoinDescriptionMutation(c.config, OpUpdateOne, withCoinDescription(cd))
+	return &CoinDescriptionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *CoinDescriptionClient) UpdateOneID(id uuid.UUID) *CoinDescriptionUpdateOne {
+	mutation := newCoinDescriptionMutation(c.config, OpUpdateOne, withCoinDescriptionID(id))
+	return &CoinDescriptionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for CoinDescription.
+func (c *CoinDescriptionClient) Delete() *CoinDescriptionDelete {
+	mutation := newCoinDescriptionMutation(c.config, OpDelete)
+	return &CoinDescriptionDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *CoinDescriptionClient) DeleteOne(cd *CoinDescription) *CoinDescriptionDeleteOne {
+	return c.DeleteOneID(cd.ID)
+}
+
+// DeleteOne returns a builder for deleting the given entity by its id.
+func (c *CoinDescriptionClient) DeleteOneID(id uuid.UUID) *CoinDescriptionDeleteOne {
+	builder := c.Delete().Where(coindescription.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &CoinDescriptionDeleteOne{builder}
+}
+
+// Query returns a query builder for CoinDescription.
+func (c *CoinDescriptionClient) Query() *CoinDescriptionQuery {
+	return &CoinDescriptionQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a CoinDescription entity by its id.
+func (c *CoinDescriptionClient) Get(ctx context.Context, id uuid.UUID) (*CoinDescription, error) {
+	return c.Query().Where(coindescription.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *CoinDescriptionClient) GetX(ctx context.Context, id uuid.UUID) *CoinDescription {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *CoinDescriptionClient) Hooks() []Hook {
+	hooks := c.hooks.CoinDescription
+	return append(hooks[:len(hooks):len(hooks)], coindescription.Hooks[:]...)
 }
 
 // CoinExtraClient is a client for the CoinExtra schema.

@@ -47,6 +47,24 @@ var (
 		Columns:    CoinBasesColumns,
 		PrimaryKey: []*schema.Column{CoinBasesColumns[0]},
 	}
+	// CoinDescriptionsColumns holds the columns for the "coin_descriptions" table.
+	CoinDescriptionsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID, Unique: true},
+		{Name: "created_at", Type: field.TypeUint32},
+		{Name: "updated_at", Type: field.TypeUint32},
+		{Name: "deleted_at", Type: field.TypeUint32},
+		{Name: "app_id", Type: field.TypeUUID, Nullable: true},
+		{Name: "coin_type_id", Type: field.TypeUUID, Nullable: true},
+		{Name: "used_for", Type: field.TypeString, Nullable: true, Default: "DefaultUsedFor"},
+		{Name: "title", Type: field.TypeString, Nullable: true, Default: ""},
+		{Name: "message", Type: field.TypeString, Nullable: true, Default: ""},
+	}
+	// CoinDescriptionsTable holds the schema information for the "coin_descriptions" table.
+	CoinDescriptionsTable = &schema.Table{
+		Name:       "coin_descriptions",
+		Columns:    CoinDescriptionsColumns,
+		PrimaryKey: []*schema.Column{CoinDescriptionsColumns[0]},
+	}
 	// CoinExtrasColumns holds the columns for the "coin_extras" table.
 	CoinExtrasColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID, Unique: true},
@@ -128,6 +146,7 @@ var (
 	Tables = []*schema.Table{
 		AppCoinsTable,
 		CoinBasesTable,
+		CoinDescriptionsTable,
 		CoinExtrasTable,
 		ExchangeRatesTable,
 		SettingsTable,

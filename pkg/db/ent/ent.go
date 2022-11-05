@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/appcoin"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/coinbase"
+	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/coindescription"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/coinextra"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/exchangerate"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/setting"
@@ -36,12 +37,13 @@ type OrderFunc func(*sql.Selector)
 // columnChecker returns a function indicates if the column exists in the given column.
 func columnChecker(table string) func(string) error {
 	checks := map[string]func(string) bool{
-		appcoin.Table:      appcoin.ValidColumn,
-		coinbase.Table:     coinbase.ValidColumn,
-		coinextra.Table:    coinextra.ValidColumn,
-		exchangerate.Table: exchangerate.ValidColumn,
-		setting.Table:      setting.ValidColumn,
-		tran.Table:         tran.ValidColumn,
+		appcoin.Table:         appcoin.ValidColumn,
+		coinbase.Table:        coinbase.ValidColumn,
+		coindescription.Table: coindescription.ValidColumn,
+		coinextra.Table:       coinextra.ValidColumn,
+		exchangerate.Table:    exchangerate.ValidColumn,
+		setting.Table:         setting.ValidColumn,
+		tran.Table:            tran.ValidColumn,
 	}
 	check, ok := checks[table]
 	if !ok {

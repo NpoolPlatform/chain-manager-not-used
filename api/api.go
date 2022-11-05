@@ -4,6 +4,7 @@ import (
 	chainmgr "github.com/NpoolPlatform/message/npool/chain/mgr/v1"
 
 	appcoin "github.com/NpoolPlatform/chain-manager/api/appcoin"
+	description "github.com/NpoolPlatform/chain-manager/api/appcoin/description"
 	exrate "github.com/NpoolPlatform/chain-manager/api/appcoin/exrate"
 	coinbase "github.com/NpoolPlatform/chain-manager/api/coin/base"
 	coinextra "github.com/NpoolPlatform/chain-manager/api/coin/extra"
@@ -26,6 +27,7 @@ func Register(server grpc.ServiceRegistrar) {
 	coinextra.Register(server)
 	appcoin.Register(server)
 	exrate.Register(server)
+	description.Register(server)
 	setting.Register(server)
 }
 

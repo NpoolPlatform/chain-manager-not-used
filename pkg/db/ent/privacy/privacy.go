@@ -198,6 +198,30 @@ func (f CoinBaseMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutati
 	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.CoinBaseMutation", m)
 }
 
+// The CoinDescriptionQueryRuleFunc type is an adapter to allow the use of ordinary
+// functions as a query rule.
+type CoinDescriptionQueryRuleFunc func(context.Context, *ent.CoinDescriptionQuery) error
+
+// EvalQuery return f(ctx, q).
+func (f CoinDescriptionQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.CoinDescriptionQuery); ok {
+		return f(ctx, q)
+	}
+	return Denyf("ent/privacy: unexpected query type %T, expect *ent.CoinDescriptionQuery", q)
+}
+
+// The CoinDescriptionMutationRuleFunc type is an adapter to allow the use of ordinary
+// functions as a mutation rule.
+type CoinDescriptionMutationRuleFunc func(context.Context, *ent.CoinDescriptionMutation) error
+
+// EvalMutation calls f(ctx, m).
+func (f CoinDescriptionMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
+	if m, ok := m.(*ent.CoinDescriptionMutation); ok {
+		return f(ctx, m)
+	}
+	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.CoinDescriptionMutation", m)
+}
+
 // The CoinExtraQueryRuleFunc type is an adapter to allow the use of ordinary
 // functions as a query rule.
 type CoinExtraQueryRuleFunc func(context.Context, *ent.CoinExtraQuery) error
@@ -333,6 +357,8 @@ func queryFilter(q ent.Query) (Filter, error) {
 		return q.Filter(), nil
 	case *ent.CoinBaseQuery:
 		return q.Filter(), nil
+	case *ent.CoinDescriptionQuery:
+		return q.Filter(), nil
 	case *ent.CoinExtraQuery:
 		return q.Filter(), nil
 	case *ent.ExchangeRateQuery:
@@ -351,6 +377,8 @@ func mutationFilter(m ent.Mutation) (Filter, error) {
 	case *ent.AppCoinMutation:
 		return m.Filter(), nil
 	case *ent.CoinBaseMutation:
+		return m.Filter(), nil
+	case *ent.CoinDescriptionMutation:
 		return m.Filter(), nil
 	case *ent.CoinExtraMutation:
 		return m.Filter(), nil

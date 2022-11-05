@@ -35,6 +35,19 @@ func (f CoinBaseFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, er
 	return f(ctx, mv)
 }
 
+// The CoinDescriptionFunc type is an adapter to allow the use of ordinary
+// function as CoinDescription mutator.
+type CoinDescriptionFunc func(context.Context, *ent.CoinDescriptionMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f CoinDescriptionFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.CoinDescriptionMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.CoinDescriptionMutation", m)
+	}
+	return f(ctx, mv)
+}
+
 // The CoinExtraFunc type is an adapter to allow the use of ordinary
 // function as CoinExtra mutator.
 type CoinExtraFunc func(context.Context, *ent.CoinExtraMutation) (ent.Value, error)

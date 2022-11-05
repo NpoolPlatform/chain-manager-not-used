@@ -7,6 +7,7 @@ import (
 
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/appcoin"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/coinbase"
+	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/coindescription"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/coinextra"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/exchangerate"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/schema"
@@ -139,6 +140,58 @@ func init() {
 	coinbaseDescID := coinbaseFields[0].Descriptor()
 	// coinbase.DefaultID holds the default value on creation for the id field.
 	coinbase.DefaultID = coinbaseDescID.Default.(func() uuid.UUID)
+	coindescriptionMixin := schema.CoinDescription{}.Mixin()
+	coindescription.Policy = privacy.NewPolicies(coindescriptionMixin[0], schema.CoinDescription{})
+	coindescription.Hooks[0] = func(next ent.Mutator) ent.Mutator {
+		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+			if err := coindescription.Policy.EvalMutation(ctx, m); err != nil {
+				return nil, err
+			}
+			return next.Mutate(ctx, m)
+		})
+	}
+	coindescriptionMixinFields0 := coindescriptionMixin[0].Fields()
+	_ = coindescriptionMixinFields0
+	coindescriptionFields := schema.CoinDescription{}.Fields()
+	_ = coindescriptionFields
+	// coindescriptionDescCreatedAt is the schema descriptor for created_at field.
+	coindescriptionDescCreatedAt := coindescriptionMixinFields0[0].Descriptor()
+	// coindescription.DefaultCreatedAt holds the default value on creation for the created_at field.
+	coindescription.DefaultCreatedAt = coindescriptionDescCreatedAt.Default.(func() uint32)
+	// coindescriptionDescUpdatedAt is the schema descriptor for updated_at field.
+	coindescriptionDescUpdatedAt := coindescriptionMixinFields0[1].Descriptor()
+	// coindescription.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	coindescription.DefaultUpdatedAt = coindescriptionDescUpdatedAt.Default.(func() uint32)
+	// coindescription.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	coindescription.UpdateDefaultUpdatedAt = coindescriptionDescUpdatedAt.UpdateDefault.(func() uint32)
+	// coindescriptionDescDeletedAt is the schema descriptor for deleted_at field.
+	coindescriptionDescDeletedAt := coindescriptionMixinFields0[2].Descriptor()
+	// coindescription.DefaultDeletedAt holds the default value on creation for the deleted_at field.
+	coindescription.DefaultDeletedAt = coindescriptionDescDeletedAt.Default.(func() uint32)
+	// coindescriptionDescAppID is the schema descriptor for app_id field.
+	coindescriptionDescAppID := coindescriptionFields[1].Descriptor()
+	// coindescription.DefaultAppID holds the default value on creation for the app_id field.
+	coindescription.DefaultAppID = coindescriptionDescAppID.Default.(func() uuid.UUID)
+	// coindescriptionDescCoinTypeID is the schema descriptor for coin_type_id field.
+	coindescriptionDescCoinTypeID := coindescriptionFields[2].Descriptor()
+	// coindescription.DefaultCoinTypeID holds the default value on creation for the coin_type_id field.
+	coindescription.DefaultCoinTypeID = coindescriptionDescCoinTypeID.Default.(func() uuid.UUID)
+	// coindescriptionDescUsedFor is the schema descriptor for used_for field.
+	coindescriptionDescUsedFor := coindescriptionFields[3].Descriptor()
+	// coindescription.DefaultUsedFor holds the default value on creation for the used_for field.
+	coindescription.DefaultUsedFor = coindescriptionDescUsedFor.Default.(string)
+	// coindescriptionDescTitle is the schema descriptor for title field.
+	coindescriptionDescTitle := coindescriptionFields[4].Descriptor()
+	// coindescription.DefaultTitle holds the default value on creation for the title field.
+	coindescription.DefaultTitle = coindescriptionDescTitle.Default.(string)
+	// coindescriptionDescMessage is the schema descriptor for message field.
+	coindescriptionDescMessage := coindescriptionFields[5].Descriptor()
+	// coindescription.DefaultMessage holds the default value on creation for the message field.
+	coindescription.DefaultMessage = coindescriptionDescMessage.Default.(string)
+	// coindescriptionDescID is the schema descriptor for id field.
+	coindescriptionDescID := coindescriptionFields[0].Descriptor()
+	// coindescription.DefaultID holds the default value on creation for the id field.
+	coindescription.DefaultID = coindescriptionDescID.Default.(func() uuid.UUID)
 	coinextraMixin := schema.CoinExtra{}.Mixin()
 	coinextra.Policy = privacy.NewPolicies(coinextraMixin[0], schema.CoinExtra{})
 	coinextra.Hooks[0] = func(next ent.Mutator) ent.Mutator {
