@@ -181,12 +181,16 @@ func (s *Server) GetAppCoinOnly(ctx context.Context, in *npool.GetAppCoinOnlyReq
 		}
 	}()
 
+	if err := validateConds(in.GetConds()); err != nil {
+		return &npool.GetAppCoinOnlyResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
+
 	span = tracer.TraceConds(span, in.GetConds())
 	span = commontracer.TraceInvoker(span, "appcoin", "crud", "RowOnly")
 
 	info, err := crud.RowOnly(ctx, in.GetConds())
 	if err != nil {
-		logger.Sugar().Errorf("fail get appcoins: %v", err)
+		logger.Sugar().Errorw("GetAppCoinOnly", "error", err)
 		return &npool.GetAppCoinOnlyResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
@@ -210,11 +214,16 @@ func (s *Server) GetAppCoins(ctx context.Context, in *npool.GetAppCoinsRequest) 
 
 	span = tracer.TraceConds(span, in.GetConds())
 	span = commontracer.TraceOffsetLimit(span, int(in.GetOffset()), int(in.GetLimit()))
+
+	if err := validateConds(in.GetConds()); err != nil {
+		return &npool.GetAppCoinsResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
+
 	span = commontracer.TraceInvoker(span, "appcoin", "crud", "Rows")
 
 	rows, total, err := crud.Rows(ctx, in.GetConds(), int(in.GetOffset()), int(in.GetLimit()))
 	if err != nil {
-		logger.Sugar().Errorf("fail get appcoins: %v", err)
+		logger.Sugar().Errorw("GetAppCoins", "error", err)
 		return &npool.GetAppCoinsResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
@@ -248,7 +257,7 @@ func (s *Server) ExistAppCoin(ctx context.Context, in *npool.ExistAppCoinRequest
 
 	exist, err := crud.Exist(ctx, id)
 	if err != nil {
-		logger.Sugar().Errorf("fail check appcoin: %v", err)
+		logger.Sugar().Errorw("ExistAppCoin", "error", err)
 		return &npool.ExistAppCoinResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
@@ -274,9 +283,13 @@ func (s *Server) ExistAppCoinConds(ctx context.Context,
 	span = tracer.TraceConds(span, in.GetConds())
 	span = commontracer.TraceInvoker(span, "appcoin", "crud", "ExistConds")
 
+	if err := validateConds(in.GetConds()); err != nil {
+		return &npool.ExistAppCoinCondsResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
+
 	exist, err := crud.ExistConds(ctx, in.GetConds())
 	if err != nil {
-		logger.Sugar().Errorf("fail check appcoin: %v", err)
+		logger.Sugar().Errorw("ExistAppCoinConds", "error", err)
 		return &npool.ExistAppCoinCondsResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
@@ -301,9 +314,13 @@ func (s *Server) CountAppCoins(ctx context.Context, in *npool.CountAppCoinsReque
 	span = tracer.TraceConds(span, in.GetConds())
 	span = commontracer.TraceInvoker(span, "appcoin", "crud", "Count")
 
+	if err := validateConds(in.GetConds()); err != nil {
+		return &npool.CountAppCoinsResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
+
 	total, err := crud.Count(ctx, in.GetConds())
 	if err != nil {
-		logger.Sugar().Errorf("fail count appcoins: %v", err)
+		logger.Sugar().Errorw("CountAppCoins", "error", err)
 		return &npool.CountAppCoinsResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
@@ -336,7 +353,7 @@ func (s *Server) DeleteAppCoin(ctx context.Context, in *npool.DeleteAppCoinReque
 
 	info, err := crud.Delete(ctx, id)
 	if err != nil {
-		logger.Sugar().Errorf("fail delete appcoin: %v", err)
+		logger.Sugar().Errorw("DeleteAppCoin", "error", err)
 		return &npool.DeleteAppCoinResponse{}, status.Error(codes.Internal, err.Error())
 	}
 

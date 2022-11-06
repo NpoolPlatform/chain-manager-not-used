@@ -14,28 +14,28 @@ import (
 func validate(in *npool.AppCoinReq) error {
 	if in.ID != nil {
 		if _, err := uuid.Parse(in.GetID()); err != nil {
-			logger.Sugar().Errorw("CreateAppCoin", "ID", in.GetID(), "error", err)
+			logger.Sugar().Errorw("validate", "ID", in.GetID(), "error", err)
 			return err
 		}
 	}
 	if _, err := uuid.Parse(in.GetAppID()); err != nil {
-		logger.Sugar().Errorw("CreateAppCoin", "AppID", in.GetAppID(), "error", err)
+		logger.Sugar().Errorw("validate", "AppID", in.GetAppID(), "error", err)
 		return err
 	}
 	if _, err := uuid.Parse(in.GetCoinTypeID()); err != nil {
-		logger.Sugar().Errorw("CreateAppCoin", "CoinTypeID", in.GetCoinTypeID(), "error", err)
+		logger.Sugar().Errorw("validate", "CoinTypeID", in.GetCoinTypeID(), "error", err)
 		return err
 	}
 	if in.GetName() == "" {
-		logger.Sugar().Errorw("CreateAppCoin", "Name", in.GetName())
+		logger.Sugar().Errorw("validate", "Name", in.GetName())
 		return fmt.Errorf("name is invalid")
 	}
 	if in.Logo != nil && in.GetLogo() == "" {
-		logger.Sugar().Errorw("CreateAppCoin", "Logo", in.GetLogo())
+		logger.Sugar().Errorw("validate", "Logo", in.GetLogo())
 		return fmt.Errorf("logo is invalid")
 	}
 	if _, err := decimal.NewFromString(in.GetWithdrawAutoReviewAmount()); err != nil {
-		logger.Sugar().Errorw("CreateAppCoin", "WithdrawAutoReviewAmount", in.GetWithdrawAutoReviewAmount(), "error", err)
+		logger.Sugar().Errorw("validate", "WithdrawAutoReviewAmount", in.GetWithdrawAutoReviewAmount(), "error", err)
 		return err
 	}
 	return nil
@@ -70,5 +70,27 @@ func validateMany(in []*npool.AppCoinReq) error {
 		}
 	}
 
+	return nil
+}
+
+func validateConds(in *npool.Conds) error {
+	if in.ID != nil {
+		if _, err := uuid.Parse(in.GetID().GetValue()); err != nil {
+			logger.Sugar().Errorw("validateConds", "ID", in.GetID().GetValue(), "error", err)
+			return err
+		}
+	}
+	if in.AppID != nil {
+		if _, err := uuid.Parse(in.GetAppID().GetValue()); err != nil {
+			logger.Sugar().Errorw("validateConds", "AppID", in.GetAppID().GetValue(), "error", err)
+			return err
+		}
+	}
+	if in.CoinTypeID != nil {
+		if _, err := uuid.Parse(in.GetCoinTypeID().GetValue()); err != nil {
+			logger.Sugar().Errorw("validateConds", "CoinTypeID", in.GetCoinTypeID().GetValue(), "error", err)
+			return err
+		}
+	}
 	return nil
 }
