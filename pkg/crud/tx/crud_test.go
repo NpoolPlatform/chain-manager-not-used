@@ -138,6 +138,13 @@ func add(t *testing.T) {
 
 	req.State = &state
 
+	_, err := Update(context.Background(), &req)
+	assert.NotNil(t, err)
+
+	state = npool.TxState_StateWait
+
+	req.State = &state
+
 	entity.State = state.String()
 
 	info, err := Update(context.Background(), &req)

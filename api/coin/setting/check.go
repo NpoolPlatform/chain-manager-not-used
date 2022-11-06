@@ -30,32 +30,32 @@ func validate(in *npool.SettingReq) error { //nolint
 	amount, err := decimal.NewFromString(in.GetWithdrawFeeAmount())
 	if err != nil || amount.Cmp(decimal.NewFromInt(0)) <= 0 {
 		logger.Sugar().Errorw("validate", "WithdrawFeeAmount", in.GetWithdrawFeeAmount(), "error", err)
-		return err
+		return fmt.Errorf("withdrawfeeamount is invalid: %v", err)
 	}
 	amount, err = decimal.NewFromString(in.GetCollectFeeAmount())
 	if err != nil || amount.Cmp(decimal.NewFromInt(0)) <= 0 {
 		logger.Sugar().Errorw("validate", "CollectFeeAmount", in.GetCollectFeeAmount(), "error", err)
-		return err
+		return fmt.Errorf("collectfeeamount is invalid: %v", err)
 	}
 	amount, err = decimal.NewFromString(in.GetHotWalletFeeAmount())
 	if err != nil || amount.Cmp(decimal.NewFromInt(0)) <= 0 {
 		logger.Sugar().Errorw("validate", "HotWalletFeeAmount", in.GetHotWalletFeeAmount(), "error", err)
-		return err
+		return fmt.Errorf("hotwalletfeeamount is invalid: %v", err)
 	}
 	amount, err = decimal.NewFromString(in.GetLowFeeAmount())
 	if err != nil || amount.Cmp(decimal.NewFromInt(0)) <= 0 {
 		logger.Sugar().Errorw("validate", "LowFeeAmount", in.GetLowFeeAmount(), "error", err)
-		return err
+		return fmt.Errorf("lowfeeamount is invalid: %v", err)
 	}
 	amount, err = decimal.NewFromString(in.GetHotWalletAccountAmount())
 	if err != nil || amount.Cmp(decimal.NewFromInt(0)) <= 0 {
 		logger.Sugar().Errorw("validate", "HotWalletAccountAmount", in.GetHotWalletAccountAmount(), "error", err)
-		return err
+		return fmt.Errorf("hotwalletaccountamount is invalid: %v", err)
 	}
 	amount, err = decimal.NewFromString(in.GetPaymentAccountCollectAmount())
 	if err != nil || amount.Cmp(decimal.NewFromInt(0)) <= 0 {
 		logger.Sugar().Errorw("validate", "PaymentAccountCollectAmount", in.GetPaymentAccountCollectAmount(), "error", err)
-		return err
+		return fmt.Errorf("paymentaccountcollectamount is invalid: %v", err)
 	}
 
 	return nil

@@ -3,6 +3,7 @@ package tx
 
 import (
 	"context"
+	"fmt"
 
 	converter "github.com/NpoolPlatform/chain-manager/pkg/converter/tx"
 	crud "github.com/NpoolPlatform/chain-manager/pkg/crud/tx"
@@ -37,7 +38,9 @@ func (s *Server) CreateTx(ctx context.Context, in *npool.CreateTxRequest) (*npoo
 
 	span = tracer.Trace(span, in.GetInfo())
 
-	// TODO: verify input
+	if err := validate(in.GetInfo()); err != nil {
+		return &npool.CreateTxResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
 
 	span = commontracer.TraceInvoker(span, "tx", "crud", "Create")
 
@@ -69,7 +72,9 @@ func (s *Server) CreateTxs(ctx context.Context, in *npool.CreateTxsRequest) (*np
 		return &npool.CreateTxsResponse{}, status.Error(codes.InvalidArgument, "Infos is empty")
 	}
 
-	// TODO: verify infput
+	if err := validateMany(in.GetInfos()); err != nil {
+		return &npool.CreateTxsResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
 
 	span = tracer.TraceMany(span, in.GetInfos())
 	span = commontracer.TraceInvoker(span, "tx", "crud", "CreateBulk")
@@ -100,7 +105,16 @@ func (s *Server) UpdateTx(ctx context.Context, in *npool.UpdateTxRequest) (*npoo
 
 	span = tracer.Trace(span, in.GetInfo())
 
-	// TODO: verify input
+	switch in.GetInfo().GetState() {
+	case npool.TxState_StateCreated:
+	case npool.TxState_StateWait:
+	case npool.TxState_StateTransferring:
+	case npool.TxState_StateSuccessful:
+	case npool.TxState_StateFail:
+	default:
+		logger.Sugar().Errorw("UpdateTx", "State", in.GetInfo().GetState())
+		return &npool.UpdateTxResponse{}, fmt.Errorf("state is invalid")
+	}
 
 	span = commontracer.TraceInvoker(span, "tx", "crud", "Update")
 
@@ -162,6 +176,11 @@ func (s *Server) GetTxOnly(ctx context.Context, in *npool.GetTxOnlyRequest) (*np
 	}()
 
 	span = tracer.TraceConds(span, in.GetConds())
+
+	if err := validateConds(in.GetConds()); err != nil {
+		return &npool.GetTxOnlyResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
+
 	span = commontracer.TraceInvoker(span, "tx", "crud", "RowOnly")
 
 	info, err := crud.RowOnly(ctx, in.GetConds())
@@ -190,6 +209,11 @@ func (s *Server) GetTxs(ctx context.Context, in *npool.GetTxsRequest) (*npool.Ge
 
 	span = tracer.TraceConds(span, in.GetConds())
 	span = commontracer.TraceOffsetLimit(span, int(in.GetOffset()), int(in.GetLimit()))
+
+	if err := validateConds(in.GetConds()); err != nil {
+		return &npool.GetTxsResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
+
 	span = commontracer.TraceInvoker(span, "tx", "crud", "Rows")
 
 	rows, total, err := crud.Rows(ctx, in.GetConds(), int(in.GetOffset()), int(in.GetLimit()))
@@ -252,6 +276,11 @@ func (s *Server) ExistTxConds(ctx context.Context,
 	}()
 
 	span = tracer.TraceConds(span, in.GetConds())
+
+	if err := validateConds(in.GetConds()); err != nil {
+		return &npool.ExistTxCondsResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
+
 	span = commontracer.TraceInvoker(span, "tx", "crud", "ExistConds")
 
 	exist, err := crud.ExistConds(ctx, in.GetConds())
@@ -279,6 +308,11 @@ func (s *Server) CountTxs(ctx context.Context, in *npool.CountTxsRequest) (*npoo
 	}()
 
 	span = tracer.TraceConds(span, in.GetConds())
+
+	if err := validateConds(in.GetConds()); err != nil {
+		return &npool.CountTxsResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
+
 	span = commontracer.TraceInvoker(span, "tx", "crud", "Count")
 
 	total, err := crud.Count(ctx, in.GetConds())

@@ -8,6 +8,7 @@ import (
 	constant "github.com/NpoolPlatform/chain-manager/pkg/message/const"
 	commontracer "github.com/NpoolPlatform/chain-manager/pkg/tracer"
 	tracer "github.com/NpoolPlatform/chain-manager/pkg/tracer/tx"
+
 	"github.com/shopspring/decimal"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/codes"
@@ -40,9 +41,7 @@ func CreateSet(c *ent.TranCreate, in *npool.TxReq) *ent.TranCreate {
 	if in.ChainTxID != nil {
 		c.SetChainTxID(in.GetChainTxID())
 	}
-	if in.State != nil {
-		c.SetState(in.GetState().String())
-	}
+	c.SetState(npool.TxState_StateCreated.String())
 	if in.Extra != nil {
 		c.SetExtra(in.GetExtra())
 	}
@@ -135,6 +134,33 @@ func Update(ctx context.Context, in *npool.TxReq) (*ent.Tran, error) {
 		stm := info.Update()
 
 		if in.State != nil {
+			switch info.State {
+			case npool.TxState_StateCreated.String():
+				switch in.GetState() {
+				case npool.TxState_StateWait:
+				default:
+					return fmt.Errorf("state is invalid")
+				}
+			case npool.TxState_StateWait.String():
+				switch in.GetState() {
+				case npool.TxState_StateTransferring:
+				default:
+					return fmt.Errorf("state is invalid")
+				}
+			case npool.TxState_StateTransferring.String():
+				switch in.GetState() {
+				case npool.TxState_StateSuccessful:
+				case npool.TxState_StateFail:
+				default:
+					return fmt.Errorf("state is invalid")
+				}
+			case npool.TxState_StateSuccessful.String():
+				fallthrough //nolint
+			case npool.TxState_StateFail.String():
+				fallthrough //nolint
+			default:
+				return fmt.Errorf("state is invalid")
+			}
 			stm = stm.SetState(in.GetState().String())
 		}
 
