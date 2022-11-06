@@ -43,13 +43,15 @@ func (s *Server) CreateCoinDescription(
 
 	span = tracer.Trace(span, in.GetInfo())
 
-	// TODO: verify input
+	if err := validate(in.GetInfo()); err != nil {
+		return &npool.CreateCoinDescriptionResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
 
 	span = commontracer.TraceInvoker(span, "description", "crud", "Create")
 
 	info, err := crud.Create(ctx, in.GetInfo())
 	if err != nil {
-		logger.Sugar().Errorf("fail create description: %v", err.Error())
+		logger.Sugar().Errorw("CreateCoinDescription", "error", err)
 		return &npool.CreateCoinDescriptionResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
@@ -81,14 +83,16 @@ func (s *Server) CreateCoinDescriptions(
 		return &npool.CreateCoinDescriptionsResponse{}, status.Error(codes.InvalidArgument, "Infos is empty")
 	}
 
-	// TODO: verify infput
+	if err := validateMany(in.GetInfos()); err != nil {
+		return &npool.CreateCoinDescriptionsResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
 
 	span = tracer.TraceMany(span, in.GetInfos())
 	span = commontracer.TraceInvoker(span, "description", "crud", "CreateBulk")
 
 	rows, err := crud.CreateBulk(ctx, in.GetInfos())
 	if err != nil {
-		logger.Sugar().Errorf("fail create descriptions: %v", err)
+		logger.Sugar().Errorw("CreateCoinDescriptions", "error", err)
 		return &npool.CreateCoinDescriptionsResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
@@ -118,13 +122,20 @@ func (s *Server) UpdateCoinDescription(
 
 	span = tracer.Trace(span, in.GetInfo())
 
-	// TODO: verify input
+	if in.GetInfo().Title != nil && in.GetInfo().GetTitle() == "" {
+		logger.Sugar().Errorw("UpdateCoinDescription", "Title", in.GetInfo().GetTitle())
+		return &npool.UpdateCoinDescriptionResponse{}, status.Error(codes.InvalidArgument, "Title is invalid")
+	}
+	if in.GetInfo().Message != nil && in.GetInfo().GetMessage() == "" {
+		logger.Sugar().Errorw("UpdateCoinDescription", "Message", in.GetInfo().GetMessage())
+		return &npool.UpdateCoinDescriptionResponse{}, status.Error(codes.InvalidArgument, "Message is invalid")
+	}
 
 	span = commontracer.TraceInvoker(span, "description", "crud", "Update")
 
 	info, err := crud.Update(ctx, in.GetInfo())
 	if err != nil {
-		logger.Sugar().Errorf("fail create description: %v", err.Error())
+		logger.Sugar().Errorw("UpdateCoinDescription", "error", err)
 		return &npool.UpdateCoinDescriptionResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
@@ -157,7 +168,7 @@ func (s *Server) GetCoinDescription(ctx context.Context, in *npool.GetCoinDescri
 
 	info, err := crud.Row(ctx, id)
 	if err != nil {
-		logger.Sugar().Errorf("fail get description: %v", err)
+		logger.Sugar().Errorw("GetCoinDescription", "error", err)
 		return &npool.GetCoinDescriptionResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
@@ -186,11 +197,17 @@ func (s *Server) GetCoinDescriptionOnly(
 	}()
 
 	span = tracer.TraceConds(span, in.GetConds())
+
+	if err := validateConds(in.GetConds()); err != nil {
+		logger.Sugar().Errorw("GetCoinDescriptionOnly", "error", err)
+		return &npool.GetCoinDescriptionOnlyResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
+
 	span = commontracer.TraceInvoker(span, "description", "crud", "RowOnly")
 
 	info, err := crud.RowOnly(ctx, in.GetConds())
 	if err != nil {
-		logger.Sugar().Errorf("fail get descriptions: %v", err)
+		logger.Sugar().Errorw("GetCoinDescriptionOnly", "error", err)
 		return &npool.GetCoinDescriptionOnlyResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
@@ -220,11 +237,17 @@ func (s *Server) GetCoinDescriptions(
 
 	span = tracer.TraceConds(span, in.GetConds())
 	span = commontracer.TraceOffsetLimit(span, int(in.GetOffset()), int(in.GetLimit()))
+
+	if err := validateConds(in.GetConds()); err != nil {
+		logger.Sugar().Errorw("GetCoinDescriptions", "error", err)
+		return &npool.GetCoinDescriptionsResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
+
 	span = commontracer.TraceInvoker(span, "description", "crud", "Rows")
 
 	rows, total, err := crud.Rows(ctx, in.GetConds(), int(in.GetOffset()), int(in.GetLimit()))
 	if err != nil {
-		logger.Sugar().Errorf("fail get descriptions: %v", err)
+		logger.Sugar().Errorw("GetCoinDescriptions", "error", err)
 		return &npool.GetCoinDescriptionsResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
@@ -293,11 +316,17 @@ func (s *Server) ExistCoinDescriptionConds(
 	}()
 
 	span = tracer.TraceConds(span, in.GetConds())
+
+	if err := validateConds(in.GetConds()); err != nil {
+		logger.Sugar().Errorw("ExistCoinDescriptionConds", "error", err)
+		return &npool.ExistCoinDescriptionCondsResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
+
 	span = commontracer.TraceInvoker(span, "description", "crud", "ExistConds")
 
 	exist, err := crud.ExistConds(ctx, in.GetConds())
 	if err != nil {
-		logger.Sugar().Errorf("fail check description: %v", err)
+		logger.Sugar().Errorw("ExistCoinDescriptionConds", "error", err)
 		return &npool.ExistCoinDescriptionCondsResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
@@ -326,11 +355,17 @@ func (s *Server) CountCoinDescriptions(
 	}()
 
 	span = tracer.TraceConds(span, in.GetConds())
+
+	if err := validateConds(in.GetConds()); err != nil {
+		logger.Sugar().Errorw("CountCoinDescriptions", "error", err)
+		return &npool.CountCoinDescriptionsResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
+
 	span = commontracer.TraceInvoker(span, "description", "crud", "Count")
 
 	total, err := crud.Count(ctx, in.GetConds())
 	if err != nil {
-		logger.Sugar().Errorf("fail count descriptions: %v", err)
+		logger.Sugar().Errorw("CountCoinDescriptions", "error", err)
 		return &npool.CountCoinDescriptionsResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
@@ -369,7 +404,7 @@ func (s *Server) DeleteCoinDescription(
 
 	info, err := crud.Delete(ctx, id)
 	if err != nil {
-		logger.Sugar().Errorf("fail delete description: %v", err)
+		logger.Sugar().Errorw("DeleteCoinDescription", "error", err)
 		return &npool.DeleteCoinDescriptionResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
