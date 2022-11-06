@@ -37,7 +37,9 @@ func (s *Server) CreateCoinExtra(ctx context.Context, in *npool.CreateCoinExtraR
 
 	span = tracer.Trace(span, in.GetInfo())
 
-	// TODO: verify input
+	if err := validate(in.GetInfo()); err != nil {
+		return &npool.CreateCoinExtraResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
 
 	span = commontracer.TraceInvoker(span, "coinextra", "crud", "Create")
 
@@ -69,7 +71,9 @@ func (s *Server) CreateCoinExtras(ctx context.Context, in *npool.CreateCoinExtra
 		return &npool.CreateCoinExtrasResponse{}, status.Error(codes.InvalidArgument, "Infos is empty")
 	}
 
-	// TODO: verify infput
+	if err := validateMany(in.GetInfos()); err != nil {
+		return &npool.CreateCoinExtrasResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
 
 	span = tracer.TraceMany(span, in.GetInfos())
 	span = commontracer.TraceInvoker(span, "coinextra", "crud", "CreateBulk")
@@ -99,8 +103,6 @@ func (s *Server) UpdateCoinExtra(ctx context.Context, in *npool.UpdateCoinExtraR
 	}()
 
 	span = tracer.Trace(span, in.GetInfo())
-
-	// TODO: verify input
 
 	span = commontracer.TraceInvoker(span, "coinextra", "crud", "Update")
 
@@ -162,6 +164,11 @@ func (s *Server) GetCoinExtraOnly(ctx context.Context, in *npool.GetCoinExtraOnl
 	}()
 
 	span = tracer.TraceConds(span, in.GetConds())
+
+	if err := validateConds(in.GetConds()); err != nil {
+		return &npool.GetCoinExtraOnlyResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
+
 	span = commontracer.TraceInvoker(span, "coinextra", "crud", "RowOnly")
 
 	info, err := crud.RowOnly(ctx, in.GetConds())
@@ -190,6 +197,11 @@ func (s *Server) GetCoinExtras(ctx context.Context, in *npool.GetCoinExtrasReque
 
 	span = tracer.TraceConds(span, in.GetConds())
 	span = commontracer.TraceOffsetLimit(span, int(in.GetOffset()), int(in.GetLimit()))
+
+	if err := validateConds(in.GetConds()); err != nil {
+		return &npool.GetCoinExtrasResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
+
 	span = commontracer.TraceInvoker(span, "coinextra", "crud", "Rows")
 
 	rows, total, err := crud.Rows(ctx, in.GetConds(), int(in.GetOffset()), int(in.GetLimit()))
@@ -252,6 +264,11 @@ func (s *Server) ExistCoinExtraConds(ctx context.Context,
 	}()
 
 	span = tracer.TraceConds(span, in.GetConds())
+
+	if err := validateConds(in.GetConds()); err != nil {
+		return &npool.ExistCoinExtraCondsResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
+
 	span = commontracer.TraceInvoker(span, "coinextra", "crud", "ExistConds")
 
 	exist, err := crud.ExistConds(ctx, in.GetConds())
@@ -279,6 +296,11 @@ func (s *Server) CountCoinExtras(ctx context.Context, in *npool.CountCoinExtrasR
 	}()
 
 	span = tracer.TraceConds(span, in.GetConds())
+
+	if err := validateConds(in.GetConds()); err != nil {
+		return &npool.CountCoinExtrasResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
+
 	span = commontracer.TraceInvoker(span, "coinextra", "crud", "Count")
 
 	total, err := crud.Count(ctx, in.GetConds())
