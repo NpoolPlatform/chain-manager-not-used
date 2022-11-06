@@ -36,7 +36,6 @@ var exchangeRate = &npool.ExchangeRate{
 	AppID:         uuid.NewString(),
 	CoinTypeID:    uuid.NewString(),
 	MarketValue:   "89.123",
-	SettleValue:   "88.123",
 	SettlePercent: 80,
 	Setter:        uuid.NewString(),
 }
@@ -46,7 +45,6 @@ var exchangeRateReq = &npool.ExchangeRateReq{
 	AppID:         &exchangeRate.AppID,
 	CoinTypeID:    &exchangeRate.CoinTypeID,
 	MarketValue:   &exchangeRate.MarketValue,
-	SettleValue:   &exchangeRate.SettleValue,
 	SettlePercent: &exchangeRate.SettlePercent,
 	Setter:        &exchangeRate.Setter,
 }
@@ -56,26 +54,24 @@ func createExchangeRate(t *testing.T) {
 	if assert.Nil(t, err) {
 		exchangeRate.CreatedAt = info.CreatedAt
 		exchangeRate.UpdatedAt = info.UpdatedAt
+		exchangeRate.SettleValue = info.SettleValue
 		assert.Equal(t, exchangeRate, info)
 	}
 }
 
 func updateExchangeRate(t *testing.T) {
 	marketValue := "1000.001"
-	settleValue := "900.001"
 	settlePercent := uint32(90)
 
 	exchangeRateReq.MarketValue = &marketValue
-	exchangeRateReq.SettleValue = &settleValue
 	exchangeRateReq.SettlePercent = &settlePercent
 
 	exchangeRate.MarketValue = marketValue
-	exchangeRate.SettleValue = settleValue
 	exchangeRate.SettlePercent = settlePercent
 
 	info, err := UpdateExchangeRate(context.Background(), exchangeRateReq)
 	if assert.Nil(t, err) {
-		exchangeRate.UpdatedAt = info.UpdatedAt
+		exchangeRate.SettleValue = info.SettleValue
 		assert.Equal(t, exchangeRate, info)
 	}
 }

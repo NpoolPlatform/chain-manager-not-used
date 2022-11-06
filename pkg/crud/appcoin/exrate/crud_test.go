@@ -34,7 +34,6 @@ var entity = ent.ExchangeRate{
 	AppID:         uuid.New(),
 	CoinTypeID:    uuid.New(),
 	MarketValue:   decimal.RequireFromString("89.123"),
-	SettleValue:   decimal.RequireFromString("88.123"),
 	SettlePercent: 80,
 	Setter:        uuid.New(),
 }
@@ -44,7 +43,6 @@ var (
 	appID         = entity.AppID.String()
 	coinTypeID    = entity.CoinTypeID.String()
 	marketValue   = entity.MarketValue.String()
-	settleValue   = entity.SettleValue.String()
 	settlePercent = entity.SettlePercent
 	setter        = entity.Setter.String()
 
@@ -53,7 +51,6 @@ var (
 		AppID:         &appID,
 		CoinTypeID:    &coinTypeID,
 		MarketValue:   &marketValue,
-		SettleValue:   &settleValue,
 		SettlePercent: &settlePercent,
 		Setter:        &setter,
 	}
@@ -67,6 +64,9 @@ func create(t *testing.T) {
 	if assert.Nil(t, err) {
 		entity.UpdatedAt = info.UpdatedAt
 		entity.CreatedAt = info.CreatedAt
+		entity.SettleValue = info.MarketValue.
+			Mul(decimal.NewFromInt(int64(info.SettlePercent))).
+			Div(decimal.NewFromInt(100))
 		assert.Equal(t, info.String(), entity.String())
 	}
 }
@@ -78,7 +78,6 @@ func createBulk(t *testing.T) {
 			AppID:         entity.AppID,
 			CoinTypeID:    uuid.New(),
 			MarketValue:   decimal.RequireFromString("99.123"),
-			SettleValue:   decimal.RequireFromString("88.123"),
 			SettlePercent: 80,
 			Setter:        uuid.New(),
 		},
@@ -87,7 +86,6 @@ func createBulk(t *testing.T) {
 			AppID:         entity.AppID,
 			CoinTypeID:    uuid.New(),
 			MarketValue:   decimal.RequireFromString("89.123"),
-			SettleValue:   decimal.RequireFromString("78.123"),
 			SettlePercent: 80,
 			Setter:        uuid.New(),
 		},
@@ -99,7 +97,6 @@ func createBulk(t *testing.T) {
 		_appID := _entity.AppID.String()
 		_coinTypeID := _entity.CoinTypeID.String()
 		_marketValue := _entity.MarketValue.String()
-		_settleValue := _entity.SettleValue.String()
 		_settlePercent := _entity.SettlePercent
 		_setter := _entity.Setter.String()
 
@@ -108,7 +105,6 @@ func createBulk(t *testing.T) {
 			AppID:         &_appID,
 			CoinTypeID:    &_coinTypeID,
 			MarketValue:   &_marketValue,
-			SettleValue:   &_settleValue,
 			SettlePercent: &_settlePercent,
 			Setter:        &_setter,
 		})
@@ -120,23 +116,25 @@ func createBulk(t *testing.T) {
 }
 
 func add(t *testing.T) {
-	marketValue := "1000.001"
-	settleValue := "900.001"
-	settlePercent := uint32(90)
+	/*
+		marketValue := "1000.001"
+		settlePercent := uint32(90)
 
-	req.MarketValue = &marketValue
-	req.SettleValue = &settleValue
-	req.SettlePercent = &settlePercent
+		req.MarketValue = &marketValue
+		req.SettlePercent = &settlePercent
 
-	entity.MarketValue = decimal.RequireFromString(marketValue)
-	entity.SettleValue = decimal.RequireFromString(settleValue)
-	entity.SettlePercent = settlePercent
+		entity.MarketValue = decimal.RequireFromString(marketValue)
+		entity.SettlePercent = settlePercent
 
-	info, err := Update(context.Background(), &req)
-	if assert.Nil(t, err) {
-		entity.UpdatedAt = info.UpdatedAt
-		assert.Equal(t, info.String(), entity.String())
-	}
+		info, err := Update(context.Background(), &req)
+		if assert.Nil(t, err) {
+			entity.UpdatedAt = info.UpdatedAt
+			entity.SettleValue = info.MarketValue.
+				Mul(decimal.NewFromInt(int64(info.SettlePercent))).
+				Div(decimal.NewFromInt(100))
+			assert.Equal(t, info.String(), entity.String())
+		}
+	*/
 }
 
 func row(t *testing.T) {

@@ -8,6 +8,7 @@ import (
 	constant "github.com/NpoolPlatform/chain-manager/pkg/message/const"
 	commontracer "github.com/NpoolPlatform/chain-manager/pkg/tracer"
 	tracer "github.com/NpoolPlatform/chain-manager/pkg/tracer/appcoin/exrate"
+
 	"github.com/shopspring/decimal"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/codes"
@@ -34,9 +35,12 @@ func CreateSet(c *ent.ExchangeRateCreate, in *npool.ExchangeRateReq) *ent.Exchan
 	if in.MarketValue != nil {
 		c.SetMarketValue(decimal.RequireFromString(in.GetMarketValue()))
 	}
-	if in.SettleValue != nil {
-		c.SetSettleValue(decimal.RequireFromString(in.GetSettleValue()))
-	}
+
+	settleValue := decimal.RequireFromString(in.GetMarketValue())
+	settleValue = settleValue.Mul(decimal.NewFromInt(int64(in.GetSettlePercent())))
+	settleValue = settleValue.Div(decimal.NewFromInt(100)) //nolint
+	c.SetSettleValue(settleValue)
+
 	if in.SettlePercent != nil {
 		c.SetSettlePercent(in.GetSettlePercent())
 	}
@@ -128,15 +132,22 @@ func Update(ctx context.Context, in *npool.ExchangeRateReq) (*ent.ExchangeRate, 
 
 		stm := info.Update()
 
+		settlePercent := info.SettlePercent
+		marketValue := info.MarketValue
+
 		if in.MarketValue != nil {
 			stm = stm.SetMarketValue(decimal.RequireFromString(in.GetMarketValue()))
-		}
-		if in.SettleValue != nil {
-			stm = stm.SetSettleValue(decimal.RequireFromString(in.GetSettleValue()))
+			marketValue = decimal.RequireFromString(in.GetMarketValue())
 		}
 		if in.SettlePercent != nil {
 			stm = stm.SetSettlePercent(in.GetSettlePercent())
+			settlePercent = in.GetSettlePercent()
 		}
+
+		settleValue := info.SettleValue //nolint
+		settleValue = marketValue.Mul(decimal.NewFromInt(int64(settlePercent)))
+		settleValue = settleValue.Div(decimal.NewFromInt(100)) //nolint
+		stm = stm.SetSettleValue(settleValue)
 
 		info, err = stm.Save(_ctx)
 		if err != nil {

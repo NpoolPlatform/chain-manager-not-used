@@ -11,6 +11,7 @@ import (
 
 	constant "github.com/NpoolPlatform/chain-manager/pkg/message/const"
 
+	"github.com/shopspring/decimal"
 	"go.opentelemetry.io/otel"
 	scodes "go.opentelemetry.io/otel/codes"
 	"google.golang.org/grpc/codes"
@@ -43,7 +44,9 @@ func (s *Server) CreateExchangeRate(
 
 	span = tracer.Trace(span, in.GetInfo())
 
-	// TODO: verify input
+	if err := validate(in.GetInfo()); err != nil {
+		return &npool.CreateExchangeRateResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
 
 	span = commontracer.TraceInvoker(span, "exrate", "crud", "Create")
 
@@ -81,7 +84,9 @@ func (s *Server) CreateExchangeRates(
 		return &npool.CreateExchangeRatesResponse{}, status.Error(codes.InvalidArgument, "Infos is empty")
 	}
 
-	// TODO: verify infput
+	if err := validateMany(in.GetInfos()); err != nil {
+		return &npool.CreateExchangeRatesResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
 
 	span = tracer.TraceMany(span, in.GetInfos())
 	span = commontracer.TraceInvoker(span, "exrate", "crud", "CreateBulk")
@@ -112,7 +117,18 @@ func (s *Server) UpdateExchangeRate(ctx context.Context, in *npool.UpdateExchang
 
 	span = tracer.Trace(span, in.GetInfo())
 
-	// TODO: verify input
+	if in.GetInfo().MarketValue != nil {
+		if _, err := decimal.NewFromString(in.GetInfo().GetMarketValue()); err != nil {
+			logger.Sugar().Errorw("UpdateExchangeRate", "MarketValue", in.GetInfo().GetMarketValue(), "error", err)
+			return &npool.UpdateExchangeRateResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		}
+	}
+	if in.GetInfo().SettlePercent != nil {
+		if in.GetInfo().GetSettlePercent() > 100 || in.GetInfo().GetSettlePercent() <= 0 {
+			logger.Sugar().Errorw("UpdateExchangeRate", "SettlePercent", in.GetInfo().GetSettlePercent(), "error", err)
+			return &npool.UpdateExchangeRateResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		}
+	}
 
 	span = commontracer.TraceInvoker(span, "exrate", "crud", "Update")
 
@@ -180,6 +196,11 @@ func (s *Server) GetExchangeRateOnly(
 	}()
 
 	span = tracer.TraceConds(span, in.GetConds())
+
+	if err := validateConds(in.GetConds()); err != nil {
+		return &npool.GetExchangeRateOnlyResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
+
 	span = commontracer.TraceInvoker(span, "exrate", "crud", "RowOnly")
 
 	info, err := crud.RowOnly(ctx, in.GetConds())
@@ -208,6 +229,11 @@ func (s *Server) GetExchangeRates(ctx context.Context, in *npool.GetExchangeRate
 
 	span = tracer.TraceConds(span, in.GetConds())
 	span = commontracer.TraceOffsetLimit(span, int(in.GetOffset()), int(in.GetLimit()))
+
+	if err := validateConds(in.GetConds()); err != nil {
+		return &npool.GetExchangeRatesResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
+
 	span = commontracer.TraceInvoker(span, "exrate", "crud", "Rows")
 
 	rows, total, err := crud.Rows(ctx, in.GetConds(), int(in.GetOffset()), int(in.GetLimit()))
@@ -270,6 +296,11 @@ func (s *Server) ExistExchangeRateConds(ctx context.Context,
 	}()
 
 	span = tracer.TraceConds(span, in.GetConds())
+
+	if err := validateConds(in.GetConds()); err != nil {
+		return &npool.ExistExchangeRateCondsResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
+
 	span = commontracer.TraceInvoker(span, "exrate", "crud", "ExistConds")
 
 	exist, err := crud.ExistConds(ctx, in.GetConds())
@@ -297,6 +328,11 @@ func (s *Server) CountExchangeRates(ctx context.Context, in *npool.CountExchange
 	}()
 
 	span = tracer.TraceConds(span, in.GetConds())
+
+	if err := validateConds(in.GetConds()); err != nil {
+		return &npool.CountExchangeRatesResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
+
 	span = commontracer.TraceInvoker(span, "exrate", "crud", "Count")
 
 	total, err := crud.Count(ctx, in.GetConds())
