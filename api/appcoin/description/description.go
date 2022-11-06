@@ -122,6 +122,10 @@ func (s *Server) UpdateCoinDescription(
 
 	span = tracer.Trace(span, in.GetInfo())
 
+	if _, err := uuid.Parse(in.GetInfo().GetID()); err != nil {
+		logger.Sugar().Errorw("UpdateCoinDescription", "ID", in.GetInfo().GetID(), "error", err)
+		return &npool.UpdateCoinDescriptionResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
 	if in.GetInfo().Title != nil && in.GetInfo().GetTitle() == "" {
 		logger.Sugar().Errorw("UpdateCoinDescription", "Title", in.GetInfo().GetTitle())
 		return &npool.UpdateCoinDescriptionResponse{}, status.Error(codes.InvalidArgument, "Title is invalid")

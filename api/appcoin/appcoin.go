@@ -106,6 +106,10 @@ func (s *Server) UpdateAppCoin(ctx context.Context, in *npool.UpdateAppCoinReque
 
 	span = tracer.Trace(span, in.GetInfo())
 
+	if _, err := uuid.Parse(in.GetInfo().GetID()); err != nil {
+		logger.Sugar().Errorw("UpdateAppCoin", "ID", in.GetInfo().GetID(), "error", err)
+		return &npool.UpdateAppCoinResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
 	if in.GetInfo().Name != nil && in.GetInfo().GetName() == "" {
 		logger.Sugar().Errorw("UpdateAppCoin", "Name", in.GetInfo().GetName())
 		return &npool.UpdateAppCoinResponse{}, status.Error(codes.InvalidArgument, err.Error())

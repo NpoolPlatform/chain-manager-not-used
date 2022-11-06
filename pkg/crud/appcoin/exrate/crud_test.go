@@ -116,25 +116,23 @@ func createBulk(t *testing.T) {
 }
 
 func add(t *testing.T) {
-	/*
-		marketValue := "1000.001"
-		settlePercent := uint32(90)
+	marketValue := "1000.001"
+	settlePercent := uint32(90)
 
-		req.MarketValue = &marketValue
-		req.SettlePercent = &settlePercent
+	req.MarketValue = &marketValue
+	req.SettlePercent = &settlePercent
 
-		entity.MarketValue = decimal.RequireFromString(marketValue)
-		entity.SettlePercent = settlePercent
+	entity.MarketValue = decimal.RequireFromString(marketValue)
+	entity.SettlePercent = settlePercent
 
-		info, err := Update(context.Background(), &req)
-		if assert.Nil(t, err) {
-			entity.UpdatedAt = info.UpdatedAt
-			entity.SettleValue = info.MarketValue.
-				Mul(decimal.NewFromInt(int64(info.SettlePercent))).
-				Div(decimal.NewFromInt(100))
-			assert.Equal(t, info.String(), entity.String())
-		}
-	*/
+	info, err := Update(context.Background(), &req)
+	if assert.Nil(t, err) {
+		entity.UpdatedAt = info.UpdatedAt
+		entity.SettleValue = info.MarketValue.
+			Mul(decimal.NewFromInt(int64(info.SettlePercent))).
+			Div(decimal.NewFromInt(100))
+		assert.Equal(t, info.String(), entity.String())
+	}
 }
 
 func row(t *testing.T) {

@@ -117,6 +117,10 @@ func (s *Server) UpdateExchangeRate(ctx context.Context, in *npool.UpdateExchang
 
 	span = tracer.Trace(span, in.GetInfo())
 
+	if _, err := uuid.Parse(in.GetInfo().GetID()); err != nil {
+		logger.Sugar().Errorw("UpdateExchangeRate", "ID", in.GetInfo().GetID(), "error", err)
+		return &npool.UpdateExchangeRateResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
 	if in.GetInfo().MarketValue != nil {
 		if _, err := decimal.NewFromString(in.GetInfo().GetMarketValue()); err != nil {
 			logger.Sugar().Errorw("UpdateExchangeRate", "MarketValue", in.GetInfo().GetMarketValue(), "error", err)

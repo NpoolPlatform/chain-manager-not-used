@@ -137,9 +137,6 @@ func Update(ctx context.Context, in *npool.CoinBaseReq) (*ent.CoinBase, error) {
 		if in.Presale != nil {
 			stm = stm.SetPresale(in.GetPresale())
 		}
-		if in.Unit != nil {
-			stm = stm.SetUnit(in.GetUnit())
-		}
 		if in.ReservedAmount != nil {
 			stm = stm.SetReservedAmount(decimal.RequireFromString(in.GetReservedAmount()))
 		}
