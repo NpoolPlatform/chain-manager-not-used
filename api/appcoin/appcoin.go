@@ -16,6 +16,8 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
+	"github.com/shopspring/decimal"
+
 	"github.com/NpoolPlatform/go-service-framework/pkg/logger"
 	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/appcoin"
 
@@ -37,13 +39,15 @@ func (s *Server) CreateAppCoin(ctx context.Context, in *npool.CreateAppCoinReque
 
 	span = tracer.Trace(span, in.GetInfo())
 
-	// TODO: verify input
+	if err := validate(in.GetInfo()); err != nil {
+		return &npool.CreateAppCoinResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
 
 	span = commontracer.TraceInvoker(span, "appcoin", "crud", "Create")
 
 	info, err := crud.Create(ctx, in.GetInfo())
 	if err != nil {
-		logger.Sugar().Errorf("fail create appcoin: %v", err.Error())
+		logger.Sugar().Errorw("CreateAppCoin", "error", err)
 		return &npool.CreateAppCoinResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
@@ -69,14 +73,16 @@ func (s *Server) CreateAppCoins(ctx context.Context, in *npool.CreateAppCoinsReq
 		return &npool.CreateAppCoinsResponse{}, status.Error(codes.InvalidArgument, "Infos is empty")
 	}
 
-	// TODO: verify infput
+	if err := validateMany(in.GetInfos()); err != nil {
+		return &npool.CreateAppCoinsResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
 
 	span = tracer.TraceMany(span, in.GetInfos())
 	span = commontracer.TraceInvoker(span, "appcoin", "crud", "CreateBulk")
 
 	rows, err := crud.CreateBulk(ctx, in.GetInfos())
 	if err != nil {
-		logger.Sugar().Errorf("fail create appcoins: %v", err)
+		logger.Sugar().Errorw("CreateAppCoins", "error", err)
 		return &npool.CreateAppCoinsResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
@@ -100,13 +106,26 @@ func (s *Server) UpdateAppCoin(ctx context.Context, in *npool.UpdateAppCoinReque
 
 	span = tracer.Trace(span, in.GetInfo())
 
-	// TODO: verify input
+	if in.GetInfo().Name != nil && in.GetInfo().GetName() == "" {
+		logger.Sugar().Errorw("UpdateAppCoin", "Name", in.GetInfo().GetName())
+		return &npool.UpdateAppCoinResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
+	if in.GetInfo().Logo != nil && in.GetInfo().GetLogo() == "" {
+		logger.Sugar().Errorw("UpdateAppCoin", "Logo", in.GetInfo().GetLogo())
+		return &npool.UpdateAppCoinResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
+	if in.GetInfo().WithdrawAutoReviewAmount != nil {
+		if _, err := decimal.NewFromString(in.GetInfo().GetWithdrawAutoReviewAmount()); err != nil {
+			logger.Sugar().Errorw("CreateAppCoin", "WithdrawAutoReviewAmount", in.GetInfo().GetWithdrawAutoReviewAmount(), "error", err)
+			return &npool.UpdateAppCoinResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		}
+	}
 
 	span = commontracer.TraceInvoker(span, "appcoin", "crud", "Update")
 
 	info, err := crud.Update(ctx, in.GetInfo())
 	if err != nil {
-		logger.Sugar().Errorf("fail create appcoin: %v", err.Error())
+		logger.Sugar().Errorw("UpdateAppCoin", "error", err)
 		return &npool.UpdateAppCoinResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
@@ -132,6 +151,7 @@ func (s *Server) GetAppCoin(ctx context.Context, in *npool.GetAppCoinRequest) (*
 
 	id, err := uuid.Parse(in.GetID())
 	if err != nil {
+		logger.Sugar().Errorw("GetAppCoin", "ID", in.GetID(), "error", err)
 		return &npool.GetAppCoinResponse{}, status.Error(codes.InvalidArgument, err.Error())
 	}
 
@@ -139,7 +159,7 @@ func (s *Server) GetAppCoin(ctx context.Context, in *npool.GetAppCoinRequest) (*
 
 	info, err := crud.Row(ctx, id)
 	if err != nil {
-		logger.Sugar().Errorf("fail get appcoin: %v", err)
+		logger.Sugar().Errorw("GetAppCoin", "error", err)
 		return &npool.GetAppCoinResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
