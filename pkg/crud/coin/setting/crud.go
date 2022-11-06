@@ -8,6 +8,7 @@ import (
 	constant "github.com/NpoolPlatform/chain-manager/pkg/message/const"
 	commontracer "github.com/NpoolPlatform/chain-manager/pkg/tracer"
 	tracer "github.com/NpoolPlatform/chain-manager/pkg/tracer/coin/setting"
+
 	"github.com/shopspring/decimal"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/codes"

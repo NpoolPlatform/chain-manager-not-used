@@ -43,7 +43,9 @@ func (s *Server) CreateSetting(
 
 	span = tracer.Trace(span, in.GetInfo())
 
-	// TODO: verify input
+	if err := validate(in.GetInfo()); err != nil {
+		return &npool.CreateSettingResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
 
 	span = commontracer.TraceInvoker(span, "setting", "crud", "Create")
 
@@ -81,7 +83,9 @@ func (s *Server) CreateSettings(
 		return &npool.CreateSettingsResponse{}, status.Error(codes.InvalidArgument, "Infos is empty")
 	}
 
-	// TODO: verify infput
+	if err := validateMany(in.GetInfos()); err != nil {
+		return &npool.CreateSettingsResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
 
 	span = tracer.TraceMany(span, in.GetInfos())
 	span = commontracer.TraceInvoker(span, "setting", "crud", "CreateBulk")
@@ -112,7 +116,9 @@ func (s *Server) UpdateSetting(ctx context.Context, in *npool.UpdateSettingReque
 
 	span = tracer.Trace(span, in.GetInfo())
 
-	// TODO: verify input
+	if err := validateUpdate(in.GetInfo()); err != nil {
+		return &npool.UpdateSettingResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
 
 	span = commontracer.TraceInvoker(span, "setting", "crud", "Update")
 
@@ -180,6 +186,11 @@ func (s *Server) GetSettingOnly(
 	}()
 
 	span = tracer.TraceConds(span, in.GetConds())
+
+	if err := validateConds(in.GetConds()); err != nil {
+		return &npool.GetSettingOnlyResponse{}, status.Error(codes.Internal, err.Error())
+	}
+
 	span = commontracer.TraceInvoker(span, "setting", "crud", "RowOnly")
 
 	info, err := crud.RowOnly(ctx, in.GetConds())
@@ -208,6 +219,11 @@ func (s *Server) GetSettings(ctx context.Context, in *npool.GetSettingsRequest) 
 
 	span = tracer.TraceConds(span, in.GetConds())
 	span = commontracer.TraceOffsetLimit(span, int(in.GetOffset()), int(in.GetLimit()))
+
+	if err := validateConds(in.GetConds()); err != nil {
+		return &npool.GetSettingsResponse{}, status.Error(codes.Internal, err.Error())
+	}
+
 	span = commontracer.TraceInvoker(span, "setting", "crud", "Rows")
 
 	rows, total, err := crud.Rows(ctx, in.GetConds(), int(in.GetOffset()), int(in.GetLimit()))
@@ -270,6 +286,11 @@ func (s *Server) ExistSettingConds(ctx context.Context,
 	}()
 
 	span = tracer.TraceConds(span, in.GetConds())
+
+	if err := validateConds(in.GetConds()); err != nil {
+		return &npool.ExistSettingCondsResponse{}, status.Error(codes.Internal, err.Error())
+	}
+
 	span = commontracer.TraceInvoker(span, "setting", "crud", "ExistConds")
 
 	exist, err := crud.ExistConds(ctx, in.GetConds())
@@ -297,6 +318,11 @@ func (s *Server) CountSettings(ctx context.Context, in *npool.CountSettingsReque
 	}()
 
 	span = tracer.TraceConds(span, in.GetConds())
+
+	if err := validateConds(in.GetConds()); err != nil {
+		return &npool.CountSettingsResponse{}, status.Error(codes.Internal, err.Error())
+	}
+
 	span = commontracer.TraceInvoker(span, "setting", "crud", "Count")
 
 	total, err := crud.Count(ctx, in.GetConds())
