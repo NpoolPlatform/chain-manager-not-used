@@ -100,6 +100,19 @@ func CreateBulk(ctx context.Context, in []*npool.CoinDescriptionReq) ([]*ent.Coi
 	return rows, nil
 }
 
+func UpdateSet(info *ent.CoinDescription, in *npool.CoinDescriptionReq) *ent.CoinDescriptionUpdateOne {
+	stm := info.Update()
+
+	if in.Title != nil {
+		stm = stm.SetTitle(in.GetTitle())
+	}
+	if in.Message != nil {
+		stm = stm.SetMessage(in.GetMessage())
+	}
+
+	return stm
+}
+
 func Update(ctx context.Context, in *npool.CoinDescriptionReq) (*ent.CoinDescription, error) {
 	var info *ent.CoinDescription
 	var err error
@@ -122,14 +135,7 @@ func Update(ctx context.Context, in *npool.CoinDescriptionReq) (*ent.CoinDescrip
 			return fmt.Errorf("fail query description1: %v", err)
 		}
 
-		stm := info.Update()
-
-		if in.Title != nil {
-			stm = stm.SetTitle(in.GetTitle())
-		}
-		if in.Message != nil {
-			stm = stm.SetMessage(in.GetMessage())
-		}
+		stm := UpdateSet(info, in)
 
 		info, err = stm.Save(_ctx)
 		if err != nil {

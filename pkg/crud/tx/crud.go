@@ -109,6 +109,47 @@ func CreateBulk(ctx context.Context, in []*npool.TxReq) ([]*ent.Tran, error) {
 	return rows, nil
 }
 
+func UpdateSet(info *ent.Tran, in *npool.TxReq) (*ent.TranUpdateOne, error) {
+	stm := info.Update()
+
+	if in.State != nil {
+		switch info.State {
+		case npool.TxState_StateCreated.String():
+			switch in.GetState() {
+			case npool.TxState_StateWait:
+			default:
+				return nil, fmt.Errorf("state is invalid")
+			}
+		case npool.TxState_StateWait.String():
+			switch in.GetState() {
+			case npool.TxState_StateTransferring:
+			default:
+				return nil, fmt.Errorf("state is invalid")
+			}
+		case npool.TxState_StateTransferring.String():
+			switch in.GetState() {
+			case npool.TxState_StateSuccessful:
+			case npool.TxState_StateFail:
+			default:
+				return nil, fmt.Errorf("state is invalid")
+			}
+		case npool.TxState_StateSuccessful.String():
+			fallthrough //nolint
+		case npool.TxState_StateFail.String():
+			fallthrough //nolint
+		default:
+			return nil, fmt.Errorf("state is invalid")
+		}
+		stm = stm.SetState(in.GetState().String())
+	}
+
+	if in.ChainTxID != nil {
+		stm = stm.SetChainTxID(in.GetChainTxID())
+	}
+
+	return stm, nil
+}
+
 func Update(ctx context.Context, in *npool.TxReq) (*ent.Tran, error) {
 	var info *ent.Tran
 	var err error
@@ -131,37 +172,9 @@ func Update(ctx context.Context, in *npool.TxReq) (*ent.Tran, error) {
 			return fmt.Errorf("fail query tx: %v", err)
 		}
 
-		stm := info.Update()
-
-		if in.State != nil {
-			switch info.State {
-			case npool.TxState_StateCreated.String():
-				switch in.GetState() {
-				case npool.TxState_StateWait:
-				default:
-					return fmt.Errorf("state is invalid")
-				}
-			case npool.TxState_StateWait.String():
-				switch in.GetState() {
-				case npool.TxState_StateTransferring:
-				default:
-					return fmt.Errorf("state is invalid")
-				}
-			case npool.TxState_StateTransferring.String():
-				switch in.GetState() {
-				case npool.TxState_StateSuccessful:
-				case npool.TxState_StateFail:
-				default:
-					return fmt.Errorf("state is invalid")
-				}
-			case npool.TxState_StateSuccessful.String():
-				fallthrough //nolint
-			case npool.TxState_StateFail.String():
-				fallthrough //nolint
-			default:
-				return fmt.Errorf("state is invalid")
-			}
-			stm = stm.SetState(in.GetState().String())
+		stm, err := UpdateSet(info, in)
+		if err != nil {
+			return err
 		}
 
 		info, err = stm.Save(_ctx)

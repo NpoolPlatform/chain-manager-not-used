@@ -94,6 +94,19 @@ func CreateBulk(ctx context.Context, in []*npool.CoinExtraReq) ([]*ent.CoinExtra
 	return rows, nil
 }
 
+func UpdateSet(info *ent.CoinExtra, in *npool.CoinExtraReq) *ent.CoinExtraUpdateOne {
+	stm := info.Update()
+
+	if in.HomePage != nil {
+		stm = stm.SetHomePage(in.GetHomePage())
+	}
+	if in.Specs != nil {
+		stm = stm.SetSpecs(in.GetSpecs())
+	}
+
+	return stm
+}
+
 func Update(ctx context.Context, in *npool.CoinExtraReq) (*ent.CoinExtra, error) {
 	var info *ent.CoinExtra
 	var err error
@@ -116,14 +129,7 @@ func Update(ctx context.Context, in *npool.CoinExtraReq) (*ent.CoinExtra, error)
 			return fmt.Errorf("fail query coinextra: %v", err)
 		}
 
-		stm := info.Update()
-
-		if in.HomePage != nil {
-			stm = stm.SetHomePage(in.GetHomePage())
-		}
-		if in.Specs != nil {
-			stm = stm.SetSpecs(in.GetSpecs())
-		}
+		stm := UpdateSet(info, in)
 
 		info, err = stm.Save(_ctx)
 		if err != nil {

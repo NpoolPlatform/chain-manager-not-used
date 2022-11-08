@@ -108,6 +108,29 @@ func CreateBulk(ctx context.Context, in []*npool.ExchangeRateReq) ([]*ent.Exchan
 	return rows, nil
 }
 
+func UpdateSet(info *ent.ExchangeRate, in *npool.ExchangeRateReq) *ent.ExchangeRateUpdateOne {
+	stm := info.Update()
+
+	settlePercent := info.SettlePercent
+	marketValue := info.MarketValue
+
+	if in.MarketValue != nil {
+		stm = stm.SetMarketValue(decimal.RequireFromString(in.GetMarketValue()))
+		marketValue = decimal.RequireFromString(in.GetMarketValue())
+	}
+	if in.SettlePercent != nil {
+		stm = stm.SetSettlePercent(in.GetSettlePercent())
+		settlePercent = in.GetSettlePercent()
+	}
+
+	settleValue := info.SettleValue //nolint
+	settleValue = marketValue.Mul(decimal.NewFromInt(int64(settlePercent)))
+	settleValue = settleValue.Div(decimal.NewFromInt(100)) //nolint
+	stm = stm.SetSettleValue(settleValue)
+
+	return stm
+}
+
 func Update(ctx context.Context, in *npool.ExchangeRateReq) (*ent.ExchangeRate, error) {
 	var info *ent.ExchangeRate
 	var err error
@@ -130,24 +153,7 @@ func Update(ctx context.Context, in *npool.ExchangeRateReq) (*ent.ExchangeRate, 
 			return fmt.Errorf("fail query exrate: %v", err)
 		}
 
-		stm := info.Update()
-
-		settlePercent := info.SettlePercent
-		marketValue := info.MarketValue
-
-		if in.MarketValue != nil {
-			stm = stm.SetMarketValue(decimal.RequireFromString(in.GetMarketValue()))
-			marketValue = decimal.RequireFromString(in.GetMarketValue())
-		}
-		if in.SettlePercent != nil {
-			stm = stm.SetSettlePercent(in.GetSettlePercent())
-			settlePercent = in.GetSettlePercent()
-		}
-
-		settleValue := info.SettleValue //nolint
-		settleValue = marketValue.Mul(decimal.NewFromInt(int64(settlePercent)))
-		settleValue = settleValue.Div(decimal.NewFromInt(100)) //nolint
-		stm = stm.SetSettleValue(settleValue)
+		stm := UpdateSet(info, in)
 
 		info, err = stm.Save(_ctx)
 		if err != nil {

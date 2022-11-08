@@ -107,6 +107,25 @@ func CreateBulk(ctx context.Context, in []*npool.CoinBaseReq) ([]*ent.CoinBase, 
 	return rows, nil
 }
 
+func UpdateSet(info *ent.CoinBase, in *npool.CoinBaseReq) *ent.CoinBaseUpdateOne {
+	stm := info.Update()
+
+	if in.Logo != nil {
+		stm = stm.SetLogo(in.GetLogo())
+	}
+	if in.Presale != nil {
+		stm = stm.SetPresale(in.GetPresale())
+	}
+	if in.ReservedAmount != nil {
+		stm = stm.SetReservedAmount(decimal.RequireFromString(in.GetReservedAmount()))
+	}
+	if in.ForPay != nil {
+		stm = stm.SetForPay(in.GetForPay())
+	}
+
+	return stm
+}
+
 func Update(ctx context.Context, in *npool.CoinBaseReq) (*ent.CoinBase, error) {
 	var info *ent.CoinBase
 	var err error
@@ -129,20 +148,7 @@ func Update(ctx context.Context, in *npool.CoinBaseReq) (*ent.CoinBase, error) {
 			return fmt.Errorf("fail query coinbase: %v", err)
 		}
 
-		stm := info.Update()
-
-		if in.Logo != nil {
-			stm = stm.SetLogo(in.GetLogo())
-		}
-		if in.Presale != nil {
-			stm = stm.SetPresale(in.GetPresale())
-		}
-		if in.ReservedAmount != nil {
-			stm = stm.SetReservedAmount(decimal.RequireFromString(in.GetReservedAmount()))
-		}
-		if in.ForPay != nil {
-			stm = stm.SetForPay(in.GetForPay())
-		}
+		stm := UpdateSet(info, in)
 
 		info, err = stm.Save(_ctx)
 		if err != nil {

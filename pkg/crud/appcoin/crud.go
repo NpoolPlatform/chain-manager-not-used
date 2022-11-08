@@ -104,6 +104,25 @@ func CreateBulk(ctx context.Context, in []*npool.AppCoinReq) ([]*ent.AppCoin, er
 	return rows, nil
 }
 
+func UpdateSet(info *ent.AppCoin, in *npool.AppCoinReq) *ent.AppCoinUpdateOne {
+	stm := info.Update()
+
+	if in.Name != nil {
+		stm = stm.SetName(in.GetName())
+	}
+	if in.Logo != nil {
+		stm = stm.SetLogo(in.GetLogo())
+	}
+	if in.ForPay != nil {
+		stm = stm.SetForPay(in.GetForPay())
+	}
+	if in.WithdrawAutoReviewAmount != nil {
+		stm = stm.SetWithdrawAutoReviewAmount(decimal.RequireFromString(in.GetWithdrawAutoReviewAmount()))
+	}
+
+	return stm
+}
+
 func Update(ctx context.Context, in *npool.AppCoinReq) (*ent.AppCoin, error) {
 	var info *ent.AppCoin
 	var err error
@@ -126,20 +145,7 @@ func Update(ctx context.Context, in *npool.AppCoinReq) (*ent.AppCoin, error) {
 			return fmt.Errorf("fail query appcoin: %v", err)
 		}
 
-		stm := info.Update()
-
-		if in.Name != nil {
-			stm = stm.SetName(in.GetName())
-		}
-		if in.Logo != nil {
-			stm = stm.SetLogo(in.GetLogo())
-		}
-		if in.ForPay != nil {
-			stm = stm.SetForPay(in.GetForPay())
-		}
-		if in.WithdrawAutoReviewAmount != nil {
-			stm = stm.SetWithdrawAutoReviewAmount(decimal.RequireFromString(in.GetWithdrawAutoReviewAmount()))
-		}
+		stm := UpdateSet(info, in)
 
 		info, err = stm.Save(_ctx)
 		if err != nil {

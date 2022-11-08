@@ -114,6 +114,34 @@ func CreateBulk(ctx context.Context, in []*npool.SettingReq) ([]*ent.Setting, er
 	return rows, nil
 }
 
+func UpdateSet(info *ent.Setting, in *npool.SettingReq) *ent.SettingUpdateOne {
+	stm := info.Update()
+
+	if in.WithdrawFeeByStableUSD != nil {
+		stm.SetWithdrawFeeByStableUsd(in.GetWithdrawFeeByStableUSD())
+	}
+	if in.WithdrawFeeAmount != nil {
+		stm.SetWithdrawFeeAmount(decimal.RequireFromString(in.GetWithdrawFeeAmount()))
+	}
+	if in.CollectFeeAmount != nil {
+		stm.SetCollectFeeAmount(decimal.RequireFromString(in.GetCollectFeeAmount()))
+	}
+	if in.HotWalletFeeAmount != nil {
+		stm.SetHotWalletFeeAmount(decimal.RequireFromString(in.GetHotWalletFeeAmount()))
+	}
+	if in.LowFeeAmount != nil {
+		stm.SetLowFeeAmount(decimal.RequireFromString(in.GetLowFeeAmount()))
+	}
+	if in.HotWalletAccountAmount != nil {
+		stm.SetHotWalletAccountAmount(decimal.RequireFromString(in.GetHotWalletAccountAmount()))
+	}
+	if in.PaymentAccountCollectAmount != nil {
+		stm.SetPaymentAccountCollectAmount(decimal.RequireFromString(in.GetPaymentAccountCollectAmount()))
+	}
+
+	return stm
+}
+
 func Update(ctx context.Context, in *npool.SettingReq) (*ent.Setting, error) {
 	var info *ent.Setting
 	var err error
@@ -136,29 +164,7 @@ func Update(ctx context.Context, in *npool.SettingReq) (*ent.Setting, error) {
 			return fmt.Errorf("fail query setting: %v", err)
 		}
 
-		stm := info.Update()
-
-		if in.WithdrawFeeByStableUSD != nil {
-			stm.SetWithdrawFeeByStableUsd(in.GetWithdrawFeeByStableUSD())
-		}
-		if in.WithdrawFeeAmount != nil {
-			stm.SetWithdrawFeeAmount(decimal.RequireFromString(in.GetWithdrawFeeAmount()))
-		}
-		if in.CollectFeeAmount != nil {
-			stm.SetCollectFeeAmount(decimal.RequireFromString(in.GetCollectFeeAmount()))
-		}
-		if in.HotWalletFeeAmount != nil {
-			stm.SetHotWalletFeeAmount(decimal.RequireFromString(in.GetHotWalletFeeAmount()))
-		}
-		if in.LowFeeAmount != nil {
-			stm.SetLowFeeAmount(decimal.RequireFromString(in.GetLowFeeAmount()))
-		}
-		if in.HotWalletAccountAmount != nil {
-			stm.SetHotWalletAccountAmount(decimal.RequireFromString(in.GetHotWalletAccountAmount()))
-		}
-		if in.PaymentAccountCollectAmount != nil {
-			stm.SetPaymentAccountCollectAmount(decimal.RequireFromString(in.GetPaymentAccountCollectAmount()))
-		}
+		stm := UpdateSet(info, in)
 
 		info, err = stm.Save(_ctx)
 		if err != nil {
