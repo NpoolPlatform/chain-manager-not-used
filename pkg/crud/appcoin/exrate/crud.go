@@ -34,12 +34,12 @@ func CreateSet(c *ent.ExchangeRateCreate, in *npool.ExchangeRateReq) *ent.Exchan
 	}
 	if in.MarketValue != nil {
 		c.SetMarketValue(decimal.RequireFromString(in.GetMarketValue()))
-	}
 
-	settleValue := decimal.RequireFromString(in.GetMarketValue())
-	settleValue = settleValue.Mul(decimal.NewFromInt(int64(in.GetSettlePercent())))
-	settleValue = settleValue.Div(decimal.NewFromInt(100)) //nolint
-	c.SetSettleValue(settleValue)
+		settleValue := decimal.RequireFromString(in.GetMarketValue())
+		settleValue = settleValue.Mul(decimal.NewFromInt(int64(in.GetSettlePercent())))
+		settleValue = settleValue.Div(decimal.NewFromInt(100)) //nolint
+		c.SetSettleValue(settleValue)
+	}
 
 	if in.SettlePercent != nil {
 		c.SetSettlePercent(in.GetSettlePercent())
