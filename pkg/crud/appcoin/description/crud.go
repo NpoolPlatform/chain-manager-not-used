@@ -204,6 +204,14 @@ func SetQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.CoinDescriptionQue
 			return nil, fmt.Errorf("invalid description1 field")
 		}
 	}
+	if conds.UsedFor != nil {
+		switch conds.GetUsedFor().GetOp() {
+		case cruder.EQ:
+			stm.Where(description1.UsedFor(npool.UsedFor(conds.GetUsedFor().GetValue()).String()))
+		default:
+			return nil, fmt.Errorf("invalid description1 field")
+		}
+	}
 	return stm, nil
 }
 
