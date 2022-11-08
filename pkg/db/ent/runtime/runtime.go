@@ -388,36 +388,40 @@ func init() {
 	tranDescDeletedAt := tranMixinFields0[2].Descriptor()
 	// tran.DefaultDeletedAt holds the default value on creation for the deleted_at field.
 	tran.DefaultDeletedAt = tranDescDeletedAt.Default.(func() uint32)
+	// tranDescCoinTypeID is the schema descriptor for coin_type_id field.
+	tranDescCoinTypeID := tranFields[1].Descriptor()
+	// tran.DefaultCoinTypeID holds the default value on creation for the coin_type_id field.
+	tran.DefaultCoinTypeID = tranDescCoinTypeID.Default.(func() uuid.UUID)
 	// tranDescFromAccountID is the schema descriptor for from_account_id field.
-	tranDescFromAccountID := tranFields[1].Descriptor()
+	tranDescFromAccountID := tranFields[2].Descriptor()
 	// tran.DefaultFromAccountID holds the default value on creation for the from_account_id field.
 	tran.DefaultFromAccountID = tranDescFromAccountID.Default.(func() uuid.UUID)
 	// tranDescToAccountID is the schema descriptor for to_account_id field.
-	tranDescToAccountID := tranFields[2].Descriptor()
+	tranDescToAccountID := tranFields[3].Descriptor()
 	// tran.DefaultToAccountID holds the default value on creation for the to_account_id field.
 	tran.DefaultToAccountID = tranDescToAccountID.Default.(func() uuid.UUID)
 	// tranDescAmount is the schema descriptor for amount field.
-	tranDescAmount := tranFields[3].Descriptor()
+	tranDescAmount := tranFields[4].Descriptor()
 	// tran.DefaultAmount holds the default value on creation for the amount field.
 	tran.DefaultAmount = tranDescAmount.Default.(decimal.Decimal)
 	// tranDescFeeAmount is the schema descriptor for fee_amount field.
-	tranDescFeeAmount := tranFields[4].Descriptor()
+	tranDescFeeAmount := tranFields[5].Descriptor()
 	// tran.DefaultFeeAmount holds the default value on creation for the fee_amount field.
 	tran.DefaultFeeAmount = tranDescFeeAmount.Default.(decimal.Decimal)
 	// tranDescChainTxID is the schema descriptor for chain_tx_id field.
-	tranDescChainTxID := tranFields[5].Descriptor()
+	tranDescChainTxID := tranFields[6].Descriptor()
 	// tran.DefaultChainTxID holds the default value on creation for the chain_tx_id field.
 	tran.DefaultChainTxID = tranDescChainTxID.Default.(string)
 	// tranDescState is the schema descriptor for state field.
-	tranDescState := tranFields[6].Descriptor()
+	tranDescState := tranFields[7].Descriptor()
 	// tran.DefaultState holds the default value on creation for the state field.
 	tran.DefaultState = tranDescState.Default.(string)
 	// tranDescExtra is the schema descriptor for extra field.
-	tranDescExtra := tranFields[7].Descriptor()
+	tranDescExtra := tranFields[8].Descriptor()
 	// tran.DefaultExtra holds the default value on creation for the extra field.
 	tran.DefaultExtra = tranDescExtra.Default.(string)
 	// tranDescType is the schema descriptor for type field.
-	tranDescType := tranFields[8].Descriptor()
+	tranDescType := tranFields[9].Descriptor()
 	// tran.DefaultType holds the default value on creation for the type field.
 	tran.DefaultType = tranDescType.Default.(string)
 	// tranDescID is the schema descriptor for id field.

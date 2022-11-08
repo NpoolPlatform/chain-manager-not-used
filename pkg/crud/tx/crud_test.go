@@ -31,6 +31,7 @@ func init() {
 
 var entity = ent.Tran{
 	ID:            uuid.New(),
+	CoinTypeID:    uuid.New(),
 	FromAccountID: uuid.New(),
 	ToAccountID:   uuid.New(),
 	Amount:        decimal.RequireFromString("89.000"),
@@ -43,6 +44,7 @@ var entity = ent.Tran{
 
 var (
 	id            = entity.ID.String()
+	coinTypeID    = entity.CoinTypeID.String()
 	fromAccountID = entity.FromAccountID.String()
 	toAccountID   = entity.ToAccountID.String()
 	amount        = entity.Amount.String()
@@ -54,6 +56,7 @@ var (
 
 	req = npool.TxReq{
 		ID:            &id,
+		CoinTypeID:    &coinTypeID,
 		FromAccountID: &fromAccountID,
 		ToAccountID:   &toAccountID,
 		Amount:        &amount,
@@ -81,6 +84,7 @@ func createBulk(t *testing.T) {
 	entities := []*ent.Tran{
 		{
 			ID:            uuid.New(),
+			CoinTypeID:    uuid.New(),
 			FromAccountID: uuid.New(),
 			ToAccountID:   uuid.New(),
 			Amount:        decimal.RequireFromString("99.000"),
@@ -92,6 +96,7 @@ func createBulk(t *testing.T) {
 		},
 		{
 			ID:            uuid.New(),
+			CoinTypeID:    uuid.New(),
 			FromAccountID: uuid.New(),
 			ToAccountID:   uuid.New(),
 			Amount:        decimal.RequireFromString("109.000"),
@@ -106,6 +111,7 @@ func createBulk(t *testing.T) {
 	reqs := []*npool.TxReq{}
 	for _, _entity := range entities {
 		_id := _entity.ID.String()
+		_coinTypeID := _entity.ID.String()
 		_fromAccountID := _entity.FromAccountID.String()
 		_toAccountID := _entity.ToAccountID.String()
 		_amount := _entity.Amount.String()
@@ -117,6 +123,7 @@ func createBulk(t *testing.T) {
 
 		reqs = append(reqs, &npool.TxReq{
 			ID:            &_id,
+			CoinTypeID:    &_coinTypeID,
 			FromAccountID: &_fromAccountID,
 			ToAccountID:   &_toAccountID,
 			Amount:        &_amount,

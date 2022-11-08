@@ -85,6 +85,26 @@ func (tu *TranUpdate) AddDeletedAt(u int32) *TranUpdate {
 	return tu
 }
 
+// SetCoinTypeID sets the "coin_type_id" field.
+func (tu *TranUpdate) SetCoinTypeID(u uuid.UUID) *TranUpdate {
+	tu.mutation.SetCoinTypeID(u)
+	return tu
+}
+
+// SetNillableCoinTypeID sets the "coin_type_id" field if the given value is not nil.
+func (tu *TranUpdate) SetNillableCoinTypeID(u *uuid.UUID) *TranUpdate {
+	if u != nil {
+		tu.SetCoinTypeID(*u)
+	}
+	return tu
+}
+
+// ClearCoinTypeID clears the value of the "coin_type_id" field.
+func (tu *TranUpdate) ClearCoinTypeID() *TranUpdate {
+	tu.mutation.ClearCoinTypeID()
+	return tu
+}
+
 // SetFromAccountID sets the "from_account_id" field.
 func (tu *TranUpdate) SetFromAccountID(u uuid.UUID) *TranUpdate {
 	tu.mutation.SetFromAccountID(u)
@@ -385,6 +405,19 @@ func (tu *TranUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: tran.FieldDeletedAt,
 		})
 	}
+	if value, ok := tu.mutation.CoinTypeID(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
+			Value:  value,
+			Column: tran.FieldCoinTypeID,
+		})
+	}
+	if tu.mutation.CoinTypeIDCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
+			Column: tran.FieldCoinTypeID,
+		})
+	}
 	if value, ok := tu.mutation.FromAccountID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
@@ -562,6 +595,26 @@ func (tuo *TranUpdateOne) SetNillableDeletedAt(u *uint32) *TranUpdateOne {
 // AddDeletedAt adds u to the "deleted_at" field.
 func (tuo *TranUpdateOne) AddDeletedAt(u int32) *TranUpdateOne {
 	tuo.mutation.AddDeletedAt(u)
+	return tuo
+}
+
+// SetCoinTypeID sets the "coin_type_id" field.
+func (tuo *TranUpdateOne) SetCoinTypeID(u uuid.UUID) *TranUpdateOne {
+	tuo.mutation.SetCoinTypeID(u)
+	return tuo
+}
+
+// SetNillableCoinTypeID sets the "coin_type_id" field if the given value is not nil.
+func (tuo *TranUpdateOne) SetNillableCoinTypeID(u *uuid.UUID) *TranUpdateOne {
+	if u != nil {
+		tuo.SetCoinTypeID(*u)
+	}
+	return tuo
+}
+
+// ClearCoinTypeID clears the value of the "coin_type_id" field.
+func (tuo *TranUpdateOne) ClearCoinTypeID() *TranUpdateOne {
+	tuo.mutation.ClearCoinTypeID()
 	return tuo
 }
 
@@ -893,6 +946,19 @@ func (tuo *TranUpdateOne) sqlSave(ctx context.Context) (_node *Tran, err error) 
 			Type:   field.TypeUint32,
 			Value:  value,
 			Column: tran.FieldDeletedAt,
+		})
+	}
+	if value, ok := tuo.mutation.CoinTypeID(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
+			Value:  value,
+			Column: tran.FieldCoinTypeID,
+		})
+	}
+	if tuo.mutation.CoinTypeIDCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
+			Column: tran.FieldCoinTypeID,
 		})
 	}
 	if value, ok := tuo.mutation.FromAccountID(); ok {

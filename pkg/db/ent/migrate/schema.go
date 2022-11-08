@@ -128,6 +128,7 @@ var (
 		{Name: "created_at", Type: field.TypeUint32},
 		{Name: "updated_at", Type: field.TypeUint32},
 		{Name: "deleted_at", Type: field.TypeUint32},
+		{Name: "coin_type_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "from_account_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "to_account_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "amount", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},

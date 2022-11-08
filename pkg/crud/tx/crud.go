@@ -26,6 +26,9 @@ func CreateSet(c *ent.TranCreate, in *npool.TxReq) *ent.TranCreate {
 	if in.ID != nil {
 		c.SetID(uuid.MustParse(in.GetID()))
 	}
+	if in.CoinTypeID != nil {
+		c.SetCoinTypeID(uuid.MustParse(in.GetCoinTypeID()))
+	}
 	if in.FromAccountID != nil {
 		c.SetFromAccountID(uuid.MustParse(in.GetFromAccountID()))
 	}
@@ -224,6 +227,14 @@ func SetQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.TranQuery, error) 
 		switch conds.GetID().GetOp() {
 		case cruder.EQ:
 			stm.Where(tran.ID(uuid.MustParse(conds.GetID().GetValue())))
+		default:
+			return nil, fmt.Errorf("invalid tx field")
+		}
+	}
+	if conds.CoinTypeID != nil {
+		switch conds.GetCoinTypeID().GetOp() {
+		case cruder.EQ:
+			stm.Where(tran.CoinTypeID(uuid.MustParse(conds.GetCoinTypeID().GetValue())))
 		default:
 			return nil, fmt.Errorf("invalid tx field")
 		}

@@ -66,6 +66,20 @@ func (tc *TranCreate) SetNillableDeletedAt(u *uint32) *TranCreate {
 	return tc
 }
 
+// SetCoinTypeID sets the "coin_type_id" field.
+func (tc *TranCreate) SetCoinTypeID(u uuid.UUID) *TranCreate {
+	tc.mutation.SetCoinTypeID(u)
+	return tc
+}
+
+// SetNillableCoinTypeID sets the "coin_type_id" field if the given value is not nil.
+func (tc *TranCreate) SetNillableCoinTypeID(u *uuid.UUID) *TranCreate {
+	if u != nil {
+		tc.SetCoinTypeID(*u)
+	}
+	return tc
+}
+
 // SetFromAccountID sets the "from_account_id" field.
 func (tc *TranCreate) SetFromAccountID(u uuid.UUID) *TranCreate {
 	tc.mutation.SetFromAccountID(u)
@@ -292,6 +306,13 @@ func (tc *TranCreate) defaults() error {
 		v := tran.DefaultDeletedAt()
 		tc.mutation.SetDeletedAt(v)
 	}
+	if _, ok := tc.mutation.CoinTypeID(); !ok {
+		if tran.DefaultCoinTypeID == nil {
+			return fmt.Errorf("ent: uninitialized tran.DefaultCoinTypeID (forgotten import ent/runtime?)")
+		}
+		v := tran.DefaultCoinTypeID()
+		tc.mutation.SetCoinTypeID(v)
+	}
 	if _, ok := tc.mutation.FromAccountID(); !ok {
 		if tran.DefaultFromAccountID == nil {
 			return fmt.Errorf("ent: uninitialized tran.DefaultFromAccountID (forgotten import ent/runtime?)")
@@ -411,6 +432,14 @@ func (tc *TranCreate) createSpec() (*Tran, *sqlgraph.CreateSpec) {
 			Column: tran.FieldDeletedAt,
 		})
 		_node.DeletedAt = value
+	}
+	if value, ok := tc.mutation.CoinTypeID(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
+			Value:  value,
+			Column: tran.FieldCoinTypeID,
+		})
+		_node.CoinTypeID = value
 	}
 	if value, ok := tc.mutation.FromAccountID(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -581,6 +610,24 @@ func (u *TranUpsert) UpdateDeletedAt() *TranUpsert {
 // AddDeletedAt adds v to the "deleted_at" field.
 func (u *TranUpsert) AddDeletedAt(v uint32) *TranUpsert {
 	u.Add(tran.FieldDeletedAt, v)
+	return u
+}
+
+// SetCoinTypeID sets the "coin_type_id" field.
+func (u *TranUpsert) SetCoinTypeID(v uuid.UUID) *TranUpsert {
+	u.Set(tran.FieldCoinTypeID, v)
+	return u
+}
+
+// UpdateCoinTypeID sets the "coin_type_id" field to the value that was provided on create.
+func (u *TranUpsert) UpdateCoinTypeID() *TranUpsert {
+	u.SetExcluded(tran.FieldCoinTypeID)
+	return u
+}
+
+// ClearCoinTypeID clears the value of the "coin_type_id" field.
+func (u *TranUpsert) ClearCoinTypeID() *TranUpsert {
+	u.SetNull(tran.FieldCoinTypeID)
 	return u
 }
 
@@ -838,6 +885,27 @@ func (u *TranUpsertOne) AddDeletedAt(v uint32) *TranUpsertOne {
 func (u *TranUpsertOne) UpdateDeletedAt() *TranUpsertOne {
 	return u.Update(func(s *TranUpsert) {
 		s.UpdateDeletedAt()
+	})
+}
+
+// SetCoinTypeID sets the "coin_type_id" field.
+func (u *TranUpsertOne) SetCoinTypeID(v uuid.UUID) *TranUpsertOne {
+	return u.Update(func(s *TranUpsert) {
+		s.SetCoinTypeID(v)
+	})
+}
+
+// UpdateCoinTypeID sets the "coin_type_id" field to the value that was provided on create.
+func (u *TranUpsertOne) UpdateCoinTypeID() *TranUpsertOne {
+	return u.Update(func(s *TranUpsert) {
+		s.UpdateCoinTypeID()
+	})
+}
+
+// ClearCoinTypeID clears the value of the "coin_type_id" field.
+func (u *TranUpsertOne) ClearCoinTypeID() *TranUpsertOne {
+	return u.Update(func(s *TranUpsert) {
+		s.ClearCoinTypeID()
 	})
 }
 
@@ -1285,6 +1353,27 @@ func (u *TranUpsertBulk) AddDeletedAt(v uint32) *TranUpsertBulk {
 func (u *TranUpsertBulk) UpdateDeletedAt() *TranUpsertBulk {
 	return u.Update(func(s *TranUpsert) {
 		s.UpdateDeletedAt()
+	})
+}
+
+// SetCoinTypeID sets the "coin_type_id" field.
+func (u *TranUpsertBulk) SetCoinTypeID(v uuid.UUID) *TranUpsertBulk {
+	return u.Update(func(s *TranUpsert) {
+		s.SetCoinTypeID(v)
+	})
+}
+
+// UpdateCoinTypeID sets the "coin_type_id" field to the value that was provided on create.
+func (u *TranUpsertBulk) UpdateCoinTypeID() *TranUpsertBulk {
+	return u.Update(func(s *TranUpsert) {
+		s.UpdateCoinTypeID()
+	})
+}
+
+// ClearCoinTypeID clears the value of the "coin_type_id" field.
+func (u *TranUpsertBulk) ClearCoinTypeID() *TranUpsertBulk {
+	return u.Update(func(s *TranUpsert) {
+		s.ClearCoinTypeID()
 	})
 }
 

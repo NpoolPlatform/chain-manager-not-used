@@ -12,6 +12,7 @@ func Ent2Grpc(row *ent.Tran) *npool.Tx {
 
 	return &npool.Tx{
 		ID:            row.ID.String(),
+		CoinTypeID:    row.CoinTypeID.String(),
 		FromAccountID: row.FromAccountID.String(),
 		ToAccountID:   row.ToAccountID.String(),
 		Amount:        row.Amount.String(),

@@ -33,6 +33,7 @@ func init() {
 
 var tran = &npool.Tx{
 	ID:            uuid.NewString(),
+	CoinTypeID:    uuid.NewString(),
 	FromAccountID: uuid.NewString(),
 	ToAccountID:   uuid.NewString(),
 	Amount:        "89.5678",
@@ -45,6 +46,7 @@ var tran = &npool.Tx{
 
 var tranReq = &npool.TxReq{
 	ID:            &tran.ID,
+	CoinTypeID:    &tran.CoinTypeID,
 	FromAccountID: &tran.FromAccountID,
 	ToAccountID:   &tran.ToAccountID,
 	Amount:        &tran.Amount,

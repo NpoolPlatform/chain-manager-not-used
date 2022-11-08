@@ -5894,6 +5894,7 @@ type TranMutation struct {
 	addupdated_at   *int32
 	deleted_at      *uint32
 	adddeleted_at   *int32
+	coin_type_id    *uuid.UUID
 	from_account_id *uuid.UUID
 	to_account_id   *uuid.UUID
 	amount          *decimal.Decimal
@@ -6178,6 +6179,55 @@ func (m *TranMutation) AddedDeletedAt() (r int32, exists bool) {
 func (m *TranMutation) ResetDeletedAt() {
 	m.deleted_at = nil
 	m.adddeleted_at = nil
+}
+
+// SetCoinTypeID sets the "coin_type_id" field.
+func (m *TranMutation) SetCoinTypeID(u uuid.UUID) {
+	m.coin_type_id = &u
+}
+
+// CoinTypeID returns the value of the "coin_type_id" field in the mutation.
+func (m *TranMutation) CoinTypeID() (r uuid.UUID, exists bool) {
+	v := m.coin_type_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCoinTypeID returns the old "coin_type_id" field's value of the Tran entity.
+// If the Tran object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TranMutation) OldCoinTypeID(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCoinTypeID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCoinTypeID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCoinTypeID: %w", err)
+	}
+	return oldValue.CoinTypeID, nil
+}
+
+// ClearCoinTypeID clears the value of the "coin_type_id" field.
+func (m *TranMutation) ClearCoinTypeID() {
+	m.coin_type_id = nil
+	m.clearedFields[tran.FieldCoinTypeID] = struct{}{}
+}
+
+// CoinTypeIDCleared returns if the "coin_type_id" field was cleared in this mutation.
+func (m *TranMutation) CoinTypeIDCleared() bool {
+	_, ok := m.clearedFields[tran.FieldCoinTypeID]
+	return ok
+}
+
+// ResetCoinTypeID resets all changes to the "coin_type_id" field.
+func (m *TranMutation) ResetCoinTypeID() {
+	m.coin_type_id = nil
+	delete(m.clearedFields, tran.FieldCoinTypeID)
 }
 
 // SetFromAccountID sets the "from_account_id" field.
@@ -6591,7 +6641,7 @@ func (m *TranMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *TranMutation) Fields() []string {
-	fields := make([]string, 0, 11)
+	fields := make([]string, 0, 12)
 	if m.created_at != nil {
 		fields = append(fields, tran.FieldCreatedAt)
 	}
@@ -6600,6 +6650,9 @@ func (m *TranMutation) Fields() []string {
 	}
 	if m.deleted_at != nil {
 		fields = append(fields, tran.FieldDeletedAt)
+	}
+	if m.coin_type_id != nil {
+		fields = append(fields, tran.FieldCoinTypeID)
 	}
 	if m.from_account_id != nil {
 		fields = append(fields, tran.FieldFromAccountID)
@@ -6639,6 +6692,8 @@ func (m *TranMutation) Field(name string) (ent.Value, bool) {
 		return m.UpdatedAt()
 	case tran.FieldDeletedAt:
 		return m.DeletedAt()
+	case tran.FieldCoinTypeID:
+		return m.CoinTypeID()
 	case tran.FieldFromAccountID:
 		return m.FromAccountID()
 	case tran.FieldToAccountID:
@@ -6670,6 +6725,8 @@ func (m *TranMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldUpdatedAt(ctx)
 	case tran.FieldDeletedAt:
 		return m.OldDeletedAt(ctx)
+	case tran.FieldCoinTypeID:
+		return m.OldCoinTypeID(ctx)
 	case tran.FieldFromAccountID:
 		return m.OldFromAccountID(ctx)
 	case tran.FieldToAccountID:
@@ -6715,6 +6772,13 @@ func (m *TranMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetDeletedAt(v)
+		return nil
+	case tran.FieldCoinTypeID:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCoinTypeID(v)
 		return nil
 	case tran.FieldFromAccountID:
 		v, ok := value.(uuid.UUID)
@@ -6841,6 +6905,9 @@ func (m *TranMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *TranMutation) ClearedFields() []string {
 	var fields []string
+	if m.FieldCleared(tran.FieldCoinTypeID) {
+		fields = append(fields, tran.FieldCoinTypeID)
+	}
 	if m.FieldCleared(tran.FieldFromAccountID) {
 		fields = append(fields, tran.FieldFromAccountID)
 	}
@@ -6879,6 +6946,9 @@ func (m *TranMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *TranMutation) ClearField(name string) error {
 	switch name {
+	case tran.FieldCoinTypeID:
+		m.ClearCoinTypeID()
+		return nil
 	case tran.FieldFromAccountID:
 		m.ClearFromAccountID()
 		return nil
@@ -6919,6 +6989,9 @@ func (m *TranMutation) ResetField(name string) error {
 		return nil
 	case tran.FieldDeletedAt:
 		m.ResetDeletedAt()
+		return nil
+	case tran.FieldCoinTypeID:
+		m.ResetCoinTypeID()
 		return nil
 	case tran.FieldFromAccountID:
 		m.ResetFromAccountID()

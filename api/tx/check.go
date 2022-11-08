@@ -19,6 +19,10 @@ func validate(in *npool.TxReq) error { //nolint
 		}
 	}
 
+	if _, err := uuid.Parse(in.GetCoinTypeID()); err != nil {
+		logger.Sugar().Errorw("validate", "CoinTypeID", in.GetCoinTypeID(), "error", err)
+		return err
+	}
 	if _, err := uuid.Parse(in.GetFromAccountID()); err != nil {
 		logger.Sugar().Errorw("validate", "FromAccountID", in.GetFromAccountID(), "error", err)
 		return err
@@ -80,6 +84,13 @@ func validateConds(conds *npool.Conds) error { //nolint
 	if conds.ID != nil {
 		if _, err := uuid.Parse(conds.GetID().GetValue()); err != nil {
 			logger.Sugar().Errorw("validateConds", "ID", conds.GetID().GetValue(), "error", err)
+			return err
+		}
+	}
+
+	if conds.CoinTypeID != nil {
+		if _, err := uuid.Parse(conds.GetCoinTypeID().GetValue()); err != nil {
+			logger.Sugar().Errorw("validateConds", "CoinTypeID", conds.GetCoinTypeID().GetValue(), "error", err)
 			return err
 		}
 	}

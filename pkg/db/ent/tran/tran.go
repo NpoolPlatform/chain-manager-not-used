@@ -19,6 +19,8 @@ const (
 	FieldUpdatedAt = "updated_at"
 	// FieldDeletedAt holds the string denoting the deleted_at field in the database.
 	FieldDeletedAt = "deleted_at"
+	// FieldCoinTypeID holds the string denoting the coin_type_id field in the database.
+	FieldCoinTypeID = "coin_type_id"
 	// FieldFromAccountID holds the string denoting the from_account_id field in the database.
 	FieldFromAccountID = "from_account_id"
 	// FieldToAccountID holds the string denoting the to_account_id field in the database.
@@ -45,6 +47,7 @@ var Columns = []string{
 	FieldCreatedAt,
 	FieldUpdatedAt,
 	FieldDeletedAt,
+	FieldCoinTypeID,
 	FieldFromAccountID,
 	FieldToAccountID,
 	FieldAmount,
@@ -82,6 +85,8 @@ var (
 	UpdateDefaultUpdatedAt func() uint32
 	// DefaultDeletedAt holds the default value on creation for the "deleted_at" field.
 	DefaultDeletedAt func() uint32
+	// DefaultCoinTypeID holds the default value on creation for the "coin_type_id" field.
+	DefaultCoinTypeID func() uuid.UUID
 	// DefaultFromAccountID holds the default value on creation for the "from_account_id" field.
 	DefaultFromAccountID func() uuid.UUID
 	// DefaultToAccountID holds the default value on creation for the "to_account_id" field.

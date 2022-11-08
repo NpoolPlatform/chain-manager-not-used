@@ -23,6 +23,8 @@ type Tran struct {
 	UpdatedAt uint32 `json:"updated_at,omitempty"`
 	// DeletedAt holds the value of the "deleted_at" field.
 	DeletedAt uint32 `json:"deleted_at,omitempty"`
+	// CoinTypeID holds the value of the "coin_type_id" field.
+	CoinTypeID uuid.UUID `json:"coin_type_id,omitempty"`
 	// FromAccountID holds the value of the "from_account_id" field.
 	FromAccountID uuid.UUID `json:"from_account_id,omitempty"`
 	// ToAccountID holds the value of the "to_account_id" field.
@@ -52,7 +54,7 @@ func (*Tran) scanValues(columns []string) ([]interface{}, error) {
 			values[i] = new(sql.NullInt64)
 		case tran.FieldChainTxID, tran.FieldState, tran.FieldExtra, tran.FieldType:
 			values[i] = new(sql.NullString)
-		case tran.FieldID, tran.FieldFromAccountID, tran.FieldToAccountID:
+		case tran.FieldID, tran.FieldCoinTypeID, tran.FieldFromAccountID, tran.FieldToAccountID:
 			values[i] = new(uuid.UUID)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Tran", columns[i])
@@ -92,6 +94,12 @@ func (t *Tran) assignValues(columns []string, values []interface{}) error {
 				return fmt.Errorf("unexpected type %T for field deleted_at", values[i])
 			} else if value.Valid {
 				t.DeletedAt = uint32(value.Int64)
+			}
+		case tran.FieldCoinTypeID:
+			if value, ok := values[i].(*uuid.UUID); !ok {
+				return fmt.Errorf("unexpected type %T for field coin_type_id", values[i])
+			} else if value != nil {
+				t.CoinTypeID = *value
 			}
 		case tran.FieldFromAccountID:
 			if value, ok := values[i].(*uuid.UUID); !ok {
@@ -177,6 +185,9 @@ func (t *Tran) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("deleted_at=")
 	builder.WriteString(fmt.Sprintf("%v", t.DeletedAt))
+	builder.WriteString(", ")
+	builder.WriteString("coin_type_id=")
+	builder.WriteString(fmt.Sprintf("%v", t.CoinTypeID))
 	builder.WriteString(", ")
 	builder.WriteString("from_account_id=")
 	builder.WriteString(fmt.Sprintf("%v", t.FromAccountID))
