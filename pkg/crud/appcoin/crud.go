@@ -119,6 +119,9 @@ func UpdateSet(info *ent.AppCoin, in *npool.AppCoinReq) *ent.AppCoinUpdateOne {
 	if in.WithdrawAutoReviewAmount != nil {
 		stm = stm.SetWithdrawAutoReviewAmount(decimal.RequireFromString(in.GetWithdrawAutoReviewAmount()))
 	}
+	if in.DeletedAt != nil {
+		stm = stm.SetDeletedAt(in.GetDeletedAt())
+	}
 
 	return stm
 }

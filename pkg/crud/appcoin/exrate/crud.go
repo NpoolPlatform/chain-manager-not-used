@@ -128,6 +128,10 @@ func UpdateSet(info *ent.ExchangeRate, in *npool.ExchangeRateReq) *ent.ExchangeR
 	settleValue = settleValue.Div(decimal.NewFromInt(100)) //nolint
 	stm = stm.SetSettleValue(settleValue)
 
+	if in.DeletedAt != nil {
+		stm = stm.SetDeletedAt(in.GetDeletedAt())
+	}
+
 	return stm
 }
 

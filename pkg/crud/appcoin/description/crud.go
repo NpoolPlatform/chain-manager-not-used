@@ -109,6 +109,9 @@ func UpdateSet(info *ent.CoinDescription, in *npool.CoinDescriptionReq) *ent.Coi
 	if in.Message != nil {
 		stm = stm.SetMessage(in.GetMessage())
 	}
+	if in.DeletedAt != nil {
+		stm = stm.SetDeletedAt(in.GetDeletedAt())
+	}
 
 	return stm
 }
