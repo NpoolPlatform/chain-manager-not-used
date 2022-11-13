@@ -150,6 +150,20 @@ func (acc *AppCoinCreate) SetNillableWithdrawAutoReviewAmount(d *decimal.Decimal
 	return acc
 }
 
+// SetProductPage sets the "product_page" field.
+func (acc *AppCoinCreate) SetProductPage(s string) *AppCoinCreate {
+	acc.mutation.SetProductPage(s)
+	return acc
+}
+
+// SetNillableProductPage sets the "product_page" field if the given value is not nil.
+func (acc *AppCoinCreate) SetNillableProductPage(s *string) *AppCoinCreate {
+	if s != nil {
+		acc.SetProductPage(*s)
+	}
+	return acc
+}
+
 // SetID sets the "id" field.
 func (acc *AppCoinCreate) SetID(u uuid.UUID) *AppCoinCreate {
 	acc.mutation.SetID(u)
@@ -294,6 +308,10 @@ func (acc *AppCoinCreate) defaults() error {
 		v := appcoin.DefaultWithdrawAutoReviewAmount
 		acc.mutation.SetWithdrawAutoReviewAmount(v)
 	}
+	if _, ok := acc.mutation.ProductPage(); !ok {
+		v := appcoin.DefaultProductPage
+		acc.mutation.SetProductPage(v)
+	}
 	if _, ok := acc.mutation.ID(); !ok {
 		if appcoin.DefaultID == nil {
 			return fmt.Errorf("ent: uninitialized appcoin.DefaultID (forgotten import ent/runtime?)")
@@ -423,6 +441,14 @@ func (acc *AppCoinCreate) createSpec() (*AppCoin, *sqlgraph.CreateSpec) {
 			Column: appcoin.FieldWithdrawAutoReviewAmount,
 		})
 		_node.WithdrawAutoReviewAmount = value
+	}
+	if value, ok := acc.mutation.ProductPage(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: appcoin.FieldProductPage,
+		})
+		_node.ProductPage = value
 	}
 	return _node, _spec
 }
@@ -637,6 +663,24 @@ func (u *AppCoinUpsert) UpdateWithdrawAutoReviewAmount() *AppCoinUpsert {
 // ClearWithdrawAutoReviewAmount clears the value of the "withdraw_auto_review_amount" field.
 func (u *AppCoinUpsert) ClearWithdrawAutoReviewAmount() *AppCoinUpsert {
 	u.SetNull(appcoin.FieldWithdrawAutoReviewAmount)
+	return u
+}
+
+// SetProductPage sets the "product_page" field.
+func (u *AppCoinUpsert) SetProductPage(v string) *AppCoinUpsert {
+	u.Set(appcoin.FieldProductPage, v)
+	return u
+}
+
+// UpdateProductPage sets the "product_page" field to the value that was provided on create.
+func (u *AppCoinUpsert) UpdateProductPage() *AppCoinUpsert {
+	u.SetExcluded(appcoin.FieldProductPage)
+	return u
+}
+
+// ClearProductPage clears the value of the "product_page" field.
+func (u *AppCoinUpsert) ClearProductPage() *AppCoinUpsert {
+	u.SetNull(appcoin.FieldProductPage)
 	return u
 }
 
@@ -876,6 +920,27 @@ func (u *AppCoinUpsertOne) UpdateWithdrawAutoReviewAmount() *AppCoinUpsertOne {
 func (u *AppCoinUpsertOne) ClearWithdrawAutoReviewAmount() *AppCoinUpsertOne {
 	return u.Update(func(s *AppCoinUpsert) {
 		s.ClearWithdrawAutoReviewAmount()
+	})
+}
+
+// SetProductPage sets the "product_page" field.
+func (u *AppCoinUpsertOne) SetProductPage(v string) *AppCoinUpsertOne {
+	return u.Update(func(s *AppCoinUpsert) {
+		s.SetProductPage(v)
+	})
+}
+
+// UpdateProductPage sets the "product_page" field to the value that was provided on create.
+func (u *AppCoinUpsertOne) UpdateProductPage() *AppCoinUpsertOne {
+	return u.Update(func(s *AppCoinUpsert) {
+		s.UpdateProductPage()
+	})
+}
+
+// ClearProductPage clears the value of the "product_page" field.
+func (u *AppCoinUpsertOne) ClearProductPage() *AppCoinUpsertOne {
+	return u.Update(func(s *AppCoinUpsert) {
+		s.ClearProductPage()
 	})
 }
 
@@ -1281,6 +1346,27 @@ func (u *AppCoinUpsertBulk) UpdateWithdrawAutoReviewAmount() *AppCoinUpsertBulk 
 func (u *AppCoinUpsertBulk) ClearWithdrawAutoReviewAmount() *AppCoinUpsertBulk {
 	return u.Update(func(s *AppCoinUpsert) {
 		s.ClearWithdrawAutoReviewAmount()
+	})
+}
+
+// SetProductPage sets the "product_page" field.
+func (u *AppCoinUpsertBulk) SetProductPage(v string) *AppCoinUpsertBulk {
+	return u.Update(func(s *AppCoinUpsert) {
+		s.SetProductPage(v)
+	})
+}
+
+// UpdateProductPage sets the "product_page" field to the value that was provided on create.
+func (u *AppCoinUpsertBulk) UpdateProductPage() *AppCoinUpsertBulk {
+	return u.Update(func(s *AppCoinUpsert) {
+		s.UpdateProductPage()
+	})
+}
+
+// ClearProductPage clears the value of the "product_page" field.
+func (u *AppCoinUpsertBulk) ClearProductPage() *AppCoinUpsertBulk {
+	return u.Update(func(s *AppCoinUpsert) {
+		s.ClearProductPage()
 	})
 }
 

@@ -58,6 +58,7 @@ type AppCoinMutation struct {
 	logo                        *string
 	for_pay                     *bool
 	withdraw_auto_review_amount *decimal.Decimal
+	product_page                *string
 	clearedFields               map[string]struct{}
 	done                        bool
 	oldValue                    func(context.Context) (*AppCoin, error)
@@ -630,6 +631,55 @@ func (m *AppCoinMutation) ResetWithdrawAutoReviewAmount() {
 	delete(m.clearedFields, appcoin.FieldWithdrawAutoReviewAmount)
 }
 
+// SetProductPage sets the "product_page" field.
+func (m *AppCoinMutation) SetProductPage(s string) {
+	m.product_page = &s
+}
+
+// ProductPage returns the value of the "product_page" field in the mutation.
+func (m *AppCoinMutation) ProductPage() (r string, exists bool) {
+	v := m.product_page
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldProductPage returns the old "product_page" field's value of the AppCoin entity.
+// If the AppCoin object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppCoinMutation) OldProductPage(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldProductPage is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldProductPage requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldProductPage: %w", err)
+	}
+	return oldValue.ProductPage, nil
+}
+
+// ClearProductPage clears the value of the "product_page" field.
+func (m *AppCoinMutation) ClearProductPage() {
+	m.product_page = nil
+	m.clearedFields[appcoin.FieldProductPage] = struct{}{}
+}
+
+// ProductPageCleared returns if the "product_page" field was cleared in this mutation.
+func (m *AppCoinMutation) ProductPageCleared() bool {
+	_, ok := m.clearedFields[appcoin.FieldProductPage]
+	return ok
+}
+
+// ResetProductPage resets all changes to the "product_page" field.
+func (m *AppCoinMutation) ResetProductPage() {
+	m.product_page = nil
+	delete(m.clearedFields, appcoin.FieldProductPage)
+}
+
 // Where appends a list predicates to the AppCoinMutation builder.
 func (m *AppCoinMutation) Where(ps ...predicate.AppCoin) {
 	m.predicates = append(m.predicates, ps...)
@@ -649,7 +699,7 @@ func (m *AppCoinMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *AppCoinMutation) Fields() []string {
-	fields := make([]string, 0, 9)
+	fields := make([]string, 0, 10)
 	if m.created_at != nil {
 		fields = append(fields, appcoin.FieldCreatedAt)
 	}
@@ -677,6 +727,9 @@ func (m *AppCoinMutation) Fields() []string {
 	if m.withdraw_auto_review_amount != nil {
 		fields = append(fields, appcoin.FieldWithdrawAutoReviewAmount)
 	}
+	if m.product_page != nil {
+		fields = append(fields, appcoin.FieldProductPage)
+	}
 	return fields
 }
 
@@ -703,6 +756,8 @@ func (m *AppCoinMutation) Field(name string) (ent.Value, bool) {
 		return m.ForPay()
 	case appcoin.FieldWithdrawAutoReviewAmount:
 		return m.WithdrawAutoReviewAmount()
+	case appcoin.FieldProductPage:
+		return m.ProductPage()
 	}
 	return nil, false
 }
@@ -730,6 +785,8 @@ func (m *AppCoinMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldForPay(ctx)
 	case appcoin.FieldWithdrawAutoReviewAmount:
 		return m.OldWithdrawAutoReviewAmount(ctx)
+	case appcoin.FieldProductPage:
+		return m.OldProductPage(ctx)
 	}
 	return nil, fmt.Errorf("unknown AppCoin field %s", name)
 }
@@ -801,6 +858,13 @@ func (m *AppCoinMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetWithdrawAutoReviewAmount(v)
+		return nil
+	case appcoin.FieldProductPage:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetProductPage(v)
 		return nil
 	}
 	return fmt.Errorf("unknown AppCoin field %s", name)
@@ -889,6 +953,9 @@ func (m *AppCoinMutation) ClearedFields() []string {
 	if m.FieldCleared(appcoin.FieldWithdrawAutoReviewAmount) {
 		fields = append(fields, appcoin.FieldWithdrawAutoReviewAmount)
 	}
+	if m.FieldCleared(appcoin.FieldProductPage) {
+		fields = append(fields, appcoin.FieldProductPage)
+	}
 	return fields
 }
 
@@ -920,6 +987,9 @@ func (m *AppCoinMutation) ClearField(name string) error {
 		return nil
 	case appcoin.FieldWithdrawAutoReviewAmount:
 		m.ClearWithdrawAutoReviewAmount()
+		return nil
+	case appcoin.FieldProductPage:
+		m.ClearProductPage()
 		return nil
 	}
 	return fmt.Errorf("unknown AppCoin nullable field %s", name)
@@ -955,6 +1025,9 @@ func (m *AppCoinMutation) ResetField(name string) error {
 		return nil
 	case appcoin.FieldWithdrawAutoReviewAmount:
 		m.ResetWithdrawAutoReviewAmount()
+		return nil
+	case appcoin.FieldProductPage:
+		m.ResetProductPage()
 		return nil
 	}
 	return fmt.Errorf("unknown AppCoin field %s", name)

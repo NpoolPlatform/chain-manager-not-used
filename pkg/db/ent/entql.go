@@ -40,6 +40,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			appcoin.FieldLogo:                     {Type: field.TypeString, Column: appcoin.FieldLogo},
 			appcoin.FieldForPay:                   {Type: field.TypeBool, Column: appcoin.FieldForPay},
 			appcoin.FieldWithdrawAutoReviewAmount: {Type: field.TypeOther, Column: appcoin.FieldWithdrawAutoReviewAmount},
+			appcoin.FieldProductPage:              {Type: field.TypeString, Column: appcoin.FieldProductPage},
 		},
 	}
 	graph.Nodes[1] = &sqlgraph.Node{
@@ -269,6 +270,11 @@ func (f *AppCoinFilter) WhereForPay(p entql.BoolP) {
 // WhereWithdrawAutoReviewAmount applies the entql other predicate on the withdraw_auto_review_amount field.
 func (f *AppCoinFilter) WhereWithdrawAutoReviewAmount(p entql.OtherP) {
 	f.Where(p.Field(appcoin.FieldWithdrawAutoReviewAmount))
+}
+
+// WhereProductPage applies the entql string predicate on the product_page field.
+func (f *AppCoinFilter) WhereProductPage(p entql.StringP) {
+	f.Where(p.Field(appcoin.FieldProductPage))
 }
 
 // addPredicate implements the predicateAdder interface.

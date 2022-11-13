@@ -76,6 +76,10 @@ func init() {
 	appcoinDescWithdrawAutoReviewAmount := appcoinFields[6].Descriptor()
 	// appcoin.DefaultWithdrawAutoReviewAmount holds the default value on creation for the withdraw_auto_review_amount field.
 	appcoin.DefaultWithdrawAutoReviewAmount = appcoinDescWithdrawAutoReviewAmount.Default.(decimal.Decimal)
+	// appcoinDescProductPage is the schema descriptor for product_page field.
+	appcoinDescProductPage := appcoinFields[7].Descriptor()
+	// appcoin.DefaultProductPage holds the default value on creation for the product_page field.
+	appcoin.DefaultProductPage = appcoinDescProductPage.Default.(string)
 	// appcoinDescID is the schema descriptor for id field.
 	appcoinDescID := appcoinFields[0].Descriptor()
 	// appcoin.DefaultID holds the default value on creation for the id field.

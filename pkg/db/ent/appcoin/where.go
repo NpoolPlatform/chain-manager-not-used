@@ -143,6 +143,13 @@ func WithdrawAutoReviewAmount(v decimal.Decimal) predicate.AppCoin {
 	})
 }
 
+// ProductPage applies equality check predicate on the "product_page" field. It's identical to ProductPageEQ.
+func ProductPage(v string) predicate.AppCoin {
+	return predicate.AppCoin(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldProductPage), v))
+	})
+}
+
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
 func CreatedAtEQ(v uint32) predicate.AppCoin {
 	return predicate.AppCoin(func(s *sql.Selector) {
@@ -820,6 +827,119 @@ func WithdrawAutoReviewAmountIsNil() predicate.AppCoin {
 func WithdrawAutoReviewAmountNotNil() predicate.AppCoin {
 	return predicate.AppCoin(func(s *sql.Selector) {
 		s.Where(sql.NotNull(s.C(FieldWithdrawAutoReviewAmount)))
+	})
+}
+
+// ProductPageEQ applies the EQ predicate on the "product_page" field.
+func ProductPageEQ(v string) predicate.AppCoin {
+	return predicate.AppCoin(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldProductPage), v))
+	})
+}
+
+// ProductPageNEQ applies the NEQ predicate on the "product_page" field.
+func ProductPageNEQ(v string) predicate.AppCoin {
+	return predicate.AppCoin(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldProductPage), v))
+	})
+}
+
+// ProductPageIn applies the In predicate on the "product_page" field.
+func ProductPageIn(vs ...string) predicate.AppCoin {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.AppCoin(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldProductPage), v...))
+	})
+}
+
+// ProductPageNotIn applies the NotIn predicate on the "product_page" field.
+func ProductPageNotIn(vs ...string) predicate.AppCoin {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.AppCoin(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldProductPage), v...))
+	})
+}
+
+// ProductPageGT applies the GT predicate on the "product_page" field.
+func ProductPageGT(v string) predicate.AppCoin {
+	return predicate.AppCoin(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldProductPage), v))
+	})
+}
+
+// ProductPageGTE applies the GTE predicate on the "product_page" field.
+func ProductPageGTE(v string) predicate.AppCoin {
+	return predicate.AppCoin(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldProductPage), v))
+	})
+}
+
+// ProductPageLT applies the LT predicate on the "product_page" field.
+func ProductPageLT(v string) predicate.AppCoin {
+	return predicate.AppCoin(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldProductPage), v))
+	})
+}
+
+// ProductPageLTE applies the LTE predicate on the "product_page" field.
+func ProductPageLTE(v string) predicate.AppCoin {
+	return predicate.AppCoin(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldProductPage), v))
+	})
+}
+
+// ProductPageContains applies the Contains predicate on the "product_page" field.
+func ProductPageContains(v string) predicate.AppCoin {
+	return predicate.AppCoin(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldProductPage), v))
+	})
+}
+
+// ProductPageHasPrefix applies the HasPrefix predicate on the "product_page" field.
+func ProductPageHasPrefix(v string) predicate.AppCoin {
+	return predicate.AppCoin(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldProductPage), v))
+	})
+}
+
+// ProductPageHasSuffix applies the HasSuffix predicate on the "product_page" field.
+func ProductPageHasSuffix(v string) predicate.AppCoin {
+	return predicate.AppCoin(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldProductPage), v))
+	})
+}
+
+// ProductPageIsNil applies the IsNil predicate on the "product_page" field.
+func ProductPageIsNil() predicate.AppCoin {
+	return predicate.AppCoin(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldProductPage)))
+	})
+}
+
+// ProductPageNotNil applies the NotNil predicate on the "product_page" field.
+func ProductPageNotNil() predicate.AppCoin {
+	return predicate.AppCoin(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldProductPage)))
+	})
+}
+
+// ProductPageEqualFold applies the EqualFold predicate on the "product_page" field.
+func ProductPageEqualFold(v string) predicate.AppCoin {
+	return predicate.AppCoin(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldProductPage), v))
+	})
+}
+
+// ProductPageContainsFold applies the ContainsFold predicate on the "product_page" field.
+func ProductPageContainsFold(v string) predicate.AppCoin {
+	return predicate.AppCoin(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldProductPage), v))
 	})
 }
 

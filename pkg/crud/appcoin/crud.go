@@ -43,6 +43,9 @@ func CreateSet(c *ent.AppCoinCreate, in *npool.AppCoinReq) *ent.AppCoinCreate {
 	if in.WithdrawAutoReviewAmount != nil {
 		c.SetWithdrawAutoReviewAmount(decimal.RequireFromString(in.GetWithdrawAutoReviewAmount()))
 	}
+	if in.ProductPage != nil {
+		c.SetProductPage(in.GetProductPage())
+	}
 	return c
 }
 
@@ -121,6 +124,9 @@ func UpdateSet(info *ent.AppCoin, in *npool.AppCoinReq) *ent.AppCoinUpdateOne {
 	}
 	if in.DeletedAt != nil {
 		stm = stm.SetDeletedAt(in.GetDeletedAt())
+	}
+	if in.ProductPage != nil {
+		stm = stm.SetProductPage(in.GetProductPage())
 	}
 
 	return stm

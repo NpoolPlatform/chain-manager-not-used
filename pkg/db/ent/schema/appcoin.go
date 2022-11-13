@@ -54,6 +54,10 @@ func (AppCoin) Fields() []ent.Field {
 			}).
 			Optional().
 			Default(decimal.Decimal{}),
+		field.
+			String("product_page").
+			Optional().
+			Default(""),
 	}
 }
 

@@ -35,6 +35,8 @@ type AppCoin struct {
 	ForPay bool `json:"for_pay,omitempty"`
 	// WithdrawAutoReviewAmount holds the value of the "withdraw_auto_review_amount" field.
 	WithdrawAutoReviewAmount decimal.Decimal `json:"withdraw_auto_review_amount,omitempty"`
+	// ProductPage holds the value of the "product_page" field.
+	ProductPage string `json:"product_page,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -48,7 +50,7 @@ func (*AppCoin) scanValues(columns []string) ([]interface{}, error) {
 			values[i] = new(sql.NullBool)
 		case appcoin.FieldCreatedAt, appcoin.FieldUpdatedAt, appcoin.FieldDeletedAt:
 			values[i] = new(sql.NullInt64)
-		case appcoin.FieldName, appcoin.FieldLogo:
+		case appcoin.FieldName, appcoin.FieldLogo, appcoin.FieldProductPage:
 			values[i] = new(sql.NullString)
 		case appcoin.FieldID, appcoin.FieldAppID, appcoin.FieldCoinTypeID:
 			values[i] = new(uuid.UUID)
@@ -127,6 +129,12 @@ func (ac *AppCoin) assignValues(columns []string, values []interface{}) error {
 			} else if value != nil {
 				ac.WithdrawAutoReviewAmount = *value
 			}
+		case appcoin.FieldProductPage:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field product_page", values[i])
+			} else if value.Valid {
+				ac.ProductPage = value.String
+			}
 		}
 	}
 	return nil
@@ -181,6 +189,9 @@ func (ac *AppCoin) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("withdraw_auto_review_amount=")
 	builder.WriteString(fmt.Sprintf("%v", ac.WithdrawAutoReviewAmount))
+	builder.WriteString(", ")
+	builder.WriteString("product_page=")
+	builder.WriteString(ac.ProductPage)
 	builder.WriteByte(')')
 	return builder.String()
 }

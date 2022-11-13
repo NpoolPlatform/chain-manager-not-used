@@ -31,6 +31,8 @@ const (
 	FieldForPay = "for_pay"
 	// FieldWithdrawAutoReviewAmount holds the string denoting the withdraw_auto_review_amount field in the database.
 	FieldWithdrawAutoReviewAmount = "withdraw_auto_review_amount"
+	// FieldProductPage holds the string denoting the product_page field in the database.
+	FieldProductPage = "product_page"
 	// Table holds the table name of the appcoin in the database.
 	Table = "app_coins"
 )
@@ -47,6 +49,7 @@ var Columns = []string{
 	FieldLogo,
 	FieldForPay,
 	FieldWithdrawAutoReviewAmount,
+	FieldProductPage,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -88,6 +91,8 @@ var (
 	DefaultForPay bool
 	// DefaultWithdrawAutoReviewAmount holds the default value on creation for the "withdraw_auto_review_amount" field.
 	DefaultWithdrawAutoReviewAmount decimal.Decimal
+	// DefaultProductPage holds the default value on creation for the "product_page" field.
+	DefaultProductPage string
 	// DefaultID holds the default value on creation for the "id" field.
 	DefaultID func() uuid.UUID
 )

@@ -205,6 +205,26 @@ func (acu *AppCoinUpdate) ClearWithdrawAutoReviewAmount() *AppCoinUpdate {
 	return acu
 }
 
+// SetProductPage sets the "product_page" field.
+func (acu *AppCoinUpdate) SetProductPage(s string) *AppCoinUpdate {
+	acu.mutation.SetProductPage(s)
+	return acu
+}
+
+// SetNillableProductPage sets the "product_page" field if the given value is not nil.
+func (acu *AppCoinUpdate) SetNillableProductPage(s *string) *AppCoinUpdate {
+	if s != nil {
+		acu.SetProductPage(*s)
+	}
+	return acu
+}
+
+// ClearProductPage clears the value of the "product_page" field.
+func (acu *AppCoinUpdate) ClearProductPage() *AppCoinUpdate {
+	acu.mutation.ClearProductPage()
+	return acu
+}
+
 // Mutation returns the AppCoinMutation object of the builder.
 func (acu *AppCoinUpdate) Mutation() *AppCoinMutation {
 	return acu.mutation
@@ -423,6 +443,19 @@ func (acu *AppCoinUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: appcoin.FieldWithdrawAutoReviewAmount,
 		})
 	}
+	if value, ok := acu.mutation.ProductPage(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: appcoin.FieldProductPage,
+		})
+	}
+	if acu.mutation.ProductPageCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: appcoin.FieldProductPage,
+		})
+	}
 	_spec.Modifiers = acu.modifiers
 	if n, err = sqlgraph.UpdateNodes(ctx, acu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -616,6 +649,26 @@ func (acuo *AppCoinUpdateOne) SetNillableWithdrawAutoReviewAmount(d *decimal.Dec
 // ClearWithdrawAutoReviewAmount clears the value of the "withdraw_auto_review_amount" field.
 func (acuo *AppCoinUpdateOne) ClearWithdrawAutoReviewAmount() *AppCoinUpdateOne {
 	acuo.mutation.ClearWithdrawAutoReviewAmount()
+	return acuo
+}
+
+// SetProductPage sets the "product_page" field.
+func (acuo *AppCoinUpdateOne) SetProductPage(s string) *AppCoinUpdateOne {
+	acuo.mutation.SetProductPage(s)
+	return acuo
+}
+
+// SetNillableProductPage sets the "product_page" field if the given value is not nil.
+func (acuo *AppCoinUpdateOne) SetNillableProductPage(s *string) *AppCoinUpdateOne {
+	if s != nil {
+		acuo.SetProductPage(*s)
+	}
+	return acuo
+}
+
+// ClearProductPage clears the value of the "product_page" field.
+func (acuo *AppCoinUpdateOne) ClearProductPage() *AppCoinUpdateOne {
+	acuo.mutation.ClearProductPage()
 	return acuo
 }
 
@@ -865,6 +918,19 @@ func (acuo *AppCoinUpdateOne) sqlSave(ctx context.Context) (_node *AppCoin, err 
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeOther,
 			Column: appcoin.FieldWithdrawAutoReviewAmount,
+		})
+	}
+	if value, ok := acuo.mutation.ProductPage(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: appcoin.FieldProductPage,
+		})
+	}
+	if acuo.mutation.ProductPageCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: appcoin.FieldProductPage,
 		})
 	}
 	_spec.Modifiers = acuo.modifiers
