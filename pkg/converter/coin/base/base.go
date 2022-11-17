@@ -19,6 +19,7 @@ func Ent2Grpc(row *ent.CoinBase) *npool.CoinBase {
 		ENV:            row.Env,
 		ReservedAmount: row.ReservedAmount.String(),
 		ForPay:         row.ForPay,
+		Disabled:       row.Disabled,
 		CreatedAt:      row.CreatedAt,
 		UpdatedAt:      row.UpdatedAt,
 	}

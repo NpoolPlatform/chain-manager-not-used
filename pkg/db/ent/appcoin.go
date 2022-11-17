@@ -37,6 +37,8 @@ type AppCoin struct {
 	WithdrawAutoReviewAmount decimal.Decimal `json:"withdraw_auto_review_amount,omitempty"`
 	// ProductPage holds the value of the "product_page" field.
 	ProductPage string `json:"product_page,omitempty"`
+	// Disabled holds the value of the "disabled" field.
+	Disabled bool `json:"disabled,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -46,7 +48,7 @@ func (*AppCoin) scanValues(columns []string) ([]interface{}, error) {
 		switch columns[i] {
 		case appcoin.FieldWithdrawAutoReviewAmount:
 			values[i] = new(decimal.Decimal)
-		case appcoin.FieldForPay:
+		case appcoin.FieldForPay, appcoin.FieldDisabled:
 			values[i] = new(sql.NullBool)
 		case appcoin.FieldCreatedAt, appcoin.FieldUpdatedAt, appcoin.FieldDeletedAt:
 			values[i] = new(sql.NullInt64)
@@ -135,6 +137,12 @@ func (ac *AppCoin) assignValues(columns []string, values []interface{}) error {
 			} else if value.Valid {
 				ac.ProductPage = value.String
 			}
+		case appcoin.FieldDisabled:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field disabled", values[i])
+			} else if value.Valid {
+				ac.Disabled = value.Bool
+			}
 		}
 	}
 	return nil
@@ -192,6 +200,9 @@ func (ac *AppCoin) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("product_page=")
 	builder.WriteString(ac.ProductPage)
+	builder.WriteString(", ")
+	builder.WriteString("disabled=")
+	builder.WriteString(fmt.Sprintf("%v", ac.Disabled))
 	builder.WriteByte(')')
 	return builder.String()
 }

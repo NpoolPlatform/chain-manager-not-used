@@ -41,6 +41,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			appcoin.FieldForPay:                   {Type: field.TypeBool, Column: appcoin.FieldForPay},
 			appcoin.FieldWithdrawAutoReviewAmount: {Type: field.TypeOther, Column: appcoin.FieldWithdrawAutoReviewAmount},
 			appcoin.FieldProductPage:              {Type: field.TypeString, Column: appcoin.FieldProductPage},
+			appcoin.FieldDisabled:                 {Type: field.TypeBool, Column: appcoin.FieldDisabled},
 		},
 	}
 	graph.Nodes[1] = &sqlgraph.Node{
@@ -64,6 +65,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			coinbase.FieldEnv:            {Type: field.TypeString, Column: coinbase.FieldEnv},
 			coinbase.FieldReservedAmount: {Type: field.TypeOther, Column: coinbase.FieldReservedAmount},
 			coinbase.FieldForPay:         {Type: field.TypeBool, Column: coinbase.FieldForPay},
+			coinbase.FieldDisabled:       {Type: field.TypeBool, Column: coinbase.FieldDisabled},
 		},
 	}
 	graph.Nodes[2] = &sqlgraph.Node{
@@ -277,6 +279,11 @@ func (f *AppCoinFilter) WhereProductPage(p entql.StringP) {
 	f.Where(p.Field(appcoin.FieldProductPage))
 }
 
+// WhereDisabled applies the entql bool predicate on the disabled field.
+func (f *AppCoinFilter) WhereDisabled(p entql.BoolP) {
+	f.Where(p.Field(appcoin.FieldDisabled))
+}
+
 // addPredicate implements the predicateAdder interface.
 func (cbq *CoinBaseQuery) addPredicate(pred func(s *sql.Selector)) {
 	cbq.predicates = append(cbq.predicates, pred)
@@ -365,6 +372,11 @@ func (f *CoinBaseFilter) WhereReservedAmount(p entql.OtherP) {
 // WhereForPay applies the entql bool predicate on the for_pay field.
 func (f *CoinBaseFilter) WhereForPay(p entql.BoolP) {
 	f.Where(p.Field(coinbase.FieldForPay))
+}
+
+// WhereDisabled applies the entql bool predicate on the disabled field.
+func (f *CoinBaseFilter) WhereDisabled(p entql.BoolP) {
+	f.Where(p.Field(coinbase.FieldDisabled))
 }
 
 // addPredicate implements the predicateAdder interface.

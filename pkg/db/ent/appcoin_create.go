@@ -164,6 +164,20 @@ func (acc *AppCoinCreate) SetNillableProductPage(s *string) *AppCoinCreate {
 	return acc
 }
 
+// SetDisabled sets the "disabled" field.
+func (acc *AppCoinCreate) SetDisabled(b bool) *AppCoinCreate {
+	acc.mutation.SetDisabled(b)
+	return acc
+}
+
+// SetNillableDisabled sets the "disabled" field if the given value is not nil.
+func (acc *AppCoinCreate) SetNillableDisabled(b *bool) *AppCoinCreate {
+	if b != nil {
+		acc.SetDisabled(*b)
+	}
+	return acc
+}
+
 // SetID sets the "id" field.
 func (acc *AppCoinCreate) SetID(u uuid.UUID) *AppCoinCreate {
 	acc.mutation.SetID(u)
@@ -312,6 +326,10 @@ func (acc *AppCoinCreate) defaults() error {
 		v := appcoin.DefaultProductPage
 		acc.mutation.SetProductPage(v)
 	}
+	if _, ok := acc.mutation.Disabled(); !ok {
+		v := appcoin.DefaultDisabled
+		acc.mutation.SetDisabled(v)
+	}
 	if _, ok := acc.mutation.ID(); !ok {
 		if appcoin.DefaultID == nil {
 			return fmt.Errorf("ent: uninitialized appcoin.DefaultID (forgotten import ent/runtime?)")
@@ -449,6 +467,14 @@ func (acc *AppCoinCreate) createSpec() (*AppCoin, *sqlgraph.CreateSpec) {
 			Column: appcoin.FieldProductPage,
 		})
 		_node.ProductPage = value
+	}
+	if value, ok := acc.mutation.Disabled(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Value:  value,
+			Column: appcoin.FieldDisabled,
+		})
+		_node.Disabled = value
 	}
 	return _node, _spec
 }
@@ -681,6 +707,24 @@ func (u *AppCoinUpsert) UpdateProductPage() *AppCoinUpsert {
 // ClearProductPage clears the value of the "product_page" field.
 func (u *AppCoinUpsert) ClearProductPage() *AppCoinUpsert {
 	u.SetNull(appcoin.FieldProductPage)
+	return u
+}
+
+// SetDisabled sets the "disabled" field.
+func (u *AppCoinUpsert) SetDisabled(v bool) *AppCoinUpsert {
+	u.Set(appcoin.FieldDisabled, v)
+	return u
+}
+
+// UpdateDisabled sets the "disabled" field to the value that was provided on create.
+func (u *AppCoinUpsert) UpdateDisabled() *AppCoinUpsert {
+	u.SetExcluded(appcoin.FieldDisabled)
+	return u
+}
+
+// ClearDisabled clears the value of the "disabled" field.
+func (u *AppCoinUpsert) ClearDisabled() *AppCoinUpsert {
+	u.SetNull(appcoin.FieldDisabled)
 	return u
 }
 
@@ -941,6 +985,27 @@ func (u *AppCoinUpsertOne) UpdateProductPage() *AppCoinUpsertOne {
 func (u *AppCoinUpsertOne) ClearProductPage() *AppCoinUpsertOne {
 	return u.Update(func(s *AppCoinUpsert) {
 		s.ClearProductPage()
+	})
+}
+
+// SetDisabled sets the "disabled" field.
+func (u *AppCoinUpsertOne) SetDisabled(v bool) *AppCoinUpsertOne {
+	return u.Update(func(s *AppCoinUpsert) {
+		s.SetDisabled(v)
+	})
+}
+
+// UpdateDisabled sets the "disabled" field to the value that was provided on create.
+func (u *AppCoinUpsertOne) UpdateDisabled() *AppCoinUpsertOne {
+	return u.Update(func(s *AppCoinUpsert) {
+		s.UpdateDisabled()
+	})
+}
+
+// ClearDisabled clears the value of the "disabled" field.
+func (u *AppCoinUpsertOne) ClearDisabled() *AppCoinUpsertOne {
+	return u.Update(func(s *AppCoinUpsert) {
+		s.ClearDisabled()
 	})
 }
 
@@ -1367,6 +1432,27 @@ func (u *AppCoinUpsertBulk) UpdateProductPage() *AppCoinUpsertBulk {
 func (u *AppCoinUpsertBulk) ClearProductPage() *AppCoinUpsertBulk {
 	return u.Update(func(s *AppCoinUpsert) {
 		s.ClearProductPage()
+	})
+}
+
+// SetDisabled sets the "disabled" field.
+func (u *AppCoinUpsertBulk) SetDisabled(v bool) *AppCoinUpsertBulk {
+	return u.Update(func(s *AppCoinUpsert) {
+		s.SetDisabled(v)
+	})
+}
+
+// UpdateDisabled sets the "disabled" field to the value that was provided on create.
+func (u *AppCoinUpsertBulk) UpdateDisabled() *AppCoinUpsertBulk {
+	return u.Update(func(s *AppCoinUpsert) {
+		s.UpdateDisabled()
+	})
+}
+
+// ClearDisabled clears the value of the "disabled" field.
+func (u *AppCoinUpsertBulk) ClearDisabled() *AppCoinUpsertBulk {
+	return u.Update(func(s *AppCoinUpsert) {
+		s.ClearDisabled()
 	})
 }
 

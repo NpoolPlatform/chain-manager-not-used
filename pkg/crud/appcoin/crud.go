@@ -46,6 +46,9 @@ func CreateSet(c *ent.AppCoinCreate, in *npool.AppCoinReq) *ent.AppCoinCreate {
 	if in.ProductPage != nil {
 		c.SetProductPage(in.GetProductPage())
 	}
+	if in.Disabled != nil {
+		c.SetDisabled(in.GetDisabled())
+	}
 	return c
 }
 
@@ -127,6 +130,9 @@ func UpdateSet(info *ent.AppCoin, in *npool.AppCoinReq) *ent.AppCoinUpdateOne {
 	}
 	if in.ProductPage != nil {
 		stm = stm.SetProductPage(in.GetProductPage())
+	}
+	if in.Disabled != nil {
+		stm = stm.SetDisabled(in.GetDisabled())
 	}
 
 	return stm
@@ -227,6 +233,14 @@ func SetQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.AppCoinQuery, erro
 		switch conds.GetForPay().GetOp() {
 		case cruder.EQ:
 			stm.Where(appcoin.ForPay(conds.GetForPay().GetValue()))
+		default:
+			return nil, fmt.Errorf("invalid appcoin field")
+		}
+	}
+	if conds.Disabled != nil {
+		switch conds.GetDisabled().GetOp() {
+		case cruder.EQ:
+			stm.Where(appcoin.Disabled(conds.GetDisabled().GetValue()))
 		default:
 			return nil, fmt.Errorf("invalid appcoin field")
 		}

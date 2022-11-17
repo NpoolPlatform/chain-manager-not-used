@@ -37,6 +37,8 @@ type CoinBase struct {
 	ReservedAmount decimal.Decimal `json:"reserved_amount,omitempty"`
 	// ForPay holds the value of the "for_pay" field.
 	ForPay bool `json:"for_pay,omitempty"`
+	// Disabled holds the value of the "disabled" field.
+	Disabled bool `json:"disabled,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -46,7 +48,7 @@ func (*CoinBase) scanValues(columns []string) ([]interface{}, error) {
 		switch columns[i] {
 		case coinbase.FieldReservedAmount:
 			values[i] = new(decimal.Decimal)
-		case coinbase.FieldPresale, coinbase.FieldForPay:
+		case coinbase.FieldPresale, coinbase.FieldForPay, coinbase.FieldDisabled:
 			values[i] = new(sql.NullBool)
 		case coinbase.FieldCreatedAt, coinbase.FieldUpdatedAt, coinbase.FieldDeletedAt:
 			values[i] = new(sql.NullInt64)
@@ -135,6 +137,12 @@ func (cb *CoinBase) assignValues(columns []string, values []interface{}) error {
 			} else if value.Valid {
 				cb.ForPay = value.Bool
 			}
+		case coinbase.FieldDisabled:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field disabled", values[i])
+			} else if value.Valid {
+				cb.Disabled = value.Bool
+			}
 		}
 	}
 	return nil
@@ -192,6 +200,9 @@ func (cb *CoinBase) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("for_pay=")
 	builder.WriteString(fmt.Sprintf("%v", cb.ForPay))
+	builder.WriteString(", ")
+	builder.WriteString("disabled=")
+	builder.WriteString(fmt.Sprintf("%v", cb.Disabled))
 	builder.WriteByte(')')
 	return builder.String()
 }

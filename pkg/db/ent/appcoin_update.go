@@ -225,6 +225,26 @@ func (acu *AppCoinUpdate) ClearProductPage() *AppCoinUpdate {
 	return acu
 }
 
+// SetDisabled sets the "disabled" field.
+func (acu *AppCoinUpdate) SetDisabled(b bool) *AppCoinUpdate {
+	acu.mutation.SetDisabled(b)
+	return acu
+}
+
+// SetNillableDisabled sets the "disabled" field if the given value is not nil.
+func (acu *AppCoinUpdate) SetNillableDisabled(b *bool) *AppCoinUpdate {
+	if b != nil {
+		acu.SetDisabled(*b)
+	}
+	return acu
+}
+
+// ClearDisabled clears the value of the "disabled" field.
+func (acu *AppCoinUpdate) ClearDisabled() *AppCoinUpdate {
+	acu.mutation.ClearDisabled()
+	return acu
+}
+
 // Mutation returns the AppCoinMutation object of the builder.
 func (acu *AppCoinUpdate) Mutation() *AppCoinMutation {
 	return acu.mutation
@@ -456,6 +476,19 @@ func (acu *AppCoinUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: appcoin.FieldProductPage,
 		})
 	}
+	if value, ok := acu.mutation.Disabled(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Value:  value,
+			Column: appcoin.FieldDisabled,
+		})
+	}
+	if acu.mutation.DisabledCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Column: appcoin.FieldDisabled,
+		})
+	}
 	_spec.Modifiers = acu.modifiers
 	if n, err = sqlgraph.UpdateNodes(ctx, acu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -669,6 +702,26 @@ func (acuo *AppCoinUpdateOne) SetNillableProductPage(s *string) *AppCoinUpdateOn
 // ClearProductPage clears the value of the "product_page" field.
 func (acuo *AppCoinUpdateOne) ClearProductPage() *AppCoinUpdateOne {
 	acuo.mutation.ClearProductPage()
+	return acuo
+}
+
+// SetDisabled sets the "disabled" field.
+func (acuo *AppCoinUpdateOne) SetDisabled(b bool) *AppCoinUpdateOne {
+	acuo.mutation.SetDisabled(b)
+	return acuo
+}
+
+// SetNillableDisabled sets the "disabled" field if the given value is not nil.
+func (acuo *AppCoinUpdateOne) SetNillableDisabled(b *bool) *AppCoinUpdateOne {
+	if b != nil {
+		acuo.SetDisabled(*b)
+	}
+	return acuo
+}
+
+// ClearDisabled clears the value of the "disabled" field.
+func (acuo *AppCoinUpdateOne) ClearDisabled() *AppCoinUpdateOne {
+	acuo.mutation.ClearDisabled()
 	return acuo
 }
 
@@ -931,6 +984,19 @@ func (acuo *AppCoinUpdateOne) sqlSave(ctx context.Context) (_node *AppCoin, err 
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Column: appcoin.FieldProductPage,
+		})
+	}
+	if value, ok := acuo.mutation.Disabled(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Value:  value,
+			Column: appcoin.FieldDisabled,
+		})
+	}
+	if acuo.mutation.DisabledCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Column: appcoin.FieldDisabled,
 		})
 	}
 	_spec.Modifiers = acuo.modifiers

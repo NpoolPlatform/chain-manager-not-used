@@ -224,6 +224,26 @@ func (cbu *CoinBaseUpdate) ClearForPay() *CoinBaseUpdate {
 	return cbu
 }
 
+// SetDisabled sets the "disabled" field.
+func (cbu *CoinBaseUpdate) SetDisabled(b bool) *CoinBaseUpdate {
+	cbu.mutation.SetDisabled(b)
+	return cbu
+}
+
+// SetNillableDisabled sets the "disabled" field if the given value is not nil.
+func (cbu *CoinBaseUpdate) SetNillableDisabled(b *bool) *CoinBaseUpdate {
+	if b != nil {
+		cbu.SetDisabled(*b)
+	}
+	return cbu
+}
+
+// ClearDisabled clears the value of the "disabled" field.
+func (cbu *CoinBaseUpdate) ClearDisabled() *CoinBaseUpdate {
+	cbu.mutation.ClearDisabled()
+	return cbu
+}
+
 // Mutation returns the CoinBaseMutation object of the builder.
 func (cbu *CoinBaseUpdate) Mutation() *CoinBaseMutation {
 	return cbu.mutation
@@ -455,6 +475,19 @@ func (cbu *CoinBaseUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: coinbase.FieldForPay,
 		})
 	}
+	if value, ok := cbu.mutation.Disabled(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Value:  value,
+			Column: coinbase.FieldDisabled,
+		})
+	}
+	if cbu.mutation.DisabledCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Column: coinbase.FieldDisabled,
+		})
+	}
 	_spec.Modifiers = cbu.modifiers
 	if n, err = sqlgraph.UpdateNodes(ctx, cbu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -668,6 +701,26 @@ func (cbuo *CoinBaseUpdateOne) SetNillableForPay(b *bool) *CoinBaseUpdateOne {
 // ClearForPay clears the value of the "for_pay" field.
 func (cbuo *CoinBaseUpdateOne) ClearForPay() *CoinBaseUpdateOne {
 	cbuo.mutation.ClearForPay()
+	return cbuo
+}
+
+// SetDisabled sets the "disabled" field.
+func (cbuo *CoinBaseUpdateOne) SetDisabled(b bool) *CoinBaseUpdateOne {
+	cbuo.mutation.SetDisabled(b)
+	return cbuo
+}
+
+// SetNillableDisabled sets the "disabled" field if the given value is not nil.
+func (cbuo *CoinBaseUpdateOne) SetNillableDisabled(b *bool) *CoinBaseUpdateOne {
+	if b != nil {
+		cbuo.SetDisabled(*b)
+	}
+	return cbuo
+}
+
+// ClearDisabled clears the value of the "disabled" field.
+func (cbuo *CoinBaseUpdateOne) ClearDisabled() *CoinBaseUpdateOne {
+	cbuo.mutation.ClearDisabled()
 	return cbuo
 }
 
@@ -930,6 +983,19 @@ func (cbuo *CoinBaseUpdateOne) sqlSave(ctx context.Context) (_node *CoinBase, er
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeBool,
 			Column: coinbase.FieldForPay,
+		})
+	}
+	if value, ok := cbuo.mutation.Disabled(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Value:  value,
+			Column: coinbase.FieldDisabled,
+		})
+	}
+	if cbuo.mutation.DisabledCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Column: coinbase.FieldDisabled,
 		})
 	}
 	_spec.Modifiers = cbuo.modifiers

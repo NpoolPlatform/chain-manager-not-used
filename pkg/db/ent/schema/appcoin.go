@@ -58,6 +58,10 @@ func (AppCoin) Fields() []ent.Field {
 			String("product_page").
 			Optional().
 			Default(""),
+		field.
+			Bool("disabled").
+			Optional().
+			Default(false),
 	}
 }
 

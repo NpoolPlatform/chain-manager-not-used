@@ -46,6 +46,9 @@ func CreateSet(c *ent.CoinBaseCreate, in *npool.CoinBaseReq) *ent.CoinBaseCreate
 	if in.ForPay != nil {
 		c.SetForPay(in.GetForPay())
 	}
+	if in.Disabled != nil {
+		c.SetDisabled(in.GetDisabled())
+	}
 	return c
 }
 
@@ -121,6 +124,9 @@ func UpdateSet(info *ent.CoinBase, in *npool.CoinBaseReq) *ent.CoinBaseUpdateOne
 	}
 	if in.ForPay != nil {
 		stm = stm.SetForPay(in.GetForPay())
+	}
+	if in.Disabled != nil {
+		stm = stm.SetDisabled(in.GetDisabled())
 	}
 
 	return stm
@@ -231,6 +237,14 @@ func SetQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.CoinBaseQuery, err
 		switch conds.GetForPay().GetOp() {
 		case cruder.EQ:
 			stm.Where(coinbase.ForPay(conds.GetForPay().GetValue()))
+		default:
+			return nil, fmt.Errorf("invalid coinbase field")
+		}
+	}
+	if conds.Disabled != nil {
+		switch conds.GetDisabled().GetOp() {
+		case cruder.EQ:
+			stm.Where(coinbase.Disabled(conds.GetDisabled().GetValue()))
 		default:
 			return nil, fmt.Errorf("invalid coinbase field")
 		}

@@ -59,6 +59,7 @@ type AppCoinMutation struct {
 	for_pay                     *bool
 	withdraw_auto_review_amount *decimal.Decimal
 	product_page                *string
+	disabled                    *bool
 	clearedFields               map[string]struct{}
 	done                        bool
 	oldValue                    func(context.Context) (*AppCoin, error)
@@ -680,6 +681,55 @@ func (m *AppCoinMutation) ResetProductPage() {
 	delete(m.clearedFields, appcoin.FieldProductPage)
 }
 
+// SetDisabled sets the "disabled" field.
+func (m *AppCoinMutation) SetDisabled(b bool) {
+	m.disabled = &b
+}
+
+// Disabled returns the value of the "disabled" field in the mutation.
+func (m *AppCoinMutation) Disabled() (r bool, exists bool) {
+	v := m.disabled
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDisabled returns the old "disabled" field's value of the AppCoin entity.
+// If the AppCoin object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppCoinMutation) OldDisabled(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDisabled is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDisabled requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDisabled: %w", err)
+	}
+	return oldValue.Disabled, nil
+}
+
+// ClearDisabled clears the value of the "disabled" field.
+func (m *AppCoinMutation) ClearDisabled() {
+	m.disabled = nil
+	m.clearedFields[appcoin.FieldDisabled] = struct{}{}
+}
+
+// DisabledCleared returns if the "disabled" field was cleared in this mutation.
+func (m *AppCoinMutation) DisabledCleared() bool {
+	_, ok := m.clearedFields[appcoin.FieldDisabled]
+	return ok
+}
+
+// ResetDisabled resets all changes to the "disabled" field.
+func (m *AppCoinMutation) ResetDisabled() {
+	m.disabled = nil
+	delete(m.clearedFields, appcoin.FieldDisabled)
+}
+
 // Where appends a list predicates to the AppCoinMutation builder.
 func (m *AppCoinMutation) Where(ps ...predicate.AppCoin) {
 	m.predicates = append(m.predicates, ps...)
@@ -699,7 +749,7 @@ func (m *AppCoinMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *AppCoinMutation) Fields() []string {
-	fields := make([]string, 0, 10)
+	fields := make([]string, 0, 11)
 	if m.created_at != nil {
 		fields = append(fields, appcoin.FieldCreatedAt)
 	}
@@ -730,6 +780,9 @@ func (m *AppCoinMutation) Fields() []string {
 	if m.product_page != nil {
 		fields = append(fields, appcoin.FieldProductPage)
 	}
+	if m.disabled != nil {
+		fields = append(fields, appcoin.FieldDisabled)
+	}
 	return fields
 }
 
@@ -758,6 +811,8 @@ func (m *AppCoinMutation) Field(name string) (ent.Value, bool) {
 		return m.WithdrawAutoReviewAmount()
 	case appcoin.FieldProductPage:
 		return m.ProductPage()
+	case appcoin.FieldDisabled:
+		return m.Disabled()
 	}
 	return nil, false
 }
@@ -787,6 +842,8 @@ func (m *AppCoinMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldWithdrawAutoReviewAmount(ctx)
 	case appcoin.FieldProductPage:
 		return m.OldProductPage(ctx)
+	case appcoin.FieldDisabled:
+		return m.OldDisabled(ctx)
 	}
 	return nil, fmt.Errorf("unknown AppCoin field %s", name)
 }
@@ -865,6 +922,13 @@ func (m *AppCoinMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetProductPage(v)
+		return nil
+	case appcoin.FieldDisabled:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDisabled(v)
 		return nil
 	}
 	return fmt.Errorf("unknown AppCoin field %s", name)
@@ -956,6 +1020,9 @@ func (m *AppCoinMutation) ClearedFields() []string {
 	if m.FieldCleared(appcoin.FieldProductPage) {
 		fields = append(fields, appcoin.FieldProductPage)
 	}
+	if m.FieldCleared(appcoin.FieldDisabled) {
+		fields = append(fields, appcoin.FieldDisabled)
+	}
 	return fields
 }
 
@@ -990,6 +1057,9 @@ func (m *AppCoinMutation) ClearField(name string) error {
 		return nil
 	case appcoin.FieldProductPage:
 		m.ClearProductPage()
+		return nil
+	case appcoin.FieldDisabled:
+		m.ClearDisabled()
 		return nil
 	}
 	return fmt.Errorf("unknown AppCoin nullable field %s", name)
@@ -1028,6 +1098,9 @@ func (m *AppCoinMutation) ResetField(name string) error {
 		return nil
 	case appcoin.FieldProductPage:
 		m.ResetProductPage()
+		return nil
+	case appcoin.FieldDisabled:
+		m.ResetDisabled()
 		return nil
 	}
 	return fmt.Errorf("unknown AppCoin field %s", name)
@@ -1100,6 +1173,7 @@ type CoinBaseMutation struct {
 	env             *string
 	reserved_amount *decimal.Decimal
 	for_pay         *bool
+	disabled        *bool
 	clearedFields   map[string]struct{}
 	done            bool
 	oldValue        func(context.Context) (*CoinBase, error)
@@ -1721,6 +1795,55 @@ func (m *CoinBaseMutation) ResetForPay() {
 	delete(m.clearedFields, coinbase.FieldForPay)
 }
 
+// SetDisabled sets the "disabled" field.
+func (m *CoinBaseMutation) SetDisabled(b bool) {
+	m.disabled = &b
+}
+
+// Disabled returns the value of the "disabled" field in the mutation.
+func (m *CoinBaseMutation) Disabled() (r bool, exists bool) {
+	v := m.disabled
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDisabled returns the old "disabled" field's value of the CoinBase entity.
+// If the CoinBase object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CoinBaseMutation) OldDisabled(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDisabled is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDisabled requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDisabled: %w", err)
+	}
+	return oldValue.Disabled, nil
+}
+
+// ClearDisabled clears the value of the "disabled" field.
+func (m *CoinBaseMutation) ClearDisabled() {
+	m.disabled = nil
+	m.clearedFields[coinbase.FieldDisabled] = struct{}{}
+}
+
+// DisabledCleared returns if the "disabled" field was cleared in this mutation.
+func (m *CoinBaseMutation) DisabledCleared() bool {
+	_, ok := m.clearedFields[coinbase.FieldDisabled]
+	return ok
+}
+
+// ResetDisabled resets all changes to the "disabled" field.
+func (m *CoinBaseMutation) ResetDisabled() {
+	m.disabled = nil
+	delete(m.clearedFields, coinbase.FieldDisabled)
+}
+
 // Where appends a list predicates to the CoinBaseMutation builder.
 func (m *CoinBaseMutation) Where(ps ...predicate.CoinBase) {
 	m.predicates = append(m.predicates, ps...)
@@ -1740,7 +1863,7 @@ func (m *CoinBaseMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *CoinBaseMutation) Fields() []string {
-	fields := make([]string, 0, 10)
+	fields := make([]string, 0, 11)
 	if m.created_at != nil {
 		fields = append(fields, coinbase.FieldCreatedAt)
 	}
@@ -1771,6 +1894,9 @@ func (m *CoinBaseMutation) Fields() []string {
 	if m.for_pay != nil {
 		fields = append(fields, coinbase.FieldForPay)
 	}
+	if m.disabled != nil {
+		fields = append(fields, coinbase.FieldDisabled)
+	}
 	return fields
 }
 
@@ -1799,6 +1925,8 @@ func (m *CoinBaseMutation) Field(name string) (ent.Value, bool) {
 		return m.ReservedAmount()
 	case coinbase.FieldForPay:
 		return m.ForPay()
+	case coinbase.FieldDisabled:
+		return m.Disabled()
 	}
 	return nil, false
 }
@@ -1828,6 +1956,8 @@ func (m *CoinBaseMutation) OldField(ctx context.Context, name string) (ent.Value
 		return m.OldReservedAmount(ctx)
 	case coinbase.FieldForPay:
 		return m.OldForPay(ctx)
+	case coinbase.FieldDisabled:
+		return m.OldDisabled(ctx)
 	}
 	return nil, fmt.Errorf("unknown CoinBase field %s", name)
 }
@@ -1906,6 +2036,13 @@ func (m *CoinBaseMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetForPay(v)
+		return nil
+	case coinbase.FieldDisabled:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDisabled(v)
 		return nil
 	}
 	return fmt.Errorf("unknown CoinBase field %s", name)
@@ -1997,6 +2134,9 @@ func (m *CoinBaseMutation) ClearedFields() []string {
 	if m.FieldCleared(coinbase.FieldForPay) {
 		fields = append(fields, coinbase.FieldForPay)
 	}
+	if m.FieldCleared(coinbase.FieldDisabled) {
+		fields = append(fields, coinbase.FieldDisabled)
+	}
 	return fields
 }
 
@@ -2031,6 +2171,9 @@ func (m *CoinBaseMutation) ClearField(name string) error {
 		return nil
 	case coinbase.FieldForPay:
 		m.ClearForPay()
+		return nil
+	case coinbase.FieldDisabled:
+		m.ClearDisabled()
 		return nil
 	}
 	return fmt.Errorf("unknown CoinBase nullable field %s", name)
@@ -2069,6 +2212,9 @@ func (m *CoinBaseMutation) ResetField(name string) error {
 		return nil
 	case coinbase.FieldForPay:
 		m.ResetForPay()
+		return nil
+	case coinbase.FieldDisabled:
+		m.ResetDisabled()
 		return nil
 	}
 	return fmt.Errorf("unknown CoinBase field %s", name)

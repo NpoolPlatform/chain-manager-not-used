@@ -80,6 +80,10 @@ func init() {
 	appcoinDescProductPage := appcoinFields[7].Descriptor()
 	// appcoin.DefaultProductPage holds the default value on creation for the product_page field.
 	appcoin.DefaultProductPage = appcoinDescProductPage.Default.(string)
+	// appcoinDescDisabled is the schema descriptor for disabled field.
+	appcoinDescDisabled := appcoinFields[8].Descriptor()
+	// appcoin.DefaultDisabled holds the default value on creation for the disabled field.
+	appcoin.DefaultDisabled = appcoinDescDisabled.Default.(bool)
 	// appcoinDescID is the schema descriptor for id field.
 	appcoinDescID := appcoinFields[0].Descriptor()
 	// appcoin.DefaultID holds the default value on creation for the id field.
@@ -140,6 +144,10 @@ func init() {
 	coinbaseDescForPay := coinbaseFields[7].Descriptor()
 	// coinbase.DefaultForPay holds the default value on creation for the for_pay field.
 	coinbase.DefaultForPay = coinbaseDescForPay.Default.(bool)
+	// coinbaseDescDisabled is the schema descriptor for disabled field.
+	coinbaseDescDisabled := coinbaseFields[8].Descriptor()
+	// coinbase.DefaultDisabled holds the default value on creation for the disabled field.
+	coinbase.DefaultDisabled = coinbaseDescDisabled.Default.(bool)
 	// coinbaseDescID is the schema descriptor for id field.
 	coinbaseDescID := coinbaseFields[0].Descriptor()
 	// coinbase.DefaultID holds the default value on creation for the id field.

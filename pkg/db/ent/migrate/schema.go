@@ -21,6 +21,7 @@ var (
 		{Name: "for_pay", Type: field.TypeBool, Nullable: true, Default: false},
 		{Name: "withdraw_auto_review_amount", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
 		{Name: "product_page", Type: field.TypeString, Nullable: true, Default: ""},
+		{Name: "disabled", Type: field.TypeBool, Nullable: true, Default: false},
 	}
 	// AppCoinsTable holds the schema information for the "app_coins" table.
 	AppCoinsTable = &schema.Table{
@@ -41,6 +42,7 @@ var (
 		{Name: "env", Type: field.TypeString, Nullable: true, Default: ""},
 		{Name: "reserved_amount", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
 		{Name: "for_pay", Type: field.TypeBool, Nullable: true, Default: false},
+		{Name: "disabled", Type: field.TypeBool, Nullable: true, Default: false},
 	}
 	// CoinBasesTable holds the schema information for the "coin_bases" table.
 	CoinBasesTable = &schema.Table{

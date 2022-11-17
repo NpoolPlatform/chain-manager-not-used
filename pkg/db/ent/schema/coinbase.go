@@ -58,6 +58,10 @@ func (CoinBase) Fields() []ent.Field {
 			Bool("for_pay").
 			Optional().
 			Default(false),
+		field.
+			Bool("disabled").
+			Optional().
+			Default(false),
 	}
 }
 

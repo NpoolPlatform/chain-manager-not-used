@@ -164,6 +164,20 @@ func (cbc *CoinBaseCreate) SetNillableForPay(b *bool) *CoinBaseCreate {
 	return cbc
 }
 
+// SetDisabled sets the "disabled" field.
+func (cbc *CoinBaseCreate) SetDisabled(b bool) *CoinBaseCreate {
+	cbc.mutation.SetDisabled(b)
+	return cbc
+}
+
+// SetNillableDisabled sets the "disabled" field if the given value is not nil.
+func (cbc *CoinBaseCreate) SetNillableDisabled(b *bool) *CoinBaseCreate {
+	if b != nil {
+		cbc.SetDisabled(*b)
+	}
+	return cbc
+}
+
 // SetID sets the "id" field.
 func (cbc *CoinBaseCreate) SetID(u uuid.UUID) *CoinBaseCreate {
 	cbc.mutation.SetID(u)
@@ -306,6 +320,10 @@ func (cbc *CoinBaseCreate) defaults() error {
 		v := coinbase.DefaultForPay
 		cbc.mutation.SetForPay(v)
 	}
+	if _, ok := cbc.mutation.Disabled(); !ok {
+		v := coinbase.DefaultDisabled
+		cbc.mutation.SetDisabled(v)
+	}
 	if _, ok := cbc.mutation.ID(); !ok {
 		if coinbase.DefaultID == nil {
 			return fmt.Errorf("ent: uninitialized coinbase.DefaultID (forgotten import ent/runtime?)")
@@ -443,6 +461,14 @@ func (cbc *CoinBaseCreate) createSpec() (*CoinBase, *sqlgraph.CreateSpec) {
 			Column: coinbase.FieldForPay,
 		})
 		_node.ForPay = value
+	}
+	if value, ok := cbc.mutation.Disabled(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Value:  value,
+			Column: coinbase.FieldDisabled,
+		})
+		_node.Disabled = value
 	}
 	return _node, _spec
 }
@@ -675,6 +701,24 @@ func (u *CoinBaseUpsert) UpdateForPay() *CoinBaseUpsert {
 // ClearForPay clears the value of the "for_pay" field.
 func (u *CoinBaseUpsert) ClearForPay() *CoinBaseUpsert {
 	u.SetNull(coinbase.FieldForPay)
+	return u
+}
+
+// SetDisabled sets the "disabled" field.
+func (u *CoinBaseUpsert) SetDisabled(v bool) *CoinBaseUpsert {
+	u.Set(coinbase.FieldDisabled, v)
+	return u
+}
+
+// UpdateDisabled sets the "disabled" field to the value that was provided on create.
+func (u *CoinBaseUpsert) UpdateDisabled() *CoinBaseUpsert {
+	u.SetExcluded(coinbase.FieldDisabled)
+	return u
+}
+
+// ClearDisabled clears the value of the "disabled" field.
+func (u *CoinBaseUpsert) ClearDisabled() *CoinBaseUpsert {
+	u.SetNull(coinbase.FieldDisabled)
 	return u
 }
 
@@ -935,6 +979,27 @@ func (u *CoinBaseUpsertOne) UpdateForPay() *CoinBaseUpsertOne {
 func (u *CoinBaseUpsertOne) ClearForPay() *CoinBaseUpsertOne {
 	return u.Update(func(s *CoinBaseUpsert) {
 		s.ClearForPay()
+	})
+}
+
+// SetDisabled sets the "disabled" field.
+func (u *CoinBaseUpsertOne) SetDisabled(v bool) *CoinBaseUpsertOne {
+	return u.Update(func(s *CoinBaseUpsert) {
+		s.SetDisabled(v)
+	})
+}
+
+// UpdateDisabled sets the "disabled" field to the value that was provided on create.
+func (u *CoinBaseUpsertOne) UpdateDisabled() *CoinBaseUpsertOne {
+	return u.Update(func(s *CoinBaseUpsert) {
+		s.UpdateDisabled()
+	})
+}
+
+// ClearDisabled clears the value of the "disabled" field.
+func (u *CoinBaseUpsertOne) ClearDisabled() *CoinBaseUpsertOne {
+	return u.Update(func(s *CoinBaseUpsert) {
+		s.ClearDisabled()
 	})
 }
 
@@ -1361,6 +1426,27 @@ func (u *CoinBaseUpsertBulk) UpdateForPay() *CoinBaseUpsertBulk {
 func (u *CoinBaseUpsertBulk) ClearForPay() *CoinBaseUpsertBulk {
 	return u.Update(func(s *CoinBaseUpsert) {
 		s.ClearForPay()
+	})
+}
+
+// SetDisabled sets the "disabled" field.
+func (u *CoinBaseUpsertBulk) SetDisabled(v bool) *CoinBaseUpsertBulk {
+	return u.Update(func(s *CoinBaseUpsert) {
+		s.SetDisabled(v)
+	})
+}
+
+// UpdateDisabled sets the "disabled" field to the value that was provided on create.
+func (u *CoinBaseUpsertBulk) UpdateDisabled() *CoinBaseUpsertBulk {
+	return u.Update(func(s *CoinBaseUpsert) {
+		s.UpdateDisabled()
+	})
+}
+
+// ClearDisabled clears the value of the "disabled" field.
+func (u *CoinBaseUpsertBulk) ClearDisabled() *CoinBaseUpsertBulk {
+	return u.Update(func(s *CoinBaseUpsert) {
+		s.ClearDisabled()
 	})
 }
 

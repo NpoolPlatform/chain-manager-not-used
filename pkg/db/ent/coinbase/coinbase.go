@@ -33,6 +33,8 @@ const (
 	FieldReservedAmount = "reserved_amount"
 	// FieldForPay holds the string denoting the for_pay field in the database.
 	FieldForPay = "for_pay"
+	// FieldDisabled holds the string denoting the disabled field in the database.
+	FieldDisabled = "disabled"
 	// Table holds the table name of the coinbase in the database.
 	Table = "coin_bases"
 )
@@ -50,6 +52,7 @@ var Columns = []string{
 	FieldEnv,
 	FieldReservedAmount,
 	FieldForPay,
+	FieldDisabled,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -93,6 +96,8 @@ var (
 	DefaultReservedAmount decimal.Decimal
 	// DefaultForPay holds the default value on creation for the "for_pay" field.
 	DefaultForPay bool
+	// DefaultDisabled holds the default value on creation for the "disabled" field.
+	DefaultDisabled bool
 	// DefaultID holds the default value on creation for the "id" field.
 	DefaultID func() uuid.UUID
 )
