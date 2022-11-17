@@ -245,6 +245,18 @@ func SetQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.AppCoinQuery, erro
 			return nil, fmt.Errorf("invalid appcoin field")
 		}
 	}
+	if conds.IDs != nil {
+		ids := []uuid.UUID{}
+		for _, id := range conds.GetIDs().GetValue() {
+			ids = append(ids, uuid.MustParse(id))
+		}
+		switch conds.GetIDs().GetOp() {
+		case cruder.IN:
+			stm.Where(appcoin.IDIn(ids...))
+		default:
+			return nil, fmt.Errorf("invalid appcoin field")
+		}
+	}
 	return stm, nil
 }
 
