@@ -21,7 +21,13 @@ import (
 	"github.com/google/uuid"
 )
 
-func (s *Server) CreateCurrencyFeed(ctx context.Context, in *npool.CreateCurrencyFeedRequest) (*npool.CreateCurrencyFeedResponse, error) {
+func (s *Server) CreateCurrencyFeed(
+	ctx context.Context,
+	in *npool.CreateCurrencyFeedRequest,
+) (
+	*npool.CreateCurrencyFeedResponse,
+	error,
+) {
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "CreateCurrencyFeed")
@@ -51,7 +57,13 @@ func (s *Server) CreateCurrencyFeed(ctx context.Context, in *npool.CreateCurrenc
 	}, nil
 }
 
-func (s *Server) CreateCurrencyFeeds(ctx context.Context, in *npool.CreateCurrencyFeedsRequest) (*npool.CreateCurrencyFeedsResponse, error) {
+func (s *Server) CreateCurrencyFeeds(
+	ctx context.Context,
+	in *npool.CreateCurrencyFeedsRequest,
+) (
+	*npool.CreateCurrencyFeedsResponse,
+	error,
+) {
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "CreateCurrencyFeeds")
@@ -153,7 +165,13 @@ func (s *Server) GetCurrencyFeed(ctx context.Context, in *npool.GetCurrencyFeedR
 	}, nil
 }
 
-func (s *Server) GetCurrencyFeedOnly(ctx context.Context, in *npool.GetCurrencyFeedOnlyRequest) (*npool.GetCurrencyFeedOnlyResponse, error) {
+func (s *Server) GetCurrencyFeedOnly(
+	ctx context.Context,
+	in *npool.GetCurrencyFeedOnlyRequest,
+) (
+	*npool.GetCurrencyFeedOnlyResponse,
+	error,
+) {
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "GetCurrencyFeedOnly")
@@ -183,7 +201,13 @@ func (s *Server) GetCurrencyFeedOnly(ctx context.Context, in *npool.GetCurrencyF
 	}, nil
 }
 
-func (s *Server) GetCurrencyFeeds(ctx context.Context, in *npool.GetCurrencyFeedsRequest) (*npool.GetCurrencyFeedsResponse, error) {
+func (s *Server) GetCurrencyFeeds(
+	ctx context.Context,
+	in *npool.GetCurrencyFeedsRequest,
+) (
+	*npool.GetCurrencyFeedsResponse,
+	error,
+) {
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "GetCurrencyFeeds")

@@ -21,7 +21,13 @@ import (
 	"github.com/google/uuid"
 )
 
-func (s *Server) CreateCurrencyValue(ctx context.Context, in *npool.CreateCurrencyValueRequest) (*npool.CreateCurrencyValueResponse, error) {
+func (s *Server) CreateCurrencyValue(
+	ctx context.Context,
+	in *npool.CreateCurrencyValueRequest,
+) (
+	*npool.CreateCurrencyValueResponse,
+	error,
+) {
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "CreateCurrencyValue")
@@ -51,7 +57,13 @@ func (s *Server) CreateCurrencyValue(ctx context.Context, in *npool.CreateCurren
 	}, nil
 }
 
-func (s *Server) CreateCurrencyValues(ctx context.Context, in *npool.CreateCurrencyValuesRequest) (*npool.CreateCurrencyValuesResponse, error) {
+func (s *Server) CreateCurrencyValues(
+	ctx context.Context,
+	in *npool.CreateCurrencyValuesRequest,
+) (
+	*npool.CreateCurrencyValuesResponse,
+	error,
+) {
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "CreateCurrencyValues")
@@ -85,7 +97,13 @@ func (s *Server) CreateCurrencyValues(ctx context.Context, in *npool.CreateCurre
 	}, nil
 }
 
-func (s *Server) UpdateCurrencyValue(ctx context.Context, in *npool.UpdateCurrencyValueRequest) (*npool.UpdateCurrencyValueResponse, error) {
+func (s *Server) UpdateCurrencyValue(
+	ctx context.Context,
+	in *npool.UpdateCurrencyValueRequest,
+) (
+	*npool.UpdateCurrencyValueResponse,
+	error,
+) {
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "UpdateCurrencyValue")
@@ -116,7 +134,13 @@ func (s *Server) UpdateCurrencyValue(ctx context.Context, in *npool.UpdateCurren
 	}, nil
 }
 
-func (s *Server) GetCurrencyValue(ctx context.Context, in *npool.GetCurrencyValueRequest) (*npool.GetCurrencyValueResponse, error) {
+func (s *Server) GetCurrencyValue(
+	ctx context.Context,
+	in *npool.GetCurrencyValueRequest,
+) (
+	*npool.GetCurrencyValueResponse,
+	error,
+) {
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "GetCurrencyValue")
@@ -149,7 +173,13 @@ func (s *Server) GetCurrencyValue(ctx context.Context, in *npool.GetCurrencyValu
 	}, nil
 }
 
-func (s *Server) GetCurrencyValueOnly(ctx context.Context, in *npool.GetCurrencyValueOnlyRequest) (*npool.GetCurrencyValueOnlyResponse, error) {
+func (s *Server) GetCurrencyValueOnly(
+	ctx context.Context,
+	in *npool.GetCurrencyValueOnlyRequest,
+) (
+	*npool.GetCurrencyValueOnlyResponse,
+	error,
+) {
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "GetCurrencyValueOnly")
@@ -276,7 +306,13 @@ func (s *Server) ExistCurrencyValueConds(ctx context.Context,
 	}, nil
 }
 
-func (s *Server) CountCurrencyValues(ctx context.Context, in *npool.CountCurrencyValuesRequest) (*npool.CountCurrencyValuesResponse, error) {
+func (s *Server) CountCurrencyValues(
+	ctx context.Context,
+	in *npool.CountCurrencyValuesRequest,
+) (
+	*npool.CountCurrencyValuesResponse,
+	error,
+) {
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "CountCurrencyValues")
@@ -306,7 +342,13 @@ func (s *Server) CountCurrencyValues(ctx context.Context, in *npool.CountCurrenc
 	}, nil
 }
 
-func (s *Server) DeleteCurrencyValue(ctx context.Context, in *npool.DeleteCurrencyValueRequest) (*npool.DeleteCurrencyValueResponse, error) {
+func (s *Server) DeleteCurrencyValue(
+	ctx context.Context,
+	in *npool.DeleteCurrencyValueRequest,
+) (
+	*npool.DeleteCurrencyValueResponse,
+	error,
+) {
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "DeleteCurrencyValue")
