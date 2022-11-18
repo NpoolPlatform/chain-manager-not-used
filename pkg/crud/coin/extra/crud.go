@@ -33,6 +33,9 @@ func CreateSet(c *ent.CoinExtraCreate, in *npool.CoinExtraReq) *ent.CoinExtraCre
 	if in.Specs != nil {
 		c.SetSpecs(in.GetSpecs())
 	}
+	if in.StableUSD != nil {
+		c.SetStableUsd(in.GetStableUSD())
+	}
 	return c
 }
 
@@ -102,6 +105,9 @@ func UpdateSet(info *ent.CoinExtra, in *npool.CoinExtraReq) *ent.CoinExtraUpdate
 	}
 	if in.Specs != nil {
 		stm = stm.SetSpecs(in.GetSpecs())
+	}
+	if in.StableUSD != nil {
+		stm = stm.SetStableUsd(in.GetStableUSD())
 	}
 
 	return stm
@@ -187,6 +193,16 @@ func SetQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.CoinExtraQuery, er
 		case cruder.EQ:
 			stm.Where(
 				coinextra.CoinTypeID(uuid.MustParse(conds.GetCoinTypeID().GetValue())),
+			)
+		default:
+			return nil, fmt.Errorf("invalid coinextra field")
+		}
+	}
+	if conds.StableUSD != nil {
+		switch conds.GetStableUSD().GetOp() {
+		case cruder.EQ:
+			stm.Where(
+				coinextra.StableUsd(conds.GetStableUSD().GetValue()),
 			)
 		default:
 			return nil, fmt.Errorf("invalid coinextra field")
