@@ -8,6 +8,7 @@ import (
 	exrate "github.com/NpoolPlatform/chain-manager/api/appcoin/exrate"
 	coinbase "github.com/NpoolPlatform/chain-manager/api/coin/base"
 	currencyfeed "github.com/NpoolPlatform/chain-manager/api/coin/currency/feed"
+	currencyvalue "github.com/NpoolPlatform/chain-manager/api/coin/currency/value"
 	coinextra "github.com/NpoolPlatform/chain-manager/api/coin/extra"
 	setting "github.com/NpoolPlatform/chain-manager/api/coin/setting"
 
@@ -26,6 +27,7 @@ func Register(server grpc.ServiceRegistrar) {
 	tx.Register(server)
 	coinbase.Register(server)
 	currencyfeed.Register(server)
+	currencyvalue.Register(server)
 	coinextra.Register(server)
 	appcoin.Register(server)
 	exrate.Register(server)

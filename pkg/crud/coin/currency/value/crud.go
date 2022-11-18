@@ -1,4 +1,4 @@
-package coinbase
+package currencyvalue
 
 import (
 	"context"
@@ -7,53 +7,41 @@ import (
 
 	constant "github.com/NpoolPlatform/chain-manager/pkg/message/const"
 	commontracer "github.com/NpoolPlatform/chain-manager/pkg/tracer"
-	tracer "github.com/NpoolPlatform/chain-manager/pkg/tracer/coin/base"
+
 	"github.com/shopspring/decimal"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/codes"
 
 	"github.com/NpoolPlatform/chain-manager/pkg/db"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent"
-	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/coinbase"
+	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/currencyvalue"
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
-	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/coin/base"
+	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/coin/currency/value"
 
 	"github.com/google/uuid"
 )
 
-func CreateSet(c *ent.CoinBaseCreate, in *npool.CoinBaseReq) *ent.CoinBaseCreate {
+func CreateSet(c *ent.CurrencyValueCreate, in *npool.CurrencyValueReq) *ent.CurrencyValueCreate {
 	if in.ID != nil {
 		c.SetID(uuid.MustParse(in.GetID()))
 	}
-	if in.Name != nil {
-		c.SetName(in.GetName())
+	if in.CoinTypeID != nil {
+		c.SetCoinTypeID(uuid.MustParse(in.GetCoinTypeID()))
 	}
-	if in.Logo != nil {
-		c.SetLogo(in.GetLogo())
+	if in.FeedSourceID != nil {
+		c.SetFeedSourceID(uuid.MustParse(in.GetFeedSourceID()))
 	}
-	if in.Presale != nil {
-		c.SetPresale(in.GetPresale())
+	if in.MarketValueHigh != nil {
+		c.SetMarketValueHigh(decimal.RequireFromString(in.GetMarketValueHigh()))
 	}
-	if in.Unit != nil {
-		c.SetUnit(in.GetUnit())
-	}
-	if in.ENV != nil {
-		c.SetEnv(in.GetENV())
-	}
-	if in.ReservedAmount != nil {
-		c.SetReservedAmount(decimal.RequireFromString(in.GetReservedAmount()))
-	}
-	if in.ForPay != nil {
-		c.SetForPay(in.GetForPay())
-	}
-	if in.Disabled != nil {
-		c.SetDisabled(in.GetDisabled())
+	if in.MarketValueLow != nil {
+		c.SetMarketValueLow(decimal.RequireFromString(in.GetMarketValueLow()))
 	}
 	return c
 }
 
-func Create(ctx context.Context, in *npool.CoinBaseReq) (*ent.CoinBase, error) {
-	var info *ent.CoinBase
+func Create(ctx context.Context, in *npool.CurrencyValueReq) (*ent.CurrencyValue, error) {
+	var info *ent.CurrencyValue
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "Create")
@@ -66,10 +54,8 @@ func Create(ctx context.Context, in *npool.CoinBaseReq) (*ent.CoinBase, error) {
 		}
 	}()
 
-	span = tracer.Trace(span, in)
-
 	err = db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
-		c := cli.CoinBase.Create()
+		c := cli.CurrencyValue.Create()
 		info, err = CreateSet(c, in).Save(_ctx)
 		return err
 	})
@@ -80,9 +66,9 @@ func Create(ctx context.Context, in *npool.CoinBaseReq) (*ent.CoinBase, error) {
 	return info, nil
 }
 
-func CreateBulk(ctx context.Context, in []*npool.CoinBaseReq) ([]*ent.CoinBase, error) {
+func CreateBulk(ctx context.Context, in []*npool.CurrencyValueReq) ([]*ent.CurrencyValue, error) {
 	var err error
-	rows := []*ent.CoinBase{}
+	rows := []*ent.CurrencyValue{}
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "CreateBulk")
 	defer span.End()
@@ -94,14 +80,12 @@ func CreateBulk(ctx context.Context, in []*npool.CoinBaseReq) ([]*ent.CoinBase, 
 		}
 	}()
 
-	span = tracer.TraceMany(span, in)
-
 	err = db.WithTx(ctx, func(_ctx context.Context, tx *ent.Tx) error {
-		bulk := make([]*ent.CoinBaseCreate, len(in))
+		bulk := make([]*ent.CurrencyValueCreate, len(in))
 		for i, info := range in {
-			bulk[i] = CreateSet(tx.CoinBase.Create(), info)
+			bulk[i] = CreateSet(tx.CurrencyValue.Create(), info)
 		}
-		rows, err = tx.CoinBase.CreateBulk(bulk...).Save(_ctx)
+		rows, err = tx.CurrencyValue.CreateBulk(bulk...).Save(_ctx)
 		return err
 	})
 	if err != nil {
@@ -110,30 +94,21 @@ func CreateBulk(ctx context.Context, in []*npool.CoinBaseReq) ([]*ent.CoinBase, 
 	return rows, nil
 }
 
-func UpdateSet(info *ent.CoinBase, in *npool.CoinBaseReq) *ent.CoinBaseUpdateOne {
+func UpdateSet(info *ent.CurrencyValue, in *npool.CurrencyValueReq) *ent.CurrencyValueUpdateOne {
 	stm := info.Update()
 
-	if in.Logo != nil {
-		stm = stm.SetLogo(in.GetLogo())
+	if in.MarketValueHigh != nil {
+		stm = stm.SetMarketValueHigh(decimal.RequireFromString(in.GetMarketValueHigh()))
 	}
-	if in.Presale != nil {
-		stm = stm.SetPresale(in.GetPresale())
-	}
-	if in.ReservedAmount != nil {
-		stm = stm.SetReservedAmount(decimal.RequireFromString(in.GetReservedAmount()))
-	}
-	if in.ForPay != nil {
-		stm = stm.SetForPay(in.GetForPay())
-	}
-	if in.Disabled != nil {
-		stm = stm.SetDisabled(in.GetDisabled())
+	if in.MarketValueLow != nil {
+		stm = stm.SetMarketValueLow(decimal.RequireFromString(in.GetMarketValueLow()))
 	}
 
 	return stm
 }
 
-func Update(ctx context.Context, in *npool.CoinBaseReq) (*ent.CoinBase, error) {
-	var info *ent.CoinBase
+func Update(ctx context.Context, in *npool.CurrencyValueReq) (*ent.CurrencyValue, error) {
+	var info *ent.CurrencyValue
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "Create")
@@ -146,32 +121,30 @@ func Update(ctx context.Context, in *npool.CoinBaseReq) (*ent.CoinBase, error) {
 		}
 	}()
 
-	span = tracer.Trace(span, in)
-
 	err = db.WithTx(ctx, func(_ctx context.Context, tx *ent.Tx) error {
-		info, err = tx.CoinBase.Query().Where(coinbase.ID(uuid.MustParse(in.GetID()))).ForUpdate().Only(_ctx)
+		info, err = tx.CurrencyValue.Query().Where(currencyvalue.ID(uuid.MustParse(in.GetID()))).ForUpdate().Only(_ctx)
 		if err != nil {
-			return fmt.Errorf("fail query coinbase: %v", err)
+			return fmt.Errorf("fail query currencyvalue: %v", err)
 		}
 
 		stm := UpdateSet(info, in)
 
 		info, err = stm.Save(_ctx)
 		if err != nil {
-			return fmt.Errorf("fail update coinbase: %v", err)
+			return fmt.Errorf("fail update currencyvalue: %v", err)
 		}
 
 		return nil
 	})
 	if err != nil {
-		return nil, fmt.Errorf("fail update coinbase: %v", err)
+		return nil, fmt.Errorf("fail update currencyvalue: %v", err)
 	}
 
 	return info, nil
 }
 
-func Row(ctx context.Context, id uuid.UUID) (*ent.CoinBase, error) {
-	var info *ent.CoinBase
+func Row(ctx context.Context, id uuid.UUID) (*ent.CurrencyValue, error) {
+	var info *ent.CurrencyValue
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "Row")
@@ -187,7 +160,7 @@ func Row(ctx context.Context, id uuid.UUID) (*ent.CoinBase, error) {
 	span = commontracer.TraceID(span, id.String())
 
 	err = db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
-		info, err = cli.CoinBase.Query().Where(coinbase.ID(id)).Only(_ctx)
+		info, err = cli.CurrencyValue.Query().Where(currencyvalue.ID(id)).Only(_ctx)
 		return err
 	})
 	if err != nil {
@@ -197,62 +170,44 @@ func Row(ctx context.Context, id uuid.UUID) (*ent.CoinBase, error) {
 	return info, nil
 }
 
-func SetQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.CoinBaseQuery, error) {
-	stm := cli.CoinBase.Query()
+func SetQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.CurrencyValueQuery, error) {
+	stm := cli.CurrencyValue.Query()
 	if conds.ID != nil {
 		switch conds.GetID().GetOp() {
 		case cruder.EQ:
-			stm.Where(coinbase.ID(uuid.MustParse(conds.GetID().GetValue())))
+			stm.Where(currencyvalue.ID(uuid.MustParse(conds.GetID().GetValue())))
 		default:
-			return nil, fmt.Errorf("invalid coinbase field")
+			return nil, fmt.Errorf("invalid currencyvalue field")
 		}
 	}
-	if conds.Name != nil {
-		switch conds.GetName().GetOp() {
+	if conds.CoinTypeID != nil {
+		switch conds.GetCoinTypeID().GetOp() {
 		case cruder.EQ:
-			stm.Where(
-				coinbase.Name(conds.GetName().GetValue()),
-			)
+			stm.Where(currencyvalue.CoinTypeID(uuid.MustParse(conds.GetCoinTypeID().GetValue())))
 		default:
-			return nil, fmt.Errorf("invalid coinbase field")
+			return nil, fmt.Errorf("invalid currencyvalue field")
 		}
 	}
-	if conds.ENV != nil {
-		switch conds.GetENV().GetOp() {
-		case cruder.EQ:
-			stm.Where(coinbase.Env(conds.GetENV().GetValue()))
+	if conds.StartAt != nil {
+		switch conds.GetStartAt().GetOp() {
+		case cruder.GTE:
+			stm.Where(currencyvalue.CreatedAtGTE(conds.GetStartAt().GetValue()))
 		default:
-			return nil, fmt.Errorf("invalid coinbase field")
+			return nil, fmt.Errorf("invalid currencyvalue field")
 		}
 	}
-	if conds.Presale != nil {
-		switch conds.GetPresale().GetOp() {
-		case cruder.EQ:
-			stm.Where(coinbase.Presale(conds.GetPresale().GetValue()))
+	if conds.EndAt != nil {
+		switch conds.GetEndAt().GetOp() {
+		case cruder.GTE:
+			stm.Where(currencyvalue.CreatedAtGTE(conds.GetEndAt().GetValue()))
 		default:
-			return nil, fmt.Errorf("invalid coinbase field")
-		}
-	}
-	if conds.ForPay != nil {
-		switch conds.GetForPay().GetOp() {
-		case cruder.EQ:
-			stm.Where(coinbase.ForPay(conds.GetForPay().GetValue()))
-		default:
-			return nil, fmt.Errorf("invalid coinbase field")
-		}
-	}
-	if conds.Disabled != nil {
-		switch conds.GetDisabled().GetOp() {
-		case cruder.EQ:
-			stm.Where(coinbase.Disabled(conds.GetDisabled().GetValue()))
-		default:
-			return nil, fmt.Errorf("invalid coinbase field")
+			return nil, fmt.Errorf("invalid currencyvalue field")
 		}
 	}
 	return stm, nil
 }
 
-func Rows(ctx context.Context, conds *npool.Conds, offset, limit int) ([]*ent.CoinBase, int, error) {
+func Rows(ctx context.Context, conds *npool.Conds, offset, limit int) ([]*ent.CurrencyValue, int, error) {
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "Rows")
@@ -265,10 +220,9 @@ func Rows(ctx context.Context, conds *npool.Conds, offset, limit int) ([]*ent.Co
 		}
 	}()
 
-	span = tracer.TraceConds(span, conds)
 	span = commontracer.TraceOffsetLimit(span, offset, limit)
 
-	rows := []*ent.CoinBase{}
+	rows := []*ent.CurrencyValue{}
 	var total int
 
 	err = db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
@@ -284,7 +238,7 @@ func Rows(ctx context.Context, conds *npool.Conds, offset, limit int) ([]*ent.Co
 
 		rows, err = stm.
 			Offset(offset).
-			Order(ent.Desc(coinbase.FieldUpdatedAt)).
+			Order(ent.Desc(currencyvalue.FieldUpdatedAt)).
 			Limit(limit).
 			All(_ctx)
 		if err != nil {
@@ -299,8 +253,8 @@ func Rows(ctx context.Context, conds *npool.Conds, offset, limit int) ([]*ent.Co
 	return rows, total, nil
 }
 
-func RowOnly(ctx context.Context, conds *npool.Conds) (*ent.CoinBase, error) {
-	var info *ent.CoinBase
+func RowOnly(ctx context.Context, conds *npool.Conds) (*ent.CurrencyValue, error) {
+	var info *ent.CurrencyValue
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "RowOnly")
@@ -312,8 +266,6 @@ func RowOnly(ctx context.Context, conds *npool.Conds) (*ent.CoinBase, error) {
 			span.RecordError(err)
 		}
 	}()
-
-	span = tracer.TraceConds(span, conds)
 
 	err = db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
 		stm, err := SetQueryConds(conds, cli)
@@ -352,8 +304,6 @@ func Count(ctx context.Context, conds *npool.Conds) (uint32, error) {
 		}
 	}()
 
-	span = tracer.TraceConds(span, conds)
-
 	err = db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
 		stm, err := SetQueryConds(conds, cli)
 		if err != nil {
@@ -390,7 +340,7 @@ func Exist(ctx context.Context, id uuid.UUID) (bool, error) {
 	span = commontracer.TraceID(span, id.String())
 
 	err = db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
-		exist, err = cli.CoinBase.Query().Where(coinbase.ID(id)).Exist(_ctx)
+		exist, err = cli.CurrencyValue.Query().Where(currencyvalue.ID(id)).Exist(_ctx)
 		return err
 	})
 	if err != nil {
@@ -414,8 +364,6 @@ func ExistConds(ctx context.Context, conds *npool.Conds) (bool, error) {
 		}
 	}()
 
-	span = tracer.TraceConds(span, conds)
-
 	err = db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
 		stm, err := SetQueryConds(conds, cli)
 		if err != nil {
@@ -436,8 +384,8 @@ func ExistConds(ctx context.Context, conds *npool.Conds) (bool, error) {
 	return exist, nil
 }
 
-func Delete(ctx context.Context, id uuid.UUID) (*ent.CoinBase, error) {
-	var info *ent.CoinBase
+func Delete(ctx context.Context, id uuid.UUID) (*ent.CurrencyValue, error) {
+	var info *ent.CurrencyValue
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "Delete")
@@ -453,7 +401,7 @@ func Delete(ctx context.Context, id uuid.UUID) (*ent.CoinBase, error) {
 	span = commontracer.TraceID(span, id.String())
 
 	err = db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
-		info, err = cli.CoinBase.UpdateOneID(id).
+		info, err = cli.CurrencyValue.UpdateOneID(id).
 			SetDeletedAt(uint32(time.Now().Unix())).
 			Save(_ctx)
 		return err

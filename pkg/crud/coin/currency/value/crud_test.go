@@ -1,4 +1,4 @@
-package coinbase
+package currencyvalue
 
 import (
 	"context"
@@ -14,7 +14,7 @@ import (
 
 	testinit "github.com/NpoolPlatform/chain-manager/pkg/testinit"
 	valuedef "github.com/NpoolPlatform/message/npool"
-	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/coin/base"
+	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/coin/currency/value"
 	"github.com/google/uuid"
 
 	"github.com/stretchr/testify/assert"
@@ -29,40 +29,31 @@ func init() {
 	}
 }
 
-var entity = ent.CoinBase{
-	ID:             uuid.New(),
-	Name:           uuid.NewString(),
-	Logo:           uuid.NewString(),
-	Presale:        false,
-	Unit:           "BTC",
-	Env:            "main",
-	ReservedAmount: decimal.RequireFromString("89.000"),
-	ForPay:         false,
+var entity = ent.CurrencyValue{
+	ID:              uuid.New(),
+	CoinTypeID:      uuid.New(),
+	FeedSourceID:    uuid.New(),
+	MarketValueHigh: decimal.RequireFromString("88.9123"),
+	MarketValueLow:  decimal.RequireFromString("84.9123"),
 }
 
 var (
-	id             = entity.ID.String()
-	name           = entity.Name
-	logo           = entity.Logo
-	presale        = entity.Presale
-	unit           = entity.Unit
-	env            = entity.Env
-	reservedAmount = entity.ReservedAmount.String()
-	forPay         = entity.ForPay
+	id              = entity.ID.String()
+	coinTypeID      = entity.CoinTypeID.String()
+	feedSourceID    = entity.FeedSourceID.String()
+	marketValueHigh = entity.MarketValueHigh.String()
+	marketValueLow  = entity.MarketValueLow.String()
 
-	req = npool.CoinBaseReq{
-		ID:             &id,
-		Name:           &name,
-		Logo:           &logo,
-		Presale:        &presale,
-		Unit:           &unit,
-		ENV:            &env,
-		ReservedAmount: &reservedAmount,
-		ForPay:         &forPay,
+	req = npool.CurrencyValueReq{
+		ID:              &id,
+		CoinTypeID:      &coinTypeID,
+		FeedSourceID:    &feedSourceID,
+		MarketValueHigh: &marketValueHigh,
+		MarketValueLow:  &marketValueLow,
 	}
 )
 
-var info *ent.CoinBase
+var info *ent.CurrencyValue
 
 func create(t *testing.T) {
 	var err error
@@ -75,49 +66,37 @@ func create(t *testing.T) {
 }
 
 func createBulk(t *testing.T) {
-	entities := []*ent.CoinBase{
+	entities := []*ent.CurrencyValue{
 		{
-			ID:             uuid.New(),
-			Name:           uuid.NewString(),
-			Logo:           uuid.NewString(),
-			Presale:        false,
-			Unit:           "BTC",
-			Env:            "main",
-			ReservedAmount: decimal.RequireFromString("89.000"),
-			ForPay:         false,
+			ID:              uuid.New(),
+			CoinTypeID:      uuid.New(),
+			FeedSourceID:    uuid.New(),
+			MarketValueHigh: decimal.RequireFromString("84.9123"),
+			MarketValueLow:  decimal.RequireFromString("82.9123"),
 		},
 		{
-			ID:             uuid.New(),
-			Name:           uuid.NewString(),
-			Logo:           uuid.NewString(),
-			Presale:        true,
-			Unit:           "BTT",
-			Env:            "main",
-			ReservedAmount: decimal.RequireFromString("88.000"),
-			ForPay:         false,
+			ID:              uuid.New(),
+			CoinTypeID:      uuid.New(),
+			FeedSourceID:    uuid.New(),
+			MarketValueHigh: decimal.RequireFromString("88.4123"),
+			MarketValueLow:  decimal.RequireFromString("84.2123"),
 		},
 	}
 
-	reqs := []*npool.CoinBaseReq{}
+	reqs := []*npool.CurrencyValueReq{}
 	for _, _entity := range entities {
 		_id := _entity.ID.String()
-		_name := _entity.Name
-		_logo := _entity.Logo
-		_presale := _entity.Presale
-		_unit := _entity.Unit
-		_env := _entity.Env
-		_reservedAmount := _entity.ReservedAmount.String()
-		_forPay := _entity.ForPay
+		_coinTypeID := _entity.CoinTypeID.String()
+		_feedSourceID := _entity.FeedSourceID.String()
+		_marketValueHigh := _entity.MarketValueHigh.String()
+		_marketValueLow := _entity.MarketValueLow.String()
 
-		reqs = append(reqs, &npool.CoinBaseReq{
-			ID:             &_id,
-			Name:           &_name,
-			Logo:           &_logo,
-			Presale:        &_presale,
-			Unit:           &_unit,
-			ENV:            &_env,
-			ReservedAmount: &_reservedAmount,
-			ForPay:         &_forPay,
+		reqs = append(reqs, &npool.CurrencyValueReq{
+			ID:              &_id,
+			CoinTypeID:      &_coinTypeID,
+			FeedSourceID:    &_feedSourceID,
+			MarketValueHigh: &_marketValueHigh,
+			MarketValueLow:  &_marketValueLow,
 		})
 	}
 	infos, err := CreateBulk(context.Background(), reqs)
@@ -127,17 +106,14 @@ func createBulk(t *testing.T) {
 }
 
 func add(t *testing.T) {
-	presale := false
-	reservedAmount := "81.0234"
-	forPay := true
+	valueHigh := "11.22"
+	valueLow := "11.12"
 
-	req.Presale = &presale
-	req.ReservedAmount = &reservedAmount
-	req.ForPay = &forPay
+	req.MarketValueHigh = &valueHigh
+	req.MarketValueLow = &valueLow
 
-	entity.Presale = presale
-	entity.ReservedAmount = decimal.RequireFromString(reservedAmount)
-	entity.ForPay = forPay
+	entity.MarketValueHigh = decimal.RequireFromString(valueHigh)
+	entity.MarketValueLow = decimal.RequireFromString(valueLow)
 
 	info, err := Update(context.Background(), &req)
 	if assert.Nil(t, err) {
