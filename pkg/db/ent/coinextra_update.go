@@ -144,6 +144,26 @@ func (ceu *CoinExtraUpdate) ClearSpecs() *CoinExtraUpdate {
 	return ceu
 }
 
+// SetStableUsd sets the "stable_usd" field.
+func (ceu *CoinExtraUpdate) SetStableUsd(b bool) *CoinExtraUpdate {
+	ceu.mutation.SetStableUsd(b)
+	return ceu
+}
+
+// SetNillableStableUsd sets the "stable_usd" field if the given value is not nil.
+func (ceu *CoinExtraUpdate) SetNillableStableUsd(b *bool) *CoinExtraUpdate {
+	if b != nil {
+		ceu.SetStableUsd(*b)
+	}
+	return ceu
+}
+
+// ClearStableUsd clears the value of the "stable_usd" field.
+func (ceu *CoinExtraUpdate) ClearStableUsd() *CoinExtraUpdate {
+	ceu.mutation.ClearStableUsd()
+	return ceu
+}
+
 // Mutation returns the CoinExtraMutation object of the builder.
 func (ceu *CoinExtraUpdate) Mutation() *CoinExtraMutation {
 	return ceu.mutation
@@ -323,6 +343,19 @@ func (ceu *CoinExtraUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: coinextra.FieldSpecs,
 		})
 	}
+	if value, ok := ceu.mutation.StableUsd(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Value:  value,
+			Column: coinextra.FieldStableUsd,
+		})
+	}
+	if ceu.mutation.StableUsdCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Column: coinextra.FieldStableUsd,
+		})
+	}
 	_spec.Modifiers = ceu.modifiers
 	if n, err = sqlgraph.UpdateNodes(ctx, ceu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -456,6 +489,26 @@ func (ceuo *CoinExtraUpdateOne) SetNillableSpecs(s *string) *CoinExtraUpdateOne 
 // ClearSpecs clears the value of the "specs" field.
 func (ceuo *CoinExtraUpdateOne) ClearSpecs() *CoinExtraUpdateOne {
 	ceuo.mutation.ClearSpecs()
+	return ceuo
+}
+
+// SetStableUsd sets the "stable_usd" field.
+func (ceuo *CoinExtraUpdateOne) SetStableUsd(b bool) *CoinExtraUpdateOne {
+	ceuo.mutation.SetStableUsd(b)
+	return ceuo
+}
+
+// SetNillableStableUsd sets the "stable_usd" field if the given value is not nil.
+func (ceuo *CoinExtraUpdateOne) SetNillableStableUsd(b *bool) *CoinExtraUpdateOne {
+	if b != nil {
+		ceuo.SetStableUsd(*b)
+	}
+	return ceuo
+}
+
+// ClearStableUsd clears the value of the "stable_usd" field.
+func (ceuo *CoinExtraUpdateOne) ClearStableUsd() *CoinExtraUpdateOne {
+	ceuo.mutation.ClearStableUsd()
 	return ceuo
 }
 
@@ -666,6 +719,19 @@ func (ceuo *CoinExtraUpdateOne) sqlSave(ctx context.Context) (_node *CoinExtra, 
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Column: coinextra.FieldSpecs,
+		})
+	}
+	if value, ok := ceuo.mutation.StableUsd(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Value:  value,
+			Column: coinextra.FieldStableUsd,
+		})
+	}
+	if ceuo.mutation.StableUsdCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Column: coinextra.FieldStableUsd,
 		})
 	}
 	_spec.Modifiers = ceuo.modifiers

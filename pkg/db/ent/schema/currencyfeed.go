@@ -4,22 +4,23 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/schema/field"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/mixin"
+	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/coin/currency/feed"
 	"github.com/google/uuid"
 )
 
-// CoinExtra holds the schema definition for the CoinExtra entity.
-type CoinExtra struct {
+// CurrencyFeed holds the schema definition for the CurrencyFeed entity.
+type CurrencyFeed struct {
 	ent.Schema
 }
 
-func (CoinExtra) Mixin() []ent.Mixin {
+func (CurrencyFeed) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		mixin.TimeMixin{},
 	}
 }
 
-// Fields of the CoinExtra.
-func (CoinExtra) Fields() []ent.Field {
+// Fields of the CurrencyFeed.
+func (CurrencyFeed) Fields() []ent.Field {
 	return []ent.Field{
 		field.
 			UUID("id", uuid.UUID{}).
@@ -30,21 +31,17 @@ func (CoinExtra) Fields() []ent.Field {
 			Optional().
 			Default(uuid.New),
 		field.
-			String("home_page").
+			String("feed_source").
 			Optional().
 			Default(""),
 		field.
-			String("specs").
+			String("feed_type").
 			Optional().
-			Default(""),
-		field.
-			Bool("stable_usd").
-			Optional().
-			Default(false),
+			Default(npool.FeedType_DefaultFeedType.String()),
 	}
 }
 
-// Edges of the CoinExtra.
-func (CoinExtra) Edges() []ent.Edge {
+// Edges of the CurrencyFeed.
+func (CurrencyFeed) Edges() []ent.Edge {
 	return nil
 }

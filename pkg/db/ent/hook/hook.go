@@ -61,6 +61,32 @@ func (f CoinExtraFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, e
 	return f(ctx, mv)
 }
 
+// The CurrencyFeedFunc type is an adapter to allow the use of ordinary
+// function as CurrencyFeed mutator.
+type CurrencyFeedFunc func(context.Context, *ent.CurrencyFeedMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f CurrencyFeedFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.CurrencyFeedMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.CurrencyFeedMutation", m)
+	}
+	return f(ctx, mv)
+}
+
+// The CurrencyValueFunc type is an adapter to allow the use of ordinary
+// function as CurrencyValue mutator.
+type CurrencyValueFunc func(context.Context, *ent.CurrencyValueMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f CurrencyValueFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.CurrencyValueMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.CurrencyValueMutation", m)
+	}
+	return f(ctx, mv)
+}
+
 // The ExchangeRateFunc type is an adapter to allow the use of ordinary
 // function as ExchangeRate mutator.
 type ExchangeRateFunc func(context.Context, *ent.ExchangeRateMutation) (ent.Value, error)

@@ -107,6 +107,20 @@ func (cec *CoinExtraCreate) SetNillableSpecs(s *string) *CoinExtraCreate {
 	return cec
 }
 
+// SetStableUsd sets the "stable_usd" field.
+func (cec *CoinExtraCreate) SetStableUsd(b bool) *CoinExtraCreate {
+	cec.mutation.SetStableUsd(b)
+	return cec
+}
+
+// SetNillableStableUsd sets the "stable_usd" field if the given value is not nil.
+func (cec *CoinExtraCreate) SetNillableStableUsd(b *bool) *CoinExtraCreate {
+	if b != nil {
+		cec.SetStableUsd(*b)
+	}
+	return cec
+}
+
 // SetID sets the "id" field.
 func (cec *CoinExtraCreate) SetID(u uuid.UUID) *CoinExtraCreate {
 	cec.mutation.SetID(u)
@@ -236,6 +250,10 @@ func (cec *CoinExtraCreate) defaults() error {
 		v := coinextra.DefaultSpecs
 		cec.mutation.SetSpecs(v)
 	}
+	if _, ok := cec.mutation.StableUsd(); !ok {
+		v := coinextra.DefaultStableUsd
+		cec.mutation.SetStableUsd(v)
+	}
 	if _, ok := cec.mutation.ID(); !ok {
 		if coinextra.DefaultID == nil {
 			return fmt.Errorf("ent: uninitialized coinextra.DefaultID (forgotten import ent/runtime?)")
@@ -341,6 +359,14 @@ func (cec *CoinExtraCreate) createSpec() (*CoinExtra, *sqlgraph.CreateSpec) {
 			Column: coinextra.FieldSpecs,
 		})
 		_node.Specs = value
+	}
+	if value, ok := cec.mutation.StableUsd(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Value:  value,
+			Column: coinextra.FieldStableUsd,
+		})
+		_node.StableUsd = value
 	}
 	return _node, _spec
 }
@@ -501,6 +527,24 @@ func (u *CoinExtraUpsert) UpdateSpecs() *CoinExtraUpsert {
 // ClearSpecs clears the value of the "specs" field.
 func (u *CoinExtraUpsert) ClearSpecs() *CoinExtraUpsert {
 	u.SetNull(coinextra.FieldSpecs)
+	return u
+}
+
+// SetStableUsd sets the "stable_usd" field.
+func (u *CoinExtraUpsert) SetStableUsd(v bool) *CoinExtraUpsert {
+	u.Set(coinextra.FieldStableUsd, v)
+	return u
+}
+
+// UpdateStableUsd sets the "stable_usd" field to the value that was provided on create.
+func (u *CoinExtraUpsert) UpdateStableUsd() *CoinExtraUpsert {
+	u.SetExcluded(coinextra.FieldStableUsd)
+	return u
+}
+
+// ClearStableUsd clears the value of the "stable_usd" field.
+func (u *CoinExtraUpsert) ClearStableUsd() *CoinExtraUpsert {
+	u.SetNull(coinextra.FieldStableUsd)
 	return u
 }
 
@@ -677,6 +721,27 @@ func (u *CoinExtraUpsertOne) UpdateSpecs() *CoinExtraUpsertOne {
 func (u *CoinExtraUpsertOne) ClearSpecs() *CoinExtraUpsertOne {
 	return u.Update(func(s *CoinExtraUpsert) {
 		s.ClearSpecs()
+	})
+}
+
+// SetStableUsd sets the "stable_usd" field.
+func (u *CoinExtraUpsertOne) SetStableUsd(v bool) *CoinExtraUpsertOne {
+	return u.Update(func(s *CoinExtraUpsert) {
+		s.SetStableUsd(v)
+	})
+}
+
+// UpdateStableUsd sets the "stable_usd" field to the value that was provided on create.
+func (u *CoinExtraUpsertOne) UpdateStableUsd() *CoinExtraUpsertOne {
+	return u.Update(func(s *CoinExtraUpsert) {
+		s.UpdateStableUsd()
+	})
+}
+
+// ClearStableUsd clears the value of the "stable_usd" field.
+func (u *CoinExtraUpsertOne) ClearStableUsd() *CoinExtraUpsertOne {
+	return u.Update(func(s *CoinExtraUpsert) {
+		s.ClearStableUsd()
 	})
 }
 
@@ -1019,6 +1084,27 @@ func (u *CoinExtraUpsertBulk) UpdateSpecs() *CoinExtraUpsertBulk {
 func (u *CoinExtraUpsertBulk) ClearSpecs() *CoinExtraUpsertBulk {
 	return u.Update(func(s *CoinExtraUpsert) {
 		s.ClearSpecs()
+	})
+}
+
+// SetStableUsd sets the "stable_usd" field.
+func (u *CoinExtraUpsertBulk) SetStableUsd(v bool) *CoinExtraUpsertBulk {
+	return u.Update(func(s *CoinExtraUpsert) {
+		s.SetStableUsd(v)
+	})
+}
+
+// UpdateStableUsd sets the "stable_usd" field to the value that was provided on create.
+func (u *CoinExtraUpsertBulk) UpdateStableUsd() *CoinExtraUpsertBulk {
+	return u.Update(func(s *CoinExtraUpsert) {
+		s.UpdateStableUsd()
+	})
+}
+
+// ClearStableUsd clears the value of the "stable_usd" field.
+func (u *CoinExtraUpsertBulk) ClearStableUsd() *CoinExtraUpsertBulk {
+	return u.Update(func(s *CoinExtraUpsert) {
+		s.ClearStableUsd()
 	})
 }
 

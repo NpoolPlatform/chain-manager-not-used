@@ -121,6 +121,13 @@ func Specs(v string) predicate.CoinExtra {
 	})
 }
 
+// StableUsd applies equality check predicate on the "stable_usd" field. It's identical to StableUsdEQ.
+func StableUsd(v bool) predicate.CoinExtra {
+	return predicate.CoinExtra(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldStableUsd), v))
+	})
+}
+
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
 func CreatedAtEQ(v uint32) predicate.CoinExtra {
 	return predicate.CoinExtra(func(s *sql.Selector) {
@@ -614,6 +621,34 @@ func SpecsEqualFold(v string) predicate.CoinExtra {
 func SpecsContainsFold(v string) predicate.CoinExtra {
 	return predicate.CoinExtra(func(s *sql.Selector) {
 		s.Where(sql.ContainsFold(s.C(FieldSpecs), v))
+	})
+}
+
+// StableUsdEQ applies the EQ predicate on the "stable_usd" field.
+func StableUsdEQ(v bool) predicate.CoinExtra {
+	return predicate.CoinExtra(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldStableUsd), v))
+	})
+}
+
+// StableUsdNEQ applies the NEQ predicate on the "stable_usd" field.
+func StableUsdNEQ(v bool) predicate.CoinExtra {
+	return predicate.CoinExtra(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldStableUsd), v))
+	})
+}
+
+// StableUsdIsNil applies the IsNil predicate on the "stable_usd" field.
+func StableUsdIsNil() predicate.CoinExtra {
+	return predicate.CoinExtra(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldStableUsd)))
+	})
+}
+
+// StableUsdNotNil applies the NotNil predicate on the "stable_usd" field.
+func StableUsdNotNil() predicate.CoinExtra {
+	return predicate.CoinExtra(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldStableUsd)))
 	})
 }
 

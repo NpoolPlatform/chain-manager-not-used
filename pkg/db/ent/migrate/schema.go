@@ -77,12 +77,46 @@ var (
 		{Name: "coin_type_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "home_page", Type: field.TypeString, Nullable: true, Default: ""},
 		{Name: "specs", Type: field.TypeString, Nullable: true, Default: ""},
+		{Name: "stable_usd", Type: field.TypeBool, Nullable: true, Default: false},
 	}
 	// CoinExtrasTable holds the schema information for the "coin_extras" table.
 	CoinExtrasTable = &schema.Table{
 		Name:       "coin_extras",
 		Columns:    CoinExtrasColumns,
 		PrimaryKey: []*schema.Column{CoinExtrasColumns[0]},
+	}
+	// CurrencyFeedsColumns holds the columns for the "currency_feeds" table.
+	CurrencyFeedsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID, Unique: true},
+		{Name: "created_at", Type: field.TypeUint32},
+		{Name: "updated_at", Type: field.TypeUint32},
+		{Name: "deleted_at", Type: field.TypeUint32},
+		{Name: "coin_type_id", Type: field.TypeUUID, Nullable: true},
+		{Name: "feed_source", Type: field.TypeString, Nullable: true, Default: ""},
+		{Name: "feed_type", Type: field.TypeString, Nullable: true, Default: "DefaultFeedType"},
+	}
+	// CurrencyFeedsTable holds the schema information for the "currency_feeds" table.
+	CurrencyFeedsTable = &schema.Table{
+		Name:       "currency_feeds",
+		Columns:    CurrencyFeedsColumns,
+		PrimaryKey: []*schema.Column{CurrencyFeedsColumns[0]},
+	}
+	// CurrencyValuesColumns holds the columns for the "currency_values" table.
+	CurrencyValuesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID, Unique: true},
+		{Name: "created_at", Type: field.TypeUint32},
+		{Name: "updated_at", Type: field.TypeUint32},
+		{Name: "deleted_at", Type: field.TypeUint32},
+		{Name: "coin_type_id", Type: field.TypeUUID, Nullable: true},
+		{Name: "feed_source_id", Type: field.TypeUUID, Nullable: true},
+		{Name: "market_value_high", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
+		{Name: "market_value_low", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
+	}
+	// CurrencyValuesTable holds the schema information for the "currency_values" table.
+	CurrencyValuesTable = &schema.Table{
+		Name:       "currency_values",
+		Columns:    CurrencyValuesColumns,
+		PrimaryKey: []*schema.Column{CurrencyValuesColumns[0]},
 	}
 	// ExchangeRatesColumns holds the columns for the "exchange_rates" table.
 	ExchangeRatesColumns = []*schema.Column{
@@ -153,6 +187,8 @@ var (
 		CoinBasesTable,
 		CoinDescriptionsTable,
 		CoinExtrasTable,
+		CurrencyFeedsTable,
+		CurrencyValuesTable,
 		ExchangeRatesTable,
 		SettingsTable,
 		TransTable,

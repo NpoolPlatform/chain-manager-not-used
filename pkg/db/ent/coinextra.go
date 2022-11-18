@@ -28,6 +28,8 @@ type CoinExtra struct {
 	HomePage string `json:"home_page,omitempty"`
 	// Specs holds the value of the "specs" field.
 	Specs string `json:"specs,omitempty"`
+	// StableUsd holds the value of the "stable_usd" field.
+	StableUsd bool `json:"stable_usd,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -35,6 +37,8 @@ func (*CoinExtra) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
+		case coinextra.FieldStableUsd:
+			values[i] = new(sql.NullBool)
 		case coinextra.FieldCreatedAt, coinextra.FieldUpdatedAt, coinextra.FieldDeletedAt:
 			values[i] = new(sql.NullInt64)
 		case coinextra.FieldHomePage, coinextra.FieldSpecs:
@@ -98,6 +102,12 @@ func (ce *CoinExtra) assignValues(columns []string, values []interface{}) error 
 			} else if value.Valid {
 				ce.Specs = value.String
 			}
+		case coinextra.FieldStableUsd:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field stable_usd", values[i])
+			} else if value.Valid {
+				ce.StableUsd = value.Bool
+			}
 		}
 	}
 	return nil
@@ -143,6 +153,9 @@ func (ce *CoinExtra) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("specs=")
 	builder.WriteString(ce.Specs)
+	builder.WriteString(", ")
+	builder.WriteString("stable_usd=")
+	builder.WriteString(fmt.Sprintf("%v", ce.StableUsd))
 	builder.WriteByte(')')
 	return builder.String()
 }

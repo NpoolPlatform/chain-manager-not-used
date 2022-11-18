@@ -32,6 +32,8 @@ type hooks struct {
 	CoinBase        []ent.Hook
 	CoinDescription []ent.Hook
 	CoinExtra       []ent.Hook
+	CurrencyFeed    []ent.Hook
+	CurrencyValue   []ent.Hook
 	ExchangeRate    []ent.Hook
 	Setting         []ent.Hook
 	Tran            []ent.Hook
