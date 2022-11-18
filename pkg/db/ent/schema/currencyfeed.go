@@ -38,6 +38,10 @@ func (CurrencyFeed) Fields() []ent.Field {
 			String("feed_type").
 			Optional().
 			Default(npool.FeedType_DefaultFeedType.String()),
+		field.
+			Bool("disabled").
+			Optional().
+			Default(false),
 	}
 }
 

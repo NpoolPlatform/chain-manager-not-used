@@ -94,6 +94,7 @@ var (
 		{Name: "coin_type_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "feed_source", Type: field.TypeString, Nullable: true, Default: ""},
 		{Name: "feed_type", Type: field.TypeString, Nullable: true, Default: "DefaultFeedType"},
+		{Name: "disabled", Type: field.TypeBool, Nullable: true, Default: false},
 	}
 	// CurrencyFeedsTable holds the schema information for the "currency_feeds" table.
 	CurrencyFeedsTable = &schema.Table{

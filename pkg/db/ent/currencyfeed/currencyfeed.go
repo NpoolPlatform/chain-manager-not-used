@@ -24,6 +24,8 @@ const (
 	FieldFeedSource = "feed_source"
 	// FieldFeedType holds the string denoting the feed_type field in the database.
 	FieldFeedType = "feed_type"
+	// FieldDisabled holds the string denoting the disabled field in the database.
+	FieldDisabled = "disabled"
 	// Table holds the table name of the currencyfeed in the database.
 	Table = "currency_feeds"
 )
@@ -37,6 +39,7 @@ var Columns = []string{
 	FieldCoinTypeID,
 	FieldFeedSource,
 	FieldFeedType,
+	FieldDisabled,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -72,6 +75,8 @@ var (
 	DefaultFeedSource string
 	// DefaultFeedType holds the default value on creation for the "feed_type" field.
 	DefaultFeedType string
+	// DefaultDisabled holds the default value on creation for the "disabled" field.
+	DefaultDisabled bool
 	// DefaultID holds the default value on creation for the "id" field.
 	DefaultID func() uuid.UUID
 )

@@ -294,6 +294,10 @@ func init() {
 	currencyfeedDescFeedType := currencyfeedFields[3].Descriptor()
 	// currencyfeed.DefaultFeedType holds the default value on creation for the feed_type field.
 	currencyfeed.DefaultFeedType = currencyfeedDescFeedType.Default.(string)
+	// currencyfeedDescDisabled is the schema descriptor for disabled field.
+	currencyfeedDescDisabled := currencyfeedFields[4].Descriptor()
+	// currencyfeed.DefaultDisabled holds the default value on creation for the disabled field.
+	currencyfeed.DefaultDisabled = currencyfeedDescDisabled.Default.(bool)
 	// currencyfeedDescID is the schema descriptor for id field.
 	currencyfeedDescID := currencyfeedFields[0].Descriptor()
 	// currencyfeed.DefaultID holds the default value on creation for the id field.

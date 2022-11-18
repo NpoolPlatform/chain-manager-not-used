@@ -128,6 +128,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			currencyfeed.FieldCoinTypeID: {Type: field.TypeUUID, Column: currencyfeed.FieldCoinTypeID},
 			currencyfeed.FieldFeedSource: {Type: field.TypeString, Column: currencyfeed.FieldFeedSource},
 			currencyfeed.FieldFeedType:   {Type: field.TypeString, Column: currencyfeed.FieldFeedType},
+			currencyfeed.FieldDisabled:   {Type: field.TypeBool, Column: currencyfeed.FieldDisabled},
 		},
 	}
 	graph.Nodes[5] = &sqlgraph.Node{
@@ -644,6 +645,11 @@ func (f *CurrencyFeedFilter) WhereFeedSource(p entql.StringP) {
 // WhereFeedType applies the entql string predicate on the feed_type field.
 func (f *CurrencyFeedFilter) WhereFeedType(p entql.StringP) {
 	f.Where(p.Field(currencyfeed.FieldFeedType))
+}
+
+// WhereDisabled applies the entql bool predicate on the disabled field.
+func (f *CurrencyFeedFilter) WhereDisabled(p entql.BoolP) {
+	f.Where(p.Field(currencyfeed.FieldDisabled))
 }
 
 // addPredicate implements the predicateAdder interface.

@@ -107,6 +107,20 @@ func (cfc *CurrencyFeedCreate) SetNillableFeedType(s *string) *CurrencyFeedCreat
 	return cfc
 }
 
+// SetDisabled sets the "disabled" field.
+func (cfc *CurrencyFeedCreate) SetDisabled(b bool) *CurrencyFeedCreate {
+	cfc.mutation.SetDisabled(b)
+	return cfc
+}
+
+// SetNillableDisabled sets the "disabled" field if the given value is not nil.
+func (cfc *CurrencyFeedCreate) SetNillableDisabled(b *bool) *CurrencyFeedCreate {
+	if b != nil {
+		cfc.SetDisabled(*b)
+	}
+	return cfc
+}
+
 // SetID sets the "id" field.
 func (cfc *CurrencyFeedCreate) SetID(u uuid.UUID) *CurrencyFeedCreate {
 	cfc.mutation.SetID(u)
@@ -236,6 +250,10 @@ func (cfc *CurrencyFeedCreate) defaults() error {
 		v := currencyfeed.DefaultFeedType
 		cfc.mutation.SetFeedType(v)
 	}
+	if _, ok := cfc.mutation.Disabled(); !ok {
+		v := currencyfeed.DefaultDisabled
+		cfc.mutation.SetDisabled(v)
+	}
 	if _, ok := cfc.mutation.ID(); !ok {
 		if currencyfeed.DefaultID == nil {
 			return fmt.Errorf("ent: uninitialized currencyfeed.DefaultID (forgotten import ent/runtime?)")
@@ -341,6 +359,14 @@ func (cfc *CurrencyFeedCreate) createSpec() (*CurrencyFeed, *sqlgraph.CreateSpec
 			Column: currencyfeed.FieldFeedType,
 		})
 		_node.FeedType = value
+	}
+	if value, ok := cfc.mutation.Disabled(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Value:  value,
+			Column: currencyfeed.FieldDisabled,
+		})
+		_node.Disabled = value
 	}
 	return _node, _spec
 }
@@ -501,6 +527,24 @@ func (u *CurrencyFeedUpsert) UpdateFeedType() *CurrencyFeedUpsert {
 // ClearFeedType clears the value of the "feed_type" field.
 func (u *CurrencyFeedUpsert) ClearFeedType() *CurrencyFeedUpsert {
 	u.SetNull(currencyfeed.FieldFeedType)
+	return u
+}
+
+// SetDisabled sets the "disabled" field.
+func (u *CurrencyFeedUpsert) SetDisabled(v bool) *CurrencyFeedUpsert {
+	u.Set(currencyfeed.FieldDisabled, v)
+	return u
+}
+
+// UpdateDisabled sets the "disabled" field to the value that was provided on create.
+func (u *CurrencyFeedUpsert) UpdateDisabled() *CurrencyFeedUpsert {
+	u.SetExcluded(currencyfeed.FieldDisabled)
+	return u
+}
+
+// ClearDisabled clears the value of the "disabled" field.
+func (u *CurrencyFeedUpsert) ClearDisabled() *CurrencyFeedUpsert {
+	u.SetNull(currencyfeed.FieldDisabled)
 	return u
 }
 
@@ -677,6 +721,27 @@ func (u *CurrencyFeedUpsertOne) UpdateFeedType() *CurrencyFeedUpsertOne {
 func (u *CurrencyFeedUpsertOne) ClearFeedType() *CurrencyFeedUpsertOne {
 	return u.Update(func(s *CurrencyFeedUpsert) {
 		s.ClearFeedType()
+	})
+}
+
+// SetDisabled sets the "disabled" field.
+func (u *CurrencyFeedUpsertOne) SetDisabled(v bool) *CurrencyFeedUpsertOne {
+	return u.Update(func(s *CurrencyFeedUpsert) {
+		s.SetDisabled(v)
+	})
+}
+
+// UpdateDisabled sets the "disabled" field to the value that was provided on create.
+func (u *CurrencyFeedUpsertOne) UpdateDisabled() *CurrencyFeedUpsertOne {
+	return u.Update(func(s *CurrencyFeedUpsert) {
+		s.UpdateDisabled()
+	})
+}
+
+// ClearDisabled clears the value of the "disabled" field.
+func (u *CurrencyFeedUpsertOne) ClearDisabled() *CurrencyFeedUpsertOne {
+	return u.Update(func(s *CurrencyFeedUpsert) {
+		s.ClearDisabled()
 	})
 }
 
@@ -1019,6 +1084,27 @@ func (u *CurrencyFeedUpsertBulk) UpdateFeedType() *CurrencyFeedUpsertBulk {
 func (u *CurrencyFeedUpsertBulk) ClearFeedType() *CurrencyFeedUpsertBulk {
 	return u.Update(func(s *CurrencyFeedUpsert) {
 		s.ClearFeedType()
+	})
+}
+
+// SetDisabled sets the "disabled" field.
+func (u *CurrencyFeedUpsertBulk) SetDisabled(v bool) *CurrencyFeedUpsertBulk {
+	return u.Update(func(s *CurrencyFeedUpsert) {
+		s.SetDisabled(v)
+	})
+}
+
+// UpdateDisabled sets the "disabled" field to the value that was provided on create.
+func (u *CurrencyFeedUpsertBulk) UpdateDisabled() *CurrencyFeedUpsertBulk {
+	return u.Update(func(s *CurrencyFeedUpsert) {
+		s.UpdateDisabled()
+	})
+}
+
+// ClearDisabled clears the value of the "disabled" field.
+func (u *CurrencyFeedUpsertBulk) ClearDisabled() *CurrencyFeedUpsertBulk {
+	return u.Update(func(s *CurrencyFeedUpsert) {
+		s.ClearDisabled()
 	})
 }
 

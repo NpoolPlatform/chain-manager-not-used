@@ -144,6 +144,26 @@ func (cfu *CurrencyFeedUpdate) ClearFeedType() *CurrencyFeedUpdate {
 	return cfu
 }
 
+// SetDisabled sets the "disabled" field.
+func (cfu *CurrencyFeedUpdate) SetDisabled(b bool) *CurrencyFeedUpdate {
+	cfu.mutation.SetDisabled(b)
+	return cfu
+}
+
+// SetNillableDisabled sets the "disabled" field if the given value is not nil.
+func (cfu *CurrencyFeedUpdate) SetNillableDisabled(b *bool) *CurrencyFeedUpdate {
+	if b != nil {
+		cfu.SetDisabled(*b)
+	}
+	return cfu
+}
+
+// ClearDisabled clears the value of the "disabled" field.
+func (cfu *CurrencyFeedUpdate) ClearDisabled() *CurrencyFeedUpdate {
+	cfu.mutation.ClearDisabled()
+	return cfu
+}
+
 // Mutation returns the CurrencyFeedMutation object of the builder.
 func (cfu *CurrencyFeedUpdate) Mutation() *CurrencyFeedMutation {
 	return cfu.mutation
@@ -323,6 +343,19 @@ func (cfu *CurrencyFeedUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: currencyfeed.FieldFeedType,
 		})
 	}
+	if value, ok := cfu.mutation.Disabled(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Value:  value,
+			Column: currencyfeed.FieldDisabled,
+		})
+	}
+	if cfu.mutation.DisabledCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Column: currencyfeed.FieldDisabled,
+		})
+	}
 	_spec.Modifiers = cfu.modifiers
 	if n, err = sqlgraph.UpdateNodes(ctx, cfu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -456,6 +489,26 @@ func (cfuo *CurrencyFeedUpdateOne) SetNillableFeedType(s *string) *CurrencyFeedU
 // ClearFeedType clears the value of the "feed_type" field.
 func (cfuo *CurrencyFeedUpdateOne) ClearFeedType() *CurrencyFeedUpdateOne {
 	cfuo.mutation.ClearFeedType()
+	return cfuo
+}
+
+// SetDisabled sets the "disabled" field.
+func (cfuo *CurrencyFeedUpdateOne) SetDisabled(b bool) *CurrencyFeedUpdateOne {
+	cfuo.mutation.SetDisabled(b)
+	return cfuo
+}
+
+// SetNillableDisabled sets the "disabled" field if the given value is not nil.
+func (cfuo *CurrencyFeedUpdateOne) SetNillableDisabled(b *bool) *CurrencyFeedUpdateOne {
+	if b != nil {
+		cfuo.SetDisabled(*b)
+	}
+	return cfuo
+}
+
+// ClearDisabled clears the value of the "disabled" field.
+func (cfuo *CurrencyFeedUpdateOne) ClearDisabled() *CurrencyFeedUpdateOne {
+	cfuo.mutation.ClearDisabled()
 	return cfuo
 }
 
@@ -666,6 +719,19 @@ func (cfuo *CurrencyFeedUpdateOne) sqlSave(ctx context.Context) (_node *Currency
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Column: currencyfeed.FieldFeedType,
+		})
+	}
+	if value, ok := cfuo.mutation.Disabled(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Value:  value,
+			Column: currencyfeed.FieldDisabled,
+		})
+	}
+	if cfuo.mutation.DisabledCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Column: currencyfeed.FieldDisabled,
 		})
 	}
 	_spec.Modifiers = cfuo.modifiers

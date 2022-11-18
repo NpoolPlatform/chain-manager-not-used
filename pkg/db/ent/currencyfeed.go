@@ -28,6 +28,8 @@ type CurrencyFeed struct {
 	FeedSource string `json:"feed_source,omitempty"`
 	// FeedType holds the value of the "feed_type" field.
 	FeedType string `json:"feed_type,omitempty"`
+	// Disabled holds the value of the "disabled" field.
+	Disabled bool `json:"disabled,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -35,6 +37,8 @@ func (*CurrencyFeed) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
+		case currencyfeed.FieldDisabled:
+			values[i] = new(sql.NullBool)
 		case currencyfeed.FieldCreatedAt, currencyfeed.FieldUpdatedAt, currencyfeed.FieldDeletedAt:
 			values[i] = new(sql.NullInt64)
 		case currencyfeed.FieldFeedSource, currencyfeed.FieldFeedType:
@@ -98,6 +102,12 @@ func (cf *CurrencyFeed) assignValues(columns []string, values []interface{}) err
 			} else if value.Valid {
 				cf.FeedType = value.String
 			}
+		case currencyfeed.FieldDisabled:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field disabled", values[i])
+			} else if value.Valid {
+				cf.Disabled = value.Bool
+			}
 		}
 	}
 	return nil
@@ -143,6 +153,9 @@ func (cf *CurrencyFeed) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("feed_type=")
 	builder.WriteString(cf.FeedType)
+	builder.WriteString(", ")
+	builder.WriteString("disabled=")
+	builder.WriteString(fmt.Sprintf("%v", cf.Disabled))
 	builder.WriteByte(')')
 	return builder.String()
 }

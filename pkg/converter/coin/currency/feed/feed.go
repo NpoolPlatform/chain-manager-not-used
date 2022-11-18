@@ -15,6 +15,7 @@ func Ent2Grpc(row *ent.CurrencyFeed) *npool.CurrencyFeed {
 		CoinTypeID: row.CoinTypeID.String(),
 		FeedSource: row.FeedSource,
 		FeedType:   npool.FeedType(npool.FeedType_value[row.FeedType]),
+		Disabled:   row.Disabled,
 		CreatedAt:  row.CreatedAt,
 		UpdatedAt:  row.UpdatedAt,
 	}

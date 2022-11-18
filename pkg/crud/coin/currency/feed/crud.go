@@ -96,6 +96,9 @@ func UpdateSet(info *ent.CurrencyFeed, in *npool.CurrencyFeedReq) *ent.CurrencyF
 	if in.FeedSource != nil {
 		stm = stm.SetFeedSource(in.GetFeedSource())
 	}
+	if in.Disabled != nil {
+		stm = stm.SetDisabled(in.GetDisabled())
+	}
 
 	return stm
 }
@@ -177,6 +180,14 @@ func SetQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.CurrencyFeedQuery,
 		switch conds.GetCoinTypeID().GetOp() {
 		case cruder.EQ:
 			stm.Where(currencyfeed.CoinTypeID(uuid.MustParse(conds.GetCoinTypeID().GetValue())))
+		default:
+			return nil, fmt.Errorf("invalid currencyfeed field")
+		}
+	}
+	if conds.Disabled != nil {
+		switch conds.GetDisabled().GetOp() {
+		case cruder.EQ:
+			stm.Where(currencyfeed.Disabled(conds.GetDisabled().GetValue()))
 		default:
 			return nil, fmt.Errorf("invalid currencyfeed field")
 		}
