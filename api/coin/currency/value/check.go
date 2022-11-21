@@ -11,7 +11,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func validate(in *npool.CurrencyValueReq) error {
+func validate(in *npool.CurrencyReq) error {
 	if in.ID != nil {
 		if _, err := uuid.Parse(in.GetID()); err != nil {
 			logger.Sugar().Errorw("validate", "ID", in.GetID(), "error", err)
@@ -49,7 +49,7 @@ func validate(in *npool.CurrencyValueReq) error {
 	return nil
 }
 
-func validateMany(in []*npool.CurrencyValueReq) error {
+func validateMany(in []*npool.CurrencyReq) error {
 	for _, info := range in {
 		if err := validate(info); err != nil {
 			return err
@@ -76,7 +76,7 @@ func validateConds(conds *npool.Conds) error {
 	return nil
 }
 
-func validateUpdate(in *npool.CurrencyValueReq) error {
+func validateUpdate(in *npool.CurrencyReq) error {
 	if _, err := uuid.Parse(in.GetID()); err != nil {
 		logger.Sugar().Errorw("validate", "ID", in.GetID(), "error", err)
 		return err

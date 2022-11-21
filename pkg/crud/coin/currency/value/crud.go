@@ -21,7 +21,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func CreateSet(c *ent.CurrencyValueCreate, in *npool.CurrencyValueReq) *ent.CurrencyValueCreate {
+func CreateSet(c *ent.CurrencyValueCreate, in *npool.CurrencyReq) *ent.CurrencyValueCreate {
 	if in.ID != nil {
 		c.SetID(uuid.MustParse(in.GetID()))
 	}
@@ -40,7 +40,7 @@ func CreateSet(c *ent.CurrencyValueCreate, in *npool.CurrencyValueReq) *ent.Curr
 	return c
 }
 
-func Create(ctx context.Context, in *npool.CurrencyValueReq) (*ent.CurrencyValue, error) {
+func Create(ctx context.Context, in *npool.CurrencyReq) (*ent.CurrencyValue, error) {
 	var info *ent.CurrencyValue
 	var err error
 
@@ -66,7 +66,7 @@ func Create(ctx context.Context, in *npool.CurrencyValueReq) (*ent.CurrencyValue
 	return info, nil
 }
 
-func CreateBulk(ctx context.Context, in []*npool.CurrencyValueReq) ([]*ent.CurrencyValue, error) {
+func CreateBulk(ctx context.Context, in []*npool.CurrencyReq) ([]*ent.CurrencyValue, error) {
 	var err error
 	rows := []*ent.CurrencyValue{}
 
@@ -94,7 +94,7 @@ func CreateBulk(ctx context.Context, in []*npool.CurrencyValueReq) ([]*ent.Curre
 	return rows, nil
 }
 
-func UpdateSet(info *ent.CurrencyValue, in *npool.CurrencyValueReq) *ent.CurrencyValueUpdateOne {
+func UpdateSet(info *ent.CurrencyValue, in *npool.CurrencyReq) *ent.CurrencyValueUpdateOne {
 	stm := info.Update()
 
 	if in.MarketValueHigh != nil {
@@ -107,7 +107,7 @@ func UpdateSet(info *ent.CurrencyValue, in *npool.CurrencyValueReq) *ent.Currenc
 	return stm
 }
 
-func Update(ctx context.Context, in *npool.CurrencyValueReq) (*ent.CurrencyValue, error) {
+func Update(ctx context.Context, in *npool.CurrencyReq) (*ent.CurrencyValue, error) {
 	var info *ent.CurrencyValue
 	var err error
 

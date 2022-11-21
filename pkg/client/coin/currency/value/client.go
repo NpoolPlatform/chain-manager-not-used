@@ -34,9 +34,9 @@ func withCRUD(ctx context.Context, handler handler) (cruder.Any, error) {
 	return handler(_ctx, cli)
 }
 
-func CreateCurrencyValue(ctx context.Context, in *npool.CurrencyValueReq) (*npool.CurrencyValue, error) {
+func CreateCurrency(ctx context.Context, in *npool.CurrencyReq) (*npool.Currency, error) {
 	info, err := withCRUD(ctx, func(_ctx context.Context, cli npool.ManagerClient) (cruder.Any, error) {
-		resp, err := cli.CreateCurrencyValue(ctx, &npool.CreateCurrencyValueRequest{
+		resp, err := cli.CreateCurrency(ctx, &npool.CreateCurrencyRequest{
 			Info: in,
 		})
 		if err != nil {
@@ -47,12 +47,12 @@ func CreateCurrencyValue(ctx context.Context, in *npool.CurrencyValueReq) (*npoo
 	if err != nil {
 		return nil, fmt.Errorf("fail create currencyvalue: %v", err)
 	}
-	return info.(*npool.CurrencyValue), nil
+	return info.(*npool.Currency), nil
 }
 
-func CreateCurrencyValues(ctx context.Context, in []*npool.CurrencyValueReq) ([]*npool.CurrencyValue, error) {
+func CreateCurrencys(ctx context.Context, in []*npool.CurrencyReq) ([]*npool.Currency, error) {
 	infos, err := withCRUD(ctx, func(_ctx context.Context, cli npool.ManagerClient) (cruder.Any, error) {
-		resp, err := cli.CreateCurrencyValues(ctx, &npool.CreateCurrencyValuesRequest{
+		resp, err := cli.CreateCurrencys(ctx, &npool.CreateCurrencysRequest{
 			Infos: in,
 		})
 		if err != nil {
@@ -63,12 +63,12 @@ func CreateCurrencyValues(ctx context.Context, in []*npool.CurrencyValueReq) ([]
 	if err != nil {
 		return nil, fmt.Errorf("fail create currencyvalues: %v", err)
 	}
-	return infos.([]*npool.CurrencyValue), nil
+	return infos.([]*npool.Currency), nil
 }
 
-func UpdateCurrencyValue(ctx context.Context, in *npool.CurrencyValueReq) (*npool.CurrencyValue, error) {
+func UpdateCurrency(ctx context.Context, in *npool.CurrencyReq) (*npool.Currency, error) {
 	info, err := withCRUD(ctx, func(_ctx context.Context, cli npool.ManagerClient) (cruder.Any, error) {
-		resp, err := cli.UpdateCurrencyValue(ctx, &npool.UpdateCurrencyValueRequest{
+		resp, err := cli.UpdateCurrency(ctx, &npool.UpdateCurrencyRequest{
 			Info: in,
 		})
 		if err != nil {
@@ -79,12 +79,12 @@ func UpdateCurrencyValue(ctx context.Context, in *npool.CurrencyValueReq) (*npoo
 	if err != nil {
 		return nil, fmt.Errorf("fail update currencyvalue: %v", err)
 	}
-	return info.(*npool.CurrencyValue), nil
+	return info.(*npool.Currency), nil
 }
 
-func GetCurrencyValue(ctx context.Context, id string) (*npool.CurrencyValue, error) {
+func GetCurrency(ctx context.Context, id string) (*npool.Currency, error) {
 	info, err := withCRUD(ctx, func(_ctx context.Context, cli npool.ManagerClient) (cruder.Any, error) {
-		resp, err := cli.GetCurrencyValue(ctx, &npool.GetCurrencyValueRequest{
+		resp, err := cli.GetCurrency(ctx, &npool.GetCurrencyRequest{
 			ID: id,
 		})
 		if err != nil {
@@ -95,12 +95,12 @@ func GetCurrencyValue(ctx context.Context, id string) (*npool.CurrencyValue, err
 	if err != nil {
 		return nil, fmt.Errorf("fail get currencyvalue: %v", err)
 	}
-	return info.(*npool.CurrencyValue), nil
+	return info.(*npool.Currency), nil
 }
 
-func GetCurrencyValueOnly(ctx context.Context, conds *npool.Conds) (*npool.CurrencyValue, error) {
+func GetCurrencyOnly(ctx context.Context, conds *npool.Conds) (*npool.Currency, error) {
 	info, err := withCRUD(ctx, func(_ctx context.Context, cli npool.ManagerClient) (cruder.Any, error) {
-		resp, err := cli.GetCurrencyValueOnly(ctx, &npool.GetCurrencyValueOnlyRequest{
+		resp, err := cli.GetCurrencyOnly(ctx, &npool.GetCurrencyOnlyRequest{
 			Conds: conds,
 		})
 		if err != nil {
@@ -111,13 +111,13 @@ func GetCurrencyValueOnly(ctx context.Context, conds *npool.Conds) (*npool.Curre
 	if err != nil {
 		return nil, fmt.Errorf("fail get currencyvalue: %v", err)
 	}
-	return info.(*npool.CurrencyValue), nil
+	return info.(*npool.Currency), nil
 }
 
-func GetCurrencyValues(ctx context.Context, conds *npool.Conds, limit, offset int32) ([]*npool.CurrencyValue, uint32, error) {
+func GetCurrencys(ctx context.Context, conds *npool.Conds, limit, offset int32) ([]*npool.Currency, uint32, error) {
 	var total uint32
 	infos, err := withCRUD(ctx, func(_ctx context.Context, cli npool.ManagerClient) (cruder.Any, error) {
-		resp, err := cli.GetCurrencyValues(ctx, &npool.GetCurrencyValuesRequest{
+		resp, err := cli.GetCurrencys(ctx, &npool.GetCurrencysRequest{
 			Conds:  conds,
 			Limit:  limit,
 			Offset: offset,
@@ -131,12 +131,12 @@ func GetCurrencyValues(ctx context.Context, conds *npool.Conds, limit, offset in
 	if err != nil {
 		return nil, 0, fmt.Errorf("fail get currencyvalues: %v", err)
 	}
-	return infos.([]*npool.CurrencyValue), total, nil
+	return infos.([]*npool.Currency), total, nil
 }
 
-func ExistCurrencyValue(ctx context.Context, id string) (bool, error) {
+func ExistCurrency(ctx context.Context, id string) (bool, error) {
 	infos, err := withCRUD(ctx, func(_ctx context.Context, cli npool.ManagerClient) (cruder.Any, error) {
-		resp, err := cli.ExistCurrencyValue(ctx, &npool.ExistCurrencyValueRequest{
+		resp, err := cli.ExistCurrency(ctx, &npool.ExistCurrencyRequest{
 			ID: id,
 		})
 		if err != nil {
@@ -150,9 +150,9 @@ func ExistCurrencyValue(ctx context.Context, id string) (bool, error) {
 	return infos.(bool), nil
 }
 
-func ExistCurrencyValueConds(ctx context.Context, conds *npool.Conds) (bool, error) {
+func ExistCurrencyConds(ctx context.Context, conds *npool.Conds) (bool, error) {
 	infos, err := withCRUD(ctx, func(_ctx context.Context, cli npool.ManagerClient) (cruder.Any, error) {
-		resp, err := cli.ExistCurrencyValueConds(ctx, &npool.ExistCurrencyValueCondsRequest{
+		resp, err := cli.ExistCurrencyConds(ctx, &npool.ExistCurrencyCondsRequest{
 			Conds: conds,
 		})
 		if err != nil {
@@ -166,9 +166,9 @@ func ExistCurrencyValueConds(ctx context.Context, conds *npool.Conds) (bool, err
 	return infos.(bool), nil
 }
 
-func CountCurrencyValues(ctx context.Context, conds *npool.Conds) (uint32, error) {
+func CountCurrencys(ctx context.Context, conds *npool.Conds) (uint32, error) {
 	infos, err := withCRUD(ctx, func(_ctx context.Context, cli npool.ManagerClient) (cruder.Any, error) {
-		resp, err := cli.CountCurrencyValues(ctx, &npool.CountCurrencyValuesRequest{
+		resp, err := cli.CountCurrencys(ctx, &npool.CountCurrencysRequest{
 			Conds: conds,
 		})
 		if err != nil {
@@ -182,9 +182,9 @@ func CountCurrencyValues(ctx context.Context, conds *npool.Conds) (uint32, error
 	return infos.(uint32), nil
 }
 
-func DeleteCurrencyValue(ctx context.Context, id string) (*npool.CurrencyValue, error) {
+func DeleteCurrency(ctx context.Context, id string) (*npool.Currency, error) {
 	infos, err := withCRUD(ctx, func(_ctx context.Context, cli npool.ManagerClient) (cruder.Any, error) {
-		resp, err := cli.DeleteCurrencyValue(ctx, &npool.DeleteCurrencyValueRequest{
+		resp, err := cli.DeleteCurrency(ctx, &npool.DeleteCurrencyRequest{
 			ID: id,
 		})
 		if err != nil {
@@ -195,5 +195,5 @@ func DeleteCurrencyValue(ctx context.Context, id string) (*npool.CurrencyValue, 
 	if err != nil {
 		return nil, fmt.Errorf("fail delete currencyvalue: %v", err)
 	}
-	return infos.(*npool.CurrencyValue), nil
+	return infos.(*npool.Currency), nil
 }

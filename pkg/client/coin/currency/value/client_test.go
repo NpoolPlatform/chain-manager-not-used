@@ -31,7 +31,7 @@ func init() {
 	}
 }
 
-var currencyValue = &npool.CurrencyValue{
+var currencyValue = &npool.Currency{
 	ID:              uuid.NewString(),
 	CoinTypeID:      uuid.NewString(),
 	FeedSourceID:    uuid.NewString(),
@@ -39,7 +39,7 @@ var currencyValue = &npool.CurrencyValue{
 	MarketValueLow:  "97.123",
 }
 
-var currencyValueReq = &npool.CurrencyValueReq{
+var currencyValueReq = &npool.CurrencyReq{
 	ID:              &currencyValue.ID,
 	CoinTypeID:      &currencyValue.CoinTypeID,
 	FeedSourceID:    &currencyValue.FeedSourceID,
@@ -47,8 +47,8 @@ var currencyValueReq = &npool.CurrencyValueReq{
 	MarketValueLow:  &currencyValue.MarketValueLow,
 }
 
-func createCurrencyValue(t *testing.T) {
-	info, err := CreateCurrencyValue(context.Background(), currencyValueReq)
+func createCurrency(t *testing.T) {
+	info, err := CreateCurrency(context.Background(), currencyValueReq)
 	if assert.Nil(t, err) {
 		currencyValue.CreatedAt = info.CreatedAt
 		currencyValue.UpdatedAt = info.UpdatedAt
@@ -56,26 +56,26 @@ func createCurrencyValue(t *testing.T) {
 	}
 }
 
-func updateCurrencyValue(t *testing.T) {
+func updateCurrency(t *testing.T) {
 }
 
-func createCurrencyValues(t *testing.T) {
+func createCurrencys(t *testing.T) {
 }
 
-func getCurrencyValue(t *testing.T) {
-	info, err := GetCurrencyValue(context.Background(), currencyValue.ID)
+func getCurrency(t *testing.T) {
+	info, err := GetCurrency(context.Background(), currencyValue.ID)
 	if assert.Nil(t, err) {
 		assert.Equal(t, currencyValue, info)
 	}
 }
 
-func deleteCurrencyValue(t *testing.T) {
-	info, err := DeleteCurrencyValue(context.Background(), currencyValue.ID)
+func deleteCurrency(t *testing.T) {
+	info, err := DeleteCurrency(context.Background(), currencyValue.ID)
 	if assert.Nil(t, err) {
 		assert.Equal(t, currencyValue, info)
 	}
 
-	_, err = GetCurrencyValue(context.Background(), info.ID)
+	_, err = GetCurrency(context.Background(), info.ID)
 	assert.NotNil(t, err)
 }
 
@@ -90,9 +90,9 @@ func TestClient(t *testing.T) {
 		return grpc.Dial(fmt.Sprintf("localhost:%v", gport), grpc.WithTransportCredentials(insecure.NewCredentials()))
 	})
 
-	t.Run("createCurrencyValue", createCurrencyValue)
-	t.Run("updateCurrencyValue", updateCurrencyValue)
-	t.Run("createCurrencyValues", createCurrencyValues)
-	t.Run("getCurrencyValue", getCurrencyValue)
-	t.Run("deleteCurrencyValue", deleteCurrencyValue)
+	t.Run("createCurrency", createCurrency)
+	t.Run("updateCurrency", updateCurrency)
+	t.Run("createCurrencys", createCurrencys)
+	t.Run("getCurrency", getCurrency)
+	t.Run("deleteCurrency", deleteCurrency)
 }

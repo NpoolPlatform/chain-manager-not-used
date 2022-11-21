@@ -44,7 +44,7 @@ var (
 	marketValueHigh = entity.MarketValueHigh.String()
 	marketValueLow  = entity.MarketValueLow.String()
 
-	req = npool.CurrencyValueReq{
+	req = npool.CurrencyReq{
 		ID:              &id,
 		CoinTypeID:      &coinTypeID,
 		FeedSourceID:    &feedSourceID,
@@ -83,7 +83,7 @@ func createBulk(t *testing.T) {
 		},
 	}
 
-	reqs := []*npool.CurrencyValueReq{}
+	reqs := []*npool.CurrencyReq{}
 	for _, _entity := range entities {
 		_id := _entity.ID.String()
 		_coinTypeID := _entity.CoinTypeID.String()
@@ -91,7 +91,7 @@ func createBulk(t *testing.T) {
 		_marketValueHigh := _entity.MarketValueHigh.String()
 		_marketValueLow := _entity.MarketValueLow.String()
 
-		reqs = append(reqs, &npool.CurrencyValueReq{
+		reqs = append(reqs, &npool.CurrencyReq{
 			ID:              &_id,
 			CoinTypeID:      &_coinTypeID,
 			FeedSourceID:    &_feedSourceID,

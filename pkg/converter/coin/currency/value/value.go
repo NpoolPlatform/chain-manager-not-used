@@ -5,12 +5,12 @@ import (
 	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/coin/currency/value"
 )
 
-func Ent2Grpc(row *ent.CurrencyValue) *npool.CurrencyValue {
+func Ent2Grpc(row *ent.CurrencyValue) *npool.Currency {
 	if row == nil {
 		return nil
 	}
 
-	return &npool.CurrencyValue{
+	return &npool.Currency{
 		ID:              row.ID.String(),
 		CoinTypeID:      row.CoinTypeID.String(),
 		FeedSourceID:    row.FeedSourceID.String(),
@@ -21,8 +21,8 @@ func Ent2Grpc(row *ent.CurrencyValue) *npool.CurrencyValue {
 	}
 }
 
-func Ent2GrpcMany(rows []*ent.CurrencyValue) []*npool.CurrencyValue {
-	infos := []*npool.CurrencyValue{}
+func Ent2GrpcMany(rows []*ent.CurrencyValue) []*npool.Currency {
+	infos := []*npool.Currency{}
 	for _, row := range rows {
 		infos = append(infos, Ent2Grpc(row))
 	}

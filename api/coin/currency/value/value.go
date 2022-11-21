@@ -21,16 +21,16 @@ import (
 	"github.com/google/uuid"
 )
 
-func (s *Server) CreateCurrencyValue(
+func (s *Server) CreateCurrency(
 	ctx context.Context,
-	in *npool.CreateCurrencyValueRequest,
+	in *npool.CreateCurrencyRequest,
 ) (
-	*npool.CreateCurrencyValueResponse,
+	*npool.CreateCurrencyResponse,
 	error,
 ) {
 	var err error
 
-	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "CreateCurrencyValue")
+	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "CreateCurrency")
 	defer span.End()
 
 	defer func() {
@@ -41,7 +41,7 @@ func (s *Server) CreateCurrencyValue(
 	}()
 
 	if err := validate(in.GetInfo()); err != nil {
-		return &npool.CreateCurrencyValueResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.CreateCurrencyResponse{}, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	span = commontracer.TraceInvoker(span, "currencyvalue", "crud", "Create")
@@ -49,24 +49,24 @@ func (s *Server) CreateCurrencyValue(
 	info, err := crud.Create(ctx, in.GetInfo())
 	if err != nil {
 		logger.Sugar().Errorf("fail create currencyvalue: %v", err.Error())
-		return &npool.CreateCurrencyValueResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.CreateCurrencyResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
-	return &npool.CreateCurrencyValueResponse{
+	return &npool.CreateCurrencyResponse{
 		Info: converter.Ent2Grpc(info),
 	}, nil
 }
 
-func (s *Server) CreateCurrencyValues(
+func (s *Server) CreateCurrencys(
 	ctx context.Context,
-	in *npool.CreateCurrencyValuesRequest,
+	in *npool.CreateCurrencysRequest,
 ) (
-	*npool.CreateCurrencyValuesResponse,
+	*npool.CreateCurrencysResponse,
 	error,
 ) {
 	var err error
 
-	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "CreateCurrencyValues")
+	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "CreateCurrencys")
 	defer span.End()
 
 	defer func() {
@@ -77,11 +77,11 @@ func (s *Server) CreateCurrencyValues(
 	}()
 
 	if len(in.GetInfos()) == 0 {
-		return &npool.CreateCurrencyValuesResponse{}, status.Error(codes.InvalidArgument, "Infos is empty")
+		return &npool.CreateCurrencysResponse{}, status.Error(codes.InvalidArgument, "Infos is empty")
 	}
 
 	if err := validateMany(in.GetInfos()); err != nil {
-		return &npool.CreateCurrencyValuesResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.CreateCurrencysResponse{}, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	span = commontracer.TraceInvoker(span, "currencyvalue", "crud", "CreateBulk")
@@ -89,24 +89,24 @@ func (s *Server) CreateCurrencyValues(
 	rows, err := crud.CreateBulk(ctx, in.GetInfos())
 	if err != nil {
 		logger.Sugar().Errorf("fail create currencyvalues: %v", err)
-		return &npool.CreateCurrencyValuesResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.CreateCurrencysResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
-	return &npool.CreateCurrencyValuesResponse{
+	return &npool.CreateCurrencysResponse{
 		Infos: converter.Ent2GrpcMany(rows),
 	}, nil
 }
 
-func (s *Server) UpdateCurrencyValue(
+func (s *Server) UpdateCurrency(
 	ctx context.Context,
-	in *npool.UpdateCurrencyValueRequest,
+	in *npool.UpdateCurrencyRequest,
 ) (
-	*npool.UpdateCurrencyValueResponse,
+	*npool.UpdateCurrencyResponse,
 	error,
 ) {
 	var err error
 
-	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "UpdateCurrencyValue")
+	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "UpdateCurrency")
 	defer span.End()
 
 	defer func() {
@@ -117,8 +117,8 @@ func (s *Server) UpdateCurrencyValue(
 	}()
 
 	if err := validateUpdate(in.GetInfo()); err != nil {
-		logger.Sugar().Errorw("UpdateCurrencyValue", "ID", in.GetInfo().GetID(), "error", err)
-		return &npool.UpdateCurrencyValueResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		logger.Sugar().Errorw("UpdateCurrency", "ID", in.GetInfo().GetID(), "error", err)
+		return &npool.UpdateCurrencyResponse{}, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	span = commontracer.TraceInvoker(span, "currencyvalue", "crud", "Update")
@@ -126,24 +126,24 @@ func (s *Server) UpdateCurrencyValue(
 	info, err := crud.Update(ctx, in.GetInfo())
 	if err != nil {
 		logger.Sugar().Errorf("fail create currencyvalue: %v", err.Error())
-		return &npool.UpdateCurrencyValueResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.UpdateCurrencyResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
-	return &npool.UpdateCurrencyValueResponse{
+	return &npool.UpdateCurrencyResponse{
 		Info: converter.Ent2Grpc(info),
 	}, nil
 }
 
-func (s *Server) GetCurrencyValue(
+func (s *Server) GetCurrency(
 	ctx context.Context,
-	in *npool.GetCurrencyValueRequest,
+	in *npool.GetCurrencyRequest,
 ) (
-	*npool.GetCurrencyValueResponse,
+	*npool.GetCurrencyResponse,
 	error,
 ) {
 	var err error
 
-	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "GetCurrencyValue")
+	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "GetCurrency")
 	defer span.End()
 
 	defer func() {
@@ -157,7 +157,7 @@ func (s *Server) GetCurrencyValue(
 
 	id, err := uuid.Parse(in.GetID())
 	if err != nil {
-		return &npool.GetCurrencyValueResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.GetCurrencyResponse{}, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	span = commontracer.TraceInvoker(span, "currencyvalue", "crud", "Row")
@@ -165,24 +165,24 @@ func (s *Server) GetCurrencyValue(
 	info, err := crud.Row(ctx, id)
 	if err != nil {
 		logger.Sugar().Errorf("fail get currencyvalue: %v", err)
-		return &npool.GetCurrencyValueResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.GetCurrencyResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
-	return &npool.GetCurrencyValueResponse{
+	return &npool.GetCurrencyResponse{
 		Info: converter.Ent2Grpc(info),
 	}, nil
 }
 
-func (s *Server) GetCurrencyValueOnly(
+func (s *Server) GetCurrencyOnly(
 	ctx context.Context,
-	in *npool.GetCurrencyValueOnlyRequest,
+	in *npool.GetCurrencyOnlyRequest,
 ) (
-	*npool.GetCurrencyValueOnlyResponse,
+	*npool.GetCurrencyOnlyResponse,
 	error,
 ) {
 	var err error
 
-	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "GetCurrencyValueOnly")
+	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "GetCurrencyOnly")
 	defer span.End()
 
 	defer func() {
@@ -193,7 +193,7 @@ func (s *Server) GetCurrencyValueOnly(
 	}()
 
 	if err := validateConds(in.GetConds()); err != nil {
-		return &npool.GetCurrencyValueOnlyResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.GetCurrencyOnlyResponse{}, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	span = commontracer.TraceInvoker(span, "currencyvalue", "crud", "RowOnly")
@@ -201,18 +201,18 @@ func (s *Server) GetCurrencyValueOnly(
 	info, err := crud.RowOnly(ctx, in.GetConds())
 	if err != nil {
 		logger.Sugar().Errorf("fail get currencyvalues: %v", err)
-		return &npool.GetCurrencyValueOnlyResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.GetCurrencyOnlyResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
-	return &npool.GetCurrencyValueOnlyResponse{
+	return &npool.GetCurrencyOnlyResponse{
 		Info: converter.Ent2Grpc(info),
 	}, nil
 }
 
-func (s *Server) GetCurrencyValues(ctx context.Context, in *npool.GetCurrencyValuesRequest) (*npool.GetCurrencyValuesResponse, error) {
+func (s *Server) GetCurrencys(ctx context.Context, in *npool.GetCurrencysRequest) (*npool.GetCurrencysResponse, error) {
 	var err error
 
-	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "GetCurrencyValues")
+	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "GetCurrencys")
 	defer span.End()
 
 	defer func() {
@@ -225,7 +225,7 @@ func (s *Server) GetCurrencyValues(ctx context.Context, in *npool.GetCurrencyVal
 	span = commontracer.TraceOffsetLimit(span, int(in.GetOffset()), int(in.GetLimit()))
 
 	if err := validateConds(in.GetConds()); err != nil {
-		return &npool.GetCurrencyValuesResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.GetCurrencysResponse{}, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	span = commontracer.TraceInvoker(span, "currencyvalue", "crud", "Rows")
@@ -233,19 +233,19 @@ func (s *Server) GetCurrencyValues(ctx context.Context, in *npool.GetCurrencyVal
 	rows, total, err := crud.Rows(ctx, in.GetConds(), int(in.GetOffset()), int(in.GetLimit()))
 	if err != nil {
 		logger.Sugar().Errorf("fail get currencyvalues: %v", err)
-		return &npool.GetCurrencyValuesResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.GetCurrencysResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
-	return &npool.GetCurrencyValuesResponse{
+	return &npool.GetCurrencysResponse{
 		Infos: converter.Ent2GrpcMany(rows),
 		Total: uint32(total),
 	}, nil
 }
 
-func (s *Server) ExistCurrencyValue(ctx context.Context, in *npool.ExistCurrencyValueRequest) (*npool.ExistCurrencyValueResponse, error) {
+func (s *Server) ExistCurrency(ctx context.Context, in *npool.ExistCurrencyRequest) (*npool.ExistCurrencyResponse, error) {
 	var err error
 
-	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "ExistCurrencyValue")
+	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "ExistCurrency")
 	defer span.End()
 
 	defer func() {
@@ -259,7 +259,7 @@ func (s *Server) ExistCurrencyValue(ctx context.Context, in *npool.ExistCurrency
 
 	id, err := uuid.Parse(in.GetID())
 	if err != nil {
-		return &npool.ExistCurrencyValueResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.ExistCurrencyResponse{}, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	span = commontracer.TraceInvoker(span, "currencyvalue", "crud", "Exist")
@@ -267,19 +267,19 @@ func (s *Server) ExistCurrencyValue(ctx context.Context, in *npool.ExistCurrency
 	exist, err := crud.Exist(ctx, id)
 	if err != nil {
 		logger.Sugar().Errorf("fail check currencyvalue: %v", err)
-		return &npool.ExistCurrencyValueResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.ExistCurrencyResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
-	return &npool.ExistCurrencyValueResponse{
+	return &npool.ExistCurrencyResponse{
 		Info: exist,
 	}, nil
 }
 
-func (s *Server) ExistCurrencyValueConds(ctx context.Context,
-	in *npool.ExistCurrencyValueCondsRequest) (*npool.ExistCurrencyValueCondsResponse, error) {
+func (s *Server) ExistCurrencyConds(ctx context.Context,
+	in *npool.ExistCurrencyCondsRequest) (*npool.ExistCurrencyCondsResponse, error) {
 	var err error
 
-	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "ExistCurrencyValueConds")
+	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "ExistCurrencyConds")
 	defer span.End()
 
 	defer func() {
@@ -290,7 +290,7 @@ func (s *Server) ExistCurrencyValueConds(ctx context.Context,
 	}()
 
 	if err := validateConds(in.GetConds()); err != nil {
-		return &npool.ExistCurrencyValueCondsResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.ExistCurrencyCondsResponse{}, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	span = commontracer.TraceInvoker(span, "currencyvalue", "crud", "ExistConds")
@@ -298,24 +298,24 @@ func (s *Server) ExistCurrencyValueConds(ctx context.Context,
 	exist, err := crud.ExistConds(ctx, in.GetConds())
 	if err != nil {
 		logger.Sugar().Errorf("fail check currencyvalue: %v", err)
-		return &npool.ExistCurrencyValueCondsResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.ExistCurrencyCondsResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
-	return &npool.ExistCurrencyValueCondsResponse{
+	return &npool.ExistCurrencyCondsResponse{
 		Info: exist,
 	}, nil
 }
 
-func (s *Server) CountCurrencyValues(
+func (s *Server) CountCurrencys(
 	ctx context.Context,
-	in *npool.CountCurrencyValuesRequest,
+	in *npool.CountCurrencysRequest,
 ) (
-	*npool.CountCurrencyValuesResponse,
+	*npool.CountCurrencysResponse,
 	error,
 ) {
 	var err error
 
-	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "CountCurrencyValues")
+	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "CountCurrencys")
 	defer span.End()
 
 	defer func() {
@@ -326,7 +326,7 @@ func (s *Server) CountCurrencyValues(
 	}()
 
 	if err := validateConds(in.GetConds()); err != nil {
-		return &npool.CountCurrencyValuesResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.CountCurrencysResponse{}, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	span = commontracer.TraceInvoker(span, "currencyvalue", "crud", "Count")
@@ -334,24 +334,24 @@ func (s *Server) CountCurrencyValues(
 	total, err := crud.Count(ctx, in.GetConds())
 	if err != nil {
 		logger.Sugar().Errorf("fail count currencyvalues: %v", err)
-		return &npool.CountCurrencyValuesResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.CountCurrencysResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
-	return &npool.CountCurrencyValuesResponse{
+	return &npool.CountCurrencysResponse{
 		Info: total,
 	}, nil
 }
 
-func (s *Server) DeleteCurrencyValue(
+func (s *Server) DeleteCurrency(
 	ctx context.Context,
-	in *npool.DeleteCurrencyValueRequest,
+	in *npool.DeleteCurrencyRequest,
 ) (
-	*npool.DeleteCurrencyValueResponse,
+	*npool.DeleteCurrencyResponse,
 	error,
 ) {
 	var err error
 
-	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "DeleteCurrencyValue")
+	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "DeleteCurrency")
 	defer span.End()
 
 	defer func() {
@@ -365,7 +365,7 @@ func (s *Server) DeleteCurrencyValue(
 
 	id, err := uuid.Parse(in.GetID())
 	if err != nil {
-		return &npool.DeleteCurrencyValueResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.DeleteCurrencyResponse{}, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	span = commontracer.TraceInvoker(span, "currencyvalue", "crud", "Delete")
@@ -373,10 +373,10 @@ func (s *Server) DeleteCurrencyValue(
 	info, err := crud.Delete(ctx, id)
 	if err != nil {
 		logger.Sugar().Errorf("fail delete currencyvalue: %v", err)
-		return &npool.DeleteCurrencyValueResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.DeleteCurrencyResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
-	return &npool.DeleteCurrencyValueResponse{
+	return &npool.DeleteCurrencyResponse{
 		Info: converter.Ent2Grpc(info),
 	}, nil
 }
