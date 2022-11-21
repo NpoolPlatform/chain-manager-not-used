@@ -50,9 +50,9 @@ func CreateCurrency(ctx context.Context, in *npool.CurrencyReq) (*npool.Currency
 	return info.(*npool.Currency), nil
 }
 
-func CreateCurrencys(ctx context.Context, in []*npool.CurrencyReq) ([]*npool.Currency, error) {
+func CreateCurrencies(ctx context.Context, in []*npool.CurrencyReq) ([]*npool.Currency, error) {
 	infos, err := withCRUD(ctx, func(_ctx context.Context, cli npool.ManagerClient) (cruder.Any, error) {
-		resp, err := cli.CreateCurrencys(ctx, &npool.CreateCurrencysRequest{
+		resp, err := cli.CreateCurrencies(ctx, &npool.CreateCurrenciesRequest{
 			Infos: in,
 		})
 		if err != nil {
@@ -114,10 +114,10 @@ func GetCurrencyOnly(ctx context.Context, conds *npool.Conds) (*npool.Currency, 
 	return info.(*npool.Currency), nil
 }
 
-func GetCurrencys(ctx context.Context, conds *npool.Conds, limit, offset int32) ([]*npool.Currency, uint32, error) {
+func GetCurrencies(ctx context.Context, conds *npool.Conds, limit, offset int32) ([]*npool.Currency, uint32, error) {
 	var total uint32
 	infos, err := withCRUD(ctx, func(_ctx context.Context, cli npool.ManagerClient) (cruder.Any, error) {
-		resp, err := cli.GetCurrencys(ctx, &npool.GetCurrencysRequest{
+		resp, err := cli.GetCurrencies(ctx, &npool.GetCurrenciesRequest{
 			Conds:  conds,
 			Limit:  limit,
 			Offset: offset,
@@ -166,9 +166,9 @@ func ExistCurrencyConds(ctx context.Context, conds *npool.Conds) (bool, error) {
 	return infos.(bool), nil
 }
 
-func CountCurrencys(ctx context.Context, conds *npool.Conds) (uint32, error) {
+func CountCurrencies(ctx context.Context, conds *npool.Conds) (uint32, error) {
 	infos, err := withCRUD(ctx, func(_ctx context.Context, cli npool.ManagerClient) (cruder.Any, error) {
-		resp, err := cli.CountCurrencys(ctx, &npool.CountCurrencysRequest{
+		resp, err := cli.CountCurrencies(ctx, &npool.CountCurrenciesRequest{
 			Conds: conds,
 		})
 		if err != nil {

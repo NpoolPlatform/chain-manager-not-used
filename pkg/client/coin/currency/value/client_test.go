@@ -59,7 +59,7 @@ func createCurrency(t *testing.T) {
 func updateCurrency(t *testing.T) {
 }
 
-func createCurrencys(t *testing.T) {
+func createCurrencies(t *testing.T) {
 }
 
 func getCurrency(t *testing.T) {
@@ -92,7 +92,7 @@ func TestClient(t *testing.T) {
 
 	t.Run("createCurrency", createCurrency)
 	t.Run("updateCurrency", updateCurrency)
-	t.Run("createCurrencys", createCurrencys)
+	t.Run("createCurrencies", createCurrencies)
 	t.Run("getCurrency", getCurrency)
 	t.Run("deleteCurrency", deleteCurrency)
 }
