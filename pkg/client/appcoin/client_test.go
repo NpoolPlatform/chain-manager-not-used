@@ -39,6 +39,7 @@ var appCoin = &npool.AppCoin{
 	Logo:                     uuid.NewString(),
 	ForPay:                   false,
 	WithdrawAutoReviewAmount: "89.123",
+	DailyRewardAmount:        "89.122",
 }
 
 var appCoinReq = &npool.AppCoinReq{
@@ -49,6 +50,7 @@ var appCoinReq = &npool.AppCoinReq{
 	Logo:                     &appCoin.Logo,
 	ForPay:                   &appCoin.ForPay,
 	WithdrawAutoReviewAmount: &appCoin.WithdrawAutoReviewAmount,
+	DailyRewardAmount:        &appCoin.DailyRewardAmount,
 }
 
 func createAppCoin(t *testing.T) {
@@ -67,10 +69,12 @@ func updateAppCoin(t *testing.T) {
 
 	appCoinReq.Name = &name
 	appCoinReq.WithdrawAutoReviewAmount = &withdrawAutoReviewdAmount
+	appCoinReq.DailyRewardAmount = &withdrawAutoReviewdAmount
 	appCoinReq.ForPay = &forPay
 
 	appCoin.Name = name
 	appCoin.WithdrawAutoReviewAmount = withdrawAutoReviewdAmount
+	appCoin.DailyRewardAmount = withdrawAutoReviewdAmount
 	appCoin.ForPay = forPay
 
 	info, err := UpdateAppCoin(context.Background(), appCoinReq)

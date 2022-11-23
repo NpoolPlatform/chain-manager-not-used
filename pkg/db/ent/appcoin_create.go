@@ -178,6 +178,20 @@ func (acc *AppCoinCreate) SetNillableDisabled(b *bool) *AppCoinCreate {
 	return acc
 }
 
+// SetDailyRewardAmount sets the "daily_reward_amount" field.
+func (acc *AppCoinCreate) SetDailyRewardAmount(d decimal.Decimal) *AppCoinCreate {
+	acc.mutation.SetDailyRewardAmount(d)
+	return acc
+}
+
+// SetNillableDailyRewardAmount sets the "daily_reward_amount" field if the given value is not nil.
+func (acc *AppCoinCreate) SetNillableDailyRewardAmount(d *decimal.Decimal) *AppCoinCreate {
+	if d != nil {
+		acc.SetDailyRewardAmount(*d)
+	}
+	return acc
+}
+
 // SetID sets the "id" field.
 func (acc *AppCoinCreate) SetID(u uuid.UUID) *AppCoinCreate {
 	acc.mutation.SetID(u)
@@ -330,6 +344,10 @@ func (acc *AppCoinCreate) defaults() error {
 		v := appcoin.DefaultDisabled
 		acc.mutation.SetDisabled(v)
 	}
+	if _, ok := acc.mutation.DailyRewardAmount(); !ok {
+		v := appcoin.DefaultDailyRewardAmount
+		acc.mutation.SetDailyRewardAmount(v)
+	}
 	if _, ok := acc.mutation.ID(); !ok {
 		if appcoin.DefaultID == nil {
 			return fmt.Errorf("ent: uninitialized appcoin.DefaultID (forgotten import ent/runtime?)")
@@ -475,6 +493,14 @@ func (acc *AppCoinCreate) createSpec() (*AppCoin, *sqlgraph.CreateSpec) {
 			Column: appcoin.FieldDisabled,
 		})
 		_node.Disabled = value
+	}
+	if value, ok := acc.mutation.DailyRewardAmount(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeOther,
+			Value:  value,
+			Column: appcoin.FieldDailyRewardAmount,
+		})
+		_node.DailyRewardAmount = value
 	}
 	return _node, _spec
 }
@@ -725,6 +751,24 @@ func (u *AppCoinUpsert) UpdateDisabled() *AppCoinUpsert {
 // ClearDisabled clears the value of the "disabled" field.
 func (u *AppCoinUpsert) ClearDisabled() *AppCoinUpsert {
 	u.SetNull(appcoin.FieldDisabled)
+	return u
+}
+
+// SetDailyRewardAmount sets the "daily_reward_amount" field.
+func (u *AppCoinUpsert) SetDailyRewardAmount(v decimal.Decimal) *AppCoinUpsert {
+	u.Set(appcoin.FieldDailyRewardAmount, v)
+	return u
+}
+
+// UpdateDailyRewardAmount sets the "daily_reward_amount" field to the value that was provided on create.
+func (u *AppCoinUpsert) UpdateDailyRewardAmount() *AppCoinUpsert {
+	u.SetExcluded(appcoin.FieldDailyRewardAmount)
+	return u
+}
+
+// ClearDailyRewardAmount clears the value of the "daily_reward_amount" field.
+func (u *AppCoinUpsert) ClearDailyRewardAmount() *AppCoinUpsert {
+	u.SetNull(appcoin.FieldDailyRewardAmount)
 	return u
 }
 
@@ -1006,6 +1050,27 @@ func (u *AppCoinUpsertOne) UpdateDisabled() *AppCoinUpsertOne {
 func (u *AppCoinUpsertOne) ClearDisabled() *AppCoinUpsertOne {
 	return u.Update(func(s *AppCoinUpsert) {
 		s.ClearDisabled()
+	})
+}
+
+// SetDailyRewardAmount sets the "daily_reward_amount" field.
+func (u *AppCoinUpsertOne) SetDailyRewardAmount(v decimal.Decimal) *AppCoinUpsertOne {
+	return u.Update(func(s *AppCoinUpsert) {
+		s.SetDailyRewardAmount(v)
+	})
+}
+
+// UpdateDailyRewardAmount sets the "daily_reward_amount" field to the value that was provided on create.
+func (u *AppCoinUpsertOne) UpdateDailyRewardAmount() *AppCoinUpsertOne {
+	return u.Update(func(s *AppCoinUpsert) {
+		s.UpdateDailyRewardAmount()
+	})
+}
+
+// ClearDailyRewardAmount clears the value of the "daily_reward_amount" field.
+func (u *AppCoinUpsertOne) ClearDailyRewardAmount() *AppCoinUpsertOne {
+	return u.Update(func(s *AppCoinUpsert) {
+		s.ClearDailyRewardAmount()
 	})
 }
 
@@ -1453,6 +1518,27 @@ func (u *AppCoinUpsertBulk) UpdateDisabled() *AppCoinUpsertBulk {
 func (u *AppCoinUpsertBulk) ClearDisabled() *AppCoinUpsertBulk {
 	return u.Update(func(s *AppCoinUpsert) {
 		s.ClearDisabled()
+	})
+}
+
+// SetDailyRewardAmount sets the "daily_reward_amount" field.
+func (u *AppCoinUpsertBulk) SetDailyRewardAmount(v decimal.Decimal) *AppCoinUpsertBulk {
+	return u.Update(func(s *AppCoinUpsert) {
+		s.SetDailyRewardAmount(v)
+	})
+}
+
+// UpdateDailyRewardAmount sets the "daily_reward_amount" field to the value that was provided on create.
+func (u *AppCoinUpsertBulk) UpdateDailyRewardAmount() *AppCoinUpsertBulk {
+	return u.Update(func(s *AppCoinUpsert) {
+		s.UpdateDailyRewardAmount()
+	})
+}
+
+// ClearDailyRewardAmount clears the value of the "daily_reward_amount" field.
+func (u *AppCoinUpsertBulk) ClearDailyRewardAmount() *AppCoinUpsertBulk {
+	return u.Update(func(s *AppCoinUpsert) {
+		s.ClearDailyRewardAmount()
 	})
 }
 

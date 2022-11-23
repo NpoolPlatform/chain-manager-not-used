@@ -37,6 +37,7 @@ var entity = ent.AppCoin{
 	Logo:                     uuid.NewString(),
 	ForPay:                   false,
 	WithdrawAutoReviewAmount: decimal.RequireFromString("89.000"),
+	DailyRewardAmount:        decimal.RequireFromString("89.001"),
 }
 
 var (
@@ -47,6 +48,7 @@ var (
 	logo                      = entity.Logo
 	forPay                    = entity.ForPay
 	withdrawAutoReviewdAmount = entity.WithdrawAutoReviewAmount.String()
+	dailyRewardAmount         = entity.DailyRewardAmount.String()
 
 	req = npool.AppCoinReq{
 		ID:                       &id,
@@ -56,6 +58,7 @@ var (
 		Logo:                     &logo,
 		ForPay:                   &forPay,
 		WithdrawAutoReviewAmount: &withdrawAutoReviewdAmount,
+		DailyRewardAmount:        &dailyRewardAmount,
 	}
 )
 
@@ -81,6 +84,7 @@ func createBulk(t *testing.T) {
 			Logo:                     uuid.NewString(),
 			ForPay:                   false,
 			WithdrawAutoReviewAmount: decimal.RequireFromString("89.000"),
+			DailyRewardAmount:        decimal.RequireFromString("89.001"),
 		},
 		{
 			ID:                       uuid.New(),
@@ -90,6 +94,7 @@ func createBulk(t *testing.T) {
 			Logo:                     uuid.NewString(),
 			ForPay:                   true,
 			WithdrawAutoReviewAmount: decimal.RequireFromString("90.000"),
+			DailyRewardAmount:        decimal.RequireFromString("90.001"),
 		},
 	}
 
@@ -102,6 +107,7 @@ func createBulk(t *testing.T) {
 		_logo := _entity.Logo
 		_forPay := _entity.ForPay
 		_withdrawAutoReviewdAmount := _entity.WithdrawAutoReviewAmount.String()
+		_dailyRewardAmount := _entity.DailyRewardAmount.String()
 
 		reqs = append(reqs, &npool.AppCoinReq{
 			ID:                       &_id,
@@ -111,6 +117,7 @@ func createBulk(t *testing.T) {
 			Logo:                     &_logo,
 			ForPay:                   &_forPay,
 			WithdrawAutoReviewAmount: &_withdrawAutoReviewdAmount,
+			DailyRewardAmount:        &_dailyRewardAmount,
 		})
 	}
 	infos, err := CreateBulk(context.Background(), reqs)
@@ -126,10 +133,12 @@ func add(t *testing.T) {
 
 	req.Name = &name
 	req.WithdrawAutoReviewAmount = &withdrawAutoReviewdAmount
+	req.DailyRewardAmount = &dailyRewardAmount
 	req.ForPay = &forPay
 
 	entity.Name = name
 	entity.WithdrawAutoReviewAmount = decimal.RequireFromString(withdrawAutoReviewdAmount)
+	entity.DailyRewardAmount = decimal.RequireFromString(dailyRewardAmount)
 	entity.ForPay = forPay
 
 	info, err := Update(context.Background(), &req)

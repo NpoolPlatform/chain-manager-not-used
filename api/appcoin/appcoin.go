@@ -124,6 +124,12 @@ func (s *Server) UpdateAppCoin(ctx context.Context, in *npool.UpdateAppCoinReque
 			return &npool.UpdateAppCoinResponse{}, status.Error(codes.InvalidArgument, err.Error())
 		}
 	}
+	if in.GetInfo().DailyRewardAmount != nil {
+		if _, err := decimal.NewFromString(in.GetInfo().GetDailyRewardAmount()); err != nil {
+			logger.Sugar().Errorw("CreateAppCoin", "DailyRewardAmount", in.GetInfo().GetDailyRewardAmount(), "error", err)
+			return &npool.UpdateAppCoinResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		}
+	}
 
 	span = commontracer.TraceInvoker(span, "appcoin", "crud", "Update")
 

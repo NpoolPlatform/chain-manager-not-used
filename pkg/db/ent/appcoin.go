@@ -39,6 +39,8 @@ type AppCoin struct {
 	ProductPage string `json:"product_page,omitempty"`
 	// Disabled holds the value of the "disabled" field.
 	Disabled bool `json:"disabled,omitempty"`
+	// DailyRewardAmount holds the value of the "daily_reward_amount" field.
+	DailyRewardAmount decimal.Decimal `json:"daily_reward_amount,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -46,7 +48,7 @@ func (*AppCoin) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case appcoin.FieldWithdrawAutoReviewAmount:
+		case appcoin.FieldWithdrawAutoReviewAmount, appcoin.FieldDailyRewardAmount:
 			values[i] = new(decimal.Decimal)
 		case appcoin.FieldForPay, appcoin.FieldDisabled:
 			values[i] = new(sql.NullBool)
@@ -143,6 +145,12 @@ func (ac *AppCoin) assignValues(columns []string, values []interface{}) error {
 			} else if value.Valid {
 				ac.Disabled = value.Bool
 			}
+		case appcoin.FieldDailyRewardAmount:
+			if value, ok := values[i].(*decimal.Decimal); !ok {
+				return fmt.Errorf("unexpected type %T for field daily_reward_amount", values[i])
+			} else if value != nil {
+				ac.DailyRewardAmount = *value
+			}
 		}
 	}
 	return nil
@@ -203,6 +211,9 @@ func (ac *AppCoin) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("disabled=")
 	builder.WriteString(fmt.Sprintf("%v", ac.Disabled))
+	builder.WriteString(", ")
+	builder.WriteString("daily_reward_amount=")
+	builder.WriteString(fmt.Sprintf("%v", ac.DailyRewardAmount))
 	builder.WriteByte(')')
 	return builder.String()
 }

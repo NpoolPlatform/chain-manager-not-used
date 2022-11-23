@@ -62,6 +62,13 @@ func (AppCoin) Fields() []ent.Field {
 			Bool("disabled").
 			Optional().
 			Default(false),
+		field.
+			Other("daily_reward_amount", decimal.Decimal{}).
+			SchemaType(map[string]string{
+				dialect.MySQL: "decimal(37,18)",
+			}).
+			Optional().
+			Default(decimal.Decimal{}),
 	}
 }
 

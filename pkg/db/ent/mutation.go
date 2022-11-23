@@ -64,6 +64,7 @@ type AppCoinMutation struct {
 	withdraw_auto_review_amount *decimal.Decimal
 	product_page                *string
 	disabled                    *bool
+	daily_reward_amount         *decimal.Decimal
 	clearedFields               map[string]struct{}
 	done                        bool
 	oldValue                    func(context.Context) (*AppCoin, error)
@@ -734,6 +735,55 @@ func (m *AppCoinMutation) ResetDisabled() {
 	delete(m.clearedFields, appcoin.FieldDisabled)
 }
 
+// SetDailyRewardAmount sets the "daily_reward_amount" field.
+func (m *AppCoinMutation) SetDailyRewardAmount(d decimal.Decimal) {
+	m.daily_reward_amount = &d
+}
+
+// DailyRewardAmount returns the value of the "daily_reward_amount" field in the mutation.
+func (m *AppCoinMutation) DailyRewardAmount() (r decimal.Decimal, exists bool) {
+	v := m.daily_reward_amount
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDailyRewardAmount returns the old "daily_reward_amount" field's value of the AppCoin entity.
+// If the AppCoin object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppCoinMutation) OldDailyRewardAmount(ctx context.Context) (v decimal.Decimal, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDailyRewardAmount is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDailyRewardAmount requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDailyRewardAmount: %w", err)
+	}
+	return oldValue.DailyRewardAmount, nil
+}
+
+// ClearDailyRewardAmount clears the value of the "daily_reward_amount" field.
+func (m *AppCoinMutation) ClearDailyRewardAmount() {
+	m.daily_reward_amount = nil
+	m.clearedFields[appcoin.FieldDailyRewardAmount] = struct{}{}
+}
+
+// DailyRewardAmountCleared returns if the "daily_reward_amount" field was cleared in this mutation.
+func (m *AppCoinMutation) DailyRewardAmountCleared() bool {
+	_, ok := m.clearedFields[appcoin.FieldDailyRewardAmount]
+	return ok
+}
+
+// ResetDailyRewardAmount resets all changes to the "daily_reward_amount" field.
+func (m *AppCoinMutation) ResetDailyRewardAmount() {
+	m.daily_reward_amount = nil
+	delete(m.clearedFields, appcoin.FieldDailyRewardAmount)
+}
+
 // Where appends a list predicates to the AppCoinMutation builder.
 func (m *AppCoinMutation) Where(ps ...predicate.AppCoin) {
 	m.predicates = append(m.predicates, ps...)
@@ -753,7 +803,7 @@ func (m *AppCoinMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *AppCoinMutation) Fields() []string {
-	fields := make([]string, 0, 11)
+	fields := make([]string, 0, 12)
 	if m.created_at != nil {
 		fields = append(fields, appcoin.FieldCreatedAt)
 	}
@@ -787,6 +837,9 @@ func (m *AppCoinMutation) Fields() []string {
 	if m.disabled != nil {
 		fields = append(fields, appcoin.FieldDisabled)
 	}
+	if m.daily_reward_amount != nil {
+		fields = append(fields, appcoin.FieldDailyRewardAmount)
+	}
 	return fields
 }
 
@@ -817,6 +870,8 @@ func (m *AppCoinMutation) Field(name string) (ent.Value, bool) {
 		return m.ProductPage()
 	case appcoin.FieldDisabled:
 		return m.Disabled()
+	case appcoin.FieldDailyRewardAmount:
+		return m.DailyRewardAmount()
 	}
 	return nil, false
 }
@@ -848,6 +903,8 @@ func (m *AppCoinMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldProductPage(ctx)
 	case appcoin.FieldDisabled:
 		return m.OldDisabled(ctx)
+	case appcoin.FieldDailyRewardAmount:
+		return m.OldDailyRewardAmount(ctx)
 	}
 	return nil, fmt.Errorf("unknown AppCoin field %s", name)
 }
@@ -933,6 +990,13 @@ func (m *AppCoinMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetDisabled(v)
+		return nil
+	case appcoin.FieldDailyRewardAmount:
+		v, ok := value.(decimal.Decimal)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDailyRewardAmount(v)
 		return nil
 	}
 	return fmt.Errorf("unknown AppCoin field %s", name)
@@ -1027,6 +1091,9 @@ func (m *AppCoinMutation) ClearedFields() []string {
 	if m.FieldCleared(appcoin.FieldDisabled) {
 		fields = append(fields, appcoin.FieldDisabled)
 	}
+	if m.FieldCleared(appcoin.FieldDailyRewardAmount) {
+		fields = append(fields, appcoin.FieldDailyRewardAmount)
+	}
 	return fields
 }
 
@@ -1064,6 +1131,9 @@ func (m *AppCoinMutation) ClearField(name string) error {
 		return nil
 	case appcoin.FieldDisabled:
 		m.ClearDisabled()
+		return nil
+	case appcoin.FieldDailyRewardAmount:
+		m.ClearDailyRewardAmount()
 		return nil
 	}
 	return fmt.Errorf("unknown AppCoin nullable field %s", name)
@@ -1105,6 +1175,9 @@ func (m *AppCoinMutation) ResetField(name string) error {
 		return nil
 	case appcoin.FieldDisabled:
 		m.ResetDisabled()
+		return nil
+	case appcoin.FieldDailyRewardAmount:
+		m.ResetDailyRewardAmount()
 		return nil
 	}
 	return fmt.Errorf("unknown AppCoin field %s", name)

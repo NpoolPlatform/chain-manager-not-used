@@ -245,6 +245,26 @@ func (acu *AppCoinUpdate) ClearDisabled() *AppCoinUpdate {
 	return acu
 }
 
+// SetDailyRewardAmount sets the "daily_reward_amount" field.
+func (acu *AppCoinUpdate) SetDailyRewardAmount(d decimal.Decimal) *AppCoinUpdate {
+	acu.mutation.SetDailyRewardAmount(d)
+	return acu
+}
+
+// SetNillableDailyRewardAmount sets the "daily_reward_amount" field if the given value is not nil.
+func (acu *AppCoinUpdate) SetNillableDailyRewardAmount(d *decimal.Decimal) *AppCoinUpdate {
+	if d != nil {
+		acu.SetDailyRewardAmount(*d)
+	}
+	return acu
+}
+
+// ClearDailyRewardAmount clears the value of the "daily_reward_amount" field.
+func (acu *AppCoinUpdate) ClearDailyRewardAmount() *AppCoinUpdate {
+	acu.mutation.ClearDailyRewardAmount()
+	return acu
+}
+
 // Mutation returns the AppCoinMutation object of the builder.
 func (acu *AppCoinUpdate) Mutation() *AppCoinMutation {
 	return acu.mutation
@@ -489,6 +509,19 @@ func (acu *AppCoinUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: appcoin.FieldDisabled,
 		})
 	}
+	if value, ok := acu.mutation.DailyRewardAmount(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeOther,
+			Value:  value,
+			Column: appcoin.FieldDailyRewardAmount,
+		})
+	}
+	if acu.mutation.DailyRewardAmountCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeOther,
+			Column: appcoin.FieldDailyRewardAmount,
+		})
+	}
 	_spec.Modifiers = acu.modifiers
 	if n, err = sqlgraph.UpdateNodes(ctx, acu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -722,6 +755,26 @@ func (acuo *AppCoinUpdateOne) SetNillableDisabled(b *bool) *AppCoinUpdateOne {
 // ClearDisabled clears the value of the "disabled" field.
 func (acuo *AppCoinUpdateOne) ClearDisabled() *AppCoinUpdateOne {
 	acuo.mutation.ClearDisabled()
+	return acuo
+}
+
+// SetDailyRewardAmount sets the "daily_reward_amount" field.
+func (acuo *AppCoinUpdateOne) SetDailyRewardAmount(d decimal.Decimal) *AppCoinUpdateOne {
+	acuo.mutation.SetDailyRewardAmount(d)
+	return acuo
+}
+
+// SetNillableDailyRewardAmount sets the "daily_reward_amount" field if the given value is not nil.
+func (acuo *AppCoinUpdateOne) SetNillableDailyRewardAmount(d *decimal.Decimal) *AppCoinUpdateOne {
+	if d != nil {
+		acuo.SetDailyRewardAmount(*d)
+	}
+	return acuo
+}
+
+// ClearDailyRewardAmount clears the value of the "daily_reward_amount" field.
+func (acuo *AppCoinUpdateOne) ClearDailyRewardAmount() *AppCoinUpdateOne {
+	acuo.mutation.ClearDailyRewardAmount()
 	return acuo
 }
 
@@ -997,6 +1050,19 @@ func (acuo *AppCoinUpdateOne) sqlSave(ctx context.Context) (_node *AppCoin, err 
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeBool,
 			Column: appcoin.FieldDisabled,
+		})
+	}
+	if value, ok := acuo.mutation.DailyRewardAmount(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeOther,
+			Value:  value,
+			Column: appcoin.FieldDailyRewardAmount,
+		})
+	}
+	if acuo.mutation.DailyRewardAmountCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeOther,
+			Column: appcoin.FieldDailyRewardAmount,
 		})
 	}
 	_spec.Modifiers = acuo.modifiers

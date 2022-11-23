@@ -19,6 +19,7 @@ func Ent2Grpc(row *ent.AppCoin) *npool.AppCoin {
 		ForPay:                   row.ForPay,
 		WithdrawAutoReviewAmount: row.WithdrawAutoReviewAmount.String(),
 		ProductPage:              row.ProductPage,
+		DailyRewardAmount:        row.DailyRewardAmount.String(),
 		CreatedAt:                row.CreatedAt,
 		UpdatedAt:                row.UpdatedAt,
 	}

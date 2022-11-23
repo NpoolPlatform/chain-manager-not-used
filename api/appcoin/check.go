@@ -38,6 +38,10 @@ func validate(in *npool.AppCoinReq) error {
 		logger.Sugar().Errorw("validate", "WithdrawAutoReviewAmount", in.GetWithdrawAutoReviewAmount(), "error", err)
 		return err
 	}
+	if _, err := decimal.NewFromString(in.GetDailyRewardAmount()); err != nil {
+		logger.Sugar().Errorw("validate", "DailyRewardAmount", in.GetDailyRewardAmount(), "error", err)
+		return err
+	}
 	return nil
 }
 
