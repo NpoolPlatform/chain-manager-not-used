@@ -209,6 +209,7 @@ func Row(ctx context.Context, id uuid.UUID) (*ent.AppCoin, error) {
 	return info, nil
 }
 
+//nolint
 func SetQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.AppCoinQuery, error) {
 	stm := cli.AppCoin.Query()
 	if conds.ID != nil {
