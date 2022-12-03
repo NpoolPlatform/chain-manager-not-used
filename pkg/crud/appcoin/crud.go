@@ -209,6 +209,7 @@ func Row(ctx context.Context, id uuid.UUID) (*ent.AppCoin, error) {
 	return info, nil
 }
 
+//nolint
 func SetQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.AppCoinQuery, error) {
 	stm := cli.AppCoin.Query()
 	if conds.ID != nil {
@@ -259,6 +260,18 @@ func SetQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.AppCoinQuery, erro
 		switch conds.GetIDs().GetOp() {
 		case cruder.IN:
 			stm.Where(appcoin.IDIn(ids...))
+		default:
+			return nil, fmt.Errorf("invalid appcoin field")
+		}
+	}
+	if conds.CoinTypeIDs != nil {
+		ids := []uuid.UUID{}
+		for _, id := range conds.GetCoinTypeIDs().GetValue() {
+			ids = append(ids, uuid.MustParse(id))
+		}
+		switch conds.GetCoinTypeIDs().GetOp() {
+		case cruder.IN:
+			stm.Where(appcoin.CoinTypeIDIn(ids...))
 		default:
 			return nil, fmt.Errorf("invalid appcoin field")
 		}
