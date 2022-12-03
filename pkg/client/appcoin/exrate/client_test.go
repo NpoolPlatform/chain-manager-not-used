@@ -72,6 +72,7 @@ func updateExchangeRate(t *testing.T) {
 	info, err := UpdateExchangeRate(context.Background(), exchangeRateReq)
 	if assert.Nil(t, err) {
 		exchangeRate.SettleValue = info.SettleValue
+		exchangeRate.UpdatedAt = info.UpdatedAt
 		assert.Equal(t, exchangeRate, info)
 	}
 }
@@ -89,6 +90,7 @@ func getExchangeRate(t *testing.T) {
 func deleteExchangeRate(t *testing.T) {
 	info, err := DeleteExchangeRate(context.Background(), exchangeRate.ID)
 	if assert.Nil(t, err) {
+		exchangeRate.UpdatedAt = info.UpdatedAt
 		assert.Equal(t, exchangeRate, info)
 	}
 

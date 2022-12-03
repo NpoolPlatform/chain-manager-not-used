@@ -22,10 +22,8 @@ type Tx struct {
 	CoinDescription *CoinDescriptionClient
 	// CoinExtra is the client for interacting with the CoinExtra builders.
 	CoinExtra *CoinExtraClient
-	// CurrencyFeed is the client for interacting with the CurrencyFeed builders.
-	CurrencyFeed *CurrencyFeedClient
-	// CurrencyValue is the client for interacting with the CurrencyValue builders.
-	CurrencyValue *CurrencyValueClient
+	// Currency is the client for interacting with the Currency builders.
+	Currency *CurrencyClient
 	// ExchangeRate is the client for interacting with the ExchangeRate builders.
 	ExchangeRate *ExchangeRateClient
 	// Setting is the client for interacting with the Setting builders.
@@ -171,8 +169,7 @@ func (tx *Tx) init() {
 	tx.CoinBase = NewCoinBaseClient(tx.config)
 	tx.CoinDescription = NewCoinDescriptionClient(tx.config)
 	tx.CoinExtra = NewCoinExtraClient(tx.config)
-	tx.CurrencyFeed = NewCurrencyFeedClient(tx.config)
-	tx.CurrencyValue = NewCurrencyValueClient(tx.config)
+	tx.Currency = NewCurrencyClient(tx.config)
 	tx.ExchangeRate = NewExchangeRateClient(tx.config)
 	tx.Setting = NewSettingClient(tx.config)
 	tx.Tran = NewTranClient(tx.config)

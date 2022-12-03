@@ -9,8 +9,7 @@ import (
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/coinbase"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/coindescription"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/coinextra"
-	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/currencyfeed"
-	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/currencyvalue"
+	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/currency"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/exchangerate"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/schema"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/setting"
@@ -258,102 +257,54 @@ func init() {
 	coinextraDescID := coinextraFields[0].Descriptor()
 	// coinextra.DefaultID holds the default value on creation for the id field.
 	coinextra.DefaultID = coinextraDescID.Default.(func() uuid.UUID)
-	currencyfeedMixin := schema.CurrencyFeed{}.Mixin()
-	currencyfeed.Policy = privacy.NewPolicies(currencyfeedMixin[0], schema.CurrencyFeed{})
-	currencyfeed.Hooks[0] = func(next ent.Mutator) ent.Mutator {
+	currencyMixin := schema.Currency{}.Mixin()
+	currency.Policy = privacy.NewPolicies(currencyMixin[0], schema.Currency{})
+	currency.Hooks[0] = func(next ent.Mutator) ent.Mutator {
 		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-			if err := currencyfeed.Policy.EvalMutation(ctx, m); err != nil {
+			if err := currency.Policy.EvalMutation(ctx, m); err != nil {
 				return nil, err
 			}
 			return next.Mutate(ctx, m)
 		})
 	}
-	currencyfeedMixinFields0 := currencyfeedMixin[0].Fields()
-	_ = currencyfeedMixinFields0
-	currencyfeedFields := schema.CurrencyFeed{}.Fields()
-	_ = currencyfeedFields
-	// currencyfeedDescCreatedAt is the schema descriptor for created_at field.
-	currencyfeedDescCreatedAt := currencyfeedMixinFields0[0].Descriptor()
-	// currencyfeed.DefaultCreatedAt holds the default value on creation for the created_at field.
-	currencyfeed.DefaultCreatedAt = currencyfeedDescCreatedAt.Default.(func() uint32)
-	// currencyfeedDescUpdatedAt is the schema descriptor for updated_at field.
-	currencyfeedDescUpdatedAt := currencyfeedMixinFields0[1].Descriptor()
-	// currencyfeed.DefaultUpdatedAt holds the default value on creation for the updated_at field.
-	currencyfeed.DefaultUpdatedAt = currencyfeedDescUpdatedAt.Default.(func() uint32)
-	// currencyfeed.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
-	currencyfeed.UpdateDefaultUpdatedAt = currencyfeedDescUpdatedAt.UpdateDefault.(func() uint32)
-	// currencyfeedDescDeletedAt is the schema descriptor for deleted_at field.
-	currencyfeedDescDeletedAt := currencyfeedMixinFields0[2].Descriptor()
-	// currencyfeed.DefaultDeletedAt holds the default value on creation for the deleted_at field.
-	currencyfeed.DefaultDeletedAt = currencyfeedDescDeletedAt.Default.(func() uint32)
-	// currencyfeedDescCoinTypeID is the schema descriptor for coin_type_id field.
-	currencyfeedDescCoinTypeID := currencyfeedFields[1].Descriptor()
-	// currencyfeed.DefaultCoinTypeID holds the default value on creation for the coin_type_id field.
-	currencyfeed.DefaultCoinTypeID = currencyfeedDescCoinTypeID.Default.(func() uuid.UUID)
-	// currencyfeedDescFeedSource is the schema descriptor for feed_source field.
-	currencyfeedDescFeedSource := currencyfeedFields[2].Descriptor()
-	// currencyfeed.DefaultFeedSource holds the default value on creation for the feed_source field.
-	currencyfeed.DefaultFeedSource = currencyfeedDescFeedSource.Default.(string)
-	// currencyfeedDescFeedType is the schema descriptor for feed_type field.
-	currencyfeedDescFeedType := currencyfeedFields[3].Descriptor()
-	// currencyfeed.DefaultFeedType holds the default value on creation for the feed_type field.
-	currencyfeed.DefaultFeedType = currencyfeedDescFeedType.Default.(string)
-	// currencyfeedDescDisabled is the schema descriptor for disabled field.
-	currencyfeedDescDisabled := currencyfeedFields[4].Descriptor()
-	// currencyfeed.DefaultDisabled holds the default value on creation for the disabled field.
-	currencyfeed.DefaultDisabled = currencyfeedDescDisabled.Default.(bool)
-	// currencyfeedDescID is the schema descriptor for id field.
-	currencyfeedDescID := currencyfeedFields[0].Descriptor()
-	// currencyfeed.DefaultID holds the default value on creation for the id field.
-	currencyfeed.DefaultID = currencyfeedDescID.Default.(func() uuid.UUID)
-	currencyvalueMixin := schema.CurrencyValue{}.Mixin()
-	currencyvalue.Policy = privacy.NewPolicies(currencyvalueMixin[0], schema.CurrencyValue{})
-	currencyvalue.Hooks[0] = func(next ent.Mutator) ent.Mutator {
-		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-			if err := currencyvalue.Policy.EvalMutation(ctx, m); err != nil {
-				return nil, err
-			}
-			return next.Mutate(ctx, m)
-		})
-	}
-	currencyvalueMixinFields0 := currencyvalueMixin[0].Fields()
-	_ = currencyvalueMixinFields0
-	currencyvalueFields := schema.CurrencyValue{}.Fields()
-	_ = currencyvalueFields
-	// currencyvalueDescCreatedAt is the schema descriptor for created_at field.
-	currencyvalueDescCreatedAt := currencyvalueMixinFields0[0].Descriptor()
-	// currencyvalue.DefaultCreatedAt holds the default value on creation for the created_at field.
-	currencyvalue.DefaultCreatedAt = currencyvalueDescCreatedAt.Default.(func() uint32)
-	// currencyvalueDescUpdatedAt is the schema descriptor for updated_at field.
-	currencyvalueDescUpdatedAt := currencyvalueMixinFields0[1].Descriptor()
-	// currencyvalue.DefaultUpdatedAt holds the default value on creation for the updated_at field.
-	currencyvalue.DefaultUpdatedAt = currencyvalueDescUpdatedAt.Default.(func() uint32)
-	// currencyvalue.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
-	currencyvalue.UpdateDefaultUpdatedAt = currencyvalueDescUpdatedAt.UpdateDefault.(func() uint32)
-	// currencyvalueDescDeletedAt is the schema descriptor for deleted_at field.
-	currencyvalueDescDeletedAt := currencyvalueMixinFields0[2].Descriptor()
-	// currencyvalue.DefaultDeletedAt holds the default value on creation for the deleted_at field.
-	currencyvalue.DefaultDeletedAt = currencyvalueDescDeletedAt.Default.(func() uint32)
-	// currencyvalueDescCoinTypeID is the schema descriptor for coin_type_id field.
-	currencyvalueDescCoinTypeID := currencyvalueFields[1].Descriptor()
-	// currencyvalue.DefaultCoinTypeID holds the default value on creation for the coin_type_id field.
-	currencyvalue.DefaultCoinTypeID = currencyvalueDescCoinTypeID.Default.(func() uuid.UUID)
-	// currencyvalueDescFeedSourceID is the schema descriptor for feed_source_id field.
-	currencyvalueDescFeedSourceID := currencyvalueFields[2].Descriptor()
-	// currencyvalue.DefaultFeedSourceID holds the default value on creation for the feed_source_id field.
-	currencyvalue.DefaultFeedSourceID = currencyvalueDescFeedSourceID.Default.(func() uuid.UUID)
-	// currencyvalueDescMarketValueHigh is the schema descriptor for market_value_high field.
-	currencyvalueDescMarketValueHigh := currencyvalueFields[3].Descriptor()
-	// currencyvalue.DefaultMarketValueHigh holds the default value on creation for the market_value_high field.
-	currencyvalue.DefaultMarketValueHigh = currencyvalueDescMarketValueHigh.Default.(decimal.Decimal)
-	// currencyvalueDescMarketValueLow is the schema descriptor for market_value_low field.
-	currencyvalueDescMarketValueLow := currencyvalueFields[4].Descriptor()
-	// currencyvalue.DefaultMarketValueLow holds the default value on creation for the market_value_low field.
-	currencyvalue.DefaultMarketValueLow = currencyvalueDescMarketValueLow.Default.(decimal.Decimal)
-	// currencyvalueDescID is the schema descriptor for id field.
-	currencyvalueDescID := currencyvalueFields[0].Descriptor()
-	// currencyvalue.DefaultID holds the default value on creation for the id field.
-	currencyvalue.DefaultID = currencyvalueDescID.Default.(func() uuid.UUID)
+	currencyMixinFields0 := currencyMixin[0].Fields()
+	_ = currencyMixinFields0
+	currencyFields := schema.Currency{}.Fields()
+	_ = currencyFields
+	// currencyDescCreatedAt is the schema descriptor for created_at field.
+	currencyDescCreatedAt := currencyMixinFields0[0].Descriptor()
+	// currency.DefaultCreatedAt holds the default value on creation for the created_at field.
+	currency.DefaultCreatedAt = currencyDescCreatedAt.Default.(func() uint32)
+	// currencyDescUpdatedAt is the schema descriptor for updated_at field.
+	currencyDescUpdatedAt := currencyMixinFields0[1].Descriptor()
+	// currency.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	currency.DefaultUpdatedAt = currencyDescUpdatedAt.Default.(func() uint32)
+	// currency.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	currency.UpdateDefaultUpdatedAt = currencyDescUpdatedAt.UpdateDefault.(func() uint32)
+	// currencyDescDeletedAt is the schema descriptor for deleted_at field.
+	currencyDescDeletedAt := currencyMixinFields0[2].Descriptor()
+	// currency.DefaultDeletedAt holds the default value on creation for the deleted_at field.
+	currency.DefaultDeletedAt = currencyDescDeletedAt.Default.(func() uint32)
+	// currencyDescCoinTypeID is the schema descriptor for coin_type_id field.
+	currencyDescCoinTypeID := currencyFields[1].Descriptor()
+	// currency.DefaultCoinTypeID holds the default value on creation for the coin_type_id field.
+	currency.DefaultCoinTypeID = currencyDescCoinTypeID.Default.(func() uuid.UUID)
+	// currencyDescFeedType is the schema descriptor for feed_type field.
+	currencyDescFeedType := currencyFields[2].Descriptor()
+	// currency.DefaultFeedType holds the default value on creation for the feed_type field.
+	currency.DefaultFeedType = currencyDescFeedType.Default.(string)
+	// currencyDescMarketValueHigh is the schema descriptor for market_value_high field.
+	currencyDescMarketValueHigh := currencyFields[3].Descriptor()
+	// currency.DefaultMarketValueHigh holds the default value on creation for the market_value_high field.
+	currency.DefaultMarketValueHigh = currencyDescMarketValueHigh.Default.(decimal.Decimal)
+	// currencyDescMarketValueLow is the schema descriptor for market_value_low field.
+	currencyDescMarketValueLow := currencyFields[4].Descriptor()
+	// currency.DefaultMarketValueLow holds the default value on creation for the market_value_low field.
+	currency.DefaultMarketValueLow = currencyDescMarketValueLow.Default.(decimal.Decimal)
+	// currencyDescID is the schema descriptor for id field.
+	currencyDescID := currencyFields[0].Descriptor()
+	// currency.DefaultID holds the default value on creation for the id field.
+	currency.DefaultID = currencyDescID.Default.(func() uuid.UUID)
 	exchangerateMixin := schema.ExchangeRate{}.Mixin()
 	exchangerate.Policy = privacy.NewPolicies(exchangerateMixin[0], schema.ExchangeRate{})
 	exchangerate.Hooks[0] = func(next ent.Mutator) ent.Mutator {

@@ -1,4 +1,4 @@
-package currencyvalue
+package currency
 
 import (
 	"context"
@@ -14,22 +14,22 @@ import (
 
 	"github.com/NpoolPlatform/chain-manager/pkg/db"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent"
-	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/currencyvalue"
+	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/currency"
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
-	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/coin/currency/value"
+	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/coin/currency"
 
 	"github.com/google/uuid"
 )
 
-func CreateSet(c *ent.CurrencyValueCreate, in *npool.CurrencyReq) *ent.CurrencyValueCreate {
+func CreateSet(c *ent.CurrencyCreate, in *npool.CurrencyReq) *ent.CurrencyCreate {
 	if in.ID != nil {
 		c.SetID(uuid.MustParse(in.GetID()))
 	}
 	if in.CoinTypeID != nil {
 		c.SetCoinTypeID(uuid.MustParse(in.GetCoinTypeID()))
 	}
-	if in.FeedSourceID != nil {
-		c.SetFeedSourceID(uuid.MustParse(in.GetFeedSourceID()))
+	if in.FeedType != nil {
+		c.SetFeedType(in.GetFeedType().String())
 	}
 	if in.MarketValueHigh != nil {
 		c.SetMarketValueHigh(decimal.RequireFromString(in.GetMarketValueHigh()))
@@ -40,8 +40,8 @@ func CreateSet(c *ent.CurrencyValueCreate, in *npool.CurrencyReq) *ent.CurrencyV
 	return c
 }
 
-func Create(ctx context.Context, in *npool.CurrencyReq) (*ent.CurrencyValue, error) {
-	var info *ent.CurrencyValue
+func Create(ctx context.Context, in *npool.CurrencyReq) (*ent.Currency, error) {
+	var info *ent.Currency
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "Create")
@@ -55,7 +55,7 @@ func Create(ctx context.Context, in *npool.CurrencyReq) (*ent.CurrencyValue, err
 	}()
 
 	err = db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
-		c := cli.CurrencyValue.Create()
+		c := cli.Currency.Create()
 		info, err = CreateSet(c, in).Save(_ctx)
 		return err
 	})
@@ -66,9 +66,9 @@ func Create(ctx context.Context, in *npool.CurrencyReq) (*ent.CurrencyValue, err
 	return info, nil
 }
 
-func CreateBulk(ctx context.Context, in []*npool.CurrencyReq) ([]*ent.CurrencyValue, error) {
+func CreateBulk(ctx context.Context, in []*npool.CurrencyReq) ([]*ent.Currency, error) {
 	var err error
-	rows := []*ent.CurrencyValue{}
+	rows := []*ent.Currency{}
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "CreateBulk")
 	defer span.End()
@@ -81,11 +81,11 @@ func CreateBulk(ctx context.Context, in []*npool.CurrencyReq) ([]*ent.CurrencyVa
 	}()
 
 	err = db.WithTx(ctx, func(_ctx context.Context, tx *ent.Tx) error {
-		bulk := make([]*ent.CurrencyValueCreate, len(in))
+		bulk := make([]*ent.CurrencyCreate, len(in))
 		for i, info := range in {
-			bulk[i] = CreateSet(tx.CurrencyValue.Create(), info)
+			bulk[i] = CreateSet(tx.Currency.Create(), info)
 		}
-		rows, err = tx.CurrencyValue.CreateBulk(bulk...).Save(_ctx)
+		rows, err = tx.Currency.CreateBulk(bulk...).Save(_ctx)
 		return err
 	})
 	if err != nil {
@@ -94,7 +94,7 @@ func CreateBulk(ctx context.Context, in []*npool.CurrencyReq) ([]*ent.CurrencyVa
 	return rows, nil
 }
 
-func UpdateSet(info *ent.CurrencyValue, in *npool.CurrencyReq) *ent.CurrencyValueUpdateOne {
+func UpdateSet(info *ent.Currency, in *npool.CurrencyReq) *ent.CurrencyUpdateOne {
 	stm := info.Update()
 
 	if in.MarketValueHigh != nil {
@@ -107,8 +107,8 @@ func UpdateSet(info *ent.CurrencyValue, in *npool.CurrencyReq) *ent.CurrencyValu
 	return stm
 }
 
-func Update(ctx context.Context, in *npool.CurrencyReq) (*ent.CurrencyValue, error) {
-	var info *ent.CurrencyValue
+func Update(ctx context.Context, in *npool.CurrencyReq) (*ent.Currency, error) {
+	var info *ent.Currency
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "Create")
@@ -122,29 +122,29 @@ func Update(ctx context.Context, in *npool.CurrencyReq) (*ent.CurrencyValue, err
 	}()
 
 	err = db.WithTx(ctx, func(_ctx context.Context, tx *ent.Tx) error {
-		info, err = tx.CurrencyValue.Query().Where(currencyvalue.ID(uuid.MustParse(in.GetID()))).ForUpdate().Only(_ctx)
+		info, err = tx.Currency.Query().Where(currency.ID(uuid.MustParse(in.GetID()))).ForUpdate().Only(_ctx)
 		if err != nil {
-			return fmt.Errorf("fail query currencyvalue: %v", err)
+			return fmt.Errorf("fail query currency: %v", err)
 		}
 
 		stm := UpdateSet(info, in)
 
 		info, err = stm.Save(_ctx)
 		if err != nil {
-			return fmt.Errorf("fail update currencyvalue: %v", err)
+			return fmt.Errorf("fail update currency: %v", err)
 		}
 
 		return nil
 	})
 	if err != nil {
-		return nil, fmt.Errorf("fail update currencyvalue: %v", err)
+		return nil, fmt.Errorf("fail update currency: %v", err)
 	}
 
 	return info, nil
 }
 
-func Row(ctx context.Context, id uuid.UUID) (*ent.CurrencyValue, error) {
-	var info *ent.CurrencyValue
+func Row(ctx context.Context, id uuid.UUID) (*ent.Currency, error) {
+	var info *ent.Currency
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "Row")
@@ -160,7 +160,7 @@ func Row(ctx context.Context, id uuid.UUID) (*ent.CurrencyValue, error) {
 	span = commontracer.TraceID(span, id.String())
 
 	err = db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
-		info, err = cli.CurrencyValue.Query().Where(currencyvalue.ID(id)).Only(_ctx)
+		info, err = cli.Currency.Query().Where(currency.ID(id)).Only(_ctx)
 		return err
 	})
 	if err != nil {
@@ -170,44 +170,44 @@ func Row(ctx context.Context, id uuid.UUID) (*ent.CurrencyValue, error) {
 	return info, nil
 }
 
-func SetQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.CurrencyValueQuery, error) {
-	stm := cli.CurrencyValue.Query()
+func SetQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.CurrencyQuery, error) {
+	stm := cli.Currency.Query()
 	if conds.ID != nil {
 		switch conds.GetID().GetOp() {
 		case cruder.EQ:
-			stm.Where(currencyvalue.ID(uuid.MustParse(conds.GetID().GetValue())))
+			stm.Where(currency.ID(uuid.MustParse(conds.GetID().GetValue())))
 		default:
-			return nil, fmt.Errorf("invalid currencyvalue field")
+			return nil, fmt.Errorf("invalid currency field")
 		}
 	}
 	if conds.CoinTypeID != nil {
 		switch conds.GetCoinTypeID().GetOp() {
 		case cruder.EQ:
-			stm.Where(currencyvalue.CoinTypeID(uuid.MustParse(conds.GetCoinTypeID().GetValue())))
+			stm.Where(currency.CoinTypeID(uuid.MustParse(conds.GetCoinTypeID().GetValue())))
 		default:
-			return nil, fmt.Errorf("invalid currencyvalue field")
+			return nil, fmt.Errorf("invalid currency field")
 		}
 	}
 	if conds.StartAt != nil {
 		switch conds.GetStartAt().GetOp() {
 		case cruder.GTE:
-			stm.Where(currencyvalue.CreatedAtGTE(conds.GetStartAt().GetValue()))
+			stm.Where(currency.CreatedAtGTE(conds.GetStartAt().GetValue()))
 		default:
-			return nil, fmt.Errorf("invalid currencyvalue field")
+			return nil, fmt.Errorf("invalid currency field")
 		}
 	}
 	if conds.EndAt != nil {
 		switch conds.GetEndAt().GetOp() {
 		case cruder.GTE:
-			stm.Where(currencyvalue.CreatedAtGTE(conds.GetEndAt().GetValue()))
+			stm.Where(currency.CreatedAtGTE(conds.GetEndAt().GetValue()))
 		default:
-			return nil, fmt.Errorf("invalid currencyvalue field")
+			return nil, fmt.Errorf("invalid currency field")
 		}
 	}
 	return stm, nil
 }
 
-func Rows(ctx context.Context, conds *npool.Conds, offset, limit int) ([]*ent.CurrencyValue, int, error) {
+func Rows(ctx context.Context, conds *npool.Conds, offset, limit int) ([]*ent.Currency, int, error) {
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "Rows")
@@ -222,7 +222,7 @@ func Rows(ctx context.Context, conds *npool.Conds, offset, limit int) ([]*ent.Cu
 
 	span = commontracer.TraceOffsetLimit(span, offset, limit)
 
-	rows := []*ent.CurrencyValue{}
+	rows := []*ent.Currency{}
 	var total int
 
 	err = db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
@@ -238,7 +238,7 @@ func Rows(ctx context.Context, conds *npool.Conds, offset, limit int) ([]*ent.Cu
 
 		rows, err = stm.
 			Offset(offset).
-			Order(ent.Desc(currencyvalue.FieldUpdatedAt)).
+			Order(ent.Desc(currency.FieldUpdatedAt)).
 			Limit(limit).
 			All(_ctx)
 		if err != nil {
@@ -253,8 +253,8 @@ func Rows(ctx context.Context, conds *npool.Conds, offset, limit int) ([]*ent.Cu
 	return rows, total, nil
 }
 
-func RowOnly(ctx context.Context, conds *npool.Conds) (*ent.CurrencyValue, error) {
-	var info *ent.CurrencyValue
+func RowOnly(ctx context.Context, conds *npool.Conds) (*ent.Currency, error) {
+	var info *ent.Currency
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "RowOnly")
@@ -340,7 +340,7 @@ func Exist(ctx context.Context, id uuid.UUID) (bool, error) {
 	span = commontracer.TraceID(span, id.String())
 
 	err = db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
-		exist, err = cli.CurrencyValue.Query().Where(currencyvalue.ID(id)).Exist(_ctx)
+		exist, err = cli.Currency.Query().Where(currency.ID(id)).Exist(_ctx)
 		return err
 	})
 	if err != nil {
@@ -384,8 +384,8 @@ func ExistConds(ctx context.Context, conds *npool.Conds) (bool, error) {
 	return exist, nil
 }
 
-func Delete(ctx context.Context, id uuid.UUID) (*ent.CurrencyValue, error) {
-	var info *ent.CurrencyValue
+func Delete(ctx context.Context, id uuid.UUID) (*ent.Currency, error) {
+	var info *ent.Currency
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "Delete")
@@ -401,7 +401,7 @@ func Delete(ctx context.Context, id uuid.UUID) (*ent.CurrencyValue, error) {
 	span = commontracer.TraceID(span, id.String())
 
 	err = db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
-		info, err = cli.CurrencyValue.UpdateOneID(id).
+		info, err = cli.Currency.UpdateOneID(id).
 			SetDeletedAt(uint32(time.Now().Unix())).
 			Save(_ctx)
 		return err

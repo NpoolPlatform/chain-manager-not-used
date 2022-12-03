@@ -7,21 +7,23 @@ import (
 	"github.com/NpoolPlatform/chain-manager/pkg/db/mixin"
 	"github.com/google/uuid"
 	"github.com/shopspring/decimal"
+
+	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/coin/currency"
 )
 
-// CurrencyValue holds the schema definition for the CurrencyValue entity.
-type CurrencyValue struct {
+// Currency holds the schema definition for the Currency entity.
+type Currency struct {
 	ent.Schema
 }
 
-func (CurrencyValue) Mixin() []ent.Mixin {
+func (Currency) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		mixin.TimeMixin{},
 	}
 }
 
-// Fields of the CurrencyValue.
-func (CurrencyValue) Fields() []ent.Field {
+// Fields of the Currency.
+func (Currency) Fields() []ent.Field {
 	return []ent.Field{
 		field.
 			UUID("id", uuid.UUID{}).
@@ -32,9 +34,9 @@ func (CurrencyValue) Fields() []ent.Field {
 			Optional().
 			Default(uuid.New),
 		field.
-			UUID("feed_source_id", uuid.UUID{}).
+			String("feed_type").
 			Optional().
-			Default(uuid.New),
+			Default(npool.FeedType_DefaultFeedType.String()),
 		field.
 			Other("market_value_high", decimal.Decimal{}).
 			SchemaType(map[string]string{
@@ -52,7 +54,7 @@ func (CurrencyValue) Fields() []ent.Field {
 	}
 }
 
-// Edges of the CurrencyValue.
-func (CurrencyValue) Edges() []ent.Edge {
+// Edges of the Currency.
+func (Currency) Edges() []ent.Edge {
 	return nil
 }

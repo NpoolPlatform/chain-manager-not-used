@@ -1,4 +1,4 @@
-package currencyvalue
+package currency
 
 import (
 	"context"
@@ -16,7 +16,7 @@ import (
 
 	"github.com/NpoolPlatform/chain-manager/pkg/testinit"
 
-	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/coin/currency/value"
+	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/coin/currency"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/google/uuid"
@@ -34,7 +34,7 @@ func init() {
 var currencyValue = &npool.Currency{
 	ID:              uuid.NewString(),
 	CoinTypeID:      uuid.NewString(),
-	FeedSourceID:    uuid.NewString(),
+	FeedType:        npool.FeedType_CoinBase,
 	MarketValueHigh: "99.123",
 	MarketValueLow:  "97.123",
 }
@@ -42,7 +42,7 @@ var currencyValue = &npool.Currency{
 var currencyValueReq = &npool.CurrencyReq{
 	ID:              &currencyValue.ID,
 	CoinTypeID:      &currencyValue.CoinTypeID,
-	FeedSourceID:    &currencyValue.FeedSourceID,
+	FeedType:        &currencyValue.FeedType,
 	MarketValueHigh: &currencyValue.MarketValueHigh,
 	MarketValueLow:  &currencyValue.MarketValueLow,
 }

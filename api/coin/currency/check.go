@@ -1,10 +1,10 @@
-package currencyvalue
+package currency
 
 import (
 	"fmt"
 
 	"github.com/NpoolPlatform/go-service-framework/pkg/logger"
-	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/coin/currency/value"
+	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/coin/currency"
 
 	"github.com/shopspring/decimal"
 
@@ -24,9 +24,11 @@ func validate(in *npool.CurrencyReq) error {
 		return err
 	}
 
-	if _, err := uuid.Parse(in.GetFeedSourceID()); err != nil {
-		logger.Sugar().Errorw("validate", "FeedSourceID", in.GetFeedSourceID(), "error", err)
-		return err
+	switch in.GetFeedType() {
+	case npool.FeedType_CoinBase:
+	case npool.FeedType_CoinGecko:
+		logger.Sugar().Errorw("validate", "FeedType", in.GetFeedType())
+		return fmt.Errorf("invalid feed type")
 	}
 
 	highValue, err := decimal.NewFromString(in.GetMarketValueHigh())

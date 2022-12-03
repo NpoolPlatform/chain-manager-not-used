@@ -7,8 +7,7 @@ import (
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/coinbase"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/coindescription"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/coinextra"
-	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/currencyfeed"
-	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/currencyvalue"
+	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/currency"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/exchangerate"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/setting"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/tran"
@@ -21,7 +20,7 @@ import (
 
 // schemaGraph holds a representation of ent/schema at runtime.
 var schemaGraph = func() *sqlgraph.Schema {
-	graph := &sqlgraph.Schema{Nodes: make([]*sqlgraph.Node, 9)}
+	graph := &sqlgraph.Schema{Nodes: make([]*sqlgraph.Node, 8)}
 	graph.Nodes[0] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   appcoin.Table,
@@ -114,45 +113,25 @@ var schemaGraph = func() *sqlgraph.Schema {
 	}
 	graph.Nodes[4] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
-			Table:   currencyfeed.Table,
-			Columns: currencyfeed.Columns,
+			Table:   currency.Table,
+			Columns: currency.Columns,
 			ID: &sqlgraph.FieldSpec{
 				Type:   field.TypeUUID,
-				Column: currencyfeed.FieldID,
+				Column: currency.FieldID,
 			},
 		},
-		Type: "CurrencyFeed",
+		Type: "Currency",
 		Fields: map[string]*sqlgraph.FieldSpec{
-			currencyfeed.FieldCreatedAt:  {Type: field.TypeUint32, Column: currencyfeed.FieldCreatedAt},
-			currencyfeed.FieldUpdatedAt:  {Type: field.TypeUint32, Column: currencyfeed.FieldUpdatedAt},
-			currencyfeed.FieldDeletedAt:  {Type: field.TypeUint32, Column: currencyfeed.FieldDeletedAt},
-			currencyfeed.FieldCoinTypeID: {Type: field.TypeUUID, Column: currencyfeed.FieldCoinTypeID},
-			currencyfeed.FieldFeedSource: {Type: field.TypeString, Column: currencyfeed.FieldFeedSource},
-			currencyfeed.FieldFeedType:   {Type: field.TypeString, Column: currencyfeed.FieldFeedType},
-			currencyfeed.FieldDisabled:   {Type: field.TypeBool, Column: currencyfeed.FieldDisabled},
+			currency.FieldCreatedAt:       {Type: field.TypeUint32, Column: currency.FieldCreatedAt},
+			currency.FieldUpdatedAt:       {Type: field.TypeUint32, Column: currency.FieldUpdatedAt},
+			currency.FieldDeletedAt:       {Type: field.TypeUint32, Column: currency.FieldDeletedAt},
+			currency.FieldCoinTypeID:      {Type: field.TypeUUID, Column: currency.FieldCoinTypeID},
+			currency.FieldFeedType:        {Type: field.TypeString, Column: currency.FieldFeedType},
+			currency.FieldMarketValueHigh: {Type: field.TypeOther, Column: currency.FieldMarketValueHigh},
+			currency.FieldMarketValueLow:  {Type: field.TypeOther, Column: currency.FieldMarketValueLow},
 		},
 	}
 	graph.Nodes[5] = &sqlgraph.Node{
-		NodeSpec: sqlgraph.NodeSpec{
-			Table:   currencyvalue.Table,
-			Columns: currencyvalue.Columns,
-			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeUUID,
-				Column: currencyvalue.FieldID,
-			},
-		},
-		Type: "CurrencyValue",
-		Fields: map[string]*sqlgraph.FieldSpec{
-			currencyvalue.FieldCreatedAt:       {Type: field.TypeUint32, Column: currencyvalue.FieldCreatedAt},
-			currencyvalue.FieldUpdatedAt:       {Type: field.TypeUint32, Column: currencyvalue.FieldUpdatedAt},
-			currencyvalue.FieldDeletedAt:       {Type: field.TypeUint32, Column: currencyvalue.FieldDeletedAt},
-			currencyvalue.FieldCoinTypeID:      {Type: field.TypeUUID, Column: currencyvalue.FieldCoinTypeID},
-			currencyvalue.FieldFeedSourceID:    {Type: field.TypeUUID, Column: currencyvalue.FieldFeedSourceID},
-			currencyvalue.FieldMarketValueHigh: {Type: field.TypeOther, Column: currencyvalue.FieldMarketValueHigh},
-			currencyvalue.FieldMarketValueLow:  {Type: field.TypeOther, Column: currencyvalue.FieldMarketValueLow},
-		},
-	}
-	graph.Nodes[6] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   exchangerate.Table,
 			Columns: exchangerate.Columns,
@@ -174,7 +153,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			exchangerate.FieldSetter:        {Type: field.TypeUUID, Column: exchangerate.FieldSetter},
 		},
 	}
-	graph.Nodes[7] = &sqlgraph.Node{
+	graph.Nodes[6] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   setting.Table,
 			Columns: setting.Columns,
@@ -199,7 +178,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			setting.FieldPaymentAccountCollectAmount: {Type: field.TypeOther, Column: setting.FieldPaymentAccountCollectAmount},
 		},
 	}
-	graph.Nodes[8] = &sqlgraph.Node{
+	graph.Nodes[7] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   tran.Table,
 			Columns: tran.Columns,
@@ -584,33 +563,33 @@ func (f *CoinExtraFilter) WhereStableUsd(p entql.BoolP) {
 }
 
 // addPredicate implements the predicateAdder interface.
-func (cfq *CurrencyFeedQuery) addPredicate(pred func(s *sql.Selector)) {
-	cfq.predicates = append(cfq.predicates, pred)
+func (cq *CurrencyQuery) addPredicate(pred func(s *sql.Selector)) {
+	cq.predicates = append(cq.predicates, pred)
 }
 
-// Filter returns a Filter implementation to apply filters on the CurrencyFeedQuery builder.
-func (cfq *CurrencyFeedQuery) Filter() *CurrencyFeedFilter {
-	return &CurrencyFeedFilter{config: cfq.config, predicateAdder: cfq}
+// Filter returns a Filter implementation to apply filters on the CurrencyQuery builder.
+func (cq *CurrencyQuery) Filter() *CurrencyFilter {
+	return &CurrencyFilter{config: cq.config, predicateAdder: cq}
 }
 
 // addPredicate implements the predicateAdder interface.
-func (m *CurrencyFeedMutation) addPredicate(pred func(s *sql.Selector)) {
+func (m *CurrencyMutation) addPredicate(pred func(s *sql.Selector)) {
 	m.predicates = append(m.predicates, pred)
 }
 
-// Filter returns an entql.Where implementation to apply filters on the CurrencyFeedMutation builder.
-func (m *CurrencyFeedMutation) Filter() *CurrencyFeedFilter {
-	return &CurrencyFeedFilter{config: m.config, predicateAdder: m}
+// Filter returns an entql.Where implementation to apply filters on the CurrencyMutation builder.
+func (m *CurrencyMutation) Filter() *CurrencyFilter {
+	return &CurrencyFilter{config: m.config, predicateAdder: m}
 }
 
-// CurrencyFeedFilter provides a generic filtering capability at runtime for CurrencyFeedQuery.
-type CurrencyFeedFilter struct {
+// CurrencyFilter provides a generic filtering capability at runtime for CurrencyQuery.
+type CurrencyFilter struct {
 	predicateAdder
 	config
 }
 
 // Where applies the entql predicate on the query filter.
-func (f *CurrencyFeedFilter) Where(p entql.P) {
+func (f *CurrencyFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
 		if err := schemaGraph.EvalP(schemaGraph.Nodes[4].Type, p, s); err != nil {
 			s.AddError(err)
@@ -619,118 +598,43 @@ func (f *CurrencyFeedFilter) Where(p entql.P) {
 }
 
 // WhereID applies the entql [16]byte predicate on the id field.
-func (f *CurrencyFeedFilter) WhereID(p entql.ValueP) {
-	f.Where(p.Field(currencyfeed.FieldID))
+func (f *CurrencyFilter) WhereID(p entql.ValueP) {
+	f.Where(p.Field(currency.FieldID))
 }
 
 // WhereCreatedAt applies the entql uint32 predicate on the created_at field.
-func (f *CurrencyFeedFilter) WhereCreatedAt(p entql.Uint32P) {
-	f.Where(p.Field(currencyfeed.FieldCreatedAt))
+func (f *CurrencyFilter) WhereCreatedAt(p entql.Uint32P) {
+	f.Where(p.Field(currency.FieldCreatedAt))
 }
 
 // WhereUpdatedAt applies the entql uint32 predicate on the updated_at field.
-func (f *CurrencyFeedFilter) WhereUpdatedAt(p entql.Uint32P) {
-	f.Where(p.Field(currencyfeed.FieldUpdatedAt))
+func (f *CurrencyFilter) WhereUpdatedAt(p entql.Uint32P) {
+	f.Where(p.Field(currency.FieldUpdatedAt))
 }
 
 // WhereDeletedAt applies the entql uint32 predicate on the deleted_at field.
-func (f *CurrencyFeedFilter) WhereDeletedAt(p entql.Uint32P) {
-	f.Where(p.Field(currencyfeed.FieldDeletedAt))
+func (f *CurrencyFilter) WhereDeletedAt(p entql.Uint32P) {
+	f.Where(p.Field(currency.FieldDeletedAt))
 }
 
 // WhereCoinTypeID applies the entql [16]byte predicate on the coin_type_id field.
-func (f *CurrencyFeedFilter) WhereCoinTypeID(p entql.ValueP) {
-	f.Where(p.Field(currencyfeed.FieldCoinTypeID))
-}
-
-// WhereFeedSource applies the entql string predicate on the feed_source field.
-func (f *CurrencyFeedFilter) WhereFeedSource(p entql.StringP) {
-	f.Where(p.Field(currencyfeed.FieldFeedSource))
+func (f *CurrencyFilter) WhereCoinTypeID(p entql.ValueP) {
+	f.Where(p.Field(currency.FieldCoinTypeID))
 }
 
 // WhereFeedType applies the entql string predicate on the feed_type field.
-func (f *CurrencyFeedFilter) WhereFeedType(p entql.StringP) {
-	f.Where(p.Field(currencyfeed.FieldFeedType))
-}
-
-// WhereDisabled applies the entql bool predicate on the disabled field.
-func (f *CurrencyFeedFilter) WhereDisabled(p entql.BoolP) {
-	f.Where(p.Field(currencyfeed.FieldDisabled))
-}
-
-// addPredicate implements the predicateAdder interface.
-func (cvq *CurrencyValueQuery) addPredicate(pred func(s *sql.Selector)) {
-	cvq.predicates = append(cvq.predicates, pred)
-}
-
-// Filter returns a Filter implementation to apply filters on the CurrencyValueQuery builder.
-func (cvq *CurrencyValueQuery) Filter() *CurrencyValueFilter {
-	return &CurrencyValueFilter{config: cvq.config, predicateAdder: cvq}
-}
-
-// addPredicate implements the predicateAdder interface.
-func (m *CurrencyValueMutation) addPredicate(pred func(s *sql.Selector)) {
-	m.predicates = append(m.predicates, pred)
-}
-
-// Filter returns an entql.Where implementation to apply filters on the CurrencyValueMutation builder.
-func (m *CurrencyValueMutation) Filter() *CurrencyValueFilter {
-	return &CurrencyValueFilter{config: m.config, predicateAdder: m}
-}
-
-// CurrencyValueFilter provides a generic filtering capability at runtime for CurrencyValueQuery.
-type CurrencyValueFilter struct {
-	predicateAdder
-	config
-}
-
-// Where applies the entql predicate on the query filter.
-func (f *CurrencyValueFilter) Where(p entql.P) {
-	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[5].Type, p, s); err != nil {
-			s.AddError(err)
-		}
-	})
-}
-
-// WhereID applies the entql [16]byte predicate on the id field.
-func (f *CurrencyValueFilter) WhereID(p entql.ValueP) {
-	f.Where(p.Field(currencyvalue.FieldID))
-}
-
-// WhereCreatedAt applies the entql uint32 predicate on the created_at field.
-func (f *CurrencyValueFilter) WhereCreatedAt(p entql.Uint32P) {
-	f.Where(p.Field(currencyvalue.FieldCreatedAt))
-}
-
-// WhereUpdatedAt applies the entql uint32 predicate on the updated_at field.
-func (f *CurrencyValueFilter) WhereUpdatedAt(p entql.Uint32P) {
-	f.Where(p.Field(currencyvalue.FieldUpdatedAt))
-}
-
-// WhereDeletedAt applies the entql uint32 predicate on the deleted_at field.
-func (f *CurrencyValueFilter) WhereDeletedAt(p entql.Uint32P) {
-	f.Where(p.Field(currencyvalue.FieldDeletedAt))
-}
-
-// WhereCoinTypeID applies the entql [16]byte predicate on the coin_type_id field.
-func (f *CurrencyValueFilter) WhereCoinTypeID(p entql.ValueP) {
-	f.Where(p.Field(currencyvalue.FieldCoinTypeID))
-}
-
-// WhereFeedSourceID applies the entql [16]byte predicate on the feed_source_id field.
-func (f *CurrencyValueFilter) WhereFeedSourceID(p entql.ValueP) {
-	f.Where(p.Field(currencyvalue.FieldFeedSourceID))
+func (f *CurrencyFilter) WhereFeedType(p entql.StringP) {
+	f.Where(p.Field(currency.FieldFeedType))
 }
 
 // WhereMarketValueHigh applies the entql other predicate on the market_value_high field.
-func (f *CurrencyValueFilter) WhereMarketValueHigh(p entql.OtherP) {
-	f.Where(p.Field(currencyvalue.FieldMarketValueHigh))
+func (f *CurrencyFilter) WhereMarketValueHigh(p entql.OtherP) {
+	f.Where(p.Field(currency.FieldMarketValueHigh))
 }
 
 // WhereMarketValueLow applies the entql other predicate on the market_value_low field.
-func (f *CurrencyValueFilter) WhereMarketValueLow(p entql.OtherP) {
-	f.Where(p.Field(currencyvalue.FieldMarketValueLow))
+func (f *CurrencyFilter) WhereMarketValueLow(p entql.OtherP) {
+	f.Where(p.Field(currency.FieldMarketValueLow))
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -762,7 +666,7 @@ type ExchangeRateFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *ExchangeRateFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[6].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[5].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -847,7 +751,7 @@ type SettingFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *SettingFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[7].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[6].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -947,7 +851,7 @@ type TranFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *TranFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[8].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[7].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})

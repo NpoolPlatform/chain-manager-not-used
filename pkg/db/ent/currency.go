@@ -7,13 +7,13 @@ import (
 	"strings"
 
 	"entgo.io/ent/dialect/sql"
-	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/currencyvalue"
+	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/currency"
 	"github.com/google/uuid"
 	"github.com/shopspring/decimal"
 )
 
-// CurrencyValue is the model entity for the CurrencyValue schema.
-type CurrencyValue struct {
+// Currency is the model entity for the Currency schema.
+type Currency struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID uuid.UUID `json:"id,omitempty"`
@@ -25,8 +25,8 @@ type CurrencyValue struct {
 	DeletedAt uint32 `json:"deleted_at,omitempty"`
 	// CoinTypeID holds the value of the "coin_type_id" field.
 	CoinTypeID uuid.UUID `json:"coin_type_id,omitempty"`
-	// FeedSourceID holds the value of the "feed_source_id" field.
-	FeedSourceID uuid.UUID `json:"feed_source_id,omitempty"`
+	// FeedType holds the value of the "feed_type" field.
+	FeedType string `json:"feed_type,omitempty"`
 	// MarketValueHigh holds the value of the "market_value_high" field.
 	MarketValueHigh decimal.Decimal `json:"market_value_high,omitempty"`
 	// MarketValueLow holds the value of the "market_value_low" field.
@@ -34,136 +34,138 @@ type CurrencyValue struct {
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
-func (*CurrencyValue) scanValues(columns []string) ([]interface{}, error) {
+func (*Currency) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case currencyvalue.FieldMarketValueHigh, currencyvalue.FieldMarketValueLow:
+		case currency.FieldMarketValueHigh, currency.FieldMarketValueLow:
 			values[i] = new(decimal.Decimal)
-		case currencyvalue.FieldCreatedAt, currencyvalue.FieldUpdatedAt, currencyvalue.FieldDeletedAt:
+		case currency.FieldCreatedAt, currency.FieldUpdatedAt, currency.FieldDeletedAt:
 			values[i] = new(sql.NullInt64)
-		case currencyvalue.FieldID, currencyvalue.FieldCoinTypeID, currencyvalue.FieldFeedSourceID:
+		case currency.FieldFeedType:
+			values[i] = new(sql.NullString)
+		case currency.FieldID, currency.FieldCoinTypeID:
 			values[i] = new(uuid.UUID)
 		default:
-			return nil, fmt.Errorf("unexpected column %q for type CurrencyValue", columns[i])
+			return nil, fmt.Errorf("unexpected column %q for type Currency", columns[i])
 		}
 	}
 	return values, nil
 }
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
-// to the CurrencyValue fields.
-func (cv *CurrencyValue) assignValues(columns []string, values []interface{}) error {
+// to the Currency fields.
+func (c *Currency) assignValues(columns []string, values []interface{}) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
 	for i := range columns {
 		switch columns[i] {
-		case currencyvalue.FieldID:
+		case currency.FieldID:
 			if value, ok := values[i].(*uuid.UUID); !ok {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value != nil {
-				cv.ID = *value
+				c.ID = *value
 			}
-		case currencyvalue.FieldCreatedAt:
+		case currency.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				cv.CreatedAt = uint32(value.Int64)
+				c.CreatedAt = uint32(value.Int64)
 			}
-		case currencyvalue.FieldUpdatedAt:
+		case currency.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				cv.UpdatedAt = uint32(value.Int64)
+				c.UpdatedAt = uint32(value.Int64)
 			}
-		case currencyvalue.FieldDeletedAt:
+		case currency.FieldDeletedAt:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field deleted_at", values[i])
 			} else if value.Valid {
-				cv.DeletedAt = uint32(value.Int64)
+				c.DeletedAt = uint32(value.Int64)
 			}
-		case currencyvalue.FieldCoinTypeID:
+		case currency.FieldCoinTypeID:
 			if value, ok := values[i].(*uuid.UUID); !ok {
 				return fmt.Errorf("unexpected type %T for field coin_type_id", values[i])
 			} else if value != nil {
-				cv.CoinTypeID = *value
+				c.CoinTypeID = *value
 			}
-		case currencyvalue.FieldFeedSourceID:
-			if value, ok := values[i].(*uuid.UUID); !ok {
-				return fmt.Errorf("unexpected type %T for field feed_source_id", values[i])
-			} else if value != nil {
-				cv.FeedSourceID = *value
+		case currency.FieldFeedType:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field feed_type", values[i])
+			} else if value.Valid {
+				c.FeedType = value.String
 			}
-		case currencyvalue.FieldMarketValueHigh:
+		case currency.FieldMarketValueHigh:
 			if value, ok := values[i].(*decimal.Decimal); !ok {
 				return fmt.Errorf("unexpected type %T for field market_value_high", values[i])
 			} else if value != nil {
-				cv.MarketValueHigh = *value
+				c.MarketValueHigh = *value
 			}
-		case currencyvalue.FieldMarketValueLow:
+		case currency.FieldMarketValueLow:
 			if value, ok := values[i].(*decimal.Decimal); !ok {
 				return fmt.Errorf("unexpected type %T for field market_value_low", values[i])
 			} else if value != nil {
-				cv.MarketValueLow = *value
+				c.MarketValueLow = *value
 			}
 		}
 	}
 	return nil
 }
 
-// Update returns a builder for updating this CurrencyValue.
-// Note that you need to call CurrencyValue.Unwrap() before calling this method if this CurrencyValue
+// Update returns a builder for updating this Currency.
+// Note that you need to call Currency.Unwrap() before calling this method if this Currency
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (cv *CurrencyValue) Update() *CurrencyValueUpdateOne {
-	return (&CurrencyValueClient{config: cv.config}).UpdateOne(cv)
+func (c *Currency) Update() *CurrencyUpdateOne {
+	return (&CurrencyClient{config: c.config}).UpdateOne(c)
 }
 
-// Unwrap unwraps the CurrencyValue entity that was returned from a transaction after it was closed,
+// Unwrap unwraps the Currency entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (cv *CurrencyValue) Unwrap() *CurrencyValue {
-	_tx, ok := cv.config.driver.(*txDriver)
+func (c *Currency) Unwrap() *Currency {
+	_tx, ok := c.config.driver.(*txDriver)
 	if !ok {
-		panic("ent: CurrencyValue is not a transactional entity")
+		panic("ent: Currency is not a transactional entity")
 	}
-	cv.config.driver = _tx.drv
-	return cv
+	c.config.driver = _tx.drv
+	return c
 }
 
 // String implements the fmt.Stringer.
-func (cv *CurrencyValue) String() string {
+func (c *Currency) String() string {
 	var builder strings.Builder
-	builder.WriteString("CurrencyValue(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", cv.ID))
+	builder.WriteString("Currency(")
+	builder.WriteString(fmt.Sprintf("id=%v, ", c.ID))
 	builder.WriteString("created_at=")
-	builder.WriteString(fmt.Sprintf("%v", cv.CreatedAt))
+	builder.WriteString(fmt.Sprintf("%v", c.CreatedAt))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(fmt.Sprintf("%v", cv.UpdatedAt))
+	builder.WriteString(fmt.Sprintf("%v", c.UpdatedAt))
 	builder.WriteString(", ")
 	builder.WriteString("deleted_at=")
-	builder.WriteString(fmt.Sprintf("%v", cv.DeletedAt))
+	builder.WriteString(fmt.Sprintf("%v", c.DeletedAt))
 	builder.WriteString(", ")
 	builder.WriteString("coin_type_id=")
-	builder.WriteString(fmt.Sprintf("%v", cv.CoinTypeID))
+	builder.WriteString(fmt.Sprintf("%v", c.CoinTypeID))
 	builder.WriteString(", ")
-	builder.WriteString("feed_source_id=")
-	builder.WriteString(fmt.Sprintf("%v", cv.FeedSourceID))
+	builder.WriteString("feed_type=")
+	builder.WriteString(c.FeedType)
 	builder.WriteString(", ")
 	builder.WriteString("market_value_high=")
-	builder.WriteString(fmt.Sprintf("%v", cv.MarketValueHigh))
+	builder.WriteString(fmt.Sprintf("%v", c.MarketValueHigh))
 	builder.WriteString(", ")
 	builder.WriteString("market_value_low=")
-	builder.WriteString(fmt.Sprintf("%v", cv.MarketValueLow))
+	builder.WriteString(fmt.Sprintf("%v", c.MarketValueLow))
 	builder.WriteByte(')')
 	return builder.String()
 }
 
-// CurrencyValues is a parsable slice of CurrencyValue.
-type CurrencyValues []*CurrencyValue
+// Currencies is a parsable slice of Currency.
+type Currencies []*Currency
 
-func (cv CurrencyValues) config(cfg config) {
-	for _i := range cv {
-		cv[_i].config = cfg
+func (c Currencies) config(cfg config) {
+	for _i := range c {
+		c[_i].config = cfg
 	}
 }

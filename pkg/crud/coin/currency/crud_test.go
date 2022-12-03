@@ -1,4 +1,4 @@
-package currencyfeed
+package currency
 
 import (
 	"context"
@@ -8,12 +8,13 @@ import (
 	"testing"
 
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent"
+	"github.com/shopspring/decimal"
 
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
 
 	testinit "github.com/NpoolPlatform/chain-manager/pkg/testinit"
 	valuedef "github.com/NpoolPlatform/message/npool"
-	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/coin/currency/feed"
+	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/coin/currency"
 	"github.com/google/uuid"
 
 	"github.com/stretchr/testify/assert"
@@ -28,28 +29,31 @@ func init() {
 	}
 }
 
-var entity = ent.CurrencyFeed{
-	ID:         uuid.New(),
-	CoinTypeID: uuid.New(),
-	FeedSource: uuid.NewString(),
-	FeedType:   npool.FeedType_CoinBase.String(),
+var entity = ent.Currency{
+	ID:              uuid.New(),
+	CoinTypeID:      uuid.New(),
+	FeedType:        npool.FeedType_CoinBase.String(),
+	MarketValueHigh: decimal.RequireFromString("88.9123"),
+	MarketValueLow:  decimal.RequireFromString("84.9123"),
 }
 
 var (
-	id         = entity.ID.String()
-	coinTypeID = entity.CoinTypeID.String()
-	feedSource = entity.FeedSource
-	feedType   = npool.FeedType_CoinBase
+	id              = entity.ID.String()
+	coinTypeID      = entity.CoinTypeID.String()
+	feedType        = npool.FeedType(npool.FeedType_value[entity.FeedType])
+	marketValueHigh = entity.MarketValueHigh.String()
+	marketValueLow  = entity.MarketValueLow.String()
 
-	req = npool.CurrencyFeedReq{
-		ID:         &id,
-		CoinTypeID: &coinTypeID,
-		FeedSource: &feedSource,
-		FeedType:   &feedType,
+	req = npool.CurrencyReq{
+		ID:              &id,
+		CoinTypeID:      &coinTypeID,
+		FeedType:        &feedType,
+		MarketValueHigh: &marketValueHigh,
+		MarketValueLow:  &marketValueLow,
 	}
 )
 
-var info *ent.CurrencyFeed
+var info *ent.Currency
 
 func create(t *testing.T) {
 	var err error
@@ -62,33 +66,37 @@ func create(t *testing.T) {
 }
 
 func createBulk(t *testing.T) {
-	entities := []*ent.CurrencyFeed{
+	entities := []*ent.Currency{
 		{
-			ID:         uuid.New(),
-			CoinTypeID: uuid.New(),
-			FeedSource: uuid.NewString(),
-			FeedType:   npool.FeedType_CoinBase.String(),
+			ID:              uuid.New(),
+			CoinTypeID:      uuid.New(),
+			FeedType:        npool.FeedType_CoinBase.String(),
+			MarketValueHigh: decimal.RequireFromString("84.9123"),
+			MarketValueLow:  decimal.RequireFromString("82.9123"),
 		},
 		{
-			ID:         uuid.New(),
-			CoinTypeID: uuid.New(),
-			FeedSource: uuid.NewString(),
-			FeedType:   npool.FeedType_CoinGecko.String(),
+			ID:              uuid.New(),
+			CoinTypeID:      uuid.New(),
+			FeedType:        npool.FeedType_CoinGecko.String(),
+			MarketValueHigh: decimal.RequireFromString("88.4123"),
+			MarketValueLow:  decimal.RequireFromString("84.2123"),
 		},
 	}
 
-	reqs := []*npool.CurrencyFeedReq{}
+	reqs := []*npool.CurrencyReq{}
 	for _, _entity := range entities {
 		_id := _entity.ID.String()
-		_coinTypeID := entity.CoinTypeID.String()
-		_feedSource := entity.FeedSource
+		_coinTypeID := _entity.CoinTypeID.String()
 		_feedType := npool.FeedType(npool.FeedType_value[_entity.FeedType])
+		_marketValueHigh := _entity.MarketValueHigh.String()
+		_marketValueLow := _entity.MarketValueLow.String()
 
-		reqs = append(reqs, &npool.CurrencyFeedReq{
-			ID:         &_id,
-			CoinTypeID: &_coinTypeID,
-			FeedSource: &_feedSource,
-			FeedType:   &_feedType,
+		reqs = append(reqs, &npool.CurrencyReq{
+			ID:              &_id,
+			CoinTypeID:      &_coinTypeID,
+			FeedType:        &_feedType,
+			MarketValueHigh: &_marketValueHigh,
+			MarketValueLow:  &_marketValueLow,
 		})
 	}
 	infos, err := CreateBulk(context.Background(), reqs)
@@ -98,9 +106,14 @@ func createBulk(t *testing.T) {
 }
 
 func add(t *testing.T) {
-	feedSource := uuid.NewString()
-	req.FeedSource = &feedSource
-	entity.FeedSource = feedSource
+	valueHigh := "11.22"
+	valueLow := "11.12"
+
+	req.MarketValueHigh = &valueHigh
+	req.MarketValueLow = &valueLow
+
+	entity.MarketValueHigh = decimal.RequireFromString(valueHigh)
+	entity.MarketValueLow = decimal.RequireFromString(valueLow)
 
 	info, err := Update(context.Background(), &req)
 	if assert.Nil(t, err) {
@@ -184,6 +197,7 @@ func deleteA(t *testing.T) {
 	info, err := Delete(context.Background(), entity.ID)
 	if assert.Nil(t, err) {
 		entity.DeletedAt = info.DeletedAt
+		entity.UpdatedAt = info.UpdatedAt
 		assert.Equal(t, info.String(), entity.String())
 	}
 }
