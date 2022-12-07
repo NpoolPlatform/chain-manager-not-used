@@ -27,6 +27,7 @@ func validate(in *npool.CurrencyReq) error {
 	switch in.GetFeedType() {
 	case npool.FeedType_CoinBase:
 	case npool.FeedType_CoinGecko:
+	default:
 		logger.Sugar().Errorw("validate", "FeedType", in.GetFeedType())
 		return fmt.Errorf("invalid feed type")
 	}
