@@ -47,15 +47,17 @@ func validate(in *npool.TxReq) error { //nolint
 		return fmt.Errorf("chaintxid is invalid")
 	}
 
-	switch in.GetState() {
-	case npool.TxState_StateCreated:
-	case npool.TxState_StateWait:
-	case npool.TxState_StateTransferring:
-	case npool.TxState_StateSuccessful:
-	case npool.TxState_StateFail:
-	default:
-		logger.Sugar().Errorw("validate", "State", in.GetState())
-		return fmt.Errorf("state is invalid")
+	if in.State != nil {
+		switch in.GetState() {
+		case npool.TxState_StateCreated:
+		case npool.TxState_StateWait:
+		case npool.TxState_StateTransferring:
+		case npool.TxState_StateSuccessful:
+		case npool.TxState_StateFail:
+		default:
+			logger.Sugar().Errorw("validate", "State", in.GetState())
+			return fmt.Errorf("state is invalid")
+		}
 	}
 
 	switch in.GetType() {
