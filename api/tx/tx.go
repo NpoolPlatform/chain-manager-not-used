@@ -105,15 +105,17 @@ func (s *Server) UpdateTx(ctx context.Context, in *npool.UpdateTxRequest) (*npoo
 
 	span = tracer.Trace(span, in.GetInfo())
 
-	switch in.GetInfo().GetState() {
-	case npool.TxState_StateCreated:
-	case npool.TxState_StateWait:
-	case npool.TxState_StateTransferring:
-	case npool.TxState_StateSuccessful:
-	case npool.TxState_StateFail:
-	default:
-		logger.Sugar().Errorw("UpdateTx", "State", in.GetInfo().GetState())
-		return &npool.UpdateTxResponse{}, fmt.Errorf("state is invalid")
+	if in.GetInfo().State != nil {
+		switch in.GetInfo().GetState() {
+		case npool.TxState_StateCreated:
+		case npool.TxState_StateWait:
+		case npool.TxState_StateTransferring:
+		case npool.TxState_StateSuccessful:
+		case npool.TxState_StateFail:
+		default:
+			logger.Sugar().Errorw("UpdateTx", "State", in.GetInfo().GetState())
+			return &npool.UpdateTxResponse{}, fmt.Errorf("state is invalid")
+		}
 	}
 
 	span = commontracer.TraceInvoker(span, "tx", "crud", "Update")
