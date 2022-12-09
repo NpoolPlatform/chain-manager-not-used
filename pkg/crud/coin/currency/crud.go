@@ -190,6 +190,8 @@ func SetQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.CurrencyQuery, err
 	}
 	if conds.StartAt != nil {
 		switch conds.GetStartAt().GetOp() {
+		case cruder.LTE:
+			stm.Where(currency.CreatedAtLTE(conds.GetStartAt().GetValue()))
 		case cruder.GTE:
 			stm.Where(currency.CreatedAtGTE(conds.GetStartAt().GetValue()))
 		default:
@@ -200,6 +202,8 @@ func SetQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.CurrencyQuery, err
 		switch conds.GetEndAt().GetOp() {
 		case cruder.GTE:
 			stm.Where(currency.CreatedAtGTE(conds.GetEndAt().GetValue()))
+		case cruder.LTE:
+			stm.Where(currency.CreatedAtLTE(conds.GetEndAt().GetValue()))
 		default:
 			return nil, fmt.Errorf("invalid currency field")
 		}
