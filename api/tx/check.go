@@ -38,7 +38,7 @@ func validate(in *npool.TxReq) error { //nolint
 		return fmt.Errorf("amount is invalid: %v", err)
 	}
 	amount, err = decimal.NewFromString(in.GetFeeAmount())
-	if err != nil || amount.Cmp(decimal.NewFromInt(0)) <= 0 {
+	if err != nil || amount.Cmp(decimal.NewFromInt(0)) < 0 {
 		logger.Sugar().Errorw("validate", "FeeAmount", in.GetFeeAmount(), "error", err)
 		return fmt.Errorf("feeamount is invalid: %v", err)
 	}
