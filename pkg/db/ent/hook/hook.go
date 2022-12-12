@@ -87,6 +87,19 @@ func (f ExchangeRateFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value
 	return f(ctx, mv)
 }
 
+// The LegalCurrencyFunc type is an adapter to allow the use of ordinary
+// function as LegalCurrency mutator.
+type LegalCurrencyFunc func(context.Context, *ent.LegalCurrencyMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f LegalCurrencyFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.LegalCurrencyMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.LegalCurrencyMutation", m)
+	}
+	return f(ctx, mv)
+}
+
 // The SettingFunc type is an adapter to allow the use of ordinary
 // function as Setting mutator.
 type SettingFunc func(context.Context, *ent.SettingMutation) (ent.Value, error)

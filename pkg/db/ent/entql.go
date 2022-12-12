@@ -9,6 +9,7 @@ import (
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/coinextra"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/currency"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/exchangerate"
+	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/legalcurrency"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/setting"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/tran"
 
@@ -20,7 +21,7 @@ import (
 
 // schemaGraph holds a representation of ent/schema at runtime.
 var schemaGraph = func() *sqlgraph.Schema {
-	graph := &sqlgraph.Schema{Nodes: make([]*sqlgraph.Node, 8)}
+	graph := &sqlgraph.Schema{Nodes: make([]*sqlgraph.Node, 9)}
 	graph.Nodes[0] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   appcoin.Table,
@@ -155,6 +156,26 @@ var schemaGraph = func() *sqlgraph.Schema {
 	}
 	graph.Nodes[6] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
+			Table:   legalcurrency.Table,
+			Columns: legalcurrency.Columns,
+			ID: &sqlgraph.FieldSpec{
+				Type:   field.TypeUUID,
+				Column: legalcurrency.FieldID,
+			},
+		},
+		Type: "LegalCurrency",
+		Fields: map[string]*sqlgraph.FieldSpec{
+			legalcurrency.FieldCreatedAt:       {Type: field.TypeUint32, Column: legalcurrency.FieldCreatedAt},
+			legalcurrency.FieldUpdatedAt:       {Type: field.TypeUint32, Column: legalcurrency.FieldUpdatedAt},
+			legalcurrency.FieldDeletedAt:       {Type: field.TypeUint32, Column: legalcurrency.FieldDeletedAt},
+			legalcurrency.FieldCoinTypeID:      {Type: field.TypeUUID, Column: legalcurrency.FieldCoinTypeID},
+			legalcurrency.FieldFeedType:        {Type: field.TypeString, Column: legalcurrency.FieldFeedType},
+			legalcurrency.FieldMarketValueHigh: {Type: field.TypeOther, Column: legalcurrency.FieldMarketValueHigh},
+			legalcurrency.FieldMarketValueLow:  {Type: field.TypeOther, Column: legalcurrency.FieldMarketValueLow},
+		},
+	}
+	graph.Nodes[7] = &sqlgraph.Node{
+		NodeSpec: sqlgraph.NodeSpec{
 			Table:   setting.Table,
 			Columns: setting.Columns,
 			ID: &sqlgraph.FieldSpec{
@@ -178,7 +199,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			setting.FieldPaymentAccountCollectAmount: {Type: field.TypeOther, Column: setting.FieldPaymentAccountCollectAmount},
 		},
 	}
-	graph.Nodes[7] = &sqlgraph.Node{
+	graph.Nodes[8] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   tran.Table,
 			Columns: tran.Columns,
@@ -723,6 +744,81 @@ func (f *ExchangeRateFilter) WhereSetter(p entql.ValueP) {
 }
 
 // addPredicate implements the predicateAdder interface.
+func (lcq *LegalCurrencyQuery) addPredicate(pred func(s *sql.Selector)) {
+	lcq.predicates = append(lcq.predicates, pred)
+}
+
+// Filter returns a Filter implementation to apply filters on the LegalCurrencyQuery builder.
+func (lcq *LegalCurrencyQuery) Filter() *LegalCurrencyFilter {
+	return &LegalCurrencyFilter{config: lcq.config, predicateAdder: lcq}
+}
+
+// addPredicate implements the predicateAdder interface.
+func (m *LegalCurrencyMutation) addPredicate(pred func(s *sql.Selector)) {
+	m.predicates = append(m.predicates, pred)
+}
+
+// Filter returns an entql.Where implementation to apply filters on the LegalCurrencyMutation builder.
+func (m *LegalCurrencyMutation) Filter() *LegalCurrencyFilter {
+	return &LegalCurrencyFilter{config: m.config, predicateAdder: m}
+}
+
+// LegalCurrencyFilter provides a generic filtering capability at runtime for LegalCurrencyQuery.
+type LegalCurrencyFilter struct {
+	predicateAdder
+	config
+}
+
+// Where applies the entql predicate on the query filter.
+func (f *LegalCurrencyFilter) Where(p entql.P) {
+	f.addPredicate(func(s *sql.Selector) {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[6].Type, p, s); err != nil {
+			s.AddError(err)
+		}
+	})
+}
+
+// WhereID applies the entql [16]byte predicate on the id field.
+func (f *LegalCurrencyFilter) WhereID(p entql.ValueP) {
+	f.Where(p.Field(legalcurrency.FieldID))
+}
+
+// WhereCreatedAt applies the entql uint32 predicate on the created_at field.
+func (f *LegalCurrencyFilter) WhereCreatedAt(p entql.Uint32P) {
+	f.Where(p.Field(legalcurrency.FieldCreatedAt))
+}
+
+// WhereUpdatedAt applies the entql uint32 predicate on the updated_at field.
+func (f *LegalCurrencyFilter) WhereUpdatedAt(p entql.Uint32P) {
+	f.Where(p.Field(legalcurrency.FieldUpdatedAt))
+}
+
+// WhereDeletedAt applies the entql uint32 predicate on the deleted_at field.
+func (f *LegalCurrencyFilter) WhereDeletedAt(p entql.Uint32P) {
+	f.Where(p.Field(legalcurrency.FieldDeletedAt))
+}
+
+// WhereCoinTypeID applies the entql [16]byte predicate on the coin_type_id field.
+func (f *LegalCurrencyFilter) WhereCoinTypeID(p entql.ValueP) {
+	f.Where(p.Field(legalcurrency.FieldCoinTypeID))
+}
+
+// WhereFeedType applies the entql string predicate on the feed_type field.
+func (f *LegalCurrencyFilter) WhereFeedType(p entql.StringP) {
+	f.Where(p.Field(legalcurrency.FieldFeedType))
+}
+
+// WhereMarketValueHigh applies the entql other predicate on the market_value_high field.
+func (f *LegalCurrencyFilter) WhereMarketValueHigh(p entql.OtherP) {
+	f.Where(p.Field(legalcurrency.FieldMarketValueHigh))
+}
+
+// WhereMarketValueLow applies the entql other predicate on the market_value_low field.
+func (f *LegalCurrencyFilter) WhereMarketValueLow(p entql.OtherP) {
+	f.Where(p.Field(legalcurrency.FieldMarketValueLow))
+}
+
+// addPredicate implements the predicateAdder interface.
 func (sq *SettingQuery) addPredicate(pred func(s *sql.Selector)) {
 	sq.predicates = append(sq.predicates, pred)
 }
@@ -751,7 +847,7 @@ type SettingFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *SettingFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[6].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[7].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -851,7 +947,7 @@ type TranFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *TranFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[7].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[8].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})

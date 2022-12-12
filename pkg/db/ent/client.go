@@ -17,6 +17,7 @@ import (
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/coinextra"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/currency"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/exchangerate"
+	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/legalcurrency"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/setting"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/tran"
 
@@ -41,6 +42,8 @@ type Client struct {
 	Currency *CurrencyClient
 	// ExchangeRate is the client for interacting with the ExchangeRate builders.
 	ExchangeRate *ExchangeRateClient
+	// LegalCurrency is the client for interacting with the LegalCurrency builders.
+	LegalCurrency *LegalCurrencyClient
 	// Setting is the client for interacting with the Setting builders.
 	Setting *SettingClient
 	// Tran is the client for interacting with the Tran builders.
@@ -64,6 +67,7 @@ func (c *Client) init() {
 	c.CoinExtra = NewCoinExtraClient(c.config)
 	c.Currency = NewCurrencyClient(c.config)
 	c.ExchangeRate = NewExchangeRateClient(c.config)
+	c.LegalCurrency = NewLegalCurrencyClient(c.config)
 	c.Setting = NewSettingClient(c.config)
 	c.Tran = NewTranClient(c.config)
 }
@@ -105,6 +109,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		CoinExtra:       NewCoinExtraClient(cfg),
 		Currency:        NewCurrencyClient(cfg),
 		ExchangeRate:    NewExchangeRateClient(cfg),
+		LegalCurrency:   NewLegalCurrencyClient(cfg),
 		Setting:         NewSettingClient(cfg),
 		Tran:            NewTranClient(cfg),
 	}, nil
@@ -132,6 +137,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		CoinExtra:       NewCoinExtraClient(cfg),
 		Currency:        NewCurrencyClient(cfg),
 		ExchangeRate:    NewExchangeRateClient(cfg),
+		LegalCurrency:   NewLegalCurrencyClient(cfg),
 		Setting:         NewSettingClient(cfg),
 		Tran:            NewTranClient(cfg),
 	}, nil
@@ -169,6 +175,7 @@ func (c *Client) Use(hooks ...Hook) {
 	c.CoinExtra.Use(hooks...)
 	c.Currency.Use(hooks...)
 	c.ExchangeRate.Use(hooks...)
+	c.LegalCurrency.Use(hooks...)
 	c.Setting.Use(hooks...)
 	c.Tran.Use(hooks...)
 }
@@ -717,6 +724,97 @@ func (c *ExchangeRateClient) GetX(ctx context.Context, id uuid.UUID) *ExchangeRa
 func (c *ExchangeRateClient) Hooks() []Hook {
 	hooks := c.hooks.ExchangeRate
 	return append(hooks[:len(hooks):len(hooks)], exchangerate.Hooks[:]...)
+}
+
+// LegalCurrencyClient is a client for the LegalCurrency schema.
+type LegalCurrencyClient struct {
+	config
+}
+
+// NewLegalCurrencyClient returns a client for the LegalCurrency from the given config.
+func NewLegalCurrencyClient(c config) *LegalCurrencyClient {
+	return &LegalCurrencyClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `legalcurrency.Hooks(f(g(h())))`.
+func (c *LegalCurrencyClient) Use(hooks ...Hook) {
+	c.hooks.LegalCurrency = append(c.hooks.LegalCurrency, hooks...)
+}
+
+// Create returns a builder for creating a LegalCurrency entity.
+func (c *LegalCurrencyClient) Create() *LegalCurrencyCreate {
+	mutation := newLegalCurrencyMutation(c.config, OpCreate)
+	return &LegalCurrencyCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of LegalCurrency entities.
+func (c *LegalCurrencyClient) CreateBulk(builders ...*LegalCurrencyCreate) *LegalCurrencyCreateBulk {
+	return &LegalCurrencyCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for LegalCurrency.
+func (c *LegalCurrencyClient) Update() *LegalCurrencyUpdate {
+	mutation := newLegalCurrencyMutation(c.config, OpUpdate)
+	return &LegalCurrencyUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *LegalCurrencyClient) UpdateOne(lc *LegalCurrency) *LegalCurrencyUpdateOne {
+	mutation := newLegalCurrencyMutation(c.config, OpUpdateOne, withLegalCurrency(lc))
+	return &LegalCurrencyUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *LegalCurrencyClient) UpdateOneID(id uuid.UUID) *LegalCurrencyUpdateOne {
+	mutation := newLegalCurrencyMutation(c.config, OpUpdateOne, withLegalCurrencyID(id))
+	return &LegalCurrencyUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for LegalCurrency.
+func (c *LegalCurrencyClient) Delete() *LegalCurrencyDelete {
+	mutation := newLegalCurrencyMutation(c.config, OpDelete)
+	return &LegalCurrencyDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *LegalCurrencyClient) DeleteOne(lc *LegalCurrency) *LegalCurrencyDeleteOne {
+	return c.DeleteOneID(lc.ID)
+}
+
+// DeleteOne returns a builder for deleting the given entity by its id.
+func (c *LegalCurrencyClient) DeleteOneID(id uuid.UUID) *LegalCurrencyDeleteOne {
+	builder := c.Delete().Where(legalcurrency.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &LegalCurrencyDeleteOne{builder}
+}
+
+// Query returns a query builder for LegalCurrency.
+func (c *LegalCurrencyClient) Query() *LegalCurrencyQuery {
+	return &LegalCurrencyQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a LegalCurrency entity by its id.
+func (c *LegalCurrencyClient) Get(ctx context.Context, id uuid.UUID) (*LegalCurrency, error) {
+	return c.Query().Where(legalcurrency.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *LegalCurrencyClient) GetX(ctx context.Context, id uuid.UUID) *LegalCurrency {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *LegalCurrencyClient) Hooks() []Hook {
+	hooks := c.hooks.LegalCurrency
+	return append(hooks[:len(hooks):len(hooks)], legalcurrency.Hooks[:]...)
 }
 
 // SettingClient is a client for the Setting schema.

@@ -24,6 +24,9 @@ type Currency func(*sql.Selector)
 // ExchangeRate is the predicate function for exchangerate builders.
 type ExchangeRate func(*sql.Selector)
 
+// LegalCurrency is the predicate function for legalcurrency builders.
+type LegalCurrency func(*sql.Selector)
+
 // Setting is the predicate function for setting builders.
 type Setting func(*sql.Selector)
 

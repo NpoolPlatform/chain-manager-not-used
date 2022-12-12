@@ -34,6 +34,7 @@ type hooks struct {
 	CoinExtra       []ent.Hook
 	Currency        []ent.Hook
 	ExchangeRate    []ent.Hook
+	LegalCurrency   []ent.Hook
 	Setting         []ent.Hook
 	Tran            []ent.Hook
 }

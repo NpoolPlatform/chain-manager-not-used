@@ -11,6 +11,7 @@ import (
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/coinextra"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/currency"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/exchangerate"
+	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/legalcurrency"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/schema"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/setting"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/tran"
@@ -361,6 +362,54 @@ func init() {
 	exchangerateDescID := exchangerateFields[0].Descriptor()
 	// exchangerate.DefaultID holds the default value on creation for the id field.
 	exchangerate.DefaultID = exchangerateDescID.Default.(func() uuid.UUID)
+	legalcurrencyMixin := schema.LegalCurrency{}.Mixin()
+	legalcurrency.Policy = privacy.NewPolicies(legalcurrencyMixin[0], schema.LegalCurrency{})
+	legalcurrency.Hooks[0] = func(next ent.Mutator) ent.Mutator {
+		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+			if err := legalcurrency.Policy.EvalMutation(ctx, m); err != nil {
+				return nil, err
+			}
+			return next.Mutate(ctx, m)
+		})
+	}
+	legalcurrencyMixinFields0 := legalcurrencyMixin[0].Fields()
+	_ = legalcurrencyMixinFields0
+	legalcurrencyFields := schema.LegalCurrency{}.Fields()
+	_ = legalcurrencyFields
+	// legalcurrencyDescCreatedAt is the schema descriptor for created_at field.
+	legalcurrencyDescCreatedAt := legalcurrencyMixinFields0[0].Descriptor()
+	// legalcurrency.DefaultCreatedAt holds the default value on creation for the created_at field.
+	legalcurrency.DefaultCreatedAt = legalcurrencyDescCreatedAt.Default.(func() uint32)
+	// legalcurrencyDescUpdatedAt is the schema descriptor for updated_at field.
+	legalcurrencyDescUpdatedAt := legalcurrencyMixinFields0[1].Descriptor()
+	// legalcurrency.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	legalcurrency.DefaultUpdatedAt = legalcurrencyDescUpdatedAt.Default.(func() uint32)
+	// legalcurrency.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	legalcurrency.UpdateDefaultUpdatedAt = legalcurrencyDescUpdatedAt.UpdateDefault.(func() uint32)
+	// legalcurrencyDescDeletedAt is the schema descriptor for deleted_at field.
+	legalcurrencyDescDeletedAt := legalcurrencyMixinFields0[2].Descriptor()
+	// legalcurrency.DefaultDeletedAt holds the default value on creation for the deleted_at field.
+	legalcurrency.DefaultDeletedAt = legalcurrencyDescDeletedAt.Default.(func() uint32)
+	// legalcurrencyDescCoinTypeID is the schema descriptor for coin_type_id field.
+	legalcurrencyDescCoinTypeID := legalcurrencyFields[1].Descriptor()
+	// legalcurrency.DefaultCoinTypeID holds the default value on creation for the coin_type_id field.
+	legalcurrency.DefaultCoinTypeID = legalcurrencyDescCoinTypeID.Default.(func() uuid.UUID)
+	// legalcurrencyDescFeedType is the schema descriptor for feed_type field.
+	legalcurrencyDescFeedType := legalcurrencyFields[2].Descriptor()
+	// legalcurrency.DefaultFeedType holds the default value on creation for the feed_type field.
+	legalcurrency.DefaultFeedType = legalcurrencyDescFeedType.Default.(string)
+	// legalcurrencyDescMarketValueHigh is the schema descriptor for market_value_high field.
+	legalcurrencyDescMarketValueHigh := legalcurrencyFields[3].Descriptor()
+	// legalcurrency.DefaultMarketValueHigh holds the default value on creation for the market_value_high field.
+	legalcurrency.DefaultMarketValueHigh = legalcurrencyDescMarketValueHigh.Default.(decimal.Decimal)
+	// legalcurrencyDescMarketValueLow is the schema descriptor for market_value_low field.
+	legalcurrencyDescMarketValueLow := legalcurrencyFields[4].Descriptor()
+	// legalcurrency.DefaultMarketValueLow holds the default value on creation for the market_value_low field.
+	legalcurrency.DefaultMarketValueLow = legalcurrencyDescMarketValueLow.Default.(decimal.Decimal)
+	// legalcurrencyDescID is the schema descriptor for id field.
+	legalcurrencyDescID := legalcurrencyFields[0].Descriptor()
+	// legalcurrency.DefaultID holds the default value on creation for the id field.
+	legalcurrency.DefaultID = legalcurrencyDescID.Default.(func() uuid.UUID)
 	settingMixin := schema.Setting{}.Mixin()
 	setting.Policy = privacy.NewPolicies(settingMixin[0], schema.Setting{})
 	setting.Hooks[0] = func(next ent.Mutator) ent.Mutator {

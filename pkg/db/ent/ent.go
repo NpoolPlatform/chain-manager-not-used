@@ -16,6 +16,7 @@ import (
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/coinextra"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/currency"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/exchangerate"
+	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/legalcurrency"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/setting"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/tran"
 )
@@ -44,6 +45,7 @@ func columnChecker(table string) func(string) error {
 		coinextra.Table:       coinextra.ValidColumn,
 		currency.Table:        currency.ValidColumn,
 		exchangerate.Table:    exchangerate.ValidColumn,
+		legalcurrency.Table:   legalcurrency.ValidColumn,
 		setting.Table:         setting.ValidColumn,
 		tran.Table:            tran.ValidColumn,
 	}
