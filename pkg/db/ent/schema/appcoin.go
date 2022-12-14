@@ -69,6 +69,10 @@ func (AppCoin) Fields() []ent.Field {
 			}).
 			Optional().
 			Default(decimal.Decimal{}),
+		field.
+			Bool("display").
+			Optional().
+			Default(false),
 	}
 }
 

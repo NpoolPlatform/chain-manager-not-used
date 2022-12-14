@@ -63,6 +63,7 @@ type AppCoinMutation struct {
 	product_page                *string
 	disabled                    *bool
 	daily_reward_amount         *decimal.Decimal
+	display                     *bool
 	clearedFields               map[string]struct{}
 	done                        bool
 	oldValue                    func(context.Context) (*AppCoin, error)
@@ -782,6 +783,55 @@ func (m *AppCoinMutation) ResetDailyRewardAmount() {
 	delete(m.clearedFields, appcoin.FieldDailyRewardAmount)
 }
 
+// SetDisplay sets the "display" field.
+func (m *AppCoinMutation) SetDisplay(b bool) {
+	m.display = &b
+}
+
+// Display returns the value of the "display" field in the mutation.
+func (m *AppCoinMutation) Display() (r bool, exists bool) {
+	v := m.display
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDisplay returns the old "display" field's value of the AppCoin entity.
+// If the AppCoin object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppCoinMutation) OldDisplay(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDisplay is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDisplay requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDisplay: %w", err)
+	}
+	return oldValue.Display, nil
+}
+
+// ClearDisplay clears the value of the "display" field.
+func (m *AppCoinMutation) ClearDisplay() {
+	m.display = nil
+	m.clearedFields[appcoin.FieldDisplay] = struct{}{}
+}
+
+// DisplayCleared returns if the "display" field was cleared in this mutation.
+func (m *AppCoinMutation) DisplayCleared() bool {
+	_, ok := m.clearedFields[appcoin.FieldDisplay]
+	return ok
+}
+
+// ResetDisplay resets all changes to the "display" field.
+func (m *AppCoinMutation) ResetDisplay() {
+	m.display = nil
+	delete(m.clearedFields, appcoin.FieldDisplay)
+}
+
 // Where appends a list predicates to the AppCoinMutation builder.
 func (m *AppCoinMutation) Where(ps ...predicate.AppCoin) {
 	m.predicates = append(m.predicates, ps...)
@@ -801,7 +851,7 @@ func (m *AppCoinMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *AppCoinMutation) Fields() []string {
-	fields := make([]string, 0, 12)
+	fields := make([]string, 0, 13)
 	if m.created_at != nil {
 		fields = append(fields, appcoin.FieldCreatedAt)
 	}
@@ -838,6 +888,9 @@ func (m *AppCoinMutation) Fields() []string {
 	if m.daily_reward_amount != nil {
 		fields = append(fields, appcoin.FieldDailyRewardAmount)
 	}
+	if m.display != nil {
+		fields = append(fields, appcoin.FieldDisplay)
+	}
 	return fields
 }
 
@@ -870,6 +923,8 @@ func (m *AppCoinMutation) Field(name string) (ent.Value, bool) {
 		return m.Disabled()
 	case appcoin.FieldDailyRewardAmount:
 		return m.DailyRewardAmount()
+	case appcoin.FieldDisplay:
+		return m.Display()
 	}
 	return nil, false
 }
@@ -903,6 +958,8 @@ func (m *AppCoinMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldDisabled(ctx)
 	case appcoin.FieldDailyRewardAmount:
 		return m.OldDailyRewardAmount(ctx)
+	case appcoin.FieldDisplay:
+		return m.OldDisplay(ctx)
 	}
 	return nil, fmt.Errorf("unknown AppCoin field %s", name)
 }
@@ -995,6 +1052,13 @@ func (m *AppCoinMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetDailyRewardAmount(v)
+		return nil
+	case appcoin.FieldDisplay:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDisplay(v)
 		return nil
 	}
 	return fmt.Errorf("unknown AppCoin field %s", name)
@@ -1092,6 +1156,9 @@ func (m *AppCoinMutation) ClearedFields() []string {
 	if m.FieldCleared(appcoin.FieldDailyRewardAmount) {
 		fields = append(fields, appcoin.FieldDailyRewardAmount)
 	}
+	if m.FieldCleared(appcoin.FieldDisplay) {
+		fields = append(fields, appcoin.FieldDisplay)
+	}
 	return fields
 }
 
@@ -1132,6 +1199,9 @@ func (m *AppCoinMutation) ClearField(name string) error {
 		return nil
 	case appcoin.FieldDailyRewardAmount:
 		m.ClearDailyRewardAmount()
+		return nil
+	case appcoin.FieldDisplay:
+		m.ClearDisplay()
 		return nil
 	}
 	return fmt.Errorf("unknown AppCoin nullable field %s", name)
@@ -1176,6 +1246,9 @@ func (m *AppCoinMutation) ResetField(name string) error {
 		return nil
 	case appcoin.FieldDailyRewardAmount:
 		m.ResetDailyRewardAmount()
+		return nil
+	case appcoin.FieldDisplay:
+		m.ResetDisplay()
 		return nil
 	}
 	return fmt.Errorf("unknown AppCoin field %s", name)

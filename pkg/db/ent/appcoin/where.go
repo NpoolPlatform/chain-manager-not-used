@@ -164,6 +164,13 @@ func DailyRewardAmount(v decimal.Decimal) predicate.AppCoin {
 	})
 }
 
+// Display applies equality check predicate on the "display" field. It's identical to DisplayEQ.
+func Display(v bool) predicate.AppCoin {
+	return predicate.AppCoin(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldDisplay), v))
+	})
+}
+
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
 func CreatedAtEQ(v uint32) predicate.AppCoin {
 	return predicate.AppCoin(func(s *sql.Selector) {
@@ -1060,6 +1067,34 @@ func DailyRewardAmountIsNil() predicate.AppCoin {
 func DailyRewardAmountNotNil() predicate.AppCoin {
 	return predicate.AppCoin(func(s *sql.Selector) {
 		s.Where(sql.NotNull(s.C(FieldDailyRewardAmount)))
+	})
+}
+
+// DisplayEQ applies the EQ predicate on the "display" field.
+func DisplayEQ(v bool) predicate.AppCoin {
+	return predicate.AppCoin(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldDisplay), v))
+	})
+}
+
+// DisplayNEQ applies the NEQ predicate on the "display" field.
+func DisplayNEQ(v bool) predicate.AppCoin {
+	return predicate.AppCoin(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldDisplay), v))
+	})
+}
+
+// DisplayIsNil applies the IsNil predicate on the "display" field.
+func DisplayIsNil() predicate.AppCoin {
+	return predicate.AppCoin(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldDisplay)))
+	})
+}
+
+// DisplayNotNil applies the NotNil predicate on the "display" field.
+func DisplayNotNil() predicate.AppCoin {
+	return predicate.AppCoin(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldDisplay)))
 	})
 }
 

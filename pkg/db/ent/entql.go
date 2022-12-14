@@ -44,6 +44,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			appcoin.FieldProductPage:              {Type: field.TypeString, Column: appcoin.FieldProductPage},
 			appcoin.FieldDisabled:                 {Type: field.TypeBool, Column: appcoin.FieldDisabled},
 			appcoin.FieldDailyRewardAmount:        {Type: field.TypeOther, Column: appcoin.FieldDailyRewardAmount},
+			appcoin.FieldDisplay:                  {Type: field.TypeBool, Column: appcoin.FieldDisplay},
 		},
 	}
 	graph.Nodes[1] = &sqlgraph.Node{
@@ -310,6 +311,11 @@ func (f *AppCoinFilter) WhereDisabled(p entql.BoolP) {
 // WhereDailyRewardAmount applies the entql other predicate on the daily_reward_amount field.
 func (f *AppCoinFilter) WhereDailyRewardAmount(p entql.OtherP) {
 	f.Where(p.Field(appcoin.FieldDailyRewardAmount))
+}
+
+// WhereDisplay applies the entql bool predicate on the display field.
+func (f *AppCoinFilter) WhereDisplay(p entql.BoolP) {
+	f.Where(p.Field(appcoin.FieldDisplay))
 }
 
 // addPredicate implements the predicateAdder interface.

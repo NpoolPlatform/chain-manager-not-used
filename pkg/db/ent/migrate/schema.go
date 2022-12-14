@@ -23,6 +23,7 @@ var (
 		{Name: "product_page", Type: field.TypeString, Nullable: true, Default: ""},
 		{Name: "disabled", Type: field.TypeBool, Nullable: true, Default: false},
 		{Name: "daily_reward_amount", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
+		{Name: "display", Type: field.TypeBool, Nullable: true, Default: false},
 	}
 	// AppCoinsTable holds the schema information for the "app_coins" table.
 	AppCoinsTable = &schema.Table{

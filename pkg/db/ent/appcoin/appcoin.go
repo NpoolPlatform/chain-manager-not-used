@@ -37,6 +37,8 @@ const (
 	FieldDisabled = "disabled"
 	// FieldDailyRewardAmount holds the string denoting the daily_reward_amount field in the database.
 	FieldDailyRewardAmount = "daily_reward_amount"
+	// FieldDisplay holds the string denoting the display field in the database.
+	FieldDisplay = "display"
 	// Table holds the table name of the appcoin in the database.
 	Table = "app_coins"
 )
@@ -56,6 +58,7 @@ var Columns = []string{
 	FieldProductPage,
 	FieldDisabled,
 	FieldDailyRewardAmount,
+	FieldDisplay,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -103,6 +106,8 @@ var (
 	DefaultDisabled bool
 	// DefaultDailyRewardAmount holds the default value on creation for the "daily_reward_amount" field.
 	DefaultDailyRewardAmount decimal.Decimal
+	// DefaultDisplay holds the default value on creation for the "display" field.
+	DefaultDisplay bool
 	// DefaultID holds the default value on creation for the "id" field.
 	DefaultID func() uuid.UUID
 )
