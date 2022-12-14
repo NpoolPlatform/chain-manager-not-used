@@ -19,7 +19,7 @@ func validate(in *npool.FiatCurrencyTypeReq) error {
 
 	if in.Name != nil && in.GetName() == "" {
 		logger.Sugar().Errorw("validate", "Name", in.GetName())
-		return fmt.Errorf("Name is empty")
+		return fmt.Errorf("name is empty")
 	}
 
 	return nil
@@ -60,7 +60,7 @@ func validateUpdate(in *npool.FiatCurrencyTypeReq) error {
 
 	if in.GetName() == "" {
 		logger.Sugar().Errorw("validate", "Name", in.GetName())
-		return fmt.Errorf("Name is empty")
+		return fmt.Errorf("name is empty")
 	}
 	return nil
 }

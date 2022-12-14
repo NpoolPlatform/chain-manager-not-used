@@ -4,7 +4,7 @@ package fiatcurrency
 import (
 	"context"
 
-	converter "github.com/NpoolPlatform/chain-manager/pkg/converter/coin/failcurrency"
+	converter "github.com/NpoolPlatform/chain-manager/pkg/converter/coin/fiatcurrency"
 	crud "github.com/NpoolPlatform/chain-manager/pkg/crud/coin/fiatcurrency"
 	commontracer "github.com/NpoolPlatform/chain-manager/pkg/tracer"
 

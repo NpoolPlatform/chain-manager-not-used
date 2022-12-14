@@ -209,7 +209,13 @@ func (s *Server) GetFiatCurrencyTypeOnly(
 	}, nil
 }
 
-func (s *Server) GetFiatCurrencyTypes(ctx context.Context, in *npool.GetFiatCurrencyTypesRequest) (*npool.GetFiatCurrencyTypesResponse, error) {
+func (s *Server) GetFiatCurrencyTypes(
+	ctx context.Context,
+	in *npool.GetFiatCurrencyTypesRequest,
+) (
+	*npool.GetFiatCurrencyTypesResponse,
+	error,
+) {
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "GetFiatCurrencyTypes")
@@ -242,7 +248,13 @@ func (s *Server) GetFiatCurrencyTypes(ctx context.Context, in *npool.GetFiatCurr
 	}, nil
 }
 
-func (s *Server) ExistFiatCurrencyType(ctx context.Context, in *npool.ExistFiatCurrencyTypeRequest) (*npool.ExistFiatCurrencyTypeResponse, error) {
+func (s *Server) ExistFiatCurrencyType(
+	ctx context.Context,
+	in *npool.ExistFiatCurrencyTypeRequest,
+) (
+	*npool.ExistFiatCurrencyTypeResponse,
+	error,
+) {
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "ExistFiatCurrencyType")
