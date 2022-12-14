@@ -72,7 +72,7 @@ func (AppCoin) Fields() []ent.Field {
 		field.
 			Bool("display").
 			Optional().
-			Default(false),
+			Default(true),
 	}
 }
 
