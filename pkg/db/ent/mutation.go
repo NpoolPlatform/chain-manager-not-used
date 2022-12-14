@@ -14,7 +14,8 @@ import (
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/coinextra"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/currency"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/exchangerate"
-	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/legalcurrency"
+	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/fiatcurrency"
+	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/fiatcurrencytype"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/predicate"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/setting"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/tran"
@@ -33,15 +34,16 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeAppCoin         = "AppCoin"
-	TypeCoinBase        = "CoinBase"
-	TypeCoinDescription = "CoinDescription"
-	TypeCoinExtra       = "CoinExtra"
-	TypeCurrency        = "Currency"
-	TypeExchangeRate    = "ExchangeRate"
-	TypeLegalCurrency   = "LegalCurrency"
-	TypeSetting         = "Setting"
-	TypeTran            = "Tran"
+	TypeAppCoin          = "AppCoin"
+	TypeCoinBase         = "CoinBase"
+	TypeCoinDescription  = "CoinDescription"
+	TypeCoinExtra        = "CoinExtra"
+	TypeCurrency         = "Currency"
+	TypeExchangeRate     = "ExchangeRate"
+	TypeFiatCurrency     = "FiatCurrency"
+	TypeFiatCurrencyType = "FiatCurrencyType"
+	TypeSetting          = "Setting"
+	TypeTran             = "Tran"
 )
 
 // AppCoinMutation represents an operation that mutates the AppCoin nodes in the graph.
@@ -5886,8 +5888,8 @@ func (m *ExchangeRateMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown ExchangeRate edge %s", name)
 }
 
-// LegalCurrencyMutation represents an operation that mutates the LegalCurrency nodes in the graph.
-type LegalCurrencyMutation struct {
+// FiatCurrencyMutation represents an operation that mutates the FiatCurrency nodes in the graph.
+type FiatCurrencyMutation struct {
 	config
 	op                Op
 	typ               string
@@ -5898,27 +5900,27 @@ type LegalCurrencyMutation struct {
 	addupdated_at     *int32
 	deleted_at        *uint32
 	adddeleted_at     *int32
-	coin_type_id      *uuid.UUID
+	fiat_type_id      *uuid.UUID
 	feed_type         *string
 	market_value_high *decimal.Decimal
 	market_value_low  *decimal.Decimal
 	clearedFields     map[string]struct{}
 	done              bool
-	oldValue          func(context.Context) (*LegalCurrency, error)
-	predicates        []predicate.LegalCurrency
+	oldValue          func(context.Context) (*FiatCurrency, error)
+	predicates        []predicate.FiatCurrency
 }
 
-var _ ent.Mutation = (*LegalCurrencyMutation)(nil)
+var _ ent.Mutation = (*FiatCurrencyMutation)(nil)
 
-// legalcurrencyOption allows management of the mutation configuration using functional options.
-type legalcurrencyOption func(*LegalCurrencyMutation)
+// fiatcurrencyOption allows management of the mutation configuration using functional options.
+type fiatcurrencyOption func(*FiatCurrencyMutation)
 
-// newLegalCurrencyMutation creates new mutation for the LegalCurrency entity.
-func newLegalCurrencyMutation(c config, op Op, opts ...legalcurrencyOption) *LegalCurrencyMutation {
-	m := &LegalCurrencyMutation{
+// newFiatCurrencyMutation creates new mutation for the FiatCurrency entity.
+func newFiatCurrencyMutation(c config, op Op, opts ...fiatcurrencyOption) *FiatCurrencyMutation {
+	m := &FiatCurrencyMutation{
 		config:        c,
 		op:            op,
-		typ:           TypeLegalCurrency,
+		typ:           TypeFiatCurrency,
 		clearedFields: make(map[string]struct{}),
 	}
 	for _, opt := range opts {
@@ -5927,20 +5929,20 @@ func newLegalCurrencyMutation(c config, op Op, opts ...legalcurrencyOption) *Leg
 	return m
 }
 
-// withLegalCurrencyID sets the ID field of the mutation.
-func withLegalCurrencyID(id uuid.UUID) legalcurrencyOption {
-	return func(m *LegalCurrencyMutation) {
+// withFiatCurrencyID sets the ID field of the mutation.
+func withFiatCurrencyID(id uuid.UUID) fiatcurrencyOption {
+	return func(m *FiatCurrencyMutation) {
 		var (
 			err   error
 			once  sync.Once
-			value *LegalCurrency
+			value *FiatCurrency
 		)
-		m.oldValue = func(ctx context.Context) (*LegalCurrency, error) {
+		m.oldValue = func(ctx context.Context) (*FiatCurrency, error) {
 			once.Do(func() {
 				if m.done {
 					err = errors.New("querying old values post mutation is not allowed")
 				} else {
-					value, err = m.Client().LegalCurrency.Get(ctx, id)
+					value, err = m.Client().FiatCurrency.Get(ctx, id)
 				}
 			})
 			return value, err
@@ -5949,10 +5951,10 @@ func withLegalCurrencyID(id uuid.UUID) legalcurrencyOption {
 	}
 }
 
-// withLegalCurrency sets the old LegalCurrency of the mutation.
-func withLegalCurrency(node *LegalCurrency) legalcurrencyOption {
-	return func(m *LegalCurrencyMutation) {
-		m.oldValue = func(context.Context) (*LegalCurrency, error) {
+// withFiatCurrency sets the old FiatCurrency of the mutation.
+func withFiatCurrency(node *FiatCurrency) fiatcurrencyOption {
+	return func(m *FiatCurrencyMutation) {
+		m.oldValue = func(context.Context) (*FiatCurrency, error) {
 			return node, nil
 		}
 		m.id = &node.ID
@@ -5961,7 +5963,7 @@ func withLegalCurrency(node *LegalCurrency) legalcurrencyOption {
 
 // Client returns a new `ent.Client` from the mutation. If the mutation was
 // executed in a transaction (ent.Tx), a transactional client is returned.
-func (m LegalCurrencyMutation) Client() *Client {
+func (m FiatCurrencyMutation) Client() *Client {
 	client := &Client{config: m.config}
 	client.init()
 	return client
@@ -5969,7 +5971,7 @@ func (m LegalCurrencyMutation) Client() *Client {
 
 // Tx returns an `ent.Tx` for mutations that were executed in transactions;
 // it returns an error otherwise.
-func (m LegalCurrencyMutation) Tx() (*Tx, error) {
+func (m FiatCurrencyMutation) Tx() (*Tx, error) {
 	if _, ok := m.driver.(*txDriver); !ok {
 		return nil, errors.New("ent: mutation is not running in a transaction")
 	}
@@ -5979,14 +5981,14 @@ func (m LegalCurrencyMutation) Tx() (*Tx, error) {
 }
 
 // SetID sets the value of the id field. Note that this
-// operation is only accepted on creation of LegalCurrency entities.
-func (m *LegalCurrencyMutation) SetID(id uuid.UUID) {
+// operation is only accepted on creation of FiatCurrency entities.
+func (m *FiatCurrencyMutation) SetID(id uuid.UUID) {
 	m.id = &id
 }
 
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *LegalCurrencyMutation) ID() (id uuid.UUID, exists bool) {
+func (m *FiatCurrencyMutation) ID() (id uuid.UUID, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -5997,7 +5999,7 @@ func (m *LegalCurrencyMutation) ID() (id uuid.UUID, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *LegalCurrencyMutation) IDs(ctx context.Context) ([]uuid.UUID, error) {
+func (m *FiatCurrencyMutation) IDs(ctx context.Context) ([]uuid.UUID, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
@@ -6006,20 +6008,20 @@ func (m *LegalCurrencyMutation) IDs(ctx context.Context) ([]uuid.UUID, error) {
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().LegalCurrency.Query().Where(m.predicates...).IDs(ctx)
+		return m.Client().FiatCurrency.Query().Where(m.predicates...).IDs(ctx)
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (m *LegalCurrencyMutation) SetCreatedAt(u uint32) {
+func (m *FiatCurrencyMutation) SetCreatedAt(u uint32) {
 	m.created_at = &u
 	m.addcreated_at = nil
 }
 
 // CreatedAt returns the value of the "created_at" field in the mutation.
-func (m *LegalCurrencyMutation) CreatedAt() (r uint32, exists bool) {
+func (m *FiatCurrencyMutation) CreatedAt() (r uint32, exists bool) {
 	v := m.created_at
 	if v == nil {
 		return
@@ -6027,10 +6029,10 @@ func (m *LegalCurrencyMutation) CreatedAt() (r uint32, exists bool) {
 	return *v, true
 }
 
-// OldCreatedAt returns the old "created_at" field's value of the LegalCurrency entity.
-// If the LegalCurrency object wasn't provided to the builder, the object is fetched from the database.
+// OldCreatedAt returns the old "created_at" field's value of the FiatCurrency entity.
+// If the FiatCurrency object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *LegalCurrencyMutation) OldCreatedAt(ctx context.Context) (v uint32, err error) {
+func (m *FiatCurrencyMutation) OldCreatedAt(ctx context.Context) (v uint32, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
 	}
@@ -6045,7 +6047,7 @@ func (m *LegalCurrencyMutation) OldCreatedAt(ctx context.Context) (v uint32, err
 }
 
 // AddCreatedAt adds u to the "created_at" field.
-func (m *LegalCurrencyMutation) AddCreatedAt(u int32) {
+func (m *FiatCurrencyMutation) AddCreatedAt(u int32) {
 	if m.addcreated_at != nil {
 		*m.addcreated_at += u
 	} else {
@@ -6054,7 +6056,7 @@ func (m *LegalCurrencyMutation) AddCreatedAt(u int32) {
 }
 
 // AddedCreatedAt returns the value that was added to the "created_at" field in this mutation.
-func (m *LegalCurrencyMutation) AddedCreatedAt() (r int32, exists bool) {
+func (m *FiatCurrencyMutation) AddedCreatedAt() (r int32, exists bool) {
 	v := m.addcreated_at
 	if v == nil {
 		return
@@ -6063,19 +6065,19 @@ func (m *LegalCurrencyMutation) AddedCreatedAt() (r int32, exists bool) {
 }
 
 // ResetCreatedAt resets all changes to the "created_at" field.
-func (m *LegalCurrencyMutation) ResetCreatedAt() {
+func (m *FiatCurrencyMutation) ResetCreatedAt() {
 	m.created_at = nil
 	m.addcreated_at = nil
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (m *LegalCurrencyMutation) SetUpdatedAt(u uint32) {
+func (m *FiatCurrencyMutation) SetUpdatedAt(u uint32) {
 	m.updated_at = &u
 	m.addupdated_at = nil
 }
 
 // UpdatedAt returns the value of the "updated_at" field in the mutation.
-func (m *LegalCurrencyMutation) UpdatedAt() (r uint32, exists bool) {
+func (m *FiatCurrencyMutation) UpdatedAt() (r uint32, exists bool) {
 	v := m.updated_at
 	if v == nil {
 		return
@@ -6083,10 +6085,10 @@ func (m *LegalCurrencyMutation) UpdatedAt() (r uint32, exists bool) {
 	return *v, true
 }
 
-// OldUpdatedAt returns the old "updated_at" field's value of the LegalCurrency entity.
-// If the LegalCurrency object wasn't provided to the builder, the object is fetched from the database.
+// OldUpdatedAt returns the old "updated_at" field's value of the FiatCurrency entity.
+// If the FiatCurrency object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *LegalCurrencyMutation) OldUpdatedAt(ctx context.Context) (v uint32, err error) {
+func (m *FiatCurrencyMutation) OldUpdatedAt(ctx context.Context) (v uint32, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
 	}
@@ -6101,7 +6103,7 @@ func (m *LegalCurrencyMutation) OldUpdatedAt(ctx context.Context) (v uint32, err
 }
 
 // AddUpdatedAt adds u to the "updated_at" field.
-func (m *LegalCurrencyMutation) AddUpdatedAt(u int32) {
+func (m *FiatCurrencyMutation) AddUpdatedAt(u int32) {
 	if m.addupdated_at != nil {
 		*m.addupdated_at += u
 	} else {
@@ -6110,7 +6112,7 @@ func (m *LegalCurrencyMutation) AddUpdatedAt(u int32) {
 }
 
 // AddedUpdatedAt returns the value that was added to the "updated_at" field in this mutation.
-func (m *LegalCurrencyMutation) AddedUpdatedAt() (r int32, exists bool) {
+func (m *FiatCurrencyMutation) AddedUpdatedAt() (r int32, exists bool) {
 	v := m.addupdated_at
 	if v == nil {
 		return
@@ -6119,19 +6121,19 @@ func (m *LegalCurrencyMutation) AddedUpdatedAt() (r int32, exists bool) {
 }
 
 // ResetUpdatedAt resets all changes to the "updated_at" field.
-func (m *LegalCurrencyMutation) ResetUpdatedAt() {
+func (m *FiatCurrencyMutation) ResetUpdatedAt() {
 	m.updated_at = nil
 	m.addupdated_at = nil
 }
 
 // SetDeletedAt sets the "deleted_at" field.
-func (m *LegalCurrencyMutation) SetDeletedAt(u uint32) {
+func (m *FiatCurrencyMutation) SetDeletedAt(u uint32) {
 	m.deleted_at = &u
 	m.adddeleted_at = nil
 }
 
 // DeletedAt returns the value of the "deleted_at" field in the mutation.
-func (m *LegalCurrencyMutation) DeletedAt() (r uint32, exists bool) {
+func (m *FiatCurrencyMutation) DeletedAt() (r uint32, exists bool) {
 	v := m.deleted_at
 	if v == nil {
 		return
@@ -6139,10 +6141,10 @@ func (m *LegalCurrencyMutation) DeletedAt() (r uint32, exists bool) {
 	return *v, true
 }
 
-// OldDeletedAt returns the old "deleted_at" field's value of the LegalCurrency entity.
-// If the LegalCurrency object wasn't provided to the builder, the object is fetched from the database.
+// OldDeletedAt returns the old "deleted_at" field's value of the FiatCurrency entity.
+// If the FiatCurrency object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *LegalCurrencyMutation) OldDeletedAt(ctx context.Context) (v uint32, err error) {
+func (m *FiatCurrencyMutation) OldDeletedAt(ctx context.Context) (v uint32, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldDeletedAt is only allowed on UpdateOne operations")
 	}
@@ -6157,7 +6159,7 @@ func (m *LegalCurrencyMutation) OldDeletedAt(ctx context.Context) (v uint32, err
 }
 
 // AddDeletedAt adds u to the "deleted_at" field.
-func (m *LegalCurrencyMutation) AddDeletedAt(u int32) {
+func (m *FiatCurrencyMutation) AddDeletedAt(u int32) {
 	if m.adddeleted_at != nil {
 		*m.adddeleted_at += u
 	} else {
@@ -6166,7 +6168,7 @@ func (m *LegalCurrencyMutation) AddDeletedAt(u int32) {
 }
 
 // AddedDeletedAt returns the value that was added to the "deleted_at" field in this mutation.
-func (m *LegalCurrencyMutation) AddedDeletedAt() (r int32, exists bool) {
+func (m *FiatCurrencyMutation) AddedDeletedAt() (r int32, exists bool) {
 	v := m.adddeleted_at
 	if v == nil {
 		return
@@ -6175,67 +6177,67 @@ func (m *LegalCurrencyMutation) AddedDeletedAt() (r int32, exists bool) {
 }
 
 // ResetDeletedAt resets all changes to the "deleted_at" field.
-func (m *LegalCurrencyMutation) ResetDeletedAt() {
+func (m *FiatCurrencyMutation) ResetDeletedAt() {
 	m.deleted_at = nil
 	m.adddeleted_at = nil
 }
 
-// SetCoinTypeID sets the "coin_type_id" field.
-func (m *LegalCurrencyMutation) SetCoinTypeID(u uuid.UUID) {
-	m.coin_type_id = &u
+// SetFiatTypeID sets the "fiat_type_id" field.
+func (m *FiatCurrencyMutation) SetFiatTypeID(u uuid.UUID) {
+	m.fiat_type_id = &u
 }
 
-// CoinTypeID returns the value of the "coin_type_id" field in the mutation.
-func (m *LegalCurrencyMutation) CoinTypeID() (r uuid.UUID, exists bool) {
-	v := m.coin_type_id
+// FiatTypeID returns the value of the "fiat_type_id" field in the mutation.
+func (m *FiatCurrencyMutation) FiatTypeID() (r uuid.UUID, exists bool) {
+	v := m.fiat_type_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldCoinTypeID returns the old "coin_type_id" field's value of the LegalCurrency entity.
-// If the LegalCurrency object wasn't provided to the builder, the object is fetched from the database.
+// OldFiatTypeID returns the old "fiat_type_id" field's value of the FiatCurrency entity.
+// If the FiatCurrency object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *LegalCurrencyMutation) OldCoinTypeID(ctx context.Context) (v uuid.UUID, err error) {
+func (m *FiatCurrencyMutation) OldFiatTypeID(ctx context.Context) (v uuid.UUID, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCoinTypeID is only allowed on UpdateOne operations")
+		return v, errors.New("OldFiatTypeID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCoinTypeID requires an ID field in the mutation")
+		return v, errors.New("OldFiatTypeID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCoinTypeID: %w", err)
+		return v, fmt.Errorf("querying old value for OldFiatTypeID: %w", err)
 	}
-	return oldValue.CoinTypeID, nil
+	return oldValue.FiatTypeID, nil
 }
 
-// ClearCoinTypeID clears the value of the "coin_type_id" field.
-func (m *LegalCurrencyMutation) ClearCoinTypeID() {
-	m.coin_type_id = nil
-	m.clearedFields[legalcurrency.FieldCoinTypeID] = struct{}{}
+// ClearFiatTypeID clears the value of the "fiat_type_id" field.
+func (m *FiatCurrencyMutation) ClearFiatTypeID() {
+	m.fiat_type_id = nil
+	m.clearedFields[fiatcurrency.FieldFiatTypeID] = struct{}{}
 }
 
-// CoinTypeIDCleared returns if the "coin_type_id" field was cleared in this mutation.
-func (m *LegalCurrencyMutation) CoinTypeIDCleared() bool {
-	_, ok := m.clearedFields[legalcurrency.FieldCoinTypeID]
+// FiatTypeIDCleared returns if the "fiat_type_id" field was cleared in this mutation.
+func (m *FiatCurrencyMutation) FiatTypeIDCleared() bool {
+	_, ok := m.clearedFields[fiatcurrency.FieldFiatTypeID]
 	return ok
 }
 
-// ResetCoinTypeID resets all changes to the "coin_type_id" field.
-func (m *LegalCurrencyMutation) ResetCoinTypeID() {
-	m.coin_type_id = nil
-	delete(m.clearedFields, legalcurrency.FieldCoinTypeID)
+// ResetFiatTypeID resets all changes to the "fiat_type_id" field.
+func (m *FiatCurrencyMutation) ResetFiatTypeID() {
+	m.fiat_type_id = nil
+	delete(m.clearedFields, fiatcurrency.FieldFiatTypeID)
 }
 
 // SetFeedType sets the "feed_type" field.
-func (m *LegalCurrencyMutation) SetFeedType(s string) {
+func (m *FiatCurrencyMutation) SetFeedType(s string) {
 	m.feed_type = &s
 }
 
 // FeedType returns the value of the "feed_type" field in the mutation.
-func (m *LegalCurrencyMutation) FeedType() (r string, exists bool) {
+func (m *FiatCurrencyMutation) FeedType() (r string, exists bool) {
 	v := m.feed_type
 	if v == nil {
 		return
@@ -6243,10 +6245,10 @@ func (m *LegalCurrencyMutation) FeedType() (r string, exists bool) {
 	return *v, true
 }
 
-// OldFeedType returns the old "feed_type" field's value of the LegalCurrency entity.
-// If the LegalCurrency object wasn't provided to the builder, the object is fetched from the database.
+// OldFeedType returns the old "feed_type" field's value of the FiatCurrency entity.
+// If the FiatCurrency object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *LegalCurrencyMutation) OldFeedType(ctx context.Context) (v string, err error) {
+func (m *FiatCurrencyMutation) OldFeedType(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldFeedType is only allowed on UpdateOne operations")
 	}
@@ -6261,30 +6263,30 @@ func (m *LegalCurrencyMutation) OldFeedType(ctx context.Context) (v string, err 
 }
 
 // ClearFeedType clears the value of the "feed_type" field.
-func (m *LegalCurrencyMutation) ClearFeedType() {
+func (m *FiatCurrencyMutation) ClearFeedType() {
 	m.feed_type = nil
-	m.clearedFields[legalcurrency.FieldFeedType] = struct{}{}
+	m.clearedFields[fiatcurrency.FieldFeedType] = struct{}{}
 }
 
 // FeedTypeCleared returns if the "feed_type" field was cleared in this mutation.
-func (m *LegalCurrencyMutation) FeedTypeCleared() bool {
-	_, ok := m.clearedFields[legalcurrency.FieldFeedType]
+func (m *FiatCurrencyMutation) FeedTypeCleared() bool {
+	_, ok := m.clearedFields[fiatcurrency.FieldFeedType]
 	return ok
 }
 
 // ResetFeedType resets all changes to the "feed_type" field.
-func (m *LegalCurrencyMutation) ResetFeedType() {
+func (m *FiatCurrencyMutation) ResetFeedType() {
 	m.feed_type = nil
-	delete(m.clearedFields, legalcurrency.FieldFeedType)
+	delete(m.clearedFields, fiatcurrency.FieldFeedType)
 }
 
 // SetMarketValueHigh sets the "market_value_high" field.
-func (m *LegalCurrencyMutation) SetMarketValueHigh(d decimal.Decimal) {
+func (m *FiatCurrencyMutation) SetMarketValueHigh(d decimal.Decimal) {
 	m.market_value_high = &d
 }
 
 // MarketValueHigh returns the value of the "market_value_high" field in the mutation.
-func (m *LegalCurrencyMutation) MarketValueHigh() (r decimal.Decimal, exists bool) {
+func (m *FiatCurrencyMutation) MarketValueHigh() (r decimal.Decimal, exists bool) {
 	v := m.market_value_high
 	if v == nil {
 		return
@@ -6292,10 +6294,10 @@ func (m *LegalCurrencyMutation) MarketValueHigh() (r decimal.Decimal, exists boo
 	return *v, true
 }
 
-// OldMarketValueHigh returns the old "market_value_high" field's value of the LegalCurrency entity.
-// If the LegalCurrency object wasn't provided to the builder, the object is fetched from the database.
+// OldMarketValueHigh returns the old "market_value_high" field's value of the FiatCurrency entity.
+// If the FiatCurrency object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *LegalCurrencyMutation) OldMarketValueHigh(ctx context.Context) (v decimal.Decimal, err error) {
+func (m *FiatCurrencyMutation) OldMarketValueHigh(ctx context.Context) (v decimal.Decimal, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldMarketValueHigh is only allowed on UpdateOne operations")
 	}
@@ -6310,30 +6312,30 @@ func (m *LegalCurrencyMutation) OldMarketValueHigh(ctx context.Context) (v decim
 }
 
 // ClearMarketValueHigh clears the value of the "market_value_high" field.
-func (m *LegalCurrencyMutation) ClearMarketValueHigh() {
+func (m *FiatCurrencyMutation) ClearMarketValueHigh() {
 	m.market_value_high = nil
-	m.clearedFields[legalcurrency.FieldMarketValueHigh] = struct{}{}
+	m.clearedFields[fiatcurrency.FieldMarketValueHigh] = struct{}{}
 }
 
 // MarketValueHighCleared returns if the "market_value_high" field was cleared in this mutation.
-func (m *LegalCurrencyMutation) MarketValueHighCleared() bool {
-	_, ok := m.clearedFields[legalcurrency.FieldMarketValueHigh]
+func (m *FiatCurrencyMutation) MarketValueHighCleared() bool {
+	_, ok := m.clearedFields[fiatcurrency.FieldMarketValueHigh]
 	return ok
 }
 
 // ResetMarketValueHigh resets all changes to the "market_value_high" field.
-func (m *LegalCurrencyMutation) ResetMarketValueHigh() {
+func (m *FiatCurrencyMutation) ResetMarketValueHigh() {
 	m.market_value_high = nil
-	delete(m.clearedFields, legalcurrency.FieldMarketValueHigh)
+	delete(m.clearedFields, fiatcurrency.FieldMarketValueHigh)
 }
 
 // SetMarketValueLow sets the "market_value_low" field.
-func (m *LegalCurrencyMutation) SetMarketValueLow(d decimal.Decimal) {
+func (m *FiatCurrencyMutation) SetMarketValueLow(d decimal.Decimal) {
 	m.market_value_low = &d
 }
 
 // MarketValueLow returns the value of the "market_value_low" field in the mutation.
-func (m *LegalCurrencyMutation) MarketValueLow() (r decimal.Decimal, exists bool) {
+func (m *FiatCurrencyMutation) MarketValueLow() (r decimal.Decimal, exists bool) {
 	v := m.market_value_low
 	if v == nil {
 		return
@@ -6341,10 +6343,10 @@ func (m *LegalCurrencyMutation) MarketValueLow() (r decimal.Decimal, exists bool
 	return *v, true
 }
 
-// OldMarketValueLow returns the old "market_value_low" field's value of the LegalCurrency entity.
-// If the LegalCurrency object wasn't provided to the builder, the object is fetched from the database.
+// OldMarketValueLow returns the old "market_value_low" field's value of the FiatCurrency entity.
+// If the FiatCurrency object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *LegalCurrencyMutation) OldMarketValueLow(ctx context.Context) (v decimal.Decimal, err error) {
+func (m *FiatCurrencyMutation) OldMarketValueLow(ctx context.Context) (v decimal.Decimal, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldMarketValueLow is only allowed on UpdateOne operations")
 	}
@@ -6359,63 +6361,63 @@ func (m *LegalCurrencyMutation) OldMarketValueLow(ctx context.Context) (v decima
 }
 
 // ClearMarketValueLow clears the value of the "market_value_low" field.
-func (m *LegalCurrencyMutation) ClearMarketValueLow() {
+func (m *FiatCurrencyMutation) ClearMarketValueLow() {
 	m.market_value_low = nil
-	m.clearedFields[legalcurrency.FieldMarketValueLow] = struct{}{}
+	m.clearedFields[fiatcurrency.FieldMarketValueLow] = struct{}{}
 }
 
 // MarketValueLowCleared returns if the "market_value_low" field was cleared in this mutation.
-func (m *LegalCurrencyMutation) MarketValueLowCleared() bool {
-	_, ok := m.clearedFields[legalcurrency.FieldMarketValueLow]
+func (m *FiatCurrencyMutation) MarketValueLowCleared() bool {
+	_, ok := m.clearedFields[fiatcurrency.FieldMarketValueLow]
 	return ok
 }
 
 // ResetMarketValueLow resets all changes to the "market_value_low" field.
-func (m *LegalCurrencyMutation) ResetMarketValueLow() {
+func (m *FiatCurrencyMutation) ResetMarketValueLow() {
 	m.market_value_low = nil
-	delete(m.clearedFields, legalcurrency.FieldMarketValueLow)
+	delete(m.clearedFields, fiatcurrency.FieldMarketValueLow)
 }
 
-// Where appends a list predicates to the LegalCurrencyMutation builder.
-func (m *LegalCurrencyMutation) Where(ps ...predicate.LegalCurrency) {
+// Where appends a list predicates to the FiatCurrencyMutation builder.
+func (m *FiatCurrencyMutation) Where(ps ...predicate.FiatCurrency) {
 	m.predicates = append(m.predicates, ps...)
 }
 
 // Op returns the operation name.
-func (m *LegalCurrencyMutation) Op() Op {
+func (m *FiatCurrencyMutation) Op() Op {
 	return m.op
 }
 
-// Type returns the node type of this mutation (LegalCurrency).
-func (m *LegalCurrencyMutation) Type() string {
+// Type returns the node type of this mutation (FiatCurrency).
+func (m *FiatCurrencyMutation) Type() string {
 	return m.typ
 }
 
 // Fields returns all fields that were changed during this mutation. Note that in
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
-func (m *LegalCurrencyMutation) Fields() []string {
+func (m *FiatCurrencyMutation) Fields() []string {
 	fields := make([]string, 0, 7)
 	if m.created_at != nil {
-		fields = append(fields, legalcurrency.FieldCreatedAt)
+		fields = append(fields, fiatcurrency.FieldCreatedAt)
 	}
 	if m.updated_at != nil {
-		fields = append(fields, legalcurrency.FieldUpdatedAt)
+		fields = append(fields, fiatcurrency.FieldUpdatedAt)
 	}
 	if m.deleted_at != nil {
-		fields = append(fields, legalcurrency.FieldDeletedAt)
+		fields = append(fields, fiatcurrency.FieldDeletedAt)
 	}
-	if m.coin_type_id != nil {
-		fields = append(fields, legalcurrency.FieldCoinTypeID)
+	if m.fiat_type_id != nil {
+		fields = append(fields, fiatcurrency.FieldFiatTypeID)
 	}
 	if m.feed_type != nil {
-		fields = append(fields, legalcurrency.FieldFeedType)
+		fields = append(fields, fiatcurrency.FieldFeedType)
 	}
 	if m.market_value_high != nil {
-		fields = append(fields, legalcurrency.FieldMarketValueHigh)
+		fields = append(fields, fiatcurrency.FieldMarketValueHigh)
 	}
 	if m.market_value_low != nil {
-		fields = append(fields, legalcurrency.FieldMarketValueLow)
+		fields = append(fields, fiatcurrency.FieldMarketValueLow)
 	}
 	return fields
 }
@@ -6423,21 +6425,21 @@ func (m *LegalCurrencyMutation) Fields() []string {
 // Field returns the value of a field with the given name. The second boolean
 // return value indicates that this field was not set, or was not defined in the
 // schema.
-func (m *LegalCurrencyMutation) Field(name string) (ent.Value, bool) {
+func (m *FiatCurrencyMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case legalcurrency.FieldCreatedAt:
+	case fiatcurrency.FieldCreatedAt:
 		return m.CreatedAt()
-	case legalcurrency.FieldUpdatedAt:
+	case fiatcurrency.FieldUpdatedAt:
 		return m.UpdatedAt()
-	case legalcurrency.FieldDeletedAt:
+	case fiatcurrency.FieldDeletedAt:
 		return m.DeletedAt()
-	case legalcurrency.FieldCoinTypeID:
-		return m.CoinTypeID()
-	case legalcurrency.FieldFeedType:
+	case fiatcurrency.FieldFiatTypeID:
+		return m.FiatTypeID()
+	case fiatcurrency.FieldFeedType:
 		return m.FeedType()
-	case legalcurrency.FieldMarketValueHigh:
+	case fiatcurrency.FieldMarketValueHigh:
 		return m.MarketValueHigh()
-	case legalcurrency.FieldMarketValueLow:
+	case fiatcurrency.FieldMarketValueLow:
 		return m.MarketValueLow()
 	}
 	return nil, false
@@ -6446,74 +6448,74 @@ func (m *LegalCurrencyMutation) Field(name string) (ent.Value, bool) {
 // OldField returns the old value of the field from the database. An error is
 // returned if the mutation operation is not UpdateOne, or the query to the
 // database failed.
-func (m *LegalCurrencyMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+func (m *FiatCurrencyMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case legalcurrency.FieldCreatedAt:
+	case fiatcurrency.FieldCreatedAt:
 		return m.OldCreatedAt(ctx)
-	case legalcurrency.FieldUpdatedAt:
+	case fiatcurrency.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
-	case legalcurrency.FieldDeletedAt:
+	case fiatcurrency.FieldDeletedAt:
 		return m.OldDeletedAt(ctx)
-	case legalcurrency.FieldCoinTypeID:
-		return m.OldCoinTypeID(ctx)
-	case legalcurrency.FieldFeedType:
+	case fiatcurrency.FieldFiatTypeID:
+		return m.OldFiatTypeID(ctx)
+	case fiatcurrency.FieldFeedType:
 		return m.OldFeedType(ctx)
-	case legalcurrency.FieldMarketValueHigh:
+	case fiatcurrency.FieldMarketValueHigh:
 		return m.OldMarketValueHigh(ctx)
-	case legalcurrency.FieldMarketValueLow:
+	case fiatcurrency.FieldMarketValueLow:
 		return m.OldMarketValueLow(ctx)
 	}
-	return nil, fmt.Errorf("unknown LegalCurrency field %s", name)
+	return nil, fmt.Errorf("unknown FiatCurrency field %s", name)
 }
 
 // SetField sets the value of a field with the given name. It returns an error if
 // the field is not defined in the schema, or if the type mismatched the field
 // type.
-func (m *LegalCurrencyMutation) SetField(name string, value ent.Value) error {
+func (m *FiatCurrencyMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case legalcurrency.FieldCreatedAt:
+	case fiatcurrency.FieldCreatedAt:
 		v, ok := value.(uint32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetCreatedAt(v)
 		return nil
-	case legalcurrency.FieldUpdatedAt:
+	case fiatcurrency.FieldUpdatedAt:
 		v, ok := value.(uint32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUpdatedAt(v)
 		return nil
-	case legalcurrency.FieldDeletedAt:
+	case fiatcurrency.FieldDeletedAt:
 		v, ok := value.(uint32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetDeletedAt(v)
 		return nil
-	case legalcurrency.FieldCoinTypeID:
+	case fiatcurrency.FieldFiatTypeID:
 		v, ok := value.(uuid.UUID)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetCoinTypeID(v)
+		m.SetFiatTypeID(v)
 		return nil
-	case legalcurrency.FieldFeedType:
+	case fiatcurrency.FieldFeedType:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetFeedType(v)
 		return nil
-	case legalcurrency.FieldMarketValueHigh:
+	case fiatcurrency.FieldMarketValueHigh:
 		v, ok := value.(decimal.Decimal)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetMarketValueHigh(v)
 		return nil
-	case legalcurrency.FieldMarketValueLow:
+	case fiatcurrency.FieldMarketValueLow:
 		v, ok := value.(decimal.Decimal)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
@@ -6521,21 +6523,21 @@ func (m *LegalCurrencyMutation) SetField(name string, value ent.Value) error {
 		m.SetMarketValueLow(v)
 		return nil
 	}
-	return fmt.Errorf("unknown LegalCurrency field %s", name)
+	return fmt.Errorf("unknown FiatCurrency field %s", name)
 }
 
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
-func (m *LegalCurrencyMutation) AddedFields() []string {
+func (m *FiatCurrencyMutation) AddedFields() []string {
 	var fields []string
 	if m.addcreated_at != nil {
-		fields = append(fields, legalcurrency.FieldCreatedAt)
+		fields = append(fields, fiatcurrency.FieldCreatedAt)
 	}
 	if m.addupdated_at != nil {
-		fields = append(fields, legalcurrency.FieldUpdatedAt)
+		fields = append(fields, fiatcurrency.FieldUpdatedAt)
 	}
 	if m.adddeleted_at != nil {
-		fields = append(fields, legalcurrency.FieldDeletedAt)
+		fields = append(fields, fiatcurrency.FieldDeletedAt)
 	}
 	return fields
 }
@@ -6543,13 +6545,13 @@ func (m *LegalCurrencyMutation) AddedFields() []string {
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
-func (m *LegalCurrencyMutation) AddedField(name string) (ent.Value, bool) {
+func (m *FiatCurrencyMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
-	case legalcurrency.FieldCreatedAt:
+	case fiatcurrency.FieldCreatedAt:
 		return m.AddedCreatedAt()
-	case legalcurrency.FieldUpdatedAt:
+	case fiatcurrency.FieldUpdatedAt:
 		return m.AddedUpdatedAt()
-	case legalcurrency.FieldDeletedAt:
+	case fiatcurrency.FieldDeletedAt:
 		return m.AddedDeletedAt()
 	}
 	return nil, false
@@ -6558,23 +6560,23 @@ func (m *LegalCurrencyMutation) AddedField(name string) (ent.Value, bool) {
 // AddField adds the value to the field with the given name. It returns an error if
 // the field is not defined in the schema, or if the type mismatched the field
 // type.
-func (m *LegalCurrencyMutation) AddField(name string, value ent.Value) error {
+func (m *FiatCurrencyMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case legalcurrency.FieldCreatedAt:
+	case fiatcurrency.FieldCreatedAt:
 		v, ok := value.(int32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddCreatedAt(v)
 		return nil
-	case legalcurrency.FieldUpdatedAt:
+	case fiatcurrency.FieldUpdatedAt:
 		v, ok := value.(int32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddUpdatedAt(v)
 		return nil
-	case legalcurrency.FieldDeletedAt:
+	case fiatcurrency.FieldDeletedAt:
 		v, ok := value.(int32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
@@ -6582,130 +6584,733 @@ func (m *LegalCurrencyMutation) AddField(name string, value ent.Value) error {
 		m.AddDeletedAt(v)
 		return nil
 	}
-	return fmt.Errorf("unknown LegalCurrency numeric field %s", name)
+	return fmt.Errorf("unknown FiatCurrency numeric field %s", name)
 }
 
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
-func (m *LegalCurrencyMutation) ClearedFields() []string {
+func (m *FiatCurrencyMutation) ClearedFields() []string {
 	var fields []string
-	if m.FieldCleared(legalcurrency.FieldCoinTypeID) {
-		fields = append(fields, legalcurrency.FieldCoinTypeID)
+	if m.FieldCleared(fiatcurrency.FieldFiatTypeID) {
+		fields = append(fields, fiatcurrency.FieldFiatTypeID)
 	}
-	if m.FieldCleared(legalcurrency.FieldFeedType) {
-		fields = append(fields, legalcurrency.FieldFeedType)
+	if m.FieldCleared(fiatcurrency.FieldFeedType) {
+		fields = append(fields, fiatcurrency.FieldFeedType)
 	}
-	if m.FieldCleared(legalcurrency.FieldMarketValueHigh) {
-		fields = append(fields, legalcurrency.FieldMarketValueHigh)
+	if m.FieldCleared(fiatcurrency.FieldMarketValueHigh) {
+		fields = append(fields, fiatcurrency.FieldMarketValueHigh)
 	}
-	if m.FieldCleared(legalcurrency.FieldMarketValueLow) {
-		fields = append(fields, legalcurrency.FieldMarketValueLow)
+	if m.FieldCleared(fiatcurrency.FieldMarketValueLow) {
+		fields = append(fields, fiatcurrency.FieldMarketValueLow)
 	}
 	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
 // cleared in this mutation.
-func (m *LegalCurrencyMutation) FieldCleared(name string) bool {
+func (m *FiatCurrencyMutation) FieldCleared(name string) bool {
 	_, ok := m.clearedFields[name]
 	return ok
 }
 
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
-func (m *LegalCurrencyMutation) ClearField(name string) error {
+func (m *FiatCurrencyMutation) ClearField(name string) error {
 	switch name {
-	case legalcurrency.FieldCoinTypeID:
-		m.ClearCoinTypeID()
+	case fiatcurrency.FieldFiatTypeID:
+		m.ClearFiatTypeID()
 		return nil
-	case legalcurrency.FieldFeedType:
+	case fiatcurrency.FieldFeedType:
 		m.ClearFeedType()
 		return nil
-	case legalcurrency.FieldMarketValueHigh:
+	case fiatcurrency.FieldMarketValueHigh:
 		m.ClearMarketValueHigh()
 		return nil
-	case legalcurrency.FieldMarketValueLow:
+	case fiatcurrency.FieldMarketValueLow:
 		m.ClearMarketValueLow()
 		return nil
 	}
-	return fmt.Errorf("unknown LegalCurrency nullable field %s", name)
+	return fmt.Errorf("unknown FiatCurrency nullable field %s", name)
 }
 
 // ResetField resets all changes in the mutation for the field with the given name.
 // It returns an error if the field is not defined in the schema.
-func (m *LegalCurrencyMutation) ResetField(name string) error {
+func (m *FiatCurrencyMutation) ResetField(name string) error {
 	switch name {
-	case legalcurrency.FieldCreatedAt:
+	case fiatcurrency.FieldCreatedAt:
 		m.ResetCreatedAt()
 		return nil
-	case legalcurrency.FieldUpdatedAt:
+	case fiatcurrency.FieldUpdatedAt:
 		m.ResetUpdatedAt()
 		return nil
-	case legalcurrency.FieldDeletedAt:
+	case fiatcurrency.FieldDeletedAt:
 		m.ResetDeletedAt()
 		return nil
-	case legalcurrency.FieldCoinTypeID:
-		m.ResetCoinTypeID()
+	case fiatcurrency.FieldFiatTypeID:
+		m.ResetFiatTypeID()
 		return nil
-	case legalcurrency.FieldFeedType:
+	case fiatcurrency.FieldFeedType:
 		m.ResetFeedType()
 		return nil
-	case legalcurrency.FieldMarketValueHigh:
+	case fiatcurrency.FieldMarketValueHigh:
 		m.ResetMarketValueHigh()
 		return nil
-	case legalcurrency.FieldMarketValueLow:
+	case fiatcurrency.FieldMarketValueLow:
 		m.ResetMarketValueLow()
 		return nil
 	}
-	return fmt.Errorf("unknown LegalCurrency field %s", name)
+	return fmt.Errorf("unknown FiatCurrency field %s", name)
 }
 
 // AddedEdges returns all edge names that were set/added in this mutation.
-func (m *LegalCurrencyMutation) AddedEdges() []string {
+func (m *FiatCurrencyMutation) AddedEdges() []string {
 	edges := make([]string, 0, 0)
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
-func (m *LegalCurrencyMutation) AddedIDs(name string) []ent.Value {
+func (m *FiatCurrencyMutation) AddedIDs(name string) []ent.Value {
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
-func (m *LegalCurrencyMutation) RemovedEdges() []string {
+func (m *FiatCurrencyMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 0)
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
-func (m *LegalCurrencyMutation) RemovedIDs(name string) []ent.Value {
+func (m *FiatCurrencyMutation) RemovedIDs(name string) []ent.Value {
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *LegalCurrencyMutation) ClearedEdges() []string {
+func (m *FiatCurrencyMutation) ClearedEdges() []string {
 	edges := make([]string, 0, 0)
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
-func (m *LegalCurrencyMutation) EdgeCleared(name string) bool {
+func (m *FiatCurrencyMutation) EdgeCleared(name string) bool {
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
-func (m *LegalCurrencyMutation) ClearEdge(name string) error {
-	return fmt.Errorf("unknown LegalCurrency unique edge %s", name)
+func (m *FiatCurrencyMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown FiatCurrency unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
-func (m *LegalCurrencyMutation) ResetEdge(name string) error {
-	return fmt.Errorf("unknown LegalCurrency edge %s", name)
+func (m *FiatCurrencyMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown FiatCurrency edge %s", name)
+}
+
+// FiatCurrencyTypeMutation represents an operation that mutates the FiatCurrencyType nodes in the graph.
+type FiatCurrencyTypeMutation struct {
+	config
+	op            Op
+	typ           string
+	id            *uuid.UUID
+	created_at    *uint32
+	addcreated_at *int32
+	updated_at    *uint32
+	addupdated_at *int32
+	deleted_at    *uint32
+	adddeleted_at *int32
+	name          *string
+	clearedFields map[string]struct{}
+	done          bool
+	oldValue      func(context.Context) (*FiatCurrencyType, error)
+	predicates    []predicate.FiatCurrencyType
+}
+
+var _ ent.Mutation = (*FiatCurrencyTypeMutation)(nil)
+
+// fiatcurrencytypeOption allows management of the mutation configuration using functional options.
+type fiatcurrencytypeOption func(*FiatCurrencyTypeMutation)
+
+// newFiatCurrencyTypeMutation creates new mutation for the FiatCurrencyType entity.
+func newFiatCurrencyTypeMutation(c config, op Op, opts ...fiatcurrencytypeOption) *FiatCurrencyTypeMutation {
+	m := &FiatCurrencyTypeMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeFiatCurrencyType,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withFiatCurrencyTypeID sets the ID field of the mutation.
+func withFiatCurrencyTypeID(id uuid.UUID) fiatcurrencytypeOption {
+	return func(m *FiatCurrencyTypeMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *FiatCurrencyType
+		)
+		m.oldValue = func(ctx context.Context) (*FiatCurrencyType, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().FiatCurrencyType.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withFiatCurrencyType sets the old FiatCurrencyType of the mutation.
+func withFiatCurrencyType(node *FiatCurrencyType) fiatcurrencytypeOption {
+	return func(m *FiatCurrencyTypeMutation) {
+		m.oldValue = func(context.Context) (*FiatCurrencyType, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m FiatCurrencyTypeMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m FiatCurrencyTypeMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of FiatCurrencyType entities.
+func (m *FiatCurrencyTypeMutation) SetID(id uuid.UUID) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *FiatCurrencyTypeMutation) ID() (id uuid.UUID, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *FiatCurrencyTypeMutation) IDs(ctx context.Context) ([]uuid.UUID, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []uuid.UUID{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().FiatCurrencyType.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *FiatCurrencyTypeMutation) SetCreatedAt(u uint32) {
+	m.created_at = &u
+	m.addcreated_at = nil
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *FiatCurrencyTypeMutation) CreatedAt() (r uint32, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the FiatCurrencyType entity.
+// If the FiatCurrencyType object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FiatCurrencyTypeMutation) OldCreatedAt(ctx context.Context) (v uint32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// AddCreatedAt adds u to the "created_at" field.
+func (m *FiatCurrencyTypeMutation) AddCreatedAt(u int32) {
+	if m.addcreated_at != nil {
+		*m.addcreated_at += u
+	} else {
+		m.addcreated_at = &u
+	}
+}
+
+// AddedCreatedAt returns the value that was added to the "created_at" field in this mutation.
+func (m *FiatCurrencyTypeMutation) AddedCreatedAt() (r int32, exists bool) {
+	v := m.addcreated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *FiatCurrencyTypeMutation) ResetCreatedAt() {
+	m.created_at = nil
+	m.addcreated_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *FiatCurrencyTypeMutation) SetUpdatedAt(u uint32) {
+	m.updated_at = &u
+	m.addupdated_at = nil
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *FiatCurrencyTypeMutation) UpdatedAt() (r uint32, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the FiatCurrencyType entity.
+// If the FiatCurrencyType object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FiatCurrencyTypeMutation) OldUpdatedAt(ctx context.Context) (v uint32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// AddUpdatedAt adds u to the "updated_at" field.
+func (m *FiatCurrencyTypeMutation) AddUpdatedAt(u int32) {
+	if m.addupdated_at != nil {
+		*m.addupdated_at += u
+	} else {
+		m.addupdated_at = &u
+	}
+}
+
+// AddedUpdatedAt returns the value that was added to the "updated_at" field in this mutation.
+func (m *FiatCurrencyTypeMutation) AddedUpdatedAt() (r int32, exists bool) {
+	v := m.addupdated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *FiatCurrencyTypeMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+	m.addupdated_at = nil
+}
+
+// SetDeletedAt sets the "deleted_at" field.
+func (m *FiatCurrencyTypeMutation) SetDeletedAt(u uint32) {
+	m.deleted_at = &u
+	m.adddeleted_at = nil
+}
+
+// DeletedAt returns the value of the "deleted_at" field in the mutation.
+func (m *FiatCurrencyTypeMutation) DeletedAt() (r uint32, exists bool) {
+	v := m.deleted_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDeletedAt returns the old "deleted_at" field's value of the FiatCurrencyType entity.
+// If the FiatCurrencyType object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FiatCurrencyTypeMutation) OldDeletedAt(ctx context.Context) (v uint32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDeletedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDeletedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDeletedAt: %w", err)
+	}
+	return oldValue.DeletedAt, nil
+}
+
+// AddDeletedAt adds u to the "deleted_at" field.
+func (m *FiatCurrencyTypeMutation) AddDeletedAt(u int32) {
+	if m.adddeleted_at != nil {
+		*m.adddeleted_at += u
+	} else {
+		m.adddeleted_at = &u
+	}
+}
+
+// AddedDeletedAt returns the value that was added to the "deleted_at" field in this mutation.
+func (m *FiatCurrencyTypeMutation) AddedDeletedAt() (r int32, exists bool) {
+	v := m.adddeleted_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetDeletedAt resets all changes to the "deleted_at" field.
+func (m *FiatCurrencyTypeMutation) ResetDeletedAt() {
+	m.deleted_at = nil
+	m.adddeleted_at = nil
+}
+
+// SetName sets the "name" field.
+func (m *FiatCurrencyTypeMutation) SetName(s string) {
+	m.name = &s
+}
+
+// Name returns the value of the "name" field in the mutation.
+func (m *FiatCurrencyTypeMutation) Name() (r string, exists bool) {
+	v := m.name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldName returns the old "name" field's value of the FiatCurrencyType entity.
+// If the FiatCurrencyType object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FiatCurrencyTypeMutation) OldName(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldName: %w", err)
+	}
+	return oldValue.Name, nil
+}
+
+// ClearName clears the value of the "name" field.
+func (m *FiatCurrencyTypeMutation) ClearName() {
+	m.name = nil
+	m.clearedFields[fiatcurrencytype.FieldName] = struct{}{}
+}
+
+// NameCleared returns if the "name" field was cleared in this mutation.
+func (m *FiatCurrencyTypeMutation) NameCleared() bool {
+	_, ok := m.clearedFields[fiatcurrencytype.FieldName]
+	return ok
+}
+
+// ResetName resets all changes to the "name" field.
+func (m *FiatCurrencyTypeMutation) ResetName() {
+	m.name = nil
+	delete(m.clearedFields, fiatcurrencytype.FieldName)
+}
+
+// Where appends a list predicates to the FiatCurrencyTypeMutation builder.
+func (m *FiatCurrencyTypeMutation) Where(ps ...predicate.FiatCurrencyType) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// Op returns the operation name.
+func (m *FiatCurrencyTypeMutation) Op() Op {
+	return m.op
+}
+
+// Type returns the node type of this mutation (FiatCurrencyType).
+func (m *FiatCurrencyTypeMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *FiatCurrencyTypeMutation) Fields() []string {
+	fields := make([]string, 0, 4)
+	if m.created_at != nil {
+		fields = append(fields, fiatcurrencytype.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, fiatcurrencytype.FieldUpdatedAt)
+	}
+	if m.deleted_at != nil {
+		fields = append(fields, fiatcurrencytype.FieldDeletedAt)
+	}
+	if m.name != nil {
+		fields = append(fields, fiatcurrencytype.FieldName)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *FiatCurrencyTypeMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case fiatcurrencytype.FieldCreatedAt:
+		return m.CreatedAt()
+	case fiatcurrencytype.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case fiatcurrencytype.FieldDeletedAt:
+		return m.DeletedAt()
+	case fiatcurrencytype.FieldName:
+		return m.Name()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *FiatCurrencyTypeMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case fiatcurrencytype.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case fiatcurrencytype.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case fiatcurrencytype.FieldDeletedAt:
+		return m.OldDeletedAt(ctx)
+	case fiatcurrencytype.FieldName:
+		return m.OldName(ctx)
+	}
+	return nil, fmt.Errorf("unknown FiatCurrencyType field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *FiatCurrencyTypeMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case fiatcurrencytype.FieldCreatedAt:
+		v, ok := value.(uint32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case fiatcurrencytype.FieldUpdatedAt:
+		v, ok := value.(uint32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case fiatcurrencytype.FieldDeletedAt:
+		v, ok := value.(uint32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDeletedAt(v)
+		return nil
+	case fiatcurrencytype.FieldName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetName(v)
+		return nil
+	}
+	return fmt.Errorf("unknown FiatCurrencyType field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *FiatCurrencyTypeMutation) AddedFields() []string {
+	var fields []string
+	if m.addcreated_at != nil {
+		fields = append(fields, fiatcurrencytype.FieldCreatedAt)
+	}
+	if m.addupdated_at != nil {
+		fields = append(fields, fiatcurrencytype.FieldUpdatedAt)
+	}
+	if m.adddeleted_at != nil {
+		fields = append(fields, fiatcurrencytype.FieldDeletedAt)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *FiatCurrencyTypeMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case fiatcurrencytype.FieldCreatedAt:
+		return m.AddedCreatedAt()
+	case fiatcurrencytype.FieldUpdatedAt:
+		return m.AddedUpdatedAt()
+	case fiatcurrencytype.FieldDeletedAt:
+		return m.AddedDeletedAt()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *FiatCurrencyTypeMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case fiatcurrencytype.FieldCreatedAt:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddCreatedAt(v)
+		return nil
+	case fiatcurrencytype.FieldUpdatedAt:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddUpdatedAt(v)
+		return nil
+	case fiatcurrencytype.FieldDeletedAt:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddDeletedAt(v)
+		return nil
+	}
+	return fmt.Errorf("unknown FiatCurrencyType numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *FiatCurrencyTypeMutation) ClearedFields() []string {
+	var fields []string
+	if m.FieldCleared(fiatcurrencytype.FieldName) {
+		fields = append(fields, fiatcurrencytype.FieldName)
+	}
+	return fields
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *FiatCurrencyTypeMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *FiatCurrencyTypeMutation) ClearField(name string) error {
+	switch name {
+	case fiatcurrencytype.FieldName:
+		m.ClearName()
+		return nil
+	}
+	return fmt.Errorf("unknown FiatCurrencyType nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *FiatCurrencyTypeMutation) ResetField(name string) error {
+	switch name {
+	case fiatcurrencytype.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case fiatcurrencytype.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case fiatcurrencytype.FieldDeletedAt:
+		m.ResetDeletedAt()
+		return nil
+	case fiatcurrencytype.FieldName:
+		m.ResetName()
+		return nil
+	}
+	return fmt.Errorf("unknown FiatCurrencyType field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *FiatCurrencyTypeMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *FiatCurrencyTypeMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *FiatCurrencyTypeMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *FiatCurrencyTypeMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *FiatCurrencyTypeMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *FiatCurrencyTypeMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *FiatCurrencyTypeMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown FiatCurrencyType unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *FiatCurrencyTypeMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown FiatCurrencyType edge %s", name)
 }
 
 // SettingMutation represents an operation that mutates the Setting nodes in the graph.

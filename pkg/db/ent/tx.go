@@ -26,8 +26,10 @@ type Tx struct {
 	Currency *CurrencyClient
 	// ExchangeRate is the client for interacting with the ExchangeRate builders.
 	ExchangeRate *ExchangeRateClient
-	// LegalCurrency is the client for interacting with the LegalCurrency builders.
-	LegalCurrency *LegalCurrencyClient
+	// FiatCurrency is the client for interacting with the FiatCurrency builders.
+	FiatCurrency *FiatCurrencyClient
+	// FiatCurrencyType is the client for interacting with the FiatCurrencyType builders.
+	FiatCurrencyType *FiatCurrencyTypeClient
 	// Setting is the client for interacting with the Setting builders.
 	Setting *SettingClient
 	// Tran is the client for interacting with the Tran builders.
@@ -173,7 +175,8 @@ func (tx *Tx) init() {
 	tx.CoinExtra = NewCoinExtraClient(tx.config)
 	tx.Currency = NewCurrencyClient(tx.config)
 	tx.ExchangeRate = NewExchangeRateClient(tx.config)
-	tx.LegalCurrency = NewLegalCurrencyClient(tx.config)
+	tx.FiatCurrency = NewFiatCurrencyClient(tx.config)
+	tx.FiatCurrencyType = NewFiatCurrencyTypeClient(tx.config)
 	tx.Setting = NewSettingClient(tx.config)
 	tx.Tran = NewTranClient(tx.config)
 }

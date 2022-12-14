@@ -87,15 +87,28 @@ func (f ExchangeRateFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value
 	return f(ctx, mv)
 }
 
-// The LegalCurrencyFunc type is an adapter to allow the use of ordinary
-// function as LegalCurrency mutator.
-type LegalCurrencyFunc func(context.Context, *ent.LegalCurrencyMutation) (ent.Value, error)
+// The FiatCurrencyFunc type is an adapter to allow the use of ordinary
+// function as FiatCurrency mutator.
+type FiatCurrencyFunc func(context.Context, *ent.FiatCurrencyMutation) (ent.Value, error)
 
 // Mutate calls f(ctx, m).
-func (f LegalCurrencyFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	mv, ok := m.(*ent.LegalCurrencyMutation)
+func (f FiatCurrencyFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.FiatCurrencyMutation)
 	if !ok {
-		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.LegalCurrencyMutation", m)
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.FiatCurrencyMutation", m)
+	}
+	return f(ctx, mv)
+}
+
+// The FiatCurrencyTypeFunc type is an adapter to allow the use of ordinary
+// function as FiatCurrencyType mutator.
+type FiatCurrencyTypeFunc func(context.Context, *ent.FiatCurrencyTypeMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f FiatCurrencyTypeFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.FiatCurrencyTypeMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.FiatCurrencyTypeMutation", m)
 	}
 	return f(ctx, mv)
 }

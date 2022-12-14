@@ -7,13 +7,13 @@ import (
 	"strings"
 
 	"entgo.io/ent/dialect/sql"
-	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/legalcurrency"
+	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/fiatcurrency"
 	"github.com/google/uuid"
 	"github.com/shopspring/decimal"
 )
 
-// LegalCurrency is the model entity for the LegalCurrency schema.
-type LegalCurrency struct {
+// FiatCurrency is the model entity for the FiatCurrency schema.
+type FiatCurrency struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID uuid.UUID `json:"id,omitempty"`
@@ -23,8 +23,8 @@ type LegalCurrency struct {
 	UpdatedAt uint32 `json:"updated_at,omitempty"`
 	// DeletedAt holds the value of the "deleted_at" field.
 	DeletedAt uint32 `json:"deleted_at,omitempty"`
-	// CoinTypeID holds the value of the "coin_type_id" field.
-	CoinTypeID uuid.UUID `json:"coin_type_id,omitempty"`
+	// FiatTypeID holds the value of the "fiat_type_id" field.
+	FiatTypeID uuid.UUID `json:"fiat_type_id,omitempty"`
 	// FeedType holds the value of the "feed_type" field.
 	FeedType string `json:"feed_type,omitempty"`
 	// MarketValueHigh holds the value of the "market_value_high" field.
@@ -34,138 +34,138 @@ type LegalCurrency struct {
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
-func (*LegalCurrency) scanValues(columns []string) ([]interface{}, error) {
+func (*FiatCurrency) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case legalcurrency.FieldMarketValueHigh, legalcurrency.FieldMarketValueLow:
+		case fiatcurrency.FieldMarketValueHigh, fiatcurrency.FieldMarketValueLow:
 			values[i] = new(decimal.Decimal)
-		case legalcurrency.FieldCreatedAt, legalcurrency.FieldUpdatedAt, legalcurrency.FieldDeletedAt:
+		case fiatcurrency.FieldCreatedAt, fiatcurrency.FieldUpdatedAt, fiatcurrency.FieldDeletedAt:
 			values[i] = new(sql.NullInt64)
-		case legalcurrency.FieldFeedType:
+		case fiatcurrency.FieldFeedType:
 			values[i] = new(sql.NullString)
-		case legalcurrency.FieldID, legalcurrency.FieldCoinTypeID:
+		case fiatcurrency.FieldID, fiatcurrency.FieldFiatTypeID:
 			values[i] = new(uuid.UUID)
 		default:
-			return nil, fmt.Errorf("unexpected column %q for type LegalCurrency", columns[i])
+			return nil, fmt.Errorf("unexpected column %q for type FiatCurrency", columns[i])
 		}
 	}
 	return values, nil
 }
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
-// to the LegalCurrency fields.
-func (lc *LegalCurrency) assignValues(columns []string, values []interface{}) error {
+// to the FiatCurrency fields.
+func (fc *FiatCurrency) assignValues(columns []string, values []interface{}) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
 	for i := range columns {
 		switch columns[i] {
-		case legalcurrency.FieldID:
+		case fiatcurrency.FieldID:
 			if value, ok := values[i].(*uuid.UUID); !ok {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value != nil {
-				lc.ID = *value
+				fc.ID = *value
 			}
-		case legalcurrency.FieldCreatedAt:
+		case fiatcurrency.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				lc.CreatedAt = uint32(value.Int64)
+				fc.CreatedAt = uint32(value.Int64)
 			}
-		case legalcurrency.FieldUpdatedAt:
+		case fiatcurrency.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				lc.UpdatedAt = uint32(value.Int64)
+				fc.UpdatedAt = uint32(value.Int64)
 			}
-		case legalcurrency.FieldDeletedAt:
+		case fiatcurrency.FieldDeletedAt:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field deleted_at", values[i])
 			} else if value.Valid {
-				lc.DeletedAt = uint32(value.Int64)
+				fc.DeletedAt = uint32(value.Int64)
 			}
-		case legalcurrency.FieldCoinTypeID:
+		case fiatcurrency.FieldFiatTypeID:
 			if value, ok := values[i].(*uuid.UUID); !ok {
-				return fmt.Errorf("unexpected type %T for field coin_type_id", values[i])
+				return fmt.Errorf("unexpected type %T for field fiat_type_id", values[i])
 			} else if value != nil {
-				lc.CoinTypeID = *value
+				fc.FiatTypeID = *value
 			}
-		case legalcurrency.FieldFeedType:
+		case fiatcurrency.FieldFeedType:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field feed_type", values[i])
 			} else if value.Valid {
-				lc.FeedType = value.String
+				fc.FeedType = value.String
 			}
-		case legalcurrency.FieldMarketValueHigh:
+		case fiatcurrency.FieldMarketValueHigh:
 			if value, ok := values[i].(*decimal.Decimal); !ok {
 				return fmt.Errorf("unexpected type %T for field market_value_high", values[i])
 			} else if value != nil {
-				lc.MarketValueHigh = *value
+				fc.MarketValueHigh = *value
 			}
-		case legalcurrency.FieldMarketValueLow:
+		case fiatcurrency.FieldMarketValueLow:
 			if value, ok := values[i].(*decimal.Decimal); !ok {
 				return fmt.Errorf("unexpected type %T for field market_value_low", values[i])
 			} else if value != nil {
-				lc.MarketValueLow = *value
+				fc.MarketValueLow = *value
 			}
 		}
 	}
 	return nil
 }
 
-// Update returns a builder for updating this LegalCurrency.
-// Note that you need to call LegalCurrency.Unwrap() before calling this method if this LegalCurrency
+// Update returns a builder for updating this FiatCurrency.
+// Note that you need to call FiatCurrency.Unwrap() before calling this method if this FiatCurrency
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (lc *LegalCurrency) Update() *LegalCurrencyUpdateOne {
-	return (&LegalCurrencyClient{config: lc.config}).UpdateOne(lc)
+func (fc *FiatCurrency) Update() *FiatCurrencyUpdateOne {
+	return (&FiatCurrencyClient{config: fc.config}).UpdateOne(fc)
 }
 
-// Unwrap unwraps the LegalCurrency entity that was returned from a transaction after it was closed,
+// Unwrap unwraps the FiatCurrency entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (lc *LegalCurrency) Unwrap() *LegalCurrency {
-	_tx, ok := lc.config.driver.(*txDriver)
+func (fc *FiatCurrency) Unwrap() *FiatCurrency {
+	_tx, ok := fc.config.driver.(*txDriver)
 	if !ok {
-		panic("ent: LegalCurrency is not a transactional entity")
+		panic("ent: FiatCurrency is not a transactional entity")
 	}
-	lc.config.driver = _tx.drv
-	return lc
+	fc.config.driver = _tx.drv
+	return fc
 }
 
 // String implements the fmt.Stringer.
-func (lc *LegalCurrency) String() string {
+func (fc *FiatCurrency) String() string {
 	var builder strings.Builder
-	builder.WriteString("LegalCurrency(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", lc.ID))
+	builder.WriteString("FiatCurrency(")
+	builder.WriteString(fmt.Sprintf("id=%v, ", fc.ID))
 	builder.WriteString("created_at=")
-	builder.WriteString(fmt.Sprintf("%v", lc.CreatedAt))
+	builder.WriteString(fmt.Sprintf("%v", fc.CreatedAt))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(fmt.Sprintf("%v", lc.UpdatedAt))
+	builder.WriteString(fmt.Sprintf("%v", fc.UpdatedAt))
 	builder.WriteString(", ")
 	builder.WriteString("deleted_at=")
-	builder.WriteString(fmt.Sprintf("%v", lc.DeletedAt))
+	builder.WriteString(fmt.Sprintf("%v", fc.DeletedAt))
 	builder.WriteString(", ")
-	builder.WriteString("coin_type_id=")
-	builder.WriteString(fmt.Sprintf("%v", lc.CoinTypeID))
+	builder.WriteString("fiat_type_id=")
+	builder.WriteString(fmt.Sprintf("%v", fc.FiatTypeID))
 	builder.WriteString(", ")
 	builder.WriteString("feed_type=")
-	builder.WriteString(lc.FeedType)
+	builder.WriteString(fc.FeedType)
 	builder.WriteString(", ")
 	builder.WriteString("market_value_high=")
-	builder.WriteString(fmt.Sprintf("%v", lc.MarketValueHigh))
+	builder.WriteString(fmt.Sprintf("%v", fc.MarketValueHigh))
 	builder.WriteString(", ")
 	builder.WriteString("market_value_low=")
-	builder.WriteString(fmt.Sprintf("%v", lc.MarketValueLow))
+	builder.WriteString(fmt.Sprintf("%v", fc.MarketValueLow))
 	builder.WriteByte(')')
 	return builder.String()
 }
 
-// LegalCurrencies is a parsable slice of LegalCurrency.
-type LegalCurrencies []*LegalCurrency
+// FiatCurrencies is a parsable slice of FiatCurrency.
+type FiatCurrencies []*FiatCurrency
 
-func (lc LegalCurrencies) config(cfg config) {
-	for _i := range lc {
-		lc[_i].config = cfg
+func (fc FiatCurrencies) config(cfg config) {
+	for _i := range fc {
+		fc[_i].config = cfg
 	}
 }

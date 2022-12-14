@@ -11,7 +11,8 @@ import (
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/coinextra"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/currency"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/exchangerate"
-	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/legalcurrency"
+	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/fiatcurrency"
+	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/fiatcurrencytype"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/schema"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/setting"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/tran"
@@ -362,54 +363,90 @@ func init() {
 	exchangerateDescID := exchangerateFields[0].Descriptor()
 	// exchangerate.DefaultID holds the default value on creation for the id field.
 	exchangerate.DefaultID = exchangerateDescID.Default.(func() uuid.UUID)
-	legalcurrencyMixin := schema.LegalCurrency{}.Mixin()
-	legalcurrency.Policy = privacy.NewPolicies(legalcurrencyMixin[0], schema.LegalCurrency{})
-	legalcurrency.Hooks[0] = func(next ent.Mutator) ent.Mutator {
+	fiatcurrencyMixin := schema.FiatCurrency{}.Mixin()
+	fiatcurrency.Policy = privacy.NewPolicies(fiatcurrencyMixin[0], schema.FiatCurrency{})
+	fiatcurrency.Hooks[0] = func(next ent.Mutator) ent.Mutator {
 		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-			if err := legalcurrency.Policy.EvalMutation(ctx, m); err != nil {
+			if err := fiatcurrency.Policy.EvalMutation(ctx, m); err != nil {
 				return nil, err
 			}
 			return next.Mutate(ctx, m)
 		})
 	}
-	legalcurrencyMixinFields0 := legalcurrencyMixin[0].Fields()
-	_ = legalcurrencyMixinFields0
-	legalcurrencyFields := schema.LegalCurrency{}.Fields()
-	_ = legalcurrencyFields
-	// legalcurrencyDescCreatedAt is the schema descriptor for created_at field.
-	legalcurrencyDescCreatedAt := legalcurrencyMixinFields0[0].Descriptor()
-	// legalcurrency.DefaultCreatedAt holds the default value on creation for the created_at field.
-	legalcurrency.DefaultCreatedAt = legalcurrencyDescCreatedAt.Default.(func() uint32)
-	// legalcurrencyDescUpdatedAt is the schema descriptor for updated_at field.
-	legalcurrencyDescUpdatedAt := legalcurrencyMixinFields0[1].Descriptor()
-	// legalcurrency.DefaultUpdatedAt holds the default value on creation for the updated_at field.
-	legalcurrency.DefaultUpdatedAt = legalcurrencyDescUpdatedAt.Default.(func() uint32)
-	// legalcurrency.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
-	legalcurrency.UpdateDefaultUpdatedAt = legalcurrencyDescUpdatedAt.UpdateDefault.(func() uint32)
-	// legalcurrencyDescDeletedAt is the schema descriptor for deleted_at field.
-	legalcurrencyDescDeletedAt := legalcurrencyMixinFields0[2].Descriptor()
-	// legalcurrency.DefaultDeletedAt holds the default value on creation for the deleted_at field.
-	legalcurrency.DefaultDeletedAt = legalcurrencyDescDeletedAt.Default.(func() uint32)
-	// legalcurrencyDescCoinTypeID is the schema descriptor for coin_type_id field.
-	legalcurrencyDescCoinTypeID := legalcurrencyFields[1].Descriptor()
-	// legalcurrency.DefaultCoinTypeID holds the default value on creation for the coin_type_id field.
-	legalcurrency.DefaultCoinTypeID = legalcurrencyDescCoinTypeID.Default.(func() uuid.UUID)
-	// legalcurrencyDescFeedType is the schema descriptor for feed_type field.
-	legalcurrencyDescFeedType := legalcurrencyFields[2].Descriptor()
-	// legalcurrency.DefaultFeedType holds the default value on creation for the feed_type field.
-	legalcurrency.DefaultFeedType = legalcurrencyDescFeedType.Default.(string)
-	// legalcurrencyDescMarketValueHigh is the schema descriptor for market_value_high field.
-	legalcurrencyDescMarketValueHigh := legalcurrencyFields[3].Descriptor()
-	// legalcurrency.DefaultMarketValueHigh holds the default value on creation for the market_value_high field.
-	legalcurrency.DefaultMarketValueHigh = legalcurrencyDescMarketValueHigh.Default.(decimal.Decimal)
-	// legalcurrencyDescMarketValueLow is the schema descriptor for market_value_low field.
-	legalcurrencyDescMarketValueLow := legalcurrencyFields[4].Descriptor()
-	// legalcurrency.DefaultMarketValueLow holds the default value on creation for the market_value_low field.
-	legalcurrency.DefaultMarketValueLow = legalcurrencyDescMarketValueLow.Default.(decimal.Decimal)
-	// legalcurrencyDescID is the schema descriptor for id field.
-	legalcurrencyDescID := legalcurrencyFields[0].Descriptor()
-	// legalcurrency.DefaultID holds the default value on creation for the id field.
-	legalcurrency.DefaultID = legalcurrencyDescID.Default.(func() uuid.UUID)
+	fiatcurrencyMixinFields0 := fiatcurrencyMixin[0].Fields()
+	_ = fiatcurrencyMixinFields0
+	fiatcurrencyFields := schema.FiatCurrency{}.Fields()
+	_ = fiatcurrencyFields
+	// fiatcurrencyDescCreatedAt is the schema descriptor for created_at field.
+	fiatcurrencyDescCreatedAt := fiatcurrencyMixinFields0[0].Descriptor()
+	// fiatcurrency.DefaultCreatedAt holds the default value on creation for the created_at field.
+	fiatcurrency.DefaultCreatedAt = fiatcurrencyDescCreatedAt.Default.(func() uint32)
+	// fiatcurrencyDescUpdatedAt is the schema descriptor for updated_at field.
+	fiatcurrencyDescUpdatedAt := fiatcurrencyMixinFields0[1].Descriptor()
+	// fiatcurrency.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	fiatcurrency.DefaultUpdatedAt = fiatcurrencyDescUpdatedAt.Default.(func() uint32)
+	// fiatcurrency.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	fiatcurrency.UpdateDefaultUpdatedAt = fiatcurrencyDescUpdatedAt.UpdateDefault.(func() uint32)
+	// fiatcurrencyDescDeletedAt is the schema descriptor for deleted_at field.
+	fiatcurrencyDescDeletedAt := fiatcurrencyMixinFields0[2].Descriptor()
+	// fiatcurrency.DefaultDeletedAt holds the default value on creation for the deleted_at field.
+	fiatcurrency.DefaultDeletedAt = fiatcurrencyDescDeletedAt.Default.(func() uint32)
+	// fiatcurrencyDescFiatTypeID is the schema descriptor for fiat_type_id field.
+	fiatcurrencyDescFiatTypeID := fiatcurrencyFields[1].Descriptor()
+	// fiatcurrency.DefaultFiatTypeID holds the default value on creation for the fiat_type_id field.
+	fiatcurrency.DefaultFiatTypeID = fiatcurrencyDescFiatTypeID.Default.(func() uuid.UUID)
+	// fiatcurrencyDescFeedType is the schema descriptor for feed_type field.
+	fiatcurrencyDescFeedType := fiatcurrencyFields[2].Descriptor()
+	// fiatcurrency.DefaultFeedType holds the default value on creation for the feed_type field.
+	fiatcurrency.DefaultFeedType = fiatcurrencyDescFeedType.Default.(string)
+	// fiatcurrencyDescMarketValueHigh is the schema descriptor for market_value_high field.
+	fiatcurrencyDescMarketValueHigh := fiatcurrencyFields[3].Descriptor()
+	// fiatcurrency.DefaultMarketValueHigh holds the default value on creation for the market_value_high field.
+	fiatcurrency.DefaultMarketValueHigh = fiatcurrencyDescMarketValueHigh.Default.(decimal.Decimal)
+	// fiatcurrencyDescMarketValueLow is the schema descriptor for market_value_low field.
+	fiatcurrencyDescMarketValueLow := fiatcurrencyFields[4].Descriptor()
+	// fiatcurrency.DefaultMarketValueLow holds the default value on creation for the market_value_low field.
+	fiatcurrency.DefaultMarketValueLow = fiatcurrencyDescMarketValueLow.Default.(decimal.Decimal)
+	// fiatcurrencyDescID is the schema descriptor for id field.
+	fiatcurrencyDescID := fiatcurrencyFields[0].Descriptor()
+	// fiatcurrency.DefaultID holds the default value on creation for the id field.
+	fiatcurrency.DefaultID = fiatcurrencyDescID.Default.(func() uuid.UUID)
+	fiatcurrencytypeMixin := schema.FiatCurrencyType{}.Mixin()
+	fiatcurrencytype.Policy = privacy.NewPolicies(fiatcurrencytypeMixin[0], schema.FiatCurrencyType{})
+	fiatcurrencytype.Hooks[0] = func(next ent.Mutator) ent.Mutator {
+		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+			if err := fiatcurrencytype.Policy.EvalMutation(ctx, m); err != nil {
+				return nil, err
+			}
+			return next.Mutate(ctx, m)
+		})
+	}
+	fiatcurrencytypeMixinFields0 := fiatcurrencytypeMixin[0].Fields()
+	_ = fiatcurrencytypeMixinFields0
+	fiatcurrencytypeFields := schema.FiatCurrencyType{}.Fields()
+	_ = fiatcurrencytypeFields
+	// fiatcurrencytypeDescCreatedAt is the schema descriptor for created_at field.
+	fiatcurrencytypeDescCreatedAt := fiatcurrencytypeMixinFields0[0].Descriptor()
+	// fiatcurrencytype.DefaultCreatedAt holds the default value on creation for the created_at field.
+	fiatcurrencytype.DefaultCreatedAt = fiatcurrencytypeDescCreatedAt.Default.(func() uint32)
+	// fiatcurrencytypeDescUpdatedAt is the schema descriptor for updated_at field.
+	fiatcurrencytypeDescUpdatedAt := fiatcurrencytypeMixinFields0[1].Descriptor()
+	// fiatcurrencytype.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	fiatcurrencytype.DefaultUpdatedAt = fiatcurrencytypeDescUpdatedAt.Default.(func() uint32)
+	// fiatcurrencytype.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	fiatcurrencytype.UpdateDefaultUpdatedAt = fiatcurrencytypeDescUpdatedAt.UpdateDefault.(func() uint32)
+	// fiatcurrencytypeDescDeletedAt is the schema descriptor for deleted_at field.
+	fiatcurrencytypeDescDeletedAt := fiatcurrencytypeMixinFields0[2].Descriptor()
+	// fiatcurrencytype.DefaultDeletedAt holds the default value on creation for the deleted_at field.
+	fiatcurrencytype.DefaultDeletedAt = fiatcurrencytypeDescDeletedAt.Default.(func() uint32)
+	// fiatcurrencytypeDescName is the schema descriptor for name field.
+	fiatcurrencytypeDescName := fiatcurrencytypeFields[1].Descriptor()
+	// fiatcurrencytype.DefaultName holds the default value on creation for the name field.
+	fiatcurrencytype.DefaultName = fiatcurrencytypeDescName.Default.(string)
+	// fiatcurrencytypeDescID is the schema descriptor for id field.
+	fiatcurrencytypeDescID := fiatcurrencytypeFields[0].Descriptor()
+	// fiatcurrencytype.DefaultID holds the default value on creation for the id field.
+	fiatcurrencytype.DefaultID = fiatcurrencytypeDescID.Default.(func() uuid.UUID)
 	settingMixin := schema.Setting{}.Mixin()
 	setting.Policy = privacy.NewPolicies(settingMixin[0], schema.Setting{})
 	setting.Hooks[0] = func(next ent.Mutator) ent.Mutator {

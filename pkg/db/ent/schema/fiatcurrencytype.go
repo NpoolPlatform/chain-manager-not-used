@@ -7,32 +7,32 @@ import (
 	"github.com/google/uuid"
 )
 
-// LegalType holds the schema definition for the LegalType entity.
-type LegalType struct {
+// FiatCurrencyType holds the schema definition for the FiatCurrencyType entity.
+type FiatCurrencyType struct {
 	ent.Schema
 }
 
-func (LegalType) Mixin() []ent.Mixin {
+func (FiatCurrencyType) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		mixin.TimeMixin{},
 	}
 }
 
-// Fields of the LegalType.
-func (LegalType) Fields() []ent.Field {
+// Fields of the FiatCurrencyType.
+func (FiatCurrencyType) Fields() []ent.Field {
 	return []ent.Field{
 		field.
 			UUID("id", uuid.UUID{}).
 			Default(uuid.New).
 			Unique(),
 		field.
-			UUID("name", uuid.UUID{}).
+			String("name").
 			Optional().
-			Default(uuid.New),
+			Default(""),
 	}
 }
 
-// Edges of the LegalType.
-func (LegalType) Edges() []ent.Edge {
+// Edges of the FiatCurrencyType.
+func (FiatCurrencyType) Edges() []ent.Edge {
 	return nil
 }
