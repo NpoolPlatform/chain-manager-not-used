@@ -391,22 +391,22 @@ func init() {
 	fiatcurrencyDescDeletedAt := fiatcurrencyMixinFields0[2].Descriptor()
 	// fiatcurrency.DefaultDeletedAt holds the default value on creation for the deleted_at field.
 	fiatcurrency.DefaultDeletedAt = fiatcurrencyDescDeletedAt.Default.(func() uint32)
-	// fiatcurrencyDescFiatTypeID is the schema descriptor for fiat_type_id field.
-	fiatcurrencyDescFiatTypeID := fiatcurrencyFields[1].Descriptor()
-	// fiatcurrency.DefaultFiatTypeID holds the default value on creation for the fiat_type_id field.
-	fiatcurrency.DefaultFiatTypeID = fiatcurrencyDescFiatTypeID.Default.(func() uuid.UUID)
+	// fiatcurrencyDescFiatCurrencyTypeID is the schema descriptor for fiat_currency_type_id field.
+	fiatcurrencyDescFiatCurrencyTypeID := fiatcurrencyFields[1].Descriptor()
+	// fiatcurrency.DefaultFiatCurrencyTypeID holds the default value on creation for the fiat_currency_type_id field.
+	fiatcurrency.DefaultFiatCurrencyTypeID = fiatcurrencyDescFiatCurrencyTypeID.Default.(func() uuid.UUID)
 	// fiatcurrencyDescFeedType is the schema descriptor for feed_type field.
 	fiatcurrencyDescFeedType := fiatcurrencyFields[2].Descriptor()
 	// fiatcurrency.DefaultFeedType holds the default value on creation for the feed_type field.
 	fiatcurrency.DefaultFeedType = fiatcurrencyDescFeedType.Default.(string)
-	// fiatcurrencyDescMarketValueHigh is the schema descriptor for market_value_high field.
-	fiatcurrencyDescMarketValueHigh := fiatcurrencyFields[3].Descriptor()
-	// fiatcurrency.DefaultMarketValueHigh holds the default value on creation for the market_value_high field.
-	fiatcurrency.DefaultMarketValueHigh = fiatcurrencyDescMarketValueHigh.Default.(decimal.Decimal)
 	// fiatcurrencyDescMarketValueLow is the schema descriptor for market_value_low field.
-	fiatcurrencyDescMarketValueLow := fiatcurrencyFields[4].Descriptor()
+	fiatcurrencyDescMarketValueLow := fiatcurrencyFields[3].Descriptor()
 	// fiatcurrency.DefaultMarketValueLow holds the default value on creation for the market_value_low field.
 	fiatcurrency.DefaultMarketValueLow = fiatcurrencyDescMarketValueLow.Default.(decimal.Decimal)
+	// fiatcurrencyDescMarketValueHigh is the schema descriptor for market_value_high field.
+	fiatcurrencyDescMarketValueHigh := fiatcurrencyFields[4].Descriptor()
+	// fiatcurrency.DefaultMarketValueHigh holds the default value on creation for the market_value_high field.
+	fiatcurrency.DefaultMarketValueHigh = fiatcurrencyDescMarketValueHigh.Default.(decimal.Decimal)
 	// fiatcurrencyDescID is the schema descriptor for id field.
 	fiatcurrencyDescID := fiatcurrencyFields[0].Descriptor()
 	// fiatcurrency.DefaultID holds the default value on creation for the id field.

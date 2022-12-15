@@ -101,10 +101,10 @@ func DeletedAt(v uint32) predicate.FiatCurrency {
 	})
 }
 
-// FiatTypeID applies equality check predicate on the "fiat_type_id" field. It's identical to FiatTypeIDEQ.
-func FiatTypeID(v uuid.UUID) predicate.FiatCurrency {
+// FiatCurrencyTypeID applies equality check predicate on the "fiat_currency_type_id" field. It's identical to FiatCurrencyTypeIDEQ.
+func FiatCurrencyTypeID(v uuid.UUID) predicate.FiatCurrency {
 	return predicate.FiatCurrency(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldFiatTypeID), v))
+		s.Where(sql.EQ(s.C(FieldFiatCurrencyTypeID), v))
 	})
 }
 
@@ -115,17 +115,17 @@ func FeedType(v string) predicate.FiatCurrency {
 	})
 }
 
-// MarketValueHigh applies equality check predicate on the "market_value_high" field. It's identical to MarketValueHighEQ.
-func MarketValueHigh(v decimal.Decimal) predicate.FiatCurrency {
-	return predicate.FiatCurrency(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldMarketValueHigh), v))
-	})
-}
-
 // MarketValueLow applies equality check predicate on the "market_value_low" field. It's identical to MarketValueLowEQ.
 func MarketValueLow(v decimal.Decimal) predicate.FiatCurrency {
 	return predicate.FiatCurrency(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldMarketValueLow), v))
+	})
+}
+
+// MarketValueHigh applies equality check predicate on the "market_value_high" field. It's identical to MarketValueHighEQ.
+func MarketValueHigh(v decimal.Decimal) predicate.FiatCurrency {
+	return predicate.FiatCurrency(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldMarketValueHigh), v))
 	})
 }
 
@@ -321,81 +321,81 @@ func DeletedAtLTE(v uint32) predicate.FiatCurrency {
 	})
 }
 
-// FiatTypeIDEQ applies the EQ predicate on the "fiat_type_id" field.
-func FiatTypeIDEQ(v uuid.UUID) predicate.FiatCurrency {
+// FiatCurrencyTypeIDEQ applies the EQ predicate on the "fiat_currency_type_id" field.
+func FiatCurrencyTypeIDEQ(v uuid.UUID) predicate.FiatCurrency {
 	return predicate.FiatCurrency(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldFiatTypeID), v))
+		s.Where(sql.EQ(s.C(FieldFiatCurrencyTypeID), v))
 	})
 }
 
-// FiatTypeIDNEQ applies the NEQ predicate on the "fiat_type_id" field.
-func FiatTypeIDNEQ(v uuid.UUID) predicate.FiatCurrency {
+// FiatCurrencyTypeIDNEQ applies the NEQ predicate on the "fiat_currency_type_id" field.
+func FiatCurrencyTypeIDNEQ(v uuid.UUID) predicate.FiatCurrency {
 	return predicate.FiatCurrency(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldFiatTypeID), v))
+		s.Where(sql.NEQ(s.C(FieldFiatCurrencyTypeID), v))
 	})
 }
 
-// FiatTypeIDIn applies the In predicate on the "fiat_type_id" field.
-func FiatTypeIDIn(vs ...uuid.UUID) predicate.FiatCurrency {
+// FiatCurrencyTypeIDIn applies the In predicate on the "fiat_currency_type_id" field.
+func FiatCurrencyTypeIDIn(vs ...uuid.UUID) predicate.FiatCurrency {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.FiatCurrency(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldFiatTypeID), v...))
+		s.Where(sql.In(s.C(FieldFiatCurrencyTypeID), v...))
 	})
 }
 
-// FiatTypeIDNotIn applies the NotIn predicate on the "fiat_type_id" field.
-func FiatTypeIDNotIn(vs ...uuid.UUID) predicate.FiatCurrency {
+// FiatCurrencyTypeIDNotIn applies the NotIn predicate on the "fiat_currency_type_id" field.
+func FiatCurrencyTypeIDNotIn(vs ...uuid.UUID) predicate.FiatCurrency {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.FiatCurrency(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldFiatTypeID), v...))
+		s.Where(sql.NotIn(s.C(FieldFiatCurrencyTypeID), v...))
 	})
 }
 
-// FiatTypeIDGT applies the GT predicate on the "fiat_type_id" field.
-func FiatTypeIDGT(v uuid.UUID) predicate.FiatCurrency {
+// FiatCurrencyTypeIDGT applies the GT predicate on the "fiat_currency_type_id" field.
+func FiatCurrencyTypeIDGT(v uuid.UUID) predicate.FiatCurrency {
 	return predicate.FiatCurrency(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldFiatTypeID), v))
+		s.Where(sql.GT(s.C(FieldFiatCurrencyTypeID), v))
 	})
 }
 
-// FiatTypeIDGTE applies the GTE predicate on the "fiat_type_id" field.
-func FiatTypeIDGTE(v uuid.UUID) predicate.FiatCurrency {
+// FiatCurrencyTypeIDGTE applies the GTE predicate on the "fiat_currency_type_id" field.
+func FiatCurrencyTypeIDGTE(v uuid.UUID) predicate.FiatCurrency {
 	return predicate.FiatCurrency(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldFiatTypeID), v))
+		s.Where(sql.GTE(s.C(FieldFiatCurrencyTypeID), v))
 	})
 }
 
-// FiatTypeIDLT applies the LT predicate on the "fiat_type_id" field.
-func FiatTypeIDLT(v uuid.UUID) predicate.FiatCurrency {
+// FiatCurrencyTypeIDLT applies the LT predicate on the "fiat_currency_type_id" field.
+func FiatCurrencyTypeIDLT(v uuid.UUID) predicate.FiatCurrency {
 	return predicate.FiatCurrency(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldFiatTypeID), v))
+		s.Where(sql.LT(s.C(FieldFiatCurrencyTypeID), v))
 	})
 }
 
-// FiatTypeIDLTE applies the LTE predicate on the "fiat_type_id" field.
-func FiatTypeIDLTE(v uuid.UUID) predicate.FiatCurrency {
+// FiatCurrencyTypeIDLTE applies the LTE predicate on the "fiat_currency_type_id" field.
+func FiatCurrencyTypeIDLTE(v uuid.UUID) predicate.FiatCurrency {
 	return predicate.FiatCurrency(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldFiatTypeID), v))
+		s.Where(sql.LTE(s.C(FieldFiatCurrencyTypeID), v))
 	})
 }
 
-// FiatTypeIDIsNil applies the IsNil predicate on the "fiat_type_id" field.
-func FiatTypeIDIsNil() predicate.FiatCurrency {
+// FiatCurrencyTypeIDIsNil applies the IsNil predicate on the "fiat_currency_type_id" field.
+func FiatCurrencyTypeIDIsNil() predicate.FiatCurrency {
 	return predicate.FiatCurrency(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldFiatTypeID)))
+		s.Where(sql.IsNull(s.C(FieldFiatCurrencyTypeID)))
 	})
 }
 
-// FiatTypeIDNotNil applies the NotNil predicate on the "fiat_type_id" field.
-func FiatTypeIDNotNil() predicate.FiatCurrency {
+// FiatCurrencyTypeIDNotNil applies the NotNil predicate on the "fiat_currency_type_id" field.
+func FiatCurrencyTypeIDNotNil() predicate.FiatCurrency {
 	return predicate.FiatCurrency(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldFiatTypeID)))
+		s.Where(sql.NotNull(s.C(FieldFiatCurrencyTypeID)))
 	})
 }
 
@@ -512,84 +512,6 @@ func FeedTypeContainsFold(v string) predicate.FiatCurrency {
 	})
 }
 
-// MarketValueHighEQ applies the EQ predicate on the "market_value_high" field.
-func MarketValueHighEQ(v decimal.Decimal) predicate.FiatCurrency {
-	return predicate.FiatCurrency(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldMarketValueHigh), v))
-	})
-}
-
-// MarketValueHighNEQ applies the NEQ predicate on the "market_value_high" field.
-func MarketValueHighNEQ(v decimal.Decimal) predicate.FiatCurrency {
-	return predicate.FiatCurrency(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldMarketValueHigh), v))
-	})
-}
-
-// MarketValueHighIn applies the In predicate on the "market_value_high" field.
-func MarketValueHighIn(vs ...decimal.Decimal) predicate.FiatCurrency {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.FiatCurrency(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldMarketValueHigh), v...))
-	})
-}
-
-// MarketValueHighNotIn applies the NotIn predicate on the "market_value_high" field.
-func MarketValueHighNotIn(vs ...decimal.Decimal) predicate.FiatCurrency {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.FiatCurrency(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldMarketValueHigh), v...))
-	})
-}
-
-// MarketValueHighGT applies the GT predicate on the "market_value_high" field.
-func MarketValueHighGT(v decimal.Decimal) predicate.FiatCurrency {
-	return predicate.FiatCurrency(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldMarketValueHigh), v))
-	})
-}
-
-// MarketValueHighGTE applies the GTE predicate on the "market_value_high" field.
-func MarketValueHighGTE(v decimal.Decimal) predicate.FiatCurrency {
-	return predicate.FiatCurrency(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldMarketValueHigh), v))
-	})
-}
-
-// MarketValueHighLT applies the LT predicate on the "market_value_high" field.
-func MarketValueHighLT(v decimal.Decimal) predicate.FiatCurrency {
-	return predicate.FiatCurrency(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldMarketValueHigh), v))
-	})
-}
-
-// MarketValueHighLTE applies the LTE predicate on the "market_value_high" field.
-func MarketValueHighLTE(v decimal.Decimal) predicate.FiatCurrency {
-	return predicate.FiatCurrency(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldMarketValueHigh), v))
-	})
-}
-
-// MarketValueHighIsNil applies the IsNil predicate on the "market_value_high" field.
-func MarketValueHighIsNil() predicate.FiatCurrency {
-	return predicate.FiatCurrency(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldMarketValueHigh)))
-	})
-}
-
-// MarketValueHighNotNil applies the NotNil predicate on the "market_value_high" field.
-func MarketValueHighNotNil() predicate.FiatCurrency {
-	return predicate.FiatCurrency(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldMarketValueHigh)))
-	})
-}
-
 // MarketValueLowEQ applies the EQ predicate on the "market_value_low" field.
 func MarketValueLowEQ(v decimal.Decimal) predicate.FiatCurrency {
 	return predicate.FiatCurrency(func(s *sql.Selector) {
@@ -665,6 +587,84 @@ func MarketValueLowIsNil() predicate.FiatCurrency {
 func MarketValueLowNotNil() predicate.FiatCurrency {
 	return predicate.FiatCurrency(func(s *sql.Selector) {
 		s.Where(sql.NotNull(s.C(FieldMarketValueLow)))
+	})
+}
+
+// MarketValueHighEQ applies the EQ predicate on the "market_value_high" field.
+func MarketValueHighEQ(v decimal.Decimal) predicate.FiatCurrency {
+	return predicate.FiatCurrency(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldMarketValueHigh), v))
+	})
+}
+
+// MarketValueHighNEQ applies the NEQ predicate on the "market_value_high" field.
+func MarketValueHighNEQ(v decimal.Decimal) predicate.FiatCurrency {
+	return predicate.FiatCurrency(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldMarketValueHigh), v))
+	})
+}
+
+// MarketValueHighIn applies the In predicate on the "market_value_high" field.
+func MarketValueHighIn(vs ...decimal.Decimal) predicate.FiatCurrency {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.FiatCurrency(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldMarketValueHigh), v...))
+	})
+}
+
+// MarketValueHighNotIn applies the NotIn predicate on the "market_value_high" field.
+func MarketValueHighNotIn(vs ...decimal.Decimal) predicate.FiatCurrency {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.FiatCurrency(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldMarketValueHigh), v...))
+	})
+}
+
+// MarketValueHighGT applies the GT predicate on the "market_value_high" field.
+func MarketValueHighGT(v decimal.Decimal) predicate.FiatCurrency {
+	return predicate.FiatCurrency(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldMarketValueHigh), v))
+	})
+}
+
+// MarketValueHighGTE applies the GTE predicate on the "market_value_high" field.
+func MarketValueHighGTE(v decimal.Decimal) predicate.FiatCurrency {
+	return predicate.FiatCurrency(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldMarketValueHigh), v))
+	})
+}
+
+// MarketValueHighLT applies the LT predicate on the "market_value_high" field.
+func MarketValueHighLT(v decimal.Decimal) predicate.FiatCurrency {
+	return predicate.FiatCurrency(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldMarketValueHigh), v))
+	})
+}
+
+// MarketValueHighLTE applies the LTE predicate on the "market_value_high" field.
+func MarketValueHighLTE(v decimal.Decimal) predicate.FiatCurrency {
+	return predicate.FiatCurrency(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldMarketValueHigh), v))
+	})
+}
+
+// MarketValueHighIsNil applies the IsNil predicate on the "market_value_high" field.
+func MarketValueHighIsNil() predicate.FiatCurrency {
+	return predicate.FiatCurrency(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldMarketValueHigh)))
+	})
+}
+
+// MarketValueHighNotNil applies the NotNil predicate on the "market_value_high" field.
+func MarketValueHighNotNil() predicate.FiatCurrency {
+	return predicate.FiatCurrency(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldMarketValueHigh)))
 	})
 }
 

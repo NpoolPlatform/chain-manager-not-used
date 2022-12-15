@@ -66,16 +66,16 @@ func (fcc *FiatCurrencyCreate) SetNillableDeletedAt(u *uint32) *FiatCurrencyCrea
 	return fcc
 }
 
-// SetFiatTypeID sets the "fiat_type_id" field.
-func (fcc *FiatCurrencyCreate) SetFiatTypeID(u uuid.UUID) *FiatCurrencyCreate {
-	fcc.mutation.SetFiatTypeID(u)
+// SetFiatCurrencyTypeID sets the "fiat_currency_type_id" field.
+func (fcc *FiatCurrencyCreate) SetFiatCurrencyTypeID(u uuid.UUID) *FiatCurrencyCreate {
+	fcc.mutation.SetFiatCurrencyTypeID(u)
 	return fcc
 }
 
-// SetNillableFiatTypeID sets the "fiat_type_id" field if the given value is not nil.
-func (fcc *FiatCurrencyCreate) SetNillableFiatTypeID(u *uuid.UUID) *FiatCurrencyCreate {
+// SetNillableFiatCurrencyTypeID sets the "fiat_currency_type_id" field if the given value is not nil.
+func (fcc *FiatCurrencyCreate) SetNillableFiatCurrencyTypeID(u *uuid.UUID) *FiatCurrencyCreate {
 	if u != nil {
-		fcc.SetFiatTypeID(*u)
+		fcc.SetFiatCurrencyTypeID(*u)
 	}
 	return fcc
 }
@@ -94,20 +94,6 @@ func (fcc *FiatCurrencyCreate) SetNillableFeedType(s *string) *FiatCurrencyCreat
 	return fcc
 }
 
-// SetMarketValueHigh sets the "market_value_high" field.
-func (fcc *FiatCurrencyCreate) SetMarketValueHigh(d decimal.Decimal) *FiatCurrencyCreate {
-	fcc.mutation.SetMarketValueHigh(d)
-	return fcc
-}
-
-// SetNillableMarketValueHigh sets the "market_value_high" field if the given value is not nil.
-func (fcc *FiatCurrencyCreate) SetNillableMarketValueHigh(d *decimal.Decimal) *FiatCurrencyCreate {
-	if d != nil {
-		fcc.SetMarketValueHigh(*d)
-	}
-	return fcc
-}
-
 // SetMarketValueLow sets the "market_value_low" field.
 func (fcc *FiatCurrencyCreate) SetMarketValueLow(d decimal.Decimal) *FiatCurrencyCreate {
 	fcc.mutation.SetMarketValueLow(d)
@@ -118,6 +104,20 @@ func (fcc *FiatCurrencyCreate) SetMarketValueLow(d decimal.Decimal) *FiatCurrenc
 func (fcc *FiatCurrencyCreate) SetNillableMarketValueLow(d *decimal.Decimal) *FiatCurrencyCreate {
 	if d != nil {
 		fcc.SetMarketValueLow(*d)
+	}
+	return fcc
+}
+
+// SetMarketValueHigh sets the "market_value_high" field.
+func (fcc *FiatCurrencyCreate) SetMarketValueHigh(d decimal.Decimal) *FiatCurrencyCreate {
+	fcc.mutation.SetMarketValueHigh(d)
+	return fcc
+}
+
+// SetNillableMarketValueHigh sets the "market_value_high" field if the given value is not nil.
+func (fcc *FiatCurrencyCreate) SetNillableMarketValueHigh(d *decimal.Decimal) *FiatCurrencyCreate {
+	if d != nil {
+		fcc.SetMarketValueHigh(*d)
 	}
 	return fcc
 }
@@ -236,24 +236,24 @@ func (fcc *FiatCurrencyCreate) defaults() error {
 		v := fiatcurrency.DefaultDeletedAt()
 		fcc.mutation.SetDeletedAt(v)
 	}
-	if _, ok := fcc.mutation.FiatTypeID(); !ok {
-		if fiatcurrency.DefaultFiatTypeID == nil {
-			return fmt.Errorf("ent: uninitialized fiatcurrency.DefaultFiatTypeID (forgotten import ent/runtime?)")
+	if _, ok := fcc.mutation.FiatCurrencyTypeID(); !ok {
+		if fiatcurrency.DefaultFiatCurrencyTypeID == nil {
+			return fmt.Errorf("ent: uninitialized fiatcurrency.DefaultFiatCurrencyTypeID (forgotten import ent/runtime?)")
 		}
-		v := fiatcurrency.DefaultFiatTypeID()
-		fcc.mutation.SetFiatTypeID(v)
+		v := fiatcurrency.DefaultFiatCurrencyTypeID()
+		fcc.mutation.SetFiatCurrencyTypeID(v)
 	}
 	if _, ok := fcc.mutation.FeedType(); !ok {
 		v := fiatcurrency.DefaultFeedType
 		fcc.mutation.SetFeedType(v)
 	}
-	if _, ok := fcc.mutation.MarketValueHigh(); !ok {
-		v := fiatcurrency.DefaultMarketValueHigh
-		fcc.mutation.SetMarketValueHigh(v)
-	}
 	if _, ok := fcc.mutation.MarketValueLow(); !ok {
 		v := fiatcurrency.DefaultMarketValueLow
 		fcc.mutation.SetMarketValueLow(v)
+	}
+	if _, ok := fcc.mutation.MarketValueHigh(); !ok {
+		v := fiatcurrency.DefaultMarketValueHigh
+		fcc.mutation.SetMarketValueHigh(v)
 	}
 	if _, ok := fcc.mutation.ID(); !ok {
 		if fiatcurrency.DefaultID == nil {
@@ -337,13 +337,13 @@ func (fcc *FiatCurrencyCreate) createSpec() (*FiatCurrency, *sqlgraph.CreateSpec
 		})
 		_node.DeletedAt = value
 	}
-	if value, ok := fcc.mutation.FiatTypeID(); ok {
+	if value, ok := fcc.mutation.FiatCurrencyTypeID(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
 			Value:  value,
-			Column: fiatcurrency.FieldFiatTypeID,
+			Column: fiatcurrency.FieldFiatCurrencyTypeID,
 		})
-		_node.FiatTypeID = value
+		_node.FiatCurrencyTypeID = value
 	}
 	if value, ok := fcc.mutation.FeedType(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -353,14 +353,6 @@ func (fcc *FiatCurrencyCreate) createSpec() (*FiatCurrency, *sqlgraph.CreateSpec
 		})
 		_node.FeedType = value
 	}
-	if value, ok := fcc.mutation.MarketValueHigh(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeOther,
-			Value:  value,
-			Column: fiatcurrency.FieldMarketValueHigh,
-		})
-		_node.MarketValueHigh = value
-	}
 	if value, ok := fcc.mutation.MarketValueLow(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeOther,
@@ -368,6 +360,14 @@ func (fcc *FiatCurrencyCreate) createSpec() (*FiatCurrency, *sqlgraph.CreateSpec
 			Column: fiatcurrency.FieldMarketValueLow,
 		})
 		_node.MarketValueLow = value
+	}
+	if value, ok := fcc.mutation.MarketValueHigh(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeOther,
+			Value:  value,
+			Column: fiatcurrency.FieldMarketValueHigh,
+		})
+		_node.MarketValueHigh = value
 	}
 	return _node, _spec
 }
@@ -477,21 +477,21 @@ func (u *FiatCurrencyUpsert) AddDeletedAt(v uint32) *FiatCurrencyUpsert {
 	return u
 }
 
-// SetFiatTypeID sets the "fiat_type_id" field.
-func (u *FiatCurrencyUpsert) SetFiatTypeID(v uuid.UUID) *FiatCurrencyUpsert {
-	u.Set(fiatcurrency.FieldFiatTypeID, v)
+// SetFiatCurrencyTypeID sets the "fiat_currency_type_id" field.
+func (u *FiatCurrencyUpsert) SetFiatCurrencyTypeID(v uuid.UUID) *FiatCurrencyUpsert {
+	u.Set(fiatcurrency.FieldFiatCurrencyTypeID, v)
 	return u
 }
 
-// UpdateFiatTypeID sets the "fiat_type_id" field to the value that was provided on create.
-func (u *FiatCurrencyUpsert) UpdateFiatTypeID() *FiatCurrencyUpsert {
-	u.SetExcluded(fiatcurrency.FieldFiatTypeID)
+// UpdateFiatCurrencyTypeID sets the "fiat_currency_type_id" field to the value that was provided on create.
+func (u *FiatCurrencyUpsert) UpdateFiatCurrencyTypeID() *FiatCurrencyUpsert {
+	u.SetExcluded(fiatcurrency.FieldFiatCurrencyTypeID)
 	return u
 }
 
-// ClearFiatTypeID clears the value of the "fiat_type_id" field.
-func (u *FiatCurrencyUpsert) ClearFiatTypeID() *FiatCurrencyUpsert {
-	u.SetNull(fiatcurrency.FieldFiatTypeID)
+// ClearFiatCurrencyTypeID clears the value of the "fiat_currency_type_id" field.
+func (u *FiatCurrencyUpsert) ClearFiatCurrencyTypeID() *FiatCurrencyUpsert {
+	u.SetNull(fiatcurrency.FieldFiatCurrencyTypeID)
 	return u
 }
 
@@ -513,24 +513,6 @@ func (u *FiatCurrencyUpsert) ClearFeedType() *FiatCurrencyUpsert {
 	return u
 }
 
-// SetMarketValueHigh sets the "market_value_high" field.
-func (u *FiatCurrencyUpsert) SetMarketValueHigh(v decimal.Decimal) *FiatCurrencyUpsert {
-	u.Set(fiatcurrency.FieldMarketValueHigh, v)
-	return u
-}
-
-// UpdateMarketValueHigh sets the "market_value_high" field to the value that was provided on create.
-func (u *FiatCurrencyUpsert) UpdateMarketValueHigh() *FiatCurrencyUpsert {
-	u.SetExcluded(fiatcurrency.FieldMarketValueHigh)
-	return u
-}
-
-// ClearMarketValueHigh clears the value of the "market_value_high" field.
-func (u *FiatCurrencyUpsert) ClearMarketValueHigh() *FiatCurrencyUpsert {
-	u.SetNull(fiatcurrency.FieldMarketValueHigh)
-	return u
-}
-
 // SetMarketValueLow sets the "market_value_low" field.
 func (u *FiatCurrencyUpsert) SetMarketValueLow(v decimal.Decimal) *FiatCurrencyUpsert {
 	u.Set(fiatcurrency.FieldMarketValueLow, v)
@@ -546,6 +528,24 @@ func (u *FiatCurrencyUpsert) UpdateMarketValueLow() *FiatCurrencyUpsert {
 // ClearMarketValueLow clears the value of the "market_value_low" field.
 func (u *FiatCurrencyUpsert) ClearMarketValueLow() *FiatCurrencyUpsert {
 	u.SetNull(fiatcurrency.FieldMarketValueLow)
+	return u
+}
+
+// SetMarketValueHigh sets the "market_value_high" field.
+func (u *FiatCurrencyUpsert) SetMarketValueHigh(v decimal.Decimal) *FiatCurrencyUpsert {
+	u.Set(fiatcurrency.FieldMarketValueHigh, v)
+	return u
+}
+
+// UpdateMarketValueHigh sets the "market_value_high" field to the value that was provided on create.
+func (u *FiatCurrencyUpsert) UpdateMarketValueHigh() *FiatCurrencyUpsert {
+	u.SetExcluded(fiatcurrency.FieldMarketValueHigh)
+	return u
+}
+
+// ClearMarketValueHigh clears the value of the "market_value_high" field.
+func (u *FiatCurrencyUpsert) ClearMarketValueHigh() *FiatCurrencyUpsert {
+	u.SetNull(fiatcurrency.FieldMarketValueHigh)
 	return u
 }
 
@@ -662,24 +662,24 @@ func (u *FiatCurrencyUpsertOne) UpdateDeletedAt() *FiatCurrencyUpsertOne {
 	})
 }
 
-// SetFiatTypeID sets the "fiat_type_id" field.
-func (u *FiatCurrencyUpsertOne) SetFiatTypeID(v uuid.UUID) *FiatCurrencyUpsertOne {
+// SetFiatCurrencyTypeID sets the "fiat_currency_type_id" field.
+func (u *FiatCurrencyUpsertOne) SetFiatCurrencyTypeID(v uuid.UUID) *FiatCurrencyUpsertOne {
 	return u.Update(func(s *FiatCurrencyUpsert) {
-		s.SetFiatTypeID(v)
+		s.SetFiatCurrencyTypeID(v)
 	})
 }
 
-// UpdateFiatTypeID sets the "fiat_type_id" field to the value that was provided on create.
-func (u *FiatCurrencyUpsertOne) UpdateFiatTypeID() *FiatCurrencyUpsertOne {
+// UpdateFiatCurrencyTypeID sets the "fiat_currency_type_id" field to the value that was provided on create.
+func (u *FiatCurrencyUpsertOne) UpdateFiatCurrencyTypeID() *FiatCurrencyUpsertOne {
 	return u.Update(func(s *FiatCurrencyUpsert) {
-		s.UpdateFiatTypeID()
+		s.UpdateFiatCurrencyTypeID()
 	})
 }
 
-// ClearFiatTypeID clears the value of the "fiat_type_id" field.
-func (u *FiatCurrencyUpsertOne) ClearFiatTypeID() *FiatCurrencyUpsertOne {
+// ClearFiatCurrencyTypeID clears the value of the "fiat_currency_type_id" field.
+func (u *FiatCurrencyUpsertOne) ClearFiatCurrencyTypeID() *FiatCurrencyUpsertOne {
 	return u.Update(func(s *FiatCurrencyUpsert) {
-		s.ClearFiatTypeID()
+		s.ClearFiatCurrencyTypeID()
 	})
 }
 
@@ -704,27 +704,6 @@ func (u *FiatCurrencyUpsertOne) ClearFeedType() *FiatCurrencyUpsertOne {
 	})
 }
 
-// SetMarketValueHigh sets the "market_value_high" field.
-func (u *FiatCurrencyUpsertOne) SetMarketValueHigh(v decimal.Decimal) *FiatCurrencyUpsertOne {
-	return u.Update(func(s *FiatCurrencyUpsert) {
-		s.SetMarketValueHigh(v)
-	})
-}
-
-// UpdateMarketValueHigh sets the "market_value_high" field to the value that was provided on create.
-func (u *FiatCurrencyUpsertOne) UpdateMarketValueHigh() *FiatCurrencyUpsertOne {
-	return u.Update(func(s *FiatCurrencyUpsert) {
-		s.UpdateMarketValueHigh()
-	})
-}
-
-// ClearMarketValueHigh clears the value of the "market_value_high" field.
-func (u *FiatCurrencyUpsertOne) ClearMarketValueHigh() *FiatCurrencyUpsertOne {
-	return u.Update(func(s *FiatCurrencyUpsert) {
-		s.ClearMarketValueHigh()
-	})
-}
-
 // SetMarketValueLow sets the "market_value_low" field.
 func (u *FiatCurrencyUpsertOne) SetMarketValueLow(v decimal.Decimal) *FiatCurrencyUpsertOne {
 	return u.Update(func(s *FiatCurrencyUpsert) {
@@ -743,6 +722,27 @@ func (u *FiatCurrencyUpsertOne) UpdateMarketValueLow() *FiatCurrencyUpsertOne {
 func (u *FiatCurrencyUpsertOne) ClearMarketValueLow() *FiatCurrencyUpsertOne {
 	return u.Update(func(s *FiatCurrencyUpsert) {
 		s.ClearMarketValueLow()
+	})
+}
+
+// SetMarketValueHigh sets the "market_value_high" field.
+func (u *FiatCurrencyUpsertOne) SetMarketValueHigh(v decimal.Decimal) *FiatCurrencyUpsertOne {
+	return u.Update(func(s *FiatCurrencyUpsert) {
+		s.SetMarketValueHigh(v)
+	})
+}
+
+// UpdateMarketValueHigh sets the "market_value_high" field to the value that was provided on create.
+func (u *FiatCurrencyUpsertOne) UpdateMarketValueHigh() *FiatCurrencyUpsertOne {
+	return u.Update(func(s *FiatCurrencyUpsert) {
+		s.UpdateMarketValueHigh()
+	})
+}
+
+// ClearMarketValueHigh clears the value of the "market_value_high" field.
+func (u *FiatCurrencyUpsertOne) ClearMarketValueHigh() *FiatCurrencyUpsertOne {
+	return u.Update(func(s *FiatCurrencyUpsert) {
+		s.ClearMarketValueHigh()
 	})
 }
 
@@ -1025,24 +1025,24 @@ func (u *FiatCurrencyUpsertBulk) UpdateDeletedAt() *FiatCurrencyUpsertBulk {
 	})
 }
 
-// SetFiatTypeID sets the "fiat_type_id" field.
-func (u *FiatCurrencyUpsertBulk) SetFiatTypeID(v uuid.UUID) *FiatCurrencyUpsertBulk {
+// SetFiatCurrencyTypeID sets the "fiat_currency_type_id" field.
+func (u *FiatCurrencyUpsertBulk) SetFiatCurrencyTypeID(v uuid.UUID) *FiatCurrencyUpsertBulk {
 	return u.Update(func(s *FiatCurrencyUpsert) {
-		s.SetFiatTypeID(v)
+		s.SetFiatCurrencyTypeID(v)
 	})
 }
 
-// UpdateFiatTypeID sets the "fiat_type_id" field to the value that was provided on create.
-func (u *FiatCurrencyUpsertBulk) UpdateFiatTypeID() *FiatCurrencyUpsertBulk {
+// UpdateFiatCurrencyTypeID sets the "fiat_currency_type_id" field to the value that was provided on create.
+func (u *FiatCurrencyUpsertBulk) UpdateFiatCurrencyTypeID() *FiatCurrencyUpsertBulk {
 	return u.Update(func(s *FiatCurrencyUpsert) {
-		s.UpdateFiatTypeID()
+		s.UpdateFiatCurrencyTypeID()
 	})
 }
 
-// ClearFiatTypeID clears the value of the "fiat_type_id" field.
-func (u *FiatCurrencyUpsertBulk) ClearFiatTypeID() *FiatCurrencyUpsertBulk {
+// ClearFiatCurrencyTypeID clears the value of the "fiat_currency_type_id" field.
+func (u *FiatCurrencyUpsertBulk) ClearFiatCurrencyTypeID() *FiatCurrencyUpsertBulk {
 	return u.Update(func(s *FiatCurrencyUpsert) {
-		s.ClearFiatTypeID()
+		s.ClearFiatCurrencyTypeID()
 	})
 }
 
@@ -1067,27 +1067,6 @@ func (u *FiatCurrencyUpsertBulk) ClearFeedType() *FiatCurrencyUpsertBulk {
 	})
 }
 
-// SetMarketValueHigh sets the "market_value_high" field.
-func (u *FiatCurrencyUpsertBulk) SetMarketValueHigh(v decimal.Decimal) *FiatCurrencyUpsertBulk {
-	return u.Update(func(s *FiatCurrencyUpsert) {
-		s.SetMarketValueHigh(v)
-	})
-}
-
-// UpdateMarketValueHigh sets the "market_value_high" field to the value that was provided on create.
-func (u *FiatCurrencyUpsertBulk) UpdateMarketValueHigh() *FiatCurrencyUpsertBulk {
-	return u.Update(func(s *FiatCurrencyUpsert) {
-		s.UpdateMarketValueHigh()
-	})
-}
-
-// ClearMarketValueHigh clears the value of the "market_value_high" field.
-func (u *FiatCurrencyUpsertBulk) ClearMarketValueHigh() *FiatCurrencyUpsertBulk {
-	return u.Update(func(s *FiatCurrencyUpsert) {
-		s.ClearMarketValueHigh()
-	})
-}
-
 // SetMarketValueLow sets the "market_value_low" field.
 func (u *FiatCurrencyUpsertBulk) SetMarketValueLow(v decimal.Decimal) *FiatCurrencyUpsertBulk {
 	return u.Update(func(s *FiatCurrencyUpsert) {
@@ -1106,6 +1085,27 @@ func (u *FiatCurrencyUpsertBulk) UpdateMarketValueLow() *FiatCurrencyUpsertBulk 
 func (u *FiatCurrencyUpsertBulk) ClearMarketValueLow() *FiatCurrencyUpsertBulk {
 	return u.Update(func(s *FiatCurrencyUpsert) {
 		s.ClearMarketValueLow()
+	})
+}
+
+// SetMarketValueHigh sets the "market_value_high" field.
+func (u *FiatCurrencyUpsertBulk) SetMarketValueHigh(v decimal.Decimal) *FiatCurrencyUpsertBulk {
+	return u.Update(func(s *FiatCurrencyUpsert) {
+		s.SetMarketValueHigh(v)
+	})
+}
+
+// UpdateMarketValueHigh sets the "market_value_high" field to the value that was provided on create.
+func (u *FiatCurrencyUpsertBulk) UpdateMarketValueHigh() *FiatCurrencyUpsertBulk {
+	return u.Update(func(s *FiatCurrencyUpsert) {
+		s.UpdateMarketValueHigh()
+	})
+}
+
+// ClearMarketValueHigh clears the value of the "market_value_high" field.
+func (u *FiatCurrencyUpsertBulk) ClearMarketValueHigh() *FiatCurrencyUpsertBulk {
+	return u.Update(func(s *FiatCurrencyUpsert) {
+		s.ClearMarketValueHigh()
 	})
 }
 

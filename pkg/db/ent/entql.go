@@ -166,13 +166,13 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 		Type: "FiatCurrency",
 		Fields: map[string]*sqlgraph.FieldSpec{
-			fiatcurrency.FieldCreatedAt:       {Type: field.TypeUint32, Column: fiatcurrency.FieldCreatedAt},
-			fiatcurrency.FieldUpdatedAt:       {Type: field.TypeUint32, Column: fiatcurrency.FieldUpdatedAt},
-			fiatcurrency.FieldDeletedAt:       {Type: field.TypeUint32, Column: fiatcurrency.FieldDeletedAt},
-			fiatcurrency.FieldFiatTypeID:      {Type: field.TypeUUID, Column: fiatcurrency.FieldFiatTypeID},
-			fiatcurrency.FieldFeedType:        {Type: field.TypeString, Column: fiatcurrency.FieldFeedType},
-			fiatcurrency.FieldMarketValueHigh: {Type: field.TypeOther, Column: fiatcurrency.FieldMarketValueHigh},
-			fiatcurrency.FieldMarketValueLow:  {Type: field.TypeOther, Column: fiatcurrency.FieldMarketValueLow},
+			fiatcurrency.FieldCreatedAt:          {Type: field.TypeUint32, Column: fiatcurrency.FieldCreatedAt},
+			fiatcurrency.FieldUpdatedAt:          {Type: field.TypeUint32, Column: fiatcurrency.FieldUpdatedAt},
+			fiatcurrency.FieldDeletedAt:          {Type: field.TypeUint32, Column: fiatcurrency.FieldDeletedAt},
+			fiatcurrency.FieldFiatCurrencyTypeID: {Type: field.TypeUUID, Column: fiatcurrency.FieldFiatCurrencyTypeID},
+			fiatcurrency.FieldFeedType:           {Type: field.TypeString, Column: fiatcurrency.FieldFeedType},
+			fiatcurrency.FieldMarketValueLow:     {Type: field.TypeOther, Column: fiatcurrency.FieldMarketValueLow},
+			fiatcurrency.FieldMarketValueHigh:    {Type: field.TypeOther, Column: fiatcurrency.FieldMarketValueHigh},
 		},
 	}
 	graph.Nodes[7] = &sqlgraph.Node{
@@ -816,9 +816,9 @@ func (f *FiatCurrencyFilter) WhereDeletedAt(p entql.Uint32P) {
 	f.Where(p.Field(fiatcurrency.FieldDeletedAt))
 }
 
-// WhereFiatTypeID applies the entql [16]byte predicate on the fiat_type_id field.
-func (f *FiatCurrencyFilter) WhereFiatTypeID(p entql.ValueP) {
-	f.Where(p.Field(fiatcurrency.FieldFiatTypeID))
+// WhereFiatCurrencyTypeID applies the entql [16]byte predicate on the fiat_currency_type_id field.
+func (f *FiatCurrencyFilter) WhereFiatCurrencyTypeID(p entql.ValueP) {
+	f.Where(p.Field(fiatcurrency.FieldFiatCurrencyTypeID))
 }
 
 // WhereFeedType applies the entql string predicate on the feed_type field.
@@ -826,14 +826,14 @@ func (f *FiatCurrencyFilter) WhereFeedType(p entql.StringP) {
 	f.Where(p.Field(fiatcurrency.FieldFeedType))
 }
 
-// WhereMarketValueHigh applies the entql other predicate on the market_value_high field.
-func (f *FiatCurrencyFilter) WhereMarketValueHigh(p entql.OtherP) {
-	f.Where(p.Field(fiatcurrency.FieldMarketValueHigh))
-}
-
 // WhereMarketValueLow applies the entql other predicate on the market_value_low field.
 func (f *FiatCurrencyFilter) WhereMarketValueLow(p entql.OtherP) {
 	f.Where(p.Field(fiatcurrency.FieldMarketValueLow))
+}
+
+// WhereMarketValueHigh applies the entql other predicate on the market_value_high field.
+func (f *FiatCurrencyFilter) WhereMarketValueHigh(p entql.OtherP) {
+	f.Where(p.Field(fiatcurrency.FieldMarketValueHigh))
 }
 
 // addPredicate implements the predicateAdder interface.

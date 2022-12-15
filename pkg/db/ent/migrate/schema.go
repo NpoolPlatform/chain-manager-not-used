@@ -128,10 +128,10 @@ var (
 		{Name: "created_at", Type: field.TypeUint32},
 		{Name: "updated_at", Type: field.TypeUint32},
 		{Name: "deleted_at", Type: field.TypeUint32},
-		{Name: "fiat_type_id", Type: field.TypeUUID, Nullable: true},
+		{Name: "fiat_currency_type_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "feed_type", Type: field.TypeString, Nullable: true, Default: "DefaultFeedType"},
-		{Name: "market_value_high", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
 		{Name: "market_value_low", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
+		{Name: "market_value_high", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
 	}
 	// FiatCurrenciesTable holds the schema information for the "fiat_currencies" table.
 	FiatCurrenciesTable = &schema.Table{

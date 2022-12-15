@@ -85,23 +85,23 @@ func (fcu *FiatCurrencyUpdate) AddDeletedAt(u int32) *FiatCurrencyUpdate {
 	return fcu
 }
 
-// SetFiatTypeID sets the "fiat_type_id" field.
-func (fcu *FiatCurrencyUpdate) SetFiatTypeID(u uuid.UUID) *FiatCurrencyUpdate {
-	fcu.mutation.SetFiatTypeID(u)
+// SetFiatCurrencyTypeID sets the "fiat_currency_type_id" field.
+func (fcu *FiatCurrencyUpdate) SetFiatCurrencyTypeID(u uuid.UUID) *FiatCurrencyUpdate {
+	fcu.mutation.SetFiatCurrencyTypeID(u)
 	return fcu
 }
 
-// SetNillableFiatTypeID sets the "fiat_type_id" field if the given value is not nil.
-func (fcu *FiatCurrencyUpdate) SetNillableFiatTypeID(u *uuid.UUID) *FiatCurrencyUpdate {
+// SetNillableFiatCurrencyTypeID sets the "fiat_currency_type_id" field if the given value is not nil.
+func (fcu *FiatCurrencyUpdate) SetNillableFiatCurrencyTypeID(u *uuid.UUID) *FiatCurrencyUpdate {
 	if u != nil {
-		fcu.SetFiatTypeID(*u)
+		fcu.SetFiatCurrencyTypeID(*u)
 	}
 	return fcu
 }
 
-// ClearFiatTypeID clears the value of the "fiat_type_id" field.
-func (fcu *FiatCurrencyUpdate) ClearFiatTypeID() *FiatCurrencyUpdate {
-	fcu.mutation.ClearFiatTypeID()
+// ClearFiatCurrencyTypeID clears the value of the "fiat_currency_type_id" field.
+func (fcu *FiatCurrencyUpdate) ClearFiatCurrencyTypeID() *FiatCurrencyUpdate {
+	fcu.mutation.ClearFiatCurrencyTypeID()
 	return fcu
 }
 
@@ -125,26 +125,6 @@ func (fcu *FiatCurrencyUpdate) ClearFeedType() *FiatCurrencyUpdate {
 	return fcu
 }
 
-// SetMarketValueHigh sets the "market_value_high" field.
-func (fcu *FiatCurrencyUpdate) SetMarketValueHigh(d decimal.Decimal) *FiatCurrencyUpdate {
-	fcu.mutation.SetMarketValueHigh(d)
-	return fcu
-}
-
-// SetNillableMarketValueHigh sets the "market_value_high" field if the given value is not nil.
-func (fcu *FiatCurrencyUpdate) SetNillableMarketValueHigh(d *decimal.Decimal) *FiatCurrencyUpdate {
-	if d != nil {
-		fcu.SetMarketValueHigh(*d)
-	}
-	return fcu
-}
-
-// ClearMarketValueHigh clears the value of the "market_value_high" field.
-func (fcu *FiatCurrencyUpdate) ClearMarketValueHigh() *FiatCurrencyUpdate {
-	fcu.mutation.ClearMarketValueHigh()
-	return fcu
-}
-
 // SetMarketValueLow sets the "market_value_low" field.
 func (fcu *FiatCurrencyUpdate) SetMarketValueLow(d decimal.Decimal) *FiatCurrencyUpdate {
 	fcu.mutation.SetMarketValueLow(d)
@@ -162,6 +142,26 @@ func (fcu *FiatCurrencyUpdate) SetNillableMarketValueLow(d *decimal.Decimal) *Fi
 // ClearMarketValueLow clears the value of the "market_value_low" field.
 func (fcu *FiatCurrencyUpdate) ClearMarketValueLow() *FiatCurrencyUpdate {
 	fcu.mutation.ClearMarketValueLow()
+	return fcu
+}
+
+// SetMarketValueHigh sets the "market_value_high" field.
+func (fcu *FiatCurrencyUpdate) SetMarketValueHigh(d decimal.Decimal) *FiatCurrencyUpdate {
+	fcu.mutation.SetMarketValueHigh(d)
+	return fcu
+}
+
+// SetNillableMarketValueHigh sets the "market_value_high" field if the given value is not nil.
+func (fcu *FiatCurrencyUpdate) SetNillableMarketValueHigh(d *decimal.Decimal) *FiatCurrencyUpdate {
+	if d != nil {
+		fcu.SetMarketValueHigh(*d)
+	}
+	return fcu
+}
+
+// ClearMarketValueHigh clears the value of the "market_value_high" field.
+func (fcu *FiatCurrencyUpdate) ClearMarketValueHigh() *FiatCurrencyUpdate {
+	fcu.mutation.ClearMarketValueHigh()
 	return fcu
 }
 
@@ -305,17 +305,17 @@ func (fcu *FiatCurrencyUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: fiatcurrency.FieldDeletedAt,
 		})
 	}
-	if value, ok := fcu.mutation.FiatTypeID(); ok {
+	if value, ok := fcu.mutation.FiatCurrencyTypeID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
 			Value:  value,
-			Column: fiatcurrency.FieldFiatTypeID,
+			Column: fiatcurrency.FieldFiatCurrencyTypeID,
 		})
 	}
-	if fcu.mutation.FiatTypeIDCleared() {
+	if fcu.mutation.FiatCurrencyTypeIDCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
-			Column: fiatcurrency.FieldFiatTypeID,
+			Column: fiatcurrency.FieldFiatCurrencyTypeID,
 		})
 	}
 	if value, ok := fcu.mutation.FeedType(); ok {
@@ -331,19 +331,6 @@ func (fcu *FiatCurrencyUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: fiatcurrency.FieldFeedType,
 		})
 	}
-	if value, ok := fcu.mutation.MarketValueHigh(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeOther,
-			Value:  value,
-			Column: fiatcurrency.FieldMarketValueHigh,
-		})
-	}
-	if fcu.mutation.MarketValueHighCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeOther,
-			Column: fiatcurrency.FieldMarketValueHigh,
-		})
-	}
 	if value, ok := fcu.mutation.MarketValueLow(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeOther,
@@ -355,6 +342,19 @@ func (fcu *FiatCurrencyUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeOther,
 			Column: fiatcurrency.FieldMarketValueLow,
+		})
+	}
+	if value, ok := fcu.mutation.MarketValueHigh(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeOther,
+			Value:  value,
+			Column: fiatcurrency.FieldMarketValueHigh,
+		})
+	}
+	if fcu.mutation.MarketValueHighCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeOther,
+			Column: fiatcurrency.FieldMarketValueHigh,
 		})
 	}
 	_spec.Modifiers = fcu.modifiers
@@ -433,23 +433,23 @@ func (fcuo *FiatCurrencyUpdateOne) AddDeletedAt(u int32) *FiatCurrencyUpdateOne 
 	return fcuo
 }
 
-// SetFiatTypeID sets the "fiat_type_id" field.
-func (fcuo *FiatCurrencyUpdateOne) SetFiatTypeID(u uuid.UUID) *FiatCurrencyUpdateOne {
-	fcuo.mutation.SetFiatTypeID(u)
+// SetFiatCurrencyTypeID sets the "fiat_currency_type_id" field.
+func (fcuo *FiatCurrencyUpdateOne) SetFiatCurrencyTypeID(u uuid.UUID) *FiatCurrencyUpdateOne {
+	fcuo.mutation.SetFiatCurrencyTypeID(u)
 	return fcuo
 }
 
-// SetNillableFiatTypeID sets the "fiat_type_id" field if the given value is not nil.
-func (fcuo *FiatCurrencyUpdateOne) SetNillableFiatTypeID(u *uuid.UUID) *FiatCurrencyUpdateOne {
+// SetNillableFiatCurrencyTypeID sets the "fiat_currency_type_id" field if the given value is not nil.
+func (fcuo *FiatCurrencyUpdateOne) SetNillableFiatCurrencyTypeID(u *uuid.UUID) *FiatCurrencyUpdateOne {
 	if u != nil {
-		fcuo.SetFiatTypeID(*u)
+		fcuo.SetFiatCurrencyTypeID(*u)
 	}
 	return fcuo
 }
 
-// ClearFiatTypeID clears the value of the "fiat_type_id" field.
-func (fcuo *FiatCurrencyUpdateOne) ClearFiatTypeID() *FiatCurrencyUpdateOne {
-	fcuo.mutation.ClearFiatTypeID()
+// ClearFiatCurrencyTypeID clears the value of the "fiat_currency_type_id" field.
+func (fcuo *FiatCurrencyUpdateOne) ClearFiatCurrencyTypeID() *FiatCurrencyUpdateOne {
+	fcuo.mutation.ClearFiatCurrencyTypeID()
 	return fcuo
 }
 
@@ -473,26 +473,6 @@ func (fcuo *FiatCurrencyUpdateOne) ClearFeedType() *FiatCurrencyUpdateOne {
 	return fcuo
 }
 
-// SetMarketValueHigh sets the "market_value_high" field.
-func (fcuo *FiatCurrencyUpdateOne) SetMarketValueHigh(d decimal.Decimal) *FiatCurrencyUpdateOne {
-	fcuo.mutation.SetMarketValueHigh(d)
-	return fcuo
-}
-
-// SetNillableMarketValueHigh sets the "market_value_high" field if the given value is not nil.
-func (fcuo *FiatCurrencyUpdateOne) SetNillableMarketValueHigh(d *decimal.Decimal) *FiatCurrencyUpdateOne {
-	if d != nil {
-		fcuo.SetMarketValueHigh(*d)
-	}
-	return fcuo
-}
-
-// ClearMarketValueHigh clears the value of the "market_value_high" field.
-func (fcuo *FiatCurrencyUpdateOne) ClearMarketValueHigh() *FiatCurrencyUpdateOne {
-	fcuo.mutation.ClearMarketValueHigh()
-	return fcuo
-}
-
 // SetMarketValueLow sets the "market_value_low" field.
 func (fcuo *FiatCurrencyUpdateOne) SetMarketValueLow(d decimal.Decimal) *FiatCurrencyUpdateOne {
 	fcuo.mutation.SetMarketValueLow(d)
@@ -510,6 +490,26 @@ func (fcuo *FiatCurrencyUpdateOne) SetNillableMarketValueLow(d *decimal.Decimal)
 // ClearMarketValueLow clears the value of the "market_value_low" field.
 func (fcuo *FiatCurrencyUpdateOne) ClearMarketValueLow() *FiatCurrencyUpdateOne {
 	fcuo.mutation.ClearMarketValueLow()
+	return fcuo
+}
+
+// SetMarketValueHigh sets the "market_value_high" field.
+func (fcuo *FiatCurrencyUpdateOne) SetMarketValueHigh(d decimal.Decimal) *FiatCurrencyUpdateOne {
+	fcuo.mutation.SetMarketValueHigh(d)
+	return fcuo
+}
+
+// SetNillableMarketValueHigh sets the "market_value_high" field if the given value is not nil.
+func (fcuo *FiatCurrencyUpdateOne) SetNillableMarketValueHigh(d *decimal.Decimal) *FiatCurrencyUpdateOne {
+	if d != nil {
+		fcuo.SetMarketValueHigh(*d)
+	}
+	return fcuo
+}
+
+// ClearMarketValueHigh clears the value of the "market_value_high" field.
+func (fcuo *FiatCurrencyUpdateOne) ClearMarketValueHigh() *FiatCurrencyUpdateOne {
+	fcuo.mutation.ClearMarketValueHigh()
 	return fcuo
 }
 
@@ -683,17 +683,17 @@ func (fcuo *FiatCurrencyUpdateOne) sqlSave(ctx context.Context) (_node *FiatCurr
 			Column: fiatcurrency.FieldDeletedAt,
 		})
 	}
-	if value, ok := fcuo.mutation.FiatTypeID(); ok {
+	if value, ok := fcuo.mutation.FiatCurrencyTypeID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
 			Value:  value,
-			Column: fiatcurrency.FieldFiatTypeID,
+			Column: fiatcurrency.FieldFiatCurrencyTypeID,
 		})
 	}
-	if fcuo.mutation.FiatTypeIDCleared() {
+	if fcuo.mutation.FiatCurrencyTypeIDCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
-			Column: fiatcurrency.FieldFiatTypeID,
+			Column: fiatcurrency.FieldFiatCurrencyTypeID,
 		})
 	}
 	if value, ok := fcuo.mutation.FeedType(); ok {
@@ -709,19 +709,6 @@ func (fcuo *FiatCurrencyUpdateOne) sqlSave(ctx context.Context) (_node *FiatCurr
 			Column: fiatcurrency.FieldFeedType,
 		})
 	}
-	if value, ok := fcuo.mutation.MarketValueHigh(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeOther,
-			Value:  value,
-			Column: fiatcurrency.FieldMarketValueHigh,
-		})
-	}
-	if fcuo.mutation.MarketValueHighCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeOther,
-			Column: fiatcurrency.FieldMarketValueHigh,
-		})
-	}
 	if value, ok := fcuo.mutation.MarketValueLow(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeOther,
@@ -733,6 +720,19 @@ func (fcuo *FiatCurrencyUpdateOne) sqlSave(ctx context.Context) (_node *FiatCurr
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeOther,
 			Column: fiatcurrency.FieldMarketValueLow,
+		})
+	}
+	if value, ok := fcuo.mutation.MarketValueHigh(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeOther,
+			Value:  value,
+			Column: fiatcurrency.FieldMarketValueHigh,
+		})
+	}
+	if fcuo.mutation.MarketValueHighCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeOther,
+			Column: fiatcurrency.FieldMarketValueHigh,
 		})
 	}
 	_spec.Modifiers = fcuo.modifiers

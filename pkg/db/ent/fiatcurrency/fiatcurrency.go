@@ -19,14 +19,14 @@ const (
 	FieldUpdatedAt = "updated_at"
 	// FieldDeletedAt holds the string denoting the deleted_at field in the database.
 	FieldDeletedAt = "deleted_at"
-	// FieldFiatTypeID holds the string denoting the fiat_type_id field in the database.
-	FieldFiatTypeID = "fiat_type_id"
+	// FieldFiatCurrencyTypeID holds the string denoting the fiat_currency_type_id field in the database.
+	FieldFiatCurrencyTypeID = "fiat_currency_type_id"
 	// FieldFeedType holds the string denoting the feed_type field in the database.
 	FieldFeedType = "feed_type"
-	// FieldMarketValueHigh holds the string denoting the market_value_high field in the database.
-	FieldMarketValueHigh = "market_value_high"
 	// FieldMarketValueLow holds the string denoting the market_value_low field in the database.
 	FieldMarketValueLow = "market_value_low"
+	// FieldMarketValueHigh holds the string denoting the market_value_high field in the database.
+	FieldMarketValueHigh = "market_value_high"
 	// Table holds the table name of the fiatcurrency in the database.
 	Table = "fiat_currencies"
 )
@@ -37,10 +37,10 @@ var Columns = []string{
 	FieldCreatedAt,
 	FieldUpdatedAt,
 	FieldDeletedAt,
-	FieldFiatTypeID,
+	FieldFiatCurrencyTypeID,
 	FieldFeedType,
-	FieldMarketValueHigh,
 	FieldMarketValueLow,
+	FieldMarketValueHigh,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -70,14 +70,14 @@ var (
 	UpdateDefaultUpdatedAt func() uint32
 	// DefaultDeletedAt holds the default value on creation for the "deleted_at" field.
 	DefaultDeletedAt func() uint32
-	// DefaultFiatTypeID holds the default value on creation for the "fiat_type_id" field.
-	DefaultFiatTypeID func() uuid.UUID
+	// DefaultFiatCurrencyTypeID holds the default value on creation for the "fiat_currency_type_id" field.
+	DefaultFiatCurrencyTypeID func() uuid.UUID
 	// DefaultFeedType holds the default value on creation for the "feed_type" field.
 	DefaultFeedType string
-	// DefaultMarketValueHigh holds the default value on creation for the "market_value_high" field.
-	DefaultMarketValueHigh decimal.Decimal
 	// DefaultMarketValueLow holds the default value on creation for the "market_value_low" field.
 	DefaultMarketValueLow decimal.Decimal
+	// DefaultMarketValueHigh holds the default value on creation for the "market_value_high" field.
+	DefaultMarketValueHigh decimal.Decimal
 	// DefaultID holds the default value on creation for the "id" field.
 	DefaultID func() uuid.UUID
 )

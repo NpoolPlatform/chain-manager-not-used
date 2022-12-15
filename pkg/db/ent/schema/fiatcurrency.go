@@ -31,7 +31,7 @@ func (FiatCurrency) Fields() []ent.Field {
 			Default(uuid.New).
 			Unique(),
 		field.
-			UUID("fiat_type_id", uuid.UUID{}).
+			UUID("fiat_currency_type_id", uuid.UUID{}).
 			Optional().
 			Default(uuid.New),
 		field.
