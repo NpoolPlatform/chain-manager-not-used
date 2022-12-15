@@ -44,7 +44,7 @@ func validateConds(conds *npool.Conds) error {
 	}
 	if conds.Name != nil {
 		if _, err := uuid.Parse(conds.GetName().GetValue()); err != nil {
-			logger.Sugar().Errorw("validate", "FiatTypeID", conds.GetName().GetValue(), "error", err)
+			logger.Sugar().Errorw("validate", "FiatCurrencyTypeID", conds.GetName().GetValue(), "error", err)
 			return err
 		}
 	}

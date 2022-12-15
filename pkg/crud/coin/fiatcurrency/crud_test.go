@@ -31,26 +31,26 @@ func init() {
 }
 
 var entity = ent.FiatCurrency{
-	ID:              uuid.New(),
-	FiatTypeID:      uuid.New(),
-	FeedType:        currency.FeedType_CoinBase.String(),
-	MarketValueHigh: decimal.RequireFromString("88.9123"),
-	MarketValueLow:  decimal.RequireFromString("84.9123"),
+	ID:                 uuid.New(),
+	FiatCurrencyTypeID: uuid.New(),
+	FeedType:           currency.FeedType_CoinBase.String(),
+	MarketValueHigh:    decimal.RequireFromString("88.9123"),
+	MarketValueLow:     decimal.RequireFromString("84.9123"),
 }
 
 var (
 	id              = entity.ID.String()
-	fiatTypeID      = entity.FiatTypeID.String()
+	fiatTypeID      = entity.FiatCurrencyTypeID.String()
 	feedType        = currency.FeedType(currency.FeedType_value[entity.FeedType])
 	marketValueHigh = entity.MarketValueHigh.String()
 	marketValueLow  = entity.MarketValueLow.String()
 
 	req = npool.FiatCurrencyReq{
-		ID:              &id,
-		FiatTypeID:      &fiatTypeID,
-		FeedType:        &feedType,
-		MarketValueHigh: &marketValueHigh,
-		MarketValueLow:  &marketValueLow,
+		ID:                 &id,
+		FiatCurrencyTypeID: &fiatTypeID,
+		FeedType:           &feedType,
+		MarketValueHigh:    &marketValueHigh,
+		MarketValueLow:     &marketValueLow,
 	}
 )
 
@@ -69,35 +69,35 @@ func create(t *testing.T) {
 func createBulk(t *testing.T) {
 	entities := []*ent.FiatCurrency{
 		{
-			ID:              uuid.New(),
-			FiatTypeID:      uuid.New(),
-			FeedType:        currency.FeedType_CoinBase.String(),
-			MarketValueHigh: decimal.RequireFromString("84.9123"),
-			MarketValueLow:  decimal.RequireFromString("82.9123"),
+			ID:                 uuid.New(),
+			FiatCurrencyTypeID: uuid.New(),
+			FeedType:           currency.FeedType_CoinBase.String(),
+			MarketValueHigh:    decimal.RequireFromString("84.9123"),
+			MarketValueLow:     decimal.RequireFromString("82.9123"),
 		},
 		{
-			ID:              uuid.New(),
-			FiatTypeID:      uuid.New(),
-			FeedType:        currency.FeedType_CoinGecko.String(),
-			MarketValueHigh: decimal.RequireFromString("88.4123"),
-			MarketValueLow:  decimal.RequireFromString("84.2123"),
+			ID:                 uuid.New(),
+			FiatCurrencyTypeID: uuid.New(),
+			FeedType:           currency.FeedType_CoinGecko.String(),
+			MarketValueHigh:    decimal.RequireFromString("88.4123"),
+			MarketValueLow:     decimal.RequireFromString("84.2123"),
 		},
 	}
 
 	reqs := []*npool.FiatCurrencyReq{}
 	for _, _entity := range entities {
 		_id := _entity.ID.String()
-		_fiatTypeID := _entity.FiatTypeID.String()
+		_fiatTypeID := _entity.FiatCurrencyTypeID.String()
 		_feedType := currency.FeedType(currency.FeedType_value[_entity.FeedType])
 		_marketValueHigh := _entity.MarketValueHigh.String()
 		_marketValueLow := _entity.MarketValueLow.String()
 
 		reqs = append(reqs, &npool.FiatCurrencyReq{
-			ID:              &_id,
-			FiatTypeID:      &_fiatTypeID,
-			FeedType:        &_feedType,
-			MarketValueHigh: &_marketValueHigh,
-			MarketValueLow:  &_marketValueLow,
+			ID:                 &_id,
+			FiatCurrencyTypeID: &_fiatTypeID,
+			FeedType:           &_feedType,
+			MarketValueHigh:    &_marketValueHigh,
+			MarketValueLow:     &_marketValueLow,
 		})
 	}
 	infos, err := CreateBulk(context.Background(), reqs)

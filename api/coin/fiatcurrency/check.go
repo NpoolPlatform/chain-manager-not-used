@@ -20,8 +20,8 @@ func validate(in *npool.FiatCurrencyReq) error {
 		}
 	}
 
-	if _, err := uuid.Parse(in.GetFiatTypeID()); err != nil {
-		logger.Sugar().Errorw("validate", "FiatTypeID", in.GetFiatTypeID(), "error", err)
+	if _, err := uuid.Parse(in.GetFiatCurrencyTypeID()); err != nil {
+		logger.Sugar().Errorw("validate", "FiatCurrencyTypeID", in.GetFiatCurrencyTypeID(), "error", err)
 		return err
 	}
 
@@ -70,9 +70,9 @@ func validateConds(conds *npool.Conds) error {
 			return err
 		}
 	}
-	if conds.FiatTypeID != nil {
-		if _, err := uuid.Parse(conds.GetFiatTypeID().GetValue()); err != nil {
-			logger.Sugar().Errorw("validate", "FiatTypeID", conds.GetFiatTypeID().GetValue(), "error", err)
+	if conds.FiatCurrencyTypeID != nil {
+		if _, err := uuid.Parse(conds.GetFiatCurrencyTypeID().GetValue()); err != nil {
+			logger.Sugar().Errorw("validate", "FiatCurrencyTypeID", conds.GetFiatCurrencyTypeID().GetValue(), "error", err)
 			return err
 		}
 	}

@@ -34,19 +34,19 @@ func init() {
 }
 
 var fiatcurrencyValue = &npool.FiatCurrency{
-	ID:              uuid.NewString(),
-	FiatTypeID:      uuid.NewString(),
-	FeedType:        currency.FeedType_CoinBase,
-	MarketValueHigh: "99.123",
-	MarketValueLow:  "97.123",
+	ID:                 uuid.NewString(),
+	FiatCurrencyTypeID: uuid.NewString(),
+	FeedType:           currency.FeedType_CoinBase,
+	MarketValueHigh:    "99.123",
+	MarketValueLow:     "97.123",
 }
 
 var fiatcurrencyValueReq = &npool.FiatCurrencyReq{
-	ID:              &fiatcurrencyValue.ID,
-	FiatTypeID:      &fiatcurrencyValue.FiatTypeID,
-	FeedType:        &fiatcurrencyValue.FeedType,
-	MarketValueHigh: &fiatcurrencyValue.MarketValueHigh,
-	MarketValueLow:  &fiatcurrencyValue.MarketValueLow,
+	ID:                 &fiatcurrencyValue.ID,
+	FiatCurrencyTypeID: &fiatcurrencyValue.FiatCurrencyTypeID,
+	FeedType:           &fiatcurrencyValue.FeedType,
+	MarketValueHigh:    &fiatcurrencyValue.MarketValueHigh,
+	MarketValueLow:     &fiatcurrencyValue.MarketValueLow,
 }
 
 func createFiatCurrency(t *testing.T) {

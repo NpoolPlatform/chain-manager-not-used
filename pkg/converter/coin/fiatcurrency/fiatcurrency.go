@@ -13,13 +13,13 @@ func Ent2Grpc(row *ent.FiatCurrency) *npool.FiatCurrency {
 	}
 
 	return &npool.FiatCurrency{
-		ID:              row.ID.String(),
-		FiatTypeID:      row.FiatTypeID.String(),
-		FeedType:        currency.FeedType(currency.FeedType_value[row.FeedType]),
-		MarketValueHigh: row.MarketValueHigh.String(),
-		MarketValueLow:  row.MarketValueLow.String(),
-		CreatedAt:       row.CreatedAt,
-		UpdatedAt:       row.UpdatedAt,
+		ID:                 row.ID.String(),
+		FiatCurrencyTypeID: row.FiatCurrencyTypeID.String(),
+		FeedType:           currency.FeedType(currency.FeedType_value[row.FeedType]),
+		MarketValueHigh:    row.MarketValueHigh.String(),
+		MarketValueLow:     row.MarketValueLow.String(),
+		CreatedAt:          row.CreatedAt,
+		UpdatedAt:          row.UpdatedAt,
 	}
 }
 

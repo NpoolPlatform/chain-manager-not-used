@@ -25,8 +25,8 @@ func CreateSet(c *ent.FiatCurrencyCreate, in *npool.FiatCurrencyReq) *ent.FiatCu
 	if in.ID != nil {
 		c.SetID(uuid.MustParse(in.GetID()))
 	}
-	if in.FiatTypeID != nil {
-		c.SetFiatTypeID(uuid.MustParse(in.GetFiatTypeID()))
+	if in.FiatCurrencyTypeID != nil {
+		c.SetFiatCurrencyTypeID(uuid.MustParse(in.GetFiatCurrencyTypeID()))
 	}
 	if in.FeedType != nil {
 		c.SetFeedType(in.GetFeedType().String())
@@ -180,10 +180,10 @@ func SetQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.FiatCurrencyQuery,
 			return nil, fmt.Errorf("invalid fiatcurrency field")
 		}
 	}
-	if conds.FiatTypeID != nil {
-		switch conds.GetFiatTypeID().GetOp() {
+	if conds.FiatCurrencyTypeID != nil {
+		switch conds.GetFiatCurrencyTypeID().GetOp() {
 		case cruder.EQ:
-			stm.Where(fiatcurrency.FiatTypeID(uuid.MustParse(conds.GetFiatTypeID().GetValue())))
+			stm.Where(fiatcurrency.FiatCurrencyTypeID(uuid.MustParse(conds.GetFiatCurrencyTypeID().GetValue())))
 		default:
 			return nil, fmt.Errorf("invalid fiatcurrency field")
 		}
