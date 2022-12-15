@@ -157,6 +157,9 @@ func Row(ctx context.Context, id uuid.UUID) (*ent.FiatCurrencyType, error) {
 
 func SetQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.FiatCurrencyTypeQuery, error) {
 	stm := cli.FiatCurrencyType.Query()
+	if conds == nil {
+		return stm, nil
+	}
 	if conds.ID != nil {
 		switch conds.GetID().GetOp() {
 		case cruder.EQ:
