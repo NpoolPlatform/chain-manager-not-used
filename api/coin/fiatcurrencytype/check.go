@@ -36,6 +36,9 @@ func validateMany(in []*npool.FiatCurrencyTypeReq) error {
 }
 
 func validateConds(conds *npool.Conds) error {
+	if conds == nil {
+		return nil
+	}
 	if conds.ID != nil {
 		if _, err := uuid.Parse(conds.GetID().GetValue()); err != nil {
 			logger.Sugar().Errorw("validate", "ID", conds.GetID().GetValue(), "error", err)
