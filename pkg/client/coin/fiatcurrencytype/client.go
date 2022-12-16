@@ -114,7 +114,7 @@ func GetFiatCurrencyTypeOnly(ctx context.Context, conds *npool.Conds) (*npool.Fi
 	return info.(*npool.FiatCurrencyType), nil
 }
 
-func GetFiatCurrencyTypes(ctx context.Context, conds *npool.Conds, limit, offset int32) ([]*npool.FiatCurrencyType, uint32, error) {
+func GetFiatCurrencyTypes(ctx context.Context, conds *npool.Conds, offset, limit int32) ([]*npool.FiatCurrencyType, uint32, error) {
 	var total uint32
 	infos, err := withCRUD(ctx, func(_ctx context.Context, cli npool.ManagerClient) (cruder.Any, error) {
 		resp, err := cli.GetFiatCurrencyTypes(ctx, &npool.GetFiatCurrencyTypesRequest{
@@ -126,7 +126,7 @@ func GetFiatCurrencyTypes(ctx context.Context, conds *npool.Conds, limit, offset
 			return nil, fmt.Errorf("fail get fiatcurrencytypes: %v", err)
 		}
 		total = resp.GetTotal()
-		return resp.GetInfos(), nil
+		return resp.Infos, nil
 	})
 	if err != nil {
 		return nil, 0, fmt.Errorf("fail get fiatcurrencytypes: %v", err)
