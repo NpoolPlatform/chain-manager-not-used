@@ -52,6 +52,9 @@ func CreateSet(c *ent.AppCoinCreate, in *npool.AppCoinReq) *ent.AppCoinCreate {
 	if in.DailyRewardAmount != nil {
 		c.SetDailyRewardAmount(decimal.RequireFromString(in.GetDailyRewardAmount()))
 	}
+	if in.Display != nil {
+		c.SetDisplay(in.GetDisplay())
+	}
 	return c
 }
 
@@ -139,6 +142,9 @@ func UpdateSet(info *ent.AppCoin, in *npool.AppCoinReq) *ent.AppCoinUpdateOne {
 	}
 	if in.DailyRewardAmount != nil {
 		stm = stm.SetDailyRewardAmount(decimal.RequireFromString(in.GetDailyRewardAmount()))
+	}
+	if in.Display != nil {
+		stm = stm.SetDisplay(in.GetDisplay())
 	}
 
 	return stm

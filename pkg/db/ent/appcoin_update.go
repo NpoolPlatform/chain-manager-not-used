@@ -265,6 +265,26 @@ func (acu *AppCoinUpdate) ClearDailyRewardAmount() *AppCoinUpdate {
 	return acu
 }
 
+// SetDisplay sets the "display" field.
+func (acu *AppCoinUpdate) SetDisplay(b bool) *AppCoinUpdate {
+	acu.mutation.SetDisplay(b)
+	return acu
+}
+
+// SetNillableDisplay sets the "display" field if the given value is not nil.
+func (acu *AppCoinUpdate) SetNillableDisplay(b *bool) *AppCoinUpdate {
+	if b != nil {
+		acu.SetDisplay(*b)
+	}
+	return acu
+}
+
+// ClearDisplay clears the value of the "display" field.
+func (acu *AppCoinUpdate) ClearDisplay() *AppCoinUpdate {
+	acu.mutation.ClearDisplay()
+	return acu
+}
+
 // Mutation returns the AppCoinMutation object of the builder.
 func (acu *AppCoinUpdate) Mutation() *AppCoinMutation {
 	return acu.mutation
@@ -522,6 +542,19 @@ func (acu *AppCoinUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: appcoin.FieldDailyRewardAmount,
 		})
 	}
+	if value, ok := acu.mutation.Display(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Value:  value,
+			Column: appcoin.FieldDisplay,
+		})
+	}
+	if acu.mutation.DisplayCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Column: appcoin.FieldDisplay,
+		})
+	}
 	_spec.Modifiers = acu.modifiers
 	if n, err = sqlgraph.UpdateNodes(ctx, acu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -775,6 +808,26 @@ func (acuo *AppCoinUpdateOne) SetNillableDailyRewardAmount(d *decimal.Decimal) *
 // ClearDailyRewardAmount clears the value of the "daily_reward_amount" field.
 func (acuo *AppCoinUpdateOne) ClearDailyRewardAmount() *AppCoinUpdateOne {
 	acuo.mutation.ClearDailyRewardAmount()
+	return acuo
+}
+
+// SetDisplay sets the "display" field.
+func (acuo *AppCoinUpdateOne) SetDisplay(b bool) *AppCoinUpdateOne {
+	acuo.mutation.SetDisplay(b)
+	return acuo
+}
+
+// SetNillableDisplay sets the "display" field if the given value is not nil.
+func (acuo *AppCoinUpdateOne) SetNillableDisplay(b *bool) *AppCoinUpdateOne {
+	if b != nil {
+		acuo.SetDisplay(*b)
+	}
+	return acuo
+}
+
+// ClearDisplay clears the value of the "display" field.
+func (acuo *AppCoinUpdateOne) ClearDisplay() *AppCoinUpdateOne {
+	acuo.mutation.ClearDisplay()
 	return acuo
 }
 
@@ -1063,6 +1116,19 @@ func (acuo *AppCoinUpdateOne) sqlSave(ctx context.Context) (_node *AppCoin, err 
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeOther,
 			Column: appcoin.FieldDailyRewardAmount,
+		})
+	}
+	if value, ok := acuo.mutation.Display(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Value:  value,
+			Column: appcoin.FieldDisplay,
+		})
+	}
+	if acuo.mutation.DisplayCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Column: appcoin.FieldDisplay,
 		})
 	}
 	_spec.Modifiers = acuo.modifiers

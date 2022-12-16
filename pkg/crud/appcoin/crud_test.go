@@ -38,6 +38,8 @@ var entity = ent.AppCoin{
 	ForPay:                   false,
 	WithdrawAutoReviewAmount: decimal.RequireFromString("89.000"),
 	DailyRewardAmount:        decimal.RequireFromString("89.001"),
+	Disabled:                 false,
+	Display:                  false,
 }
 
 var (
@@ -59,6 +61,8 @@ var (
 		ForPay:                   &forPay,
 		WithdrawAutoReviewAmount: &withdrawAutoReviewdAmount,
 		DailyRewardAmount:        &dailyRewardAmount,
+		Disabled:                 &entity.Disabled,
+		Display:                  &entity.Display,
 	}
 )
 
@@ -85,6 +89,8 @@ func createBulk(t *testing.T) {
 			ForPay:                   false,
 			WithdrawAutoReviewAmount: decimal.RequireFromString("89.000"),
 			DailyRewardAmount:        decimal.RequireFromString("89.001"),
+			Disabled:                 false,
+			Display:                  false,
 		},
 		{
 			ID:                       uuid.New(),
@@ -95,6 +101,8 @@ func createBulk(t *testing.T) {
 			ForPay:                   true,
 			WithdrawAutoReviewAmount: decimal.RequireFromString("90.000"),
 			DailyRewardAmount:        decimal.RequireFromString("90.001"),
+			Disabled:                 false,
+			Display:                  false,
 		},
 	}
 
@@ -118,6 +126,8 @@ func createBulk(t *testing.T) {
 			ForPay:                   &_forPay,
 			WithdrawAutoReviewAmount: &_withdrawAutoReviewdAmount,
 			DailyRewardAmount:        &_dailyRewardAmount,
+			Disabled:                 &_entity.Disabled,
+			Display:                  &_entity.Display,
 		})
 	}
 	infos, err := CreateBulk(context.Background(), reqs)
