@@ -1,8 +1,8 @@
 package api
 
 import (
-	"github.com/NpoolPlatform/chain-manager/api/coin/fiatcurrency"
-	"github.com/NpoolPlatform/chain-manager/api/coin/fiatcurrencytype"
+	"github.com/NpoolPlatform/chain-manager/api/fiatcurrency"
+	"github.com/NpoolPlatform/chain-manager/api/fiatcurrencytype"
 	chainmgr "github.com/NpoolPlatform/message/npool/chain/mgr/v1"
 
 	appcoin "github.com/NpoolPlatform/chain-manager/api/appcoin"
