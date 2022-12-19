@@ -16,7 +16,7 @@ import (
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/fiatcurrency"
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
-	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/coin/fiatcurrency"
+	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/fiatcurrency"
 
 	"github.com/google/uuid"
 )

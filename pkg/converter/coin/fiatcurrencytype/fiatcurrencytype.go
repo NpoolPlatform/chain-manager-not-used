@@ -2,7 +2,7 @@ package fiatcurrencytype
 
 import (
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent"
-	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/coin/fiatcurrencytype"
+	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/fiatcurrencytype"
 )
 
 func Ent2Grpc(row *ent.FiatCurrencyType) *npool.FiatCurrencyType {

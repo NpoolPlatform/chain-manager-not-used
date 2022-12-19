@@ -5,7 +5,7 @@ import (
 
 	"github.com/NpoolPlatform/go-service-framework/pkg/logger"
 	"github.com/NpoolPlatform/message/npool/chain/mgr/v1/coin/currency"
-	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/coin/fiatcurrency"
+	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/fiatcurrency"
 
 	"github.com/shopspring/decimal"
 

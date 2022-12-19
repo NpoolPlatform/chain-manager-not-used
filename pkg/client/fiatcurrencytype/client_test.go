@@ -16,7 +16,7 @@ import (
 
 	"github.com/NpoolPlatform/chain-manager/pkg/testinit"
 
-	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/coin/fiatcurrencytype"
+	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/fiatcurrencytype"
 
 	"github.com/stretchr/testify/assert"
 

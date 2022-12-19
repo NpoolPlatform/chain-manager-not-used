@@ -5,7 +5,7 @@ import (
 	"context"
 
 	converter "github.com/NpoolPlatform/chain-manager/pkg/converter/coin/fiatcurrency"
-	crud "github.com/NpoolPlatform/chain-manager/pkg/crud/coin/fiatcurrency"
+	crud "github.com/NpoolPlatform/chain-manager/pkg/crud/fiatcurrency"
 	commontracer "github.com/NpoolPlatform/chain-manager/pkg/tracer"
 
 	constant "github.com/NpoolPlatform/chain-manager/pkg/message/const"
@@ -16,7 +16,7 @@ import (
 	"google.golang.org/grpc/status"
 
 	"github.com/NpoolPlatform/go-service-framework/pkg/logger"
-	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/coin/fiatcurrency"
+	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/fiatcurrency"
 
 	"github.com/google/uuid"
 )

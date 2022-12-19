@@ -12,7 +12,7 @@ import (
 
 	testinit "github.com/NpoolPlatform/chain-manager/pkg/testinit"
 	valuedef "github.com/NpoolPlatform/message/npool"
-	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/coin/fiatcurrencytype"
+	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/fiatcurrencytype"
 	"github.com/google/uuid"
 
 	"github.com/stretchr/testify/assert"
