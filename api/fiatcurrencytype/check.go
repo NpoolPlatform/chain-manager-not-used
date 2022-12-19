@@ -46,9 +46,9 @@ func validateConds(conds *npool.Conds) error {
 		}
 	}
 	if conds.Name != nil {
-		if _, err := uuid.Parse(conds.GetName().GetValue()); err != nil {
-			logger.Sugar().Errorw("validate", "FiatCurrencyTypeID", conds.GetName().GetValue(), "error", err)
-			return err
+		if conds.GetName().GetValue() == "" {
+			logger.Sugar().Errorw("validate", "Name", conds.GetName().GetValue())
+			return fmt.Errorf("name is empty")
 		}
 	}
 
