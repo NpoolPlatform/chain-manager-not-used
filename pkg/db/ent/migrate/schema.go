@@ -123,6 +123,38 @@ var (
 		Columns:    ExchangeRatesColumns,
 		PrimaryKey: []*schema.Column{ExchangeRatesColumns[0]},
 	}
+	// FiatCurrenciesColumns holds the columns for the "fiat_currencies" table.
+	FiatCurrenciesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID, Unique: true},
+		{Name: "created_at", Type: field.TypeUint32},
+		{Name: "updated_at", Type: field.TypeUint32},
+		{Name: "deleted_at", Type: field.TypeUint32},
+		{Name: "fiat_currency_type_id", Type: field.TypeUUID, Nullable: true},
+		{Name: "feed_type", Type: field.TypeString, Nullable: true, Default: "DefaultFeedType"},
+		{Name: "market_value_low", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
+		{Name: "market_value_high", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
+	}
+	// FiatCurrenciesTable holds the schema information for the "fiat_currencies" table.
+	FiatCurrenciesTable = &schema.Table{
+		Name:       "fiat_currencies",
+		Columns:    FiatCurrenciesColumns,
+		PrimaryKey: []*schema.Column{FiatCurrenciesColumns[0]},
+	}
+	// FiatCurrencyTypesColumns holds the columns for the "fiat_currency_types" table.
+	FiatCurrencyTypesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID, Unique: true},
+		{Name: "created_at", Type: field.TypeUint32},
+		{Name: "updated_at", Type: field.TypeUint32},
+		{Name: "deleted_at", Type: field.TypeUint32},
+		{Name: "name", Type: field.TypeString, Nullable: true, Default: ""},
+		{Name: "logo", Type: field.TypeString, Nullable: true, Default: ""},
+	}
+	// FiatCurrencyTypesTable holds the schema information for the "fiat_currency_types" table.
+	FiatCurrencyTypesTable = &schema.Table{
+		Name:       "fiat_currency_types",
+		Columns:    FiatCurrencyTypesColumns,
+		PrimaryKey: []*schema.Column{FiatCurrencyTypesColumns[0]},
+	}
 	// SettingsColumns holds the columns for the "settings" table.
 	SettingsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID, Unique: true},
@@ -175,6 +207,8 @@ var (
 		CoinExtrasTable,
 		CurrenciesTable,
 		ExchangeRatesTable,
+		FiatCurrenciesTable,
+		FiatCurrencyTypesTable,
 		SettingsTable,
 		TransTable,
 	}

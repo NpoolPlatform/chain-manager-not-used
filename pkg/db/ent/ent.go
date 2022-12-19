@@ -16,6 +16,8 @@ import (
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/coinextra"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/currency"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/exchangerate"
+	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/fiatcurrency"
+	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/fiatcurrencytype"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/setting"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/tran"
 )
@@ -38,14 +40,16 @@ type OrderFunc func(*sql.Selector)
 // columnChecker returns a function indicates if the column exists in the given column.
 func columnChecker(table string) func(string) error {
 	checks := map[string]func(string) bool{
-		appcoin.Table:         appcoin.ValidColumn,
-		coinbase.Table:        coinbase.ValidColumn,
-		coindescription.Table: coindescription.ValidColumn,
-		coinextra.Table:       coinextra.ValidColumn,
-		currency.Table:        currency.ValidColumn,
-		exchangerate.Table:    exchangerate.ValidColumn,
-		setting.Table:         setting.ValidColumn,
-		tran.Table:            tran.ValidColumn,
+		appcoin.Table:          appcoin.ValidColumn,
+		coinbase.Table:         coinbase.ValidColumn,
+		coindescription.Table:  coindescription.ValidColumn,
+		coinextra.Table:        coinextra.ValidColumn,
+		currency.Table:         currency.ValidColumn,
+		exchangerate.Table:     exchangerate.ValidColumn,
+		fiatcurrency.Table:     fiatcurrency.ValidColumn,
+		fiatcurrencytype.Table: fiatcurrencytype.ValidColumn,
+		setting.Table:          setting.ValidColumn,
+		tran.Table:             tran.ValidColumn,
 	}
 	check, ok := checks[table]
 	if !ok {

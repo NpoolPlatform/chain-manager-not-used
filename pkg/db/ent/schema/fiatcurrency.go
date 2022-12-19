@@ -12,26 +12,26 @@ import (
 	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/coin/currency"
 )
 
-// Currency holds the schema definition for the Currency entity.
-type Currency struct {
+// FiatCurrency holds the schema definition for the FiatCurrency entity.
+type FiatCurrency struct {
 	ent.Schema
 }
 
-func (Currency) Mixin() []ent.Mixin {
+func (FiatCurrency) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		mixin.TimeMixin{},
 	}
 }
 
-// Fields of the Currency.
-func (Currency) Fields() []ent.Field {
+// Fields of the FiatCurrency.
+func (FiatCurrency) Fields() []ent.Field {
 	return []ent.Field{
 		field.
 			UUID("id", uuid.UUID{}).
 			Default(uuid.New).
 			Unique(),
 		field.
-			UUID("coin_type_id", uuid.UUID{}).
+			UUID("fiat_currency_type_id", uuid.UUID{}).
 			Optional().
 			Default(uuid.New),
 		field.
@@ -39,14 +39,14 @@ func (Currency) Fields() []ent.Field {
 			Optional().
 			Default(npool.FeedType_DefaultFeedType.String()),
 		field.
-			Other("market_value_high", decimal.Decimal{}).
+			Other("market_value_low", decimal.Decimal{}).
 			SchemaType(map[string]string{
 				dialect.MySQL: "decimal(37,18)",
 			}).
 			Optional().
 			Default(decimal.Decimal{}),
 		field.
-			Other("market_value_low", decimal.Decimal{}).
+			Other("market_value_high", decimal.Decimal{}).
 			SchemaType(map[string]string{
 				dialect.MySQL: "decimal(37,18)",
 			}).
@@ -55,7 +55,7 @@ func (Currency) Fields() []ent.Field {
 	}
 }
 
-// Edges of the Currency.
-func (Currency) Edges() []ent.Edge {
+// Edges of the FiatCurrency.
+func (FiatCurrency) Edges() []ent.Edge {
 	return nil
 }

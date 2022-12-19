@@ -24,6 +24,12 @@ type Currency func(*sql.Selector)
 // ExchangeRate is the predicate function for exchangerate builders.
 type ExchangeRate func(*sql.Selector)
 
+// FiatCurrency is the predicate function for fiatcurrency builders.
+type FiatCurrency func(*sql.Selector)
+
+// FiatCurrencyType is the predicate function for fiatcurrencytype builders.
+type FiatCurrencyType func(*sql.Selector)
+
 // Setting is the predicate function for setting builders.
 type Setting func(*sql.Selector)
 

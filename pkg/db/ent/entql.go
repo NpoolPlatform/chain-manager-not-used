@@ -9,6 +9,8 @@ import (
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/coinextra"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/currency"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/exchangerate"
+	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/fiatcurrency"
+	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/fiatcurrencytype"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/setting"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/tran"
 
@@ -20,7 +22,7 @@ import (
 
 // schemaGraph holds a representation of ent/schema at runtime.
 var schemaGraph = func() *sqlgraph.Schema {
-	graph := &sqlgraph.Schema{Nodes: make([]*sqlgraph.Node, 8)}
+	graph := &sqlgraph.Schema{Nodes: make([]*sqlgraph.Node, 10)}
 	graph.Nodes[0] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   appcoin.Table,
@@ -156,6 +158,44 @@ var schemaGraph = func() *sqlgraph.Schema {
 	}
 	graph.Nodes[6] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
+			Table:   fiatcurrency.Table,
+			Columns: fiatcurrency.Columns,
+			ID: &sqlgraph.FieldSpec{
+				Type:   field.TypeUUID,
+				Column: fiatcurrency.FieldID,
+			},
+		},
+		Type: "FiatCurrency",
+		Fields: map[string]*sqlgraph.FieldSpec{
+			fiatcurrency.FieldCreatedAt:          {Type: field.TypeUint32, Column: fiatcurrency.FieldCreatedAt},
+			fiatcurrency.FieldUpdatedAt:          {Type: field.TypeUint32, Column: fiatcurrency.FieldUpdatedAt},
+			fiatcurrency.FieldDeletedAt:          {Type: field.TypeUint32, Column: fiatcurrency.FieldDeletedAt},
+			fiatcurrency.FieldFiatCurrencyTypeID: {Type: field.TypeUUID, Column: fiatcurrency.FieldFiatCurrencyTypeID},
+			fiatcurrency.FieldFeedType:           {Type: field.TypeString, Column: fiatcurrency.FieldFeedType},
+			fiatcurrency.FieldMarketValueLow:     {Type: field.TypeOther, Column: fiatcurrency.FieldMarketValueLow},
+			fiatcurrency.FieldMarketValueHigh:    {Type: field.TypeOther, Column: fiatcurrency.FieldMarketValueHigh},
+		},
+	}
+	graph.Nodes[7] = &sqlgraph.Node{
+		NodeSpec: sqlgraph.NodeSpec{
+			Table:   fiatcurrencytype.Table,
+			Columns: fiatcurrencytype.Columns,
+			ID: &sqlgraph.FieldSpec{
+				Type:   field.TypeUUID,
+				Column: fiatcurrencytype.FieldID,
+			},
+		},
+		Type: "FiatCurrencyType",
+		Fields: map[string]*sqlgraph.FieldSpec{
+			fiatcurrencytype.FieldCreatedAt: {Type: field.TypeUint32, Column: fiatcurrencytype.FieldCreatedAt},
+			fiatcurrencytype.FieldUpdatedAt: {Type: field.TypeUint32, Column: fiatcurrencytype.FieldUpdatedAt},
+			fiatcurrencytype.FieldDeletedAt: {Type: field.TypeUint32, Column: fiatcurrencytype.FieldDeletedAt},
+			fiatcurrencytype.FieldName:      {Type: field.TypeString, Column: fiatcurrencytype.FieldName},
+			fiatcurrencytype.FieldLogo:      {Type: field.TypeString, Column: fiatcurrencytype.FieldLogo},
+		},
+	}
+	graph.Nodes[8] = &sqlgraph.Node{
+		NodeSpec: sqlgraph.NodeSpec{
 			Table:   setting.Table,
 			Columns: setting.Columns,
 			ID: &sqlgraph.FieldSpec{
@@ -179,7 +219,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			setting.FieldPaymentAccountCollectAmount: {Type: field.TypeOther, Column: setting.FieldPaymentAccountCollectAmount},
 		},
 	}
-	graph.Nodes[7] = &sqlgraph.Node{
+	graph.Nodes[9] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   tran.Table,
 			Columns: tran.Columns,
@@ -729,6 +769,146 @@ func (f *ExchangeRateFilter) WhereSetter(p entql.ValueP) {
 }
 
 // addPredicate implements the predicateAdder interface.
+func (fcq *FiatCurrencyQuery) addPredicate(pred func(s *sql.Selector)) {
+	fcq.predicates = append(fcq.predicates, pred)
+}
+
+// Filter returns a Filter implementation to apply filters on the FiatCurrencyQuery builder.
+func (fcq *FiatCurrencyQuery) Filter() *FiatCurrencyFilter {
+	return &FiatCurrencyFilter{config: fcq.config, predicateAdder: fcq}
+}
+
+// addPredicate implements the predicateAdder interface.
+func (m *FiatCurrencyMutation) addPredicate(pred func(s *sql.Selector)) {
+	m.predicates = append(m.predicates, pred)
+}
+
+// Filter returns an entql.Where implementation to apply filters on the FiatCurrencyMutation builder.
+func (m *FiatCurrencyMutation) Filter() *FiatCurrencyFilter {
+	return &FiatCurrencyFilter{config: m.config, predicateAdder: m}
+}
+
+// FiatCurrencyFilter provides a generic filtering capability at runtime for FiatCurrencyQuery.
+type FiatCurrencyFilter struct {
+	predicateAdder
+	config
+}
+
+// Where applies the entql predicate on the query filter.
+func (f *FiatCurrencyFilter) Where(p entql.P) {
+	f.addPredicate(func(s *sql.Selector) {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[6].Type, p, s); err != nil {
+			s.AddError(err)
+		}
+	})
+}
+
+// WhereID applies the entql [16]byte predicate on the id field.
+func (f *FiatCurrencyFilter) WhereID(p entql.ValueP) {
+	f.Where(p.Field(fiatcurrency.FieldID))
+}
+
+// WhereCreatedAt applies the entql uint32 predicate on the created_at field.
+func (f *FiatCurrencyFilter) WhereCreatedAt(p entql.Uint32P) {
+	f.Where(p.Field(fiatcurrency.FieldCreatedAt))
+}
+
+// WhereUpdatedAt applies the entql uint32 predicate on the updated_at field.
+func (f *FiatCurrencyFilter) WhereUpdatedAt(p entql.Uint32P) {
+	f.Where(p.Field(fiatcurrency.FieldUpdatedAt))
+}
+
+// WhereDeletedAt applies the entql uint32 predicate on the deleted_at field.
+func (f *FiatCurrencyFilter) WhereDeletedAt(p entql.Uint32P) {
+	f.Where(p.Field(fiatcurrency.FieldDeletedAt))
+}
+
+// WhereFiatCurrencyTypeID applies the entql [16]byte predicate on the fiat_currency_type_id field.
+func (f *FiatCurrencyFilter) WhereFiatCurrencyTypeID(p entql.ValueP) {
+	f.Where(p.Field(fiatcurrency.FieldFiatCurrencyTypeID))
+}
+
+// WhereFeedType applies the entql string predicate on the feed_type field.
+func (f *FiatCurrencyFilter) WhereFeedType(p entql.StringP) {
+	f.Where(p.Field(fiatcurrency.FieldFeedType))
+}
+
+// WhereMarketValueLow applies the entql other predicate on the market_value_low field.
+func (f *FiatCurrencyFilter) WhereMarketValueLow(p entql.OtherP) {
+	f.Where(p.Field(fiatcurrency.FieldMarketValueLow))
+}
+
+// WhereMarketValueHigh applies the entql other predicate on the market_value_high field.
+func (f *FiatCurrencyFilter) WhereMarketValueHigh(p entql.OtherP) {
+	f.Where(p.Field(fiatcurrency.FieldMarketValueHigh))
+}
+
+// addPredicate implements the predicateAdder interface.
+func (fctq *FiatCurrencyTypeQuery) addPredicate(pred func(s *sql.Selector)) {
+	fctq.predicates = append(fctq.predicates, pred)
+}
+
+// Filter returns a Filter implementation to apply filters on the FiatCurrencyTypeQuery builder.
+func (fctq *FiatCurrencyTypeQuery) Filter() *FiatCurrencyTypeFilter {
+	return &FiatCurrencyTypeFilter{config: fctq.config, predicateAdder: fctq}
+}
+
+// addPredicate implements the predicateAdder interface.
+func (m *FiatCurrencyTypeMutation) addPredicate(pred func(s *sql.Selector)) {
+	m.predicates = append(m.predicates, pred)
+}
+
+// Filter returns an entql.Where implementation to apply filters on the FiatCurrencyTypeMutation builder.
+func (m *FiatCurrencyTypeMutation) Filter() *FiatCurrencyTypeFilter {
+	return &FiatCurrencyTypeFilter{config: m.config, predicateAdder: m}
+}
+
+// FiatCurrencyTypeFilter provides a generic filtering capability at runtime for FiatCurrencyTypeQuery.
+type FiatCurrencyTypeFilter struct {
+	predicateAdder
+	config
+}
+
+// Where applies the entql predicate on the query filter.
+func (f *FiatCurrencyTypeFilter) Where(p entql.P) {
+	f.addPredicate(func(s *sql.Selector) {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[7].Type, p, s); err != nil {
+			s.AddError(err)
+		}
+	})
+}
+
+// WhereID applies the entql [16]byte predicate on the id field.
+func (f *FiatCurrencyTypeFilter) WhereID(p entql.ValueP) {
+	f.Where(p.Field(fiatcurrencytype.FieldID))
+}
+
+// WhereCreatedAt applies the entql uint32 predicate on the created_at field.
+func (f *FiatCurrencyTypeFilter) WhereCreatedAt(p entql.Uint32P) {
+	f.Where(p.Field(fiatcurrencytype.FieldCreatedAt))
+}
+
+// WhereUpdatedAt applies the entql uint32 predicate on the updated_at field.
+func (f *FiatCurrencyTypeFilter) WhereUpdatedAt(p entql.Uint32P) {
+	f.Where(p.Field(fiatcurrencytype.FieldUpdatedAt))
+}
+
+// WhereDeletedAt applies the entql uint32 predicate on the deleted_at field.
+func (f *FiatCurrencyTypeFilter) WhereDeletedAt(p entql.Uint32P) {
+	f.Where(p.Field(fiatcurrencytype.FieldDeletedAt))
+}
+
+// WhereName applies the entql string predicate on the name field.
+func (f *FiatCurrencyTypeFilter) WhereName(p entql.StringP) {
+	f.Where(p.Field(fiatcurrencytype.FieldName))
+}
+
+// WhereLogo applies the entql string predicate on the logo field.
+func (f *FiatCurrencyTypeFilter) WhereLogo(p entql.StringP) {
+	f.Where(p.Field(fiatcurrencytype.FieldLogo))
+}
+
+// addPredicate implements the predicateAdder interface.
 func (sq *SettingQuery) addPredicate(pred func(s *sql.Selector)) {
 	sq.predicates = append(sq.predicates, pred)
 }
@@ -757,7 +937,7 @@ type SettingFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *SettingFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[6].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[8].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -857,7 +1037,7 @@ type TranFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *TranFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[7].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[9].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})

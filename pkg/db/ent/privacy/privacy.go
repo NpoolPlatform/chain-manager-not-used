@@ -294,6 +294,54 @@ func (f ExchangeRateMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mu
 	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.ExchangeRateMutation", m)
 }
 
+// The FiatCurrencyQueryRuleFunc type is an adapter to allow the use of ordinary
+// functions as a query rule.
+type FiatCurrencyQueryRuleFunc func(context.Context, *ent.FiatCurrencyQuery) error
+
+// EvalQuery return f(ctx, q).
+func (f FiatCurrencyQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.FiatCurrencyQuery); ok {
+		return f(ctx, q)
+	}
+	return Denyf("ent/privacy: unexpected query type %T, expect *ent.FiatCurrencyQuery", q)
+}
+
+// The FiatCurrencyMutationRuleFunc type is an adapter to allow the use of ordinary
+// functions as a mutation rule.
+type FiatCurrencyMutationRuleFunc func(context.Context, *ent.FiatCurrencyMutation) error
+
+// EvalMutation calls f(ctx, m).
+func (f FiatCurrencyMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
+	if m, ok := m.(*ent.FiatCurrencyMutation); ok {
+		return f(ctx, m)
+	}
+	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.FiatCurrencyMutation", m)
+}
+
+// The FiatCurrencyTypeQueryRuleFunc type is an adapter to allow the use of ordinary
+// functions as a query rule.
+type FiatCurrencyTypeQueryRuleFunc func(context.Context, *ent.FiatCurrencyTypeQuery) error
+
+// EvalQuery return f(ctx, q).
+func (f FiatCurrencyTypeQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.FiatCurrencyTypeQuery); ok {
+		return f(ctx, q)
+	}
+	return Denyf("ent/privacy: unexpected query type %T, expect *ent.FiatCurrencyTypeQuery", q)
+}
+
+// The FiatCurrencyTypeMutationRuleFunc type is an adapter to allow the use of ordinary
+// functions as a mutation rule.
+type FiatCurrencyTypeMutationRuleFunc func(context.Context, *ent.FiatCurrencyTypeMutation) error
+
+// EvalMutation calls f(ctx, m).
+func (f FiatCurrencyTypeMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
+	if m, ok := m.(*ent.FiatCurrencyTypeMutation); ok {
+		return f(ctx, m)
+	}
+	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.FiatCurrencyTypeMutation", m)
+}
+
 // The SettingQueryRuleFunc type is an adapter to allow the use of ordinary
 // functions as a query rule.
 type SettingQueryRuleFunc func(context.Context, *ent.SettingQuery) error
@@ -389,6 +437,10 @@ func queryFilter(q ent.Query) (Filter, error) {
 		return q.Filter(), nil
 	case *ent.ExchangeRateQuery:
 		return q.Filter(), nil
+	case *ent.FiatCurrencyQuery:
+		return q.Filter(), nil
+	case *ent.FiatCurrencyTypeQuery:
+		return q.Filter(), nil
 	case *ent.SettingQuery:
 		return q.Filter(), nil
 	case *ent.TranQuery:
@@ -411,6 +463,10 @@ func mutationFilter(m ent.Mutation) (Filter, error) {
 	case *ent.CurrencyMutation:
 		return m.Filter(), nil
 	case *ent.ExchangeRateMutation:
+		return m.Filter(), nil
+	case *ent.FiatCurrencyMutation:
+		return m.Filter(), nil
+	case *ent.FiatCurrencyTypeMutation:
 		return m.Filter(), nil
 	case *ent.SettingMutation:
 		return m.Filter(), nil

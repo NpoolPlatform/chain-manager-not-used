@@ -1,4 +1,4 @@
-package coinextra
+package currency
 
 import (
 	"context"
@@ -8,12 +8,14 @@ import (
 	"testing"
 
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent"
+	"github.com/shopspring/decimal"
 
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
 
 	testinit "github.com/NpoolPlatform/chain-manager/pkg/testinit"
 	valuedef "github.com/NpoolPlatform/message/npool"
-	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/coin/extra"
+	"github.com/NpoolPlatform/message/npool/chain/mgr/v1/coin/currency"
+	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/fiat/currency"
 	"github.com/google/uuid"
 
 	"github.com/stretchr/testify/assert"
@@ -28,25 +30,31 @@ func init() {
 	}
 }
 
-var entity = ent.CoinExtra{
-	ID:         uuid.New(),
-	CoinTypeID: uuid.New(),
-	HomePage:   uuid.NewString(),
+var entity = ent.FiatCurrency{
+	ID:                 uuid.New(),
+	FiatCurrencyTypeID: uuid.New(),
+	FeedType:           currency.FeedType_CoinBase.String(),
+	MarketValueHigh:    decimal.RequireFromString("88.9123"),
+	MarketValueLow:     decimal.RequireFromString("84.9123"),
 }
 
 var (
-	id         = entity.ID.String()
-	coinTypeID = entity.CoinTypeID.String()
-	homePage   = entity.HomePage
+	id              = entity.ID.String()
+	fiatTypeID      = entity.FiatCurrencyTypeID.String()
+	feedType        = currency.FeedType(currency.FeedType_value[entity.FeedType])
+	marketValueHigh = entity.MarketValueHigh.String()
+	marketValueLow  = entity.MarketValueLow.String()
 
-	req = npool.CoinExtraReq{
-		ID:         &id,
-		CoinTypeID: &coinTypeID,
-		HomePage:   &homePage,
+	req = npool.FiatCurrencyReq{
+		ID:                 &id,
+		FiatCurrencyTypeID: &fiatTypeID,
+		FeedType:           &feedType,
+		MarketValueHigh:    &marketValueHigh,
+		MarketValueLow:     &marketValueLow,
 	}
 )
 
-var info *ent.CoinExtra
+var info *ent.FiatCurrency
 
 func create(t *testing.T) {
 	var err error
@@ -59,29 +67,37 @@ func create(t *testing.T) {
 }
 
 func createBulk(t *testing.T) {
-	entities := []*ent.CoinExtra{
+	entities := []*ent.FiatCurrency{
 		{
-			ID:         uuid.New(),
-			CoinTypeID: uuid.New(),
-			HomePage:   uuid.NewString(),
+			ID:                 uuid.New(),
+			FiatCurrencyTypeID: uuid.New(),
+			FeedType:           currency.FeedType_CoinBase.String(),
+			MarketValueHigh:    decimal.RequireFromString("84.9123"),
+			MarketValueLow:     decimal.RequireFromString("82.9123"),
 		},
 		{
-			ID:         uuid.New(),
-			CoinTypeID: uuid.New(),
-			HomePage:   uuid.NewString(),
+			ID:                 uuid.New(),
+			FiatCurrencyTypeID: uuid.New(),
+			FeedType:           currency.FeedType_CoinGecko.String(),
+			MarketValueHigh:    decimal.RequireFromString("88.4123"),
+			MarketValueLow:     decimal.RequireFromString("84.2123"),
 		},
 	}
 
-	reqs := []*npool.CoinExtraReq{}
+	reqs := []*npool.FiatCurrencyReq{}
 	for _, _entity := range entities {
 		_id := _entity.ID.String()
-		_coinTypeID := _entity.CoinTypeID.String()
-		_homePage := _entity.HomePage
+		_fiatTypeID := _entity.FiatCurrencyTypeID.String()
+		_feedType := currency.FeedType(currency.FeedType_value[_entity.FeedType])
+		_marketValueHigh := _entity.MarketValueHigh.String()
+		_marketValueLow := _entity.MarketValueLow.String()
 
-		reqs = append(reqs, &npool.CoinExtraReq{
-			ID:         &_id,
-			CoinTypeID: &_coinTypeID,
-			HomePage:   &_homePage,
+		reqs = append(reqs, &npool.FiatCurrencyReq{
+			ID:                 &_id,
+			FiatCurrencyTypeID: &_fiatTypeID,
+			FeedType:           &_feedType,
+			MarketValueHigh:    &_marketValueHigh,
+			MarketValueLow:     &_marketValueLow,
 		})
 	}
 	infos, err := CreateBulk(context.Background(), reqs)
@@ -91,11 +107,14 @@ func createBulk(t *testing.T) {
 }
 
 func add(t *testing.T) {
-	homePage := uuid.NewString()
+	valueHigh := "11.22"
+	valueLow := "11.12"
 
-	req.HomePage = &homePage
+	req.MarketValueHigh = &valueHigh
+	req.MarketValueLow = &valueLow
 
-	entity.HomePage = homePage
+	entity.MarketValueHigh = decimal.RequireFromString(valueHigh)
+	entity.MarketValueLow = decimal.RequireFromString(valueLow)
 
 	info, err := Update(context.Background(), &req)
 	if assert.Nil(t, err) {

@@ -1,4 +1,4 @@
-package coinextra
+package currencytype
 
 import (
 	"context"
@@ -8,12 +8,11 @@ import (
 	"testing"
 
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent"
-
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
 
 	testinit "github.com/NpoolPlatform/chain-manager/pkg/testinit"
 	valuedef "github.com/NpoolPlatform/message/npool"
-	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/coin/extra"
+	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/fiat/currencytype"
 	"github.com/google/uuid"
 
 	"github.com/stretchr/testify/assert"
@@ -28,25 +27,22 @@ func init() {
 	}
 }
 
-var entity = ent.CoinExtra{
-	ID:         uuid.New(),
-	CoinTypeID: uuid.New(),
-	HomePage:   uuid.NewString(),
+var entity = ent.FiatCurrencyType{
+	ID:   uuid.New(),
+	Name: uuid.NewString(),
+	Logo: uuid.NewString(),
 }
 
 var (
-	id         = entity.ID.String()
-	coinTypeID = entity.CoinTypeID.String()
-	homePage   = entity.HomePage
-
-	req = npool.CoinExtraReq{
-		ID:         &id,
-		CoinTypeID: &coinTypeID,
-		HomePage:   &homePage,
+	id  = entity.ID.String()
+	req = npool.FiatCurrencyTypeReq{
+		ID:   &id,
+		Name: &entity.Name,
+		Logo: &entity.Logo,
 	}
 )
 
-var info *ent.CoinExtra
+var info *ent.FiatCurrencyType
 
 func create(t *testing.T) {
 	var err error
@@ -59,48 +55,31 @@ func create(t *testing.T) {
 }
 
 func createBulk(t *testing.T) {
-	entities := []*ent.CoinExtra{
+	entities := []*ent.FiatCurrencyType{
 		{
-			ID:         uuid.New(),
-			CoinTypeID: uuid.New(),
-			HomePage:   uuid.NewString(),
+			ID:   uuid.New(),
+			Name: uuid.NewString(),
+			Logo: uuid.NewString(),
 		},
 		{
-			ID:         uuid.New(),
-			CoinTypeID: uuid.New(),
-			HomePage:   uuid.NewString(),
+			ID:   uuid.New(),
+			Name: uuid.NewString(),
+			Logo: uuid.NewString(),
 		},
 	}
 
-	reqs := []*npool.CoinExtraReq{}
+	reqs := []*npool.FiatCurrencyTypeReq{}
 	for _, _entity := range entities {
 		_id := _entity.ID.String()
-		_coinTypeID := _entity.CoinTypeID.String()
-		_homePage := _entity.HomePage
-
-		reqs = append(reqs, &npool.CoinExtraReq{
-			ID:         &_id,
-			CoinTypeID: &_coinTypeID,
-			HomePage:   &_homePage,
+		reqs = append(reqs, &npool.FiatCurrencyTypeReq{
+			ID:   &_id,
+			Name: &_entity.Name,
+			Logo: &_entity.Logo,
 		})
 	}
 	infos, err := CreateBulk(context.Background(), reqs)
 	if assert.Nil(t, err) {
 		assert.Equal(t, len(infos), 2)
-	}
-}
-
-func add(t *testing.T) {
-	homePage := uuid.NewString()
-
-	req.HomePage = &homePage
-
-	entity.HomePage = homePage
-
-	info, err := Update(context.Background(), &req)
-	if assert.Nil(t, err) {
-		entity.UpdatedAt = info.UpdatedAt
-		assert.Equal(t, info.String(), entity.String())
 	}
 }
 
@@ -190,7 +169,6 @@ func TestTx(t *testing.T) {
 	}
 	t.Run("create", create)
 	t.Run("createBulk", createBulk)
-	t.Run("add", add)
 	t.Run("row", row)
 	t.Run("rows", rows)
 	t.Run("rowOnly", rowOnly)
