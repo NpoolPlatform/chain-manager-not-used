@@ -443,6 +443,10 @@ func init() {
 	fiatcurrencytypeDescName := fiatcurrencytypeFields[1].Descriptor()
 	// fiatcurrencytype.DefaultName holds the default value on creation for the name field.
 	fiatcurrencytype.DefaultName = fiatcurrencytypeDescName.Default.(string)
+	// fiatcurrencytypeDescLogo is the schema descriptor for logo field.
+	fiatcurrencytypeDescLogo := fiatcurrencytypeFields[2].Descriptor()
+	// fiatcurrencytype.DefaultLogo holds the default value on creation for the logo field.
+	fiatcurrencytype.DefaultLogo = fiatcurrencytypeDescLogo.Default.(string)
 	// fiatcurrencytypeDescID is the schema descriptor for id field.
 	fiatcurrencytypeDescID := fiatcurrencytypeFields[0].Descriptor()
 	// fiatcurrencytype.DefaultID holds the default value on creation for the id field.

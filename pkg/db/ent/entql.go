@@ -190,6 +190,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			fiatcurrencytype.FieldUpdatedAt: {Type: field.TypeUint32, Column: fiatcurrencytype.FieldUpdatedAt},
 			fiatcurrencytype.FieldDeletedAt: {Type: field.TypeUint32, Column: fiatcurrencytype.FieldDeletedAt},
 			fiatcurrencytype.FieldName:      {Type: field.TypeString, Column: fiatcurrencytype.FieldName},
+			fiatcurrencytype.FieldLogo:      {Type: field.TypeString, Column: fiatcurrencytype.FieldLogo},
 		},
 	}
 	graph.Nodes[8] = &sqlgraph.Node{
@@ -894,6 +895,11 @@ func (f *FiatCurrencyTypeFilter) WhereDeletedAt(p entql.Uint32P) {
 // WhereName applies the entql string predicate on the name field.
 func (f *FiatCurrencyTypeFilter) WhereName(p entql.StringP) {
 	f.Where(p.Field(fiatcurrencytype.FieldName))
+}
+
+// WhereLogo applies the entql string predicate on the logo field.
+func (f *FiatCurrencyTypeFilter) WhereLogo(p entql.StringP) {
+	f.Where(p.Field(fiatcurrencytype.FieldLogo))
 }
 
 // addPredicate implements the predicateAdder interface.

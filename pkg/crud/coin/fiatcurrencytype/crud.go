@@ -27,6 +27,9 @@ func CreateSet(c *ent.FiatCurrencyTypeCreate, in *npool.FiatCurrencyTypeReq) *en
 	if in.Name != nil {
 		c.SetName(in.GetName())
 	}
+	if in.Logo != nil {
+		c.SetLogo(in.GetLogo())
+	}
 	return c
 }
 
@@ -88,6 +91,9 @@ func UpdateSet(info *ent.FiatCurrencyType, in *npool.FiatCurrencyTypeReq) *ent.F
 	stm := info.Update()
 	if in.Name != nil {
 		stm.SetName(in.GetName())
+	}
+	if in.Logo != nil {
+		stm.SetLogo(in.GetLogo())
 	}
 	return stm
 }

@@ -29,6 +29,10 @@ func (FiatCurrencyType) Fields() []ent.Field {
 			String("name").
 			Optional().
 			Default(""),
+		field.
+			String("logo").
+			Optional().
+			Default(""),
 	}
 }
 

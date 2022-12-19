@@ -20,6 +20,8 @@ const (
 	FieldDeletedAt = "deleted_at"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
+	// FieldLogo holds the string denoting the logo field in the database.
+	FieldLogo = "logo"
 	// Table holds the table name of the fiatcurrencytype in the database.
 	Table = "fiat_currency_types"
 )
@@ -31,6 +33,7 @@ var Columns = []string{
 	FieldUpdatedAt,
 	FieldDeletedAt,
 	FieldName,
+	FieldLogo,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -62,6 +65,8 @@ var (
 	DefaultDeletedAt func() uint32
 	// DefaultName holds the default value on creation for the "name" field.
 	DefaultName string
+	// DefaultLogo holds the default value on creation for the "logo" field.
+	DefaultLogo string
 	// DefaultID holds the default value on creation for the "id" field.
 	DefaultID func() uuid.UUID
 )

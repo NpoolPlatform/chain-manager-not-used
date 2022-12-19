@@ -146,6 +146,7 @@ var (
 		{Name: "updated_at", Type: field.TypeUint32},
 		{Name: "deleted_at", Type: field.TypeUint32},
 		{Name: "name", Type: field.TypeString, Nullable: true, Default: ""},
+		{Name: "logo", Type: field.TypeString, Nullable: true, Default: ""},
 	}
 	// FiatCurrencyTypesTable holds the schema information for the "fiat_currency_types" table.
 	FiatCurrencyTypesTable = &schema.Table{

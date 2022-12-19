@@ -35,11 +35,13 @@ func init() {
 var fiatcurrencyValue = &npool.FiatCurrencyType{
 	ID:   uuid.NewString(),
 	Name: uuid.NewString(),
+	Logo: uuid.NewString(),
 }
 
 var fiatcurrencyValueReq = &npool.FiatCurrencyTypeReq{
 	ID:   &fiatcurrencyValue.ID,
 	Name: &fiatcurrencyValue.Name,
+	Logo: &fiatcurrencyValue.Logo,
 }
 
 func createFiatCurrencyType(t *testing.T) {
@@ -60,6 +62,8 @@ func createCurrencies(t *testing.T) {
 func getFiatCurrencyType(t *testing.T) {
 	info, err := GetFiatCurrencyType(context.Background(), fiatcurrencyValue.ID)
 	if assert.Nil(t, err) {
+		fiatcurrencyValue.CreatedAt = info.CreatedAt
+		fiatcurrencyValue.UpdatedAt = info.UpdatedAt
 		assert.Equal(t, fiatcurrencyValue, info)
 	}
 }
@@ -67,6 +71,8 @@ func getFiatCurrencyType(t *testing.T) {
 func deleteFiatCurrencyType(t *testing.T) {
 	info, err := DeleteFiatCurrencyType(context.Background(), fiatcurrencyValue.ID)
 	if assert.Nil(t, err) {
+		fiatcurrencyValue.CreatedAt = info.CreatedAt
+		fiatcurrencyValue.UpdatedAt = info.UpdatedAt
 		assert.Equal(t, fiatcurrencyValue, info)
 	}
 

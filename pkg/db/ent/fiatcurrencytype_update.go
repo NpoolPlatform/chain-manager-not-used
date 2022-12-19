@@ -103,6 +103,26 @@ func (fctu *FiatCurrencyTypeUpdate) ClearName() *FiatCurrencyTypeUpdate {
 	return fctu
 }
 
+// SetLogo sets the "logo" field.
+func (fctu *FiatCurrencyTypeUpdate) SetLogo(s string) *FiatCurrencyTypeUpdate {
+	fctu.mutation.SetLogo(s)
+	return fctu
+}
+
+// SetNillableLogo sets the "logo" field if the given value is not nil.
+func (fctu *FiatCurrencyTypeUpdate) SetNillableLogo(s *string) *FiatCurrencyTypeUpdate {
+	if s != nil {
+		fctu.SetLogo(*s)
+	}
+	return fctu
+}
+
+// ClearLogo clears the value of the "logo" field.
+func (fctu *FiatCurrencyTypeUpdate) ClearLogo() *FiatCurrencyTypeUpdate {
+	fctu.mutation.ClearLogo()
+	return fctu
+}
+
 // Mutation returns the FiatCurrencyTypeMutation object of the builder.
 func (fctu *FiatCurrencyTypeUpdate) Mutation() *FiatCurrencyTypeMutation {
 	return fctu.mutation
@@ -256,6 +276,19 @@ func (fctu *FiatCurrencyTypeUpdate) sqlSave(ctx context.Context) (n int, err err
 			Column: fiatcurrencytype.FieldName,
 		})
 	}
+	if value, ok := fctu.mutation.Logo(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: fiatcurrencytype.FieldLogo,
+		})
+	}
+	if fctu.mutation.LogoCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: fiatcurrencytype.FieldLogo,
+		})
+	}
 	_spec.Modifiers = fctu.modifiers
 	if n, err = sqlgraph.UpdateNodes(ctx, fctu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -349,6 +382,26 @@ func (fctuo *FiatCurrencyTypeUpdateOne) SetNillableName(s *string) *FiatCurrency
 // ClearName clears the value of the "name" field.
 func (fctuo *FiatCurrencyTypeUpdateOne) ClearName() *FiatCurrencyTypeUpdateOne {
 	fctuo.mutation.ClearName()
+	return fctuo
+}
+
+// SetLogo sets the "logo" field.
+func (fctuo *FiatCurrencyTypeUpdateOne) SetLogo(s string) *FiatCurrencyTypeUpdateOne {
+	fctuo.mutation.SetLogo(s)
+	return fctuo
+}
+
+// SetNillableLogo sets the "logo" field if the given value is not nil.
+func (fctuo *FiatCurrencyTypeUpdateOne) SetNillableLogo(s *string) *FiatCurrencyTypeUpdateOne {
+	if s != nil {
+		fctuo.SetLogo(*s)
+	}
+	return fctuo
+}
+
+// ClearLogo clears the value of the "logo" field.
+func (fctuo *FiatCurrencyTypeUpdateOne) ClearLogo() *FiatCurrencyTypeUpdateOne {
+	fctuo.mutation.ClearLogo()
 	return fctuo
 }
 
@@ -533,6 +586,19 @@ func (fctuo *FiatCurrencyTypeUpdateOne) sqlSave(ctx context.Context) (_node *Fia
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Column: fiatcurrencytype.FieldName,
+		})
+	}
+	if value, ok := fctuo.mutation.Logo(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: fiatcurrencytype.FieldLogo,
+		})
+	}
+	if fctuo.mutation.LogoCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: fiatcurrencytype.FieldLogo,
 		})
 	}
 	_spec.Modifiers = fctuo.modifiers

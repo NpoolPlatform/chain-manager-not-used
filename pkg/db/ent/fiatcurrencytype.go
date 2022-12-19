@@ -24,6 +24,8 @@ type FiatCurrencyType struct {
 	DeletedAt uint32 `json:"deleted_at,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
+	// Logo holds the value of the "logo" field.
+	Logo string `json:"logo,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -33,7 +35,7 @@ func (*FiatCurrencyType) scanValues(columns []string) ([]interface{}, error) {
 		switch columns[i] {
 		case fiatcurrencytype.FieldCreatedAt, fiatcurrencytype.FieldUpdatedAt, fiatcurrencytype.FieldDeletedAt:
 			values[i] = new(sql.NullInt64)
-		case fiatcurrencytype.FieldName:
+		case fiatcurrencytype.FieldName, fiatcurrencytype.FieldLogo:
 			values[i] = new(sql.NullString)
 		case fiatcurrencytype.FieldID:
 			values[i] = new(uuid.UUID)
@@ -82,6 +84,12 @@ func (fct *FiatCurrencyType) assignValues(columns []string, values []interface{}
 			} else if value.Valid {
 				fct.Name = value.String
 			}
+		case fiatcurrencytype.FieldLogo:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field logo", values[i])
+			} else if value.Valid {
+				fct.Logo = value.String
+			}
 		}
 	}
 	return nil
@@ -121,6 +129,9 @@ func (fct *FiatCurrencyType) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("name=")
 	builder.WriteString(fct.Name)
+	builder.WriteString(", ")
+	builder.WriteString("logo=")
+	builder.WriteString(fct.Logo)
 	builder.WriteByte(')')
 	return builder.String()
 }

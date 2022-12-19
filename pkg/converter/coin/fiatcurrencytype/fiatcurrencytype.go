@@ -13,6 +13,7 @@ func Ent2Grpc(row *ent.FiatCurrencyType) *npool.FiatCurrencyType {
 	return &npool.FiatCurrencyType{
 		ID:        row.ID.String(),
 		Name:      row.Name,
+		Logo:      row.Logo,
 		CreatedAt: row.CreatedAt,
 		UpdatedAt: row.UpdatedAt,
 	}

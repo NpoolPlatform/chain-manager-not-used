@@ -79,6 +79,20 @@ func (fctc *FiatCurrencyTypeCreate) SetNillableName(s *string) *FiatCurrencyType
 	return fctc
 }
 
+// SetLogo sets the "logo" field.
+func (fctc *FiatCurrencyTypeCreate) SetLogo(s string) *FiatCurrencyTypeCreate {
+	fctc.mutation.SetLogo(s)
+	return fctc
+}
+
+// SetNillableLogo sets the "logo" field if the given value is not nil.
+func (fctc *FiatCurrencyTypeCreate) SetNillableLogo(s *string) *FiatCurrencyTypeCreate {
+	if s != nil {
+		fctc.SetLogo(*s)
+	}
+	return fctc
+}
+
 // SetID sets the "id" field.
 func (fctc *FiatCurrencyTypeCreate) SetID(u uuid.UUID) *FiatCurrencyTypeCreate {
 	fctc.mutation.SetID(u)
@@ -197,6 +211,10 @@ func (fctc *FiatCurrencyTypeCreate) defaults() error {
 		v := fiatcurrencytype.DefaultName
 		fctc.mutation.SetName(v)
 	}
+	if _, ok := fctc.mutation.Logo(); !ok {
+		v := fiatcurrencytype.DefaultLogo
+		fctc.mutation.SetLogo(v)
+	}
 	if _, ok := fctc.mutation.ID(); !ok {
 		if fiatcurrencytype.DefaultID == nil {
 			return fmt.Errorf("ent: uninitialized fiatcurrencytype.DefaultID (forgotten import ent/runtime?)")
@@ -286,6 +304,14 @@ func (fctc *FiatCurrencyTypeCreate) createSpec() (*FiatCurrencyType, *sqlgraph.C
 			Column: fiatcurrencytype.FieldName,
 		})
 		_node.Name = value
+	}
+	if value, ok := fctc.mutation.Logo(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: fiatcurrencytype.FieldLogo,
+		})
+		_node.Logo = value
 	}
 	return _node, _spec
 }
@@ -410,6 +436,24 @@ func (u *FiatCurrencyTypeUpsert) UpdateName() *FiatCurrencyTypeUpsert {
 // ClearName clears the value of the "name" field.
 func (u *FiatCurrencyTypeUpsert) ClearName() *FiatCurrencyTypeUpsert {
 	u.SetNull(fiatcurrencytype.FieldName)
+	return u
+}
+
+// SetLogo sets the "logo" field.
+func (u *FiatCurrencyTypeUpsert) SetLogo(v string) *FiatCurrencyTypeUpsert {
+	u.Set(fiatcurrencytype.FieldLogo, v)
+	return u
+}
+
+// UpdateLogo sets the "logo" field to the value that was provided on create.
+func (u *FiatCurrencyTypeUpsert) UpdateLogo() *FiatCurrencyTypeUpsert {
+	u.SetExcluded(fiatcurrencytype.FieldLogo)
+	return u
+}
+
+// ClearLogo clears the value of the "logo" field.
+func (u *FiatCurrencyTypeUpsert) ClearLogo() *FiatCurrencyTypeUpsert {
+	u.SetNull(fiatcurrencytype.FieldLogo)
 	return u
 }
 
@@ -544,6 +588,27 @@ func (u *FiatCurrencyTypeUpsertOne) UpdateName() *FiatCurrencyTypeUpsertOne {
 func (u *FiatCurrencyTypeUpsertOne) ClearName() *FiatCurrencyTypeUpsertOne {
 	return u.Update(func(s *FiatCurrencyTypeUpsert) {
 		s.ClearName()
+	})
+}
+
+// SetLogo sets the "logo" field.
+func (u *FiatCurrencyTypeUpsertOne) SetLogo(v string) *FiatCurrencyTypeUpsertOne {
+	return u.Update(func(s *FiatCurrencyTypeUpsert) {
+		s.SetLogo(v)
+	})
+}
+
+// UpdateLogo sets the "logo" field to the value that was provided on create.
+func (u *FiatCurrencyTypeUpsertOne) UpdateLogo() *FiatCurrencyTypeUpsertOne {
+	return u.Update(func(s *FiatCurrencyTypeUpsert) {
+		s.UpdateLogo()
+	})
+}
+
+// ClearLogo clears the value of the "logo" field.
+func (u *FiatCurrencyTypeUpsertOne) ClearLogo() *FiatCurrencyTypeUpsertOne {
+	return u.Update(func(s *FiatCurrencyTypeUpsert) {
+		s.ClearLogo()
 	})
 }
 
@@ -844,6 +909,27 @@ func (u *FiatCurrencyTypeUpsertBulk) UpdateName() *FiatCurrencyTypeUpsertBulk {
 func (u *FiatCurrencyTypeUpsertBulk) ClearName() *FiatCurrencyTypeUpsertBulk {
 	return u.Update(func(s *FiatCurrencyTypeUpsert) {
 		s.ClearName()
+	})
+}
+
+// SetLogo sets the "logo" field.
+func (u *FiatCurrencyTypeUpsertBulk) SetLogo(v string) *FiatCurrencyTypeUpsertBulk {
+	return u.Update(func(s *FiatCurrencyTypeUpsert) {
+		s.SetLogo(v)
+	})
+}
+
+// UpdateLogo sets the "logo" field to the value that was provided on create.
+func (u *FiatCurrencyTypeUpsertBulk) UpdateLogo() *FiatCurrencyTypeUpsertBulk {
+	return u.Update(func(s *FiatCurrencyTypeUpsert) {
+		s.UpdateLogo()
+	})
+}
+
+// ClearLogo clears the value of the "logo" field.
+func (u *FiatCurrencyTypeUpsertBulk) ClearLogo() *FiatCurrencyTypeUpsertBulk {
+	return u.Update(func(s *FiatCurrencyTypeUpsert) {
+		s.ClearLogo()
 	})
 }
 

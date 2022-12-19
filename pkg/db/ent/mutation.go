@@ -6723,6 +6723,7 @@ type FiatCurrencyTypeMutation struct {
 	deleted_at    *uint32
 	adddeleted_at *int32
 	name          *string
+	logo          *string
 	clearedFields map[string]struct{}
 	done          bool
 	oldValue      func(context.Context) (*FiatCurrencyType, error)
@@ -7050,6 +7051,55 @@ func (m *FiatCurrencyTypeMutation) ResetName() {
 	delete(m.clearedFields, fiatcurrencytype.FieldName)
 }
 
+// SetLogo sets the "logo" field.
+func (m *FiatCurrencyTypeMutation) SetLogo(s string) {
+	m.logo = &s
+}
+
+// Logo returns the value of the "logo" field in the mutation.
+func (m *FiatCurrencyTypeMutation) Logo() (r string, exists bool) {
+	v := m.logo
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLogo returns the old "logo" field's value of the FiatCurrencyType entity.
+// If the FiatCurrencyType object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FiatCurrencyTypeMutation) OldLogo(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLogo is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLogo requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLogo: %w", err)
+	}
+	return oldValue.Logo, nil
+}
+
+// ClearLogo clears the value of the "logo" field.
+func (m *FiatCurrencyTypeMutation) ClearLogo() {
+	m.logo = nil
+	m.clearedFields[fiatcurrencytype.FieldLogo] = struct{}{}
+}
+
+// LogoCleared returns if the "logo" field was cleared in this mutation.
+func (m *FiatCurrencyTypeMutation) LogoCleared() bool {
+	_, ok := m.clearedFields[fiatcurrencytype.FieldLogo]
+	return ok
+}
+
+// ResetLogo resets all changes to the "logo" field.
+func (m *FiatCurrencyTypeMutation) ResetLogo() {
+	m.logo = nil
+	delete(m.clearedFields, fiatcurrencytype.FieldLogo)
+}
+
 // Where appends a list predicates to the FiatCurrencyTypeMutation builder.
 func (m *FiatCurrencyTypeMutation) Where(ps ...predicate.FiatCurrencyType) {
 	m.predicates = append(m.predicates, ps...)
@@ -7069,7 +7119,7 @@ func (m *FiatCurrencyTypeMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *FiatCurrencyTypeMutation) Fields() []string {
-	fields := make([]string, 0, 4)
+	fields := make([]string, 0, 5)
 	if m.created_at != nil {
 		fields = append(fields, fiatcurrencytype.FieldCreatedAt)
 	}
@@ -7081,6 +7131,9 @@ func (m *FiatCurrencyTypeMutation) Fields() []string {
 	}
 	if m.name != nil {
 		fields = append(fields, fiatcurrencytype.FieldName)
+	}
+	if m.logo != nil {
+		fields = append(fields, fiatcurrencytype.FieldLogo)
 	}
 	return fields
 }
@@ -7098,6 +7151,8 @@ func (m *FiatCurrencyTypeMutation) Field(name string) (ent.Value, bool) {
 		return m.DeletedAt()
 	case fiatcurrencytype.FieldName:
 		return m.Name()
+	case fiatcurrencytype.FieldLogo:
+		return m.Logo()
 	}
 	return nil, false
 }
@@ -7115,6 +7170,8 @@ func (m *FiatCurrencyTypeMutation) OldField(ctx context.Context, name string) (e
 		return m.OldDeletedAt(ctx)
 	case fiatcurrencytype.FieldName:
 		return m.OldName(ctx)
+	case fiatcurrencytype.FieldLogo:
+		return m.OldLogo(ctx)
 	}
 	return nil, fmt.Errorf("unknown FiatCurrencyType field %s", name)
 }
@@ -7151,6 +7208,13 @@ func (m *FiatCurrencyTypeMutation) SetField(name string, value ent.Value) error 
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetName(v)
+		return nil
+	case fiatcurrencytype.FieldLogo:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLogo(v)
 		return nil
 	}
 	return fmt.Errorf("unknown FiatCurrencyType field %s", name)
@@ -7224,6 +7288,9 @@ func (m *FiatCurrencyTypeMutation) ClearedFields() []string {
 	if m.FieldCleared(fiatcurrencytype.FieldName) {
 		fields = append(fields, fiatcurrencytype.FieldName)
 	}
+	if m.FieldCleared(fiatcurrencytype.FieldLogo) {
+		fields = append(fields, fiatcurrencytype.FieldLogo)
+	}
 	return fields
 }
 
@@ -7240,6 +7307,9 @@ func (m *FiatCurrencyTypeMutation) ClearField(name string) error {
 	switch name {
 	case fiatcurrencytype.FieldName:
 		m.ClearName()
+		return nil
+	case fiatcurrencytype.FieldLogo:
+		m.ClearLogo()
 		return nil
 	}
 	return fmt.Errorf("unknown FiatCurrencyType nullable field %s", name)
@@ -7260,6 +7330,9 @@ func (m *FiatCurrencyTypeMutation) ResetField(name string) error {
 		return nil
 	case fiatcurrencytype.FieldName:
 		m.ResetName()
+		return nil
+	case fiatcurrencytype.FieldLogo:
+		m.ResetLogo()
 		return nil
 	}
 	return fmt.Errorf("unknown FiatCurrencyType field %s", name)

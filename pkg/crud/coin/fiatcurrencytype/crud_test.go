@@ -30,6 +30,7 @@ func init() {
 var entity = ent.FiatCurrencyType{
 	ID:   uuid.New(),
 	Name: uuid.NewString(),
+	Logo: uuid.NewString(),
 }
 
 var (
@@ -37,6 +38,7 @@ var (
 	req = npool.FiatCurrencyTypeReq{
 		ID:   &id,
 		Name: &entity.Name,
+		Logo: &entity.Logo,
 	}
 )
 
@@ -57,10 +59,12 @@ func createBulk(t *testing.T) {
 		{
 			ID:   uuid.New(),
 			Name: uuid.NewString(),
+			Logo: uuid.NewString(),
 		},
 		{
 			ID:   uuid.New(),
 			Name: uuid.NewString(),
+			Logo: uuid.NewString(),
 		},
 	}
 
@@ -70,6 +74,7 @@ func createBulk(t *testing.T) {
 		reqs = append(reqs, &npool.FiatCurrencyTypeReq{
 			ID:   &_id,
 			Name: &_entity.Name,
+			Logo: &_entity.Logo,
 		})
 	}
 	infos, err := CreateBulk(context.Background(), reqs)
