@@ -117,6 +117,9 @@ func CreateBulk(ctx context.Context, in []*npool.SettingReq) ([]*ent.Setting, er
 func UpdateSet(info *ent.Setting, in *npool.SettingReq) *ent.SettingUpdateOne {
 	stm := info.Update()
 
+	if in.FeeCoinTypeID != nil {
+		stm.SetFeeCoinTypeID(uuid.MustParse(in.GetFeeCoinTypeID()))
+	}
 	if in.WithdrawFeeByStableUSD != nil {
 		stm.SetWithdrawFeeByStableUsd(in.GetWithdrawFeeByStableUSD())
 	}

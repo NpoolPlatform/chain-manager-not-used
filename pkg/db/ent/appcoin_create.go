@@ -192,6 +192,20 @@ func (acc *AppCoinCreate) SetNillableDailyRewardAmount(d *decimal.Decimal) *AppC
 	return acc
 }
 
+// SetDisplay sets the "display" field.
+func (acc *AppCoinCreate) SetDisplay(b bool) *AppCoinCreate {
+	acc.mutation.SetDisplay(b)
+	return acc
+}
+
+// SetNillableDisplay sets the "display" field if the given value is not nil.
+func (acc *AppCoinCreate) SetNillableDisplay(b *bool) *AppCoinCreate {
+	if b != nil {
+		acc.SetDisplay(*b)
+	}
+	return acc
+}
+
 // SetID sets the "id" field.
 func (acc *AppCoinCreate) SetID(u uuid.UUID) *AppCoinCreate {
 	acc.mutation.SetID(u)
@@ -348,6 +362,10 @@ func (acc *AppCoinCreate) defaults() error {
 		v := appcoin.DefaultDailyRewardAmount
 		acc.mutation.SetDailyRewardAmount(v)
 	}
+	if _, ok := acc.mutation.Display(); !ok {
+		v := appcoin.DefaultDisplay
+		acc.mutation.SetDisplay(v)
+	}
 	if _, ok := acc.mutation.ID(); !ok {
 		if appcoin.DefaultID == nil {
 			return fmt.Errorf("ent: uninitialized appcoin.DefaultID (forgotten import ent/runtime?)")
@@ -501,6 +519,14 @@ func (acc *AppCoinCreate) createSpec() (*AppCoin, *sqlgraph.CreateSpec) {
 			Column: appcoin.FieldDailyRewardAmount,
 		})
 		_node.DailyRewardAmount = value
+	}
+	if value, ok := acc.mutation.Display(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Value:  value,
+			Column: appcoin.FieldDisplay,
+		})
+		_node.Display = value
 	}
 	return _node, _spec
 }
@@ -769,6 +795,24 @@ func (u *AppCoinUpsert) UpdateDailyRewardAmount() *AppCoinUpsert {
 // ClearDailyRewardAmount clears the value of the "daily_reward_amount" field.
 func (u *AppCoinUpsert) ClearDailyRewardAmount() *AppCoinUpsert {
 	u.SetNull(appcoin.FieldDailyRewardAmount)
+	return u
+}
+
+// SetDisplay sets the "display" field.
+func (u *AppCoinUpsert) SetDisplay(v bool) *AppCoinUpsert {
+	u.Set(appcoin.FieldDisplay, v)
+	return u
+}
+
+// UpdateDisplay sets the "display" field to the value that was provided on create.
+func (u *AppCoinUpsert) UpdateDisplay() *AppCoinUpsert {
+	u.SetExcluded(appcoin.FieldDisplay)
+	return u
+}
+
+// ClearDisplay clears the value of the "display" field.
+func (u *AppCoinUpsert) ClearDisplay() *AppCoinUpsert {
+	u.SetNull(appcoin.FieldDisplay)
 	return u
 }
 
@@ -1071,6 +1115,27 @@ func (u *AppCoinUpsertOne) UpdateDailyRewardAmount() *AppCoinUpsertOne {
 func (u *AppCoinUpsertOne) ClearDailyRewardAmount() *AppCoinUpsertOne {
 	return u.Update(func(s *AppCoinUpsert) {
 		s.ClearDailyRewardAmount()
+	})
+}
+
+// SetDisplay sets the "display" field.
+func (u *AppCoinUpsertOne) SetDisplay(v bool) *AppCoinUpsertOne {
+	return u.Update(func(s *AppCoinUpsert) {
+		s.SetDisplay(v)
+	})
+}
+
+// UpdateDisplay sets the "display" field to the value that was provided on create.
+func (u *AppCoinUpsertOne) UpdateDisplay() *AppCoinUpsertOne {
+	return u.Update(func(s *AppCoinUpsert) {
+		s.UpdateDisplay()
+	})
+}
+
+// ClearDisplay clears the value of the "display" field.
+func (u *AppCoinUpsertOne) ClearDisplay() *AppCoinUpsertOne {
+	return u.Update(func(s *AppCoinUpsert) {
+		s.ClearDisplay()
 	})
 }
 
@@ -1539,6 +1604,27 @@ func (u *AppCoinUpsertBulk) UpdateDailyRewardAmount() *AppCoinUpsertBulk {
 func (u *AppCoinUpsertBulk) ClearDailyRewardAmount() *AppCoinUpsertBulk {
 	return u.Update(func(s *AppCoinUpsert) {
 		s.ClearDailyRewardAmount()
+	})
+}
+
+// SetDisplay sets the "display" field.
+func (u *AppCoinUpsertBulk) SetDisplay(v bool) *AppCoinUpsertBulk {
+	return u.Update(func(s *AppCoinUpsert) {
+		s.SetDisplay(v)
+	})
+}
+
+// UpdateDisplay sets the "display" field to the value that was provided on create.
+func (u *AppCoinUpsertBulk) UpdateDisplay() *AppCoinUpsertBulk {
+	return u.Update(func(s *AppCoinUpsert) {
+		s.UpdateDisplay()
+	})
+}
+
+// ClearDisplay clears the value of the "display" field.
+func (u *AppCoinUpsertBulk) ClearDisplay() *AppCoinUpsertBulk {
+	return u.Update(func(s *AppCoinUpsert) {
+		s.ClearDisplay()
 	})
 }
 

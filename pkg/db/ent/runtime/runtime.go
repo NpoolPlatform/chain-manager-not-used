@@ -91,6 +91,10 @@ func init() {
 	appcoinDescDailyRewardAmount := appcoinFields[9].Descriptor()
 	// appcoin.DefaultDailyRewardAmount holds the default value on creation for the daily_reward_amount field.
 	appcoin.DefaultDailyRewardAmount = appcoinDescDailyRewardAmount.Default.(decimal.Decimal)
+	// appcoinDescDisplay is the schema descriptor for display field.
+	appcoinDescDisplay := appcoinFields[10].Descriptor()
+	// appcoin.DefaultDisplay holds the default value on creation for the display field.
+	appcoin.DefaultDisplay = appcoinDescDisplay.Default.(bool)
 	// appcoinDescID is the schema descriptor for id field.
 	appcoinDescID := appcoinFields[0].Descriptor()
 	// appcoin.DefaultID holds the default value on creation for the id field.

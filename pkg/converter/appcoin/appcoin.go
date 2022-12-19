@@ -22,6 +22,8 @@ func Ent2Grpc(row *ent.AppCoin) *npool.AppCoin {
 		DailyRewardAmount:        row.DailyRewardAmount.String(),
 		CreatedAt:                row.CreatedAt,
 		UpdatedAt:                row.UpdatedAt,
+		Disabled:                 row.Disabled,
+		Display:                  row.Display,
 	}
 }
 

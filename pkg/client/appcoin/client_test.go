@@ -40,6 +40,8 @@ var appCoin = &npool.AppCoin{
 	ForPay:                   false,
 	WithdrawAutoReviewAmount: "89.123",
 	DailyRewardAmount:        "89.122",
+	Display:                  false,
+	Disabled:                 false,
 }
 
 var appCoinReq = &npool.AppCoinReq{
@@ -51,6 +53,8 @@ var appCoinReq = &npool.AppCoinReq{
 	ForPay:                   &appCoin.ForPay,
 	WithdrawAutoReviewAmount: &appCoin.WithdrawAutoReviewAmount,
 	DailyRewardAmount:        &appCoin.DailyRewardAmount,
+	Display:                  &appCoin.Display,
+	Disabled:                 &appCoin.Disabled,
 }
 
 func createAppCoin(t *testing.T) {
