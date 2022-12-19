@@ -1,4 +1,4 @@
-package fiatcurrencytype
+package currency
 
 import (
 	"context"
@@ -16,7 +16,8 @@ import (
 
 	"github.com/NpoolPlatform/chain-manager/pkg/testinit"
 
-	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/fiatcurrencytype"
+	"github.com/NpoolPlatform/message/npool/chain/mgr/v1/coin/currency"
+	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/fiat/currency"
 
 	"github.com/stretchr/testify/assert"
 
@@ -32,20 +33,24 @@ func init() {
 	}
 }
 
-var fiatcurrencyValue = &npool.FiatCurrencyType{
-	ID:   uuid.NewString(),
-	Name: uuid.NewString(),
-	Logo: uuid.NewString(),
+var fiatcurrencyValue = &npool.FiatCurrency{
+	ID:                 uuid.NewString(),
+	FiatCurrencyTypeID: uuid.NewString(),
+	FeedType:           currency.FeedType_CoinBase,
+	MarketValueHigh:    "99.123",
+	MarketValueLow:     "97.123",
 }
 
-var fiatcurrencyValueReq = &npool.FiatCurrencyTypeReq{
-	ID:   &fiatcurrencyValue.ID,
-	Name: &fiatcurrencyValue.Name,
-	Logo: &fiatcurrencyValue.Logo,
+var fiatcurrencyValueReq = &npool.FiatCurrencyReq{
+	ID:                 &fiatcurrencyValue.ID,
+	FiatCurrencyTypeID: &fiatcurrencyValue.FiatCurrencyTypeID,
+	FeedType:           &fiatcurrencyValue.FeedType,
+	MarketValueHigh:    &fiatcurrencyValue.MarketValueHigh,
+	MarketValueLow:     &fiatcurrencyValue.MarketValueLow,
 }
 
-func createFiatCurrencyType(t *testing.T) {
-	info, err := CreateFiatCurrencyType(context.Background(), fiatcurrencyValueReq)
+func createFiatCurrency(t *testing.T) {
+	info, err := CreateFiatCurrency(context.Background(), fiatcurrencyValueReq)
 	if assert.Nil(t, err) {
 		fiatcurrencyValue.CreatedAt = info.CreatedAt
 		fiatcurrencyValue.UpdatedAt = info.UpdatedAt
@@ -53,30 +58,26 @@ func createFiatCurrencyType(t *testing.T) {
 	}
 }
 
-func updateFiatCurrencyType(t *testing.T) {
+func updateFiatCurrency(t *testing.T) {
 }
 
 func createCurrencies(t *testing.T) {
 }
 
-func getFiatCurrencyType(t *testing.T) {
-	info, err := GetFiatCurrencyType(context.Background(), fiatcurrencyValue.ID)
+func getFiatCurrency(t *testing.T) {
+	info, err := GetFiatCurrency(context.Background(), fiatcurrencyValue.ID)
 	if assert.Nil(t, err) {
-		fiatcurrencyValue.CreatedAt = info.CreatedAt
-		fiatcurrencyValue.UpdatedAt = info.UpdatedAt
 		assert.Equal(t, fiatcurrencyValue, info)
 	}
 }
 
-func deleteFiatCurrencyType(t *testing.T) {
-	info, err := DeleteFiatCurrencyType(context.Background(), fiatcurrencyValue.ID)
+func deleteFiatCurrency(t *testing.T) {
+	info, err := DeleteFiatCurrency(context.Background(), fiatcurrencyValue.ID)
 	if assert.Nil(t, err) {
-		fiatcurrencyValue.CreatedAt = info.CreatedAt
-		fiatcurrencyValue.UpdatedAt = info.UpdatedAt
 		assert.Equal(t, fiatcurrencyValue, info)
 	}
 
-	_, err = GetFiatCurrencyType(context.Background(), info.ID)
+	_, err = GetFiatCurrency(context.Background(), info.ID)
 	assert.NotNil(t, err)
 }
 
@@ -91,9 +92,9 @@ func TestClient(t *testing.T) {
 		return grpc.Dial(fmt.Sprintf("localhost:%v", gport), grpc.WithTransportCredentials(insecure.NewCredentials()))
 	})
 
-	t.Run("createFiatCurrencyType", createFiatCurrencyType)
-	t.Run("updateFiatCurrencyType", updateFiatCurrencyType)
+	t.Run("createFiatCurrency", createFiatCurrency)
+	t.Run("updateFiatCurrency", updateFiatCurrency)
 	t.Run("createCurrencies", createCurrencies)
-	t.Run("getFiatCurrencyType", getFiatCurrencyType)
-	t.Run("deleteFiatCurrencyType", deleteFiatCurrencyType)
+	t.Run("getFiatCurrency", getFiatCurrency)
+	t.Run("deleteFiatCurrency", deleteFiatCurrency)
 }

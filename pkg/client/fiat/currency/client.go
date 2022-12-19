@@ -1,5 +1,5 @@
 //nolint:dupl
-package fiatcurrency
+package currency
 
 import (
 	"context"
@@ -9,7 +9,7 @@ import (
 	grpc2 "github.com/NpoolPlatform/go-service-framework/pkg/grpc"
 
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
-	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/fiatcurrency"
+	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/fiat/currency"
 
 	constant "github.com/NpoolPlatform/chain-manager/pkg/message/const"
 )

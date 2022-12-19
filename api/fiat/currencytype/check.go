@@ -1,10 +1,10 @@
-package fiatcurrencytype
+package currencytype
 
 import (
 	"fmt"
 
 	"github.com/NpoolPlatform/go-service-framework/pkg/logger"
-	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/fiatcurrencytype"
+	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/fiat/currencytype"
 
 	"github.com/google/uuid"
 )

@@ -1,11 +1,11 @@
-package fiatcurrency
+package currency
 
 import (
 	"fmt"
 
 	"github.com/NpoolPlatform/go-service-framework/pkg/logger"
 	"github.com/NpoolPlatform/message/npool/chain/mgr/v1/coin/currency"
-	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/fiatcurrency"
+	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/fiat/currency"
 
 	"github.com/shopspring/decimal"
 

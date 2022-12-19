@@ -1,8 +1,8 @@
 package api
 
 import (
-	"github.com/NpoolPlatform/chain-manager/api/fiatcurrency"
-	"github.com/NpoolPlatform/chain-manager/api/fiatcurrencytype"
+	fiatcurrency "github.com/NpoolPlatform/chain-manager/api/fiat/currency"
+	fiatcurrencytype "github.com/NpoolPlatform/chain-manager/api/fiat/currencytype"
 	chainmgr "github.com/NpoolPlatform/message/npool/chain/mgr/v1"
 
 	appcoin "github.com/NpoolPlatform/chain-manager/api/appcoin"
@@ -33,6 +33,7 @@ func Register(server grpc.ServiceRegistrar) {
 	exrate.Register(server)
 	description.Register(server)
 	setting.Register(server)
+	currency.Register(server)
 	fiatcurrency.Register(server)
 	fiatcurrencytype.Register(server)
 }

@@ -1,4 +1,4 @@
-package fiatcurrency
+package currencytype
 
 import (
 	"context"
@@ -8,14 +8,11 @@ import (
 	"testing"
 
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent"
-	"github.com/shopspring/decimal"
-
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
 
 	testinit "github.com/NpoolPlatform/chain-manager/pkg/testinit"
 	valuedef "github.com/NpoolPlatform/message/npool"
-	"github.com/NpoolPlatform/message/npool/chain/mgr/v1/coin/currency"
-	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/fiatcurrency"
+	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/fiat/currencytype"
 	"github.com/google/uuid"
 
 	"github.com/stretchr/testify/assert"
@@ -30,31 +27,22 @@ func init() {
 	}
 }
 
-var entity = ent.FiatCurrency{
-	ID:                 uuid.New(),
-	FiatCurrencyTypeID: uuid.New(),
-	FeedType:           currency.FeedType_CoinBase.String(),
-	MarketValueHigh:    decimal.RequireFromString("88.9123"),
-	MarketValueLow:     decimal.RequireFromString("84.9123"),
+var entity = ent.FiatCurrencyType{
+	ID:   uuid.New(),
+	Name: uuid.NewString(),
+	Logo: uuid.NewString(),
 }
 
 var (
-	id              = entity.ID.String()
-	fiatTypeID      = entity.FiatCurrencyTypeID.String()
-	feedType        = currency.FeedType(currency.FeedType_value[entity.FeedType])
-	marketValueHigh = entity.MarketValueHigh.String()
-	marketValueLow  = entity.MarketValueLow.String()
-
-	req = npool.FiatCurrencyReq{
-		ID:                 &id,
-		FiatCurrencyTypeID: &fiatTypeID,
-		FeedType:           &feedType,
-		MarketValueHigh:    &marketValueHigh,
-		MarketValueLow:     &marketValueLow,
+	id  = entity.ID.String()
+	req = npool.FiatCurrencyTypeReq{
+		ID:   &id,
+		Name: &entity.Name,
+		Logo: &entity.Logo,
 	}
 )
 
-var info *ent.FiatCurrency
+var info *ent.FiatCurrencyType
 
 func create(t *testing.T) {
 	var err error
@@ -67,59 +55,31 @@ func create(t *testing.T) {
 }
 
 func createBulk(t *testing.T) {
-	entities := []*ent.FiatCurrency{
+	entities := []*ent.FiatCurrencyType{
 		{
-			ID:                 uuid.New(),
-			FiatCurrencyTypeID: uuid.New(),
-			FeedType:           currency.FeedType_CoinBase.String(),
-			MarketValueHigh:    decimal.RequireFromString("84.9123"),
-			MarketValueLow:     decimal.RequireFromString("82.9123"),
+			ID:   uuid.New(),
+			Name: uuid.NewString(),
+			Logo: uuid.NewString(),
 		},
 		{
-			ID:                 uuid.New(),
-			FiatCurrencyTypeID: uuid.New(),
-			FeedType:           currency.FeedType_CoinGecko.String(),
-			MarketValueHigh:    decimal.RequireFromString("88.4123"),
-			MarketValueLow:     decimal.RequireFromString("84.2123"),
+			ID:   uuid.New(),
+			Name: uuid.NewString(),
+			Logo: uuid.NewString(),
 		},
 	}
 
-	reqs := []*npool.FiatCurrencyReq{}
+	reqs := []*npool.FiatCurrencyTypeReq{}
 	for _, _entity := range entities {
 		_id := _entity.ID.String()
-		_fiatTypeID := _entity.FiatCurrencyTypeID.String()
-		_feedType := currency.FeedType(currency.FeedType_value[_entity.FeedType])
-		_marketValueHigh := _entity.MarketValueHigh.String()
-		_marketValueLow := _entity.MarketValueLow.String()
-
-		reqs = append(reqs, &npool.FiatCurrencyReq{
-			ID:                 &_id,
-			FiatCurrencyTypeID: &_fiatTypeID,
-			FeedType:           &_feedType,
-			MarketValueHigh:    &_marketValueHigh,
-			MarketValueLow:     &_marketValueLow,
+		reqs = append(reqs, &npool.FiatCurrencyTypeReq{
+			ID:   &_id,
+			Name: &_entity.Name,
+			Logo: &_entity.Logo,
 		})
 	}
 	infos, err := CreateBulk(context.Background(), reqs)
 	if assert.Nil(t, err) {
 		assert.Equal(t, len(infos), 2)
-	}
-}
-
-func add(t *testing.T) {
-	valueHigh := "11.22"
-	valueLow := "11.12"
-
-	req.MarketValueHigh = &valueHigh
-	req.MarketValueLow = &valueLow
-
-	entity.MarketValueHigh = decimal.RequireFromString(valueHigh)
-	entity.MarketValueLow = decimal.RequireFromString(valueLow)
-
-	info, err := Update(context.Background(), &req)
-	if assert.Nil(t, err) {
-		entity.UpdatedAt = info.UpdatedAt
-		assert.Equal(t, info.String(), entity.String())
 	}
 }
 
@@ -209,7 +169,6 @@ func TestTx(t *testing.T) {
 	}
 	t.Run("create", create)
 	t.Run("createBulk", createBulk)
-	t.Run("add", add)
 	t.Run("row", row)
 	t.Run("rows", rows)
 	t.Run("rowOnly", rowOnly)

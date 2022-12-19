@@ -4,7 +4,7 @@ import (
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent"
 	"github.com/NpoolPlatform/message/npool/chain/mgr/v1/coin/currency"
 
-	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/fiatcurrency"
+	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/fiat/currency"
 )
 
 func Ent2Grpc(row *ent.FiatCurrency) *npool.FiatCurrency {

@@ -1,4 +1,4 @@
-package fiatcurrency
+package currency
 
 import (
 	"context"
@@ -16,7 +16,7 @@ import (
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/fiatcurrency"
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
-	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/fiatcurrency"
+	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/fiat/currency"
 
 	"github.com/google/uuid"
 )
