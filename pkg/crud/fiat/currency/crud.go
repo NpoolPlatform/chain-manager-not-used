@@ -192,6 +192,8 @@ func SetQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.FiatCurrencyQuery,
 		switch conds.GetStartAt().GetOp() {
 		case cruder.GTE:
 			stm.Where(fiatcurrency.CreatedAtGTE(conds.GetStartAt().GetValue()))
+		case cruder.LTE:
+			stm.Where(fiatcurrency.CreatedAtLTE(conds.GetStartAt().GetValue()))
 		default:
 			return nil, fmt.Errorf("invalid fiatcurrency field")
 		}
@@ -200,6 +202,8 @@ func SetQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.FiatCurrencyQuery,
 		switch conds.GetEndAt().GetOp() {
 		case cruder.GTE:
 			stm.Where(fiatcurrency.CreatedAtGTE(conds.GetEndAt().GetValue()))
+		case cruder.LTE:
+			stm.Where(fiatcurrency.CreatedAtLTE(conds.GetEndAt().GetValue()))
 		default:
 			return nil, fmt.Errorf("invalid fiatcurrency field")
 		}
