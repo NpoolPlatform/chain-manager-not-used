@@ -249,6 +249,14 @@ func SetQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.CoinBaseQuery, err
 			return nil, fmt.Errorf("invalid coinbase field")
 		}
 	}
+	if conds.Names != nil {
+		switch conds.GetNames().GetOp() {
+		case cruder.IN:
+			stm.Where(coinbase.NameIn(conds.GetNames().GetValue()...))
+		default:
+			return nil, fmt.Errorf("invalid coinbase field")
+		}
+	}
 	return stm, nil
 }
 
