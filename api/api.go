@@ -33,7 +33,6 @@ func Register(server grpc.ServiceRegistrar) {
 	exrate.Register(server)
 	description.Register(server)
 	setting.Register(server)
-	currency.Register(server)
 	fiatcurrency.Register(server)
 	fiatcurrencytype.Register(server)
 }
