@@ -29,6 +29,8 @@ const (
 	FieldSettleValue = "settle_value"
 	// FieldSettlePercent holds the string denoting the settle_percent field in the database.
 	FieldSettlePercent = "settle_percent"
+	// FieldSettleTips holds the string denoting the settle_tips field in the database.
+	FieldSettleTips = "settle_tips"
 	// FieldSetter holds the string denoting the setter field in the database.
 	FieldSetter = "setter"
 	// Table holds the table name of the exchangerate in the database.
@@ -46,6 +48,7 @@ var Columns = []string{
 	FieldMarketValue,
 	FieldSettleValue,
 	FieldSettlePercent,
+	FieldSettleTips,
 	FieldSetter,
 }
 
@@ -86,6 +89,8 @@ var (
 	DefaultSettleValue decimal.Decimal
 	// DefaultSettlePercent holds the default value on creation for the "settle_percent" field.
 	DefaultSettlePercent uint32
+	// DefaultSettleTips holds the default value on creation for the "settle_tips" field.
+	DefaultSettleTips []string
 	// DefaultSetter holds the default value on creation for the "setter" field.
 	DefaultSetter func() uuid.UUID
 	// DefaultID holds the default value on creation for the "id" field.

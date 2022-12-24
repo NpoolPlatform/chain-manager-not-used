@@ -15,6 +15,7 @@ func Ent2Grpc(row *ent.AppCoin) *npool.AppCoin {
 		AppID:                    row.AppID.String(),
 		CoinTypeID:               row.CoinTypeID.String(),
 		Name:                     row.Name,
+		DisplayNames:             row.DisplayNames,
 		Logo:                     row.Logo,
 		ForPay:                   row.ForPay,
 		WithdrawAutoReviewAmount: row.WithdrawAutoReviewAmount.String(),

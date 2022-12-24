@@ -632,6 +632,20 @@ func NameContainsFold(v string) predicate.AppCoin {
 	})
 }
 
+// DisplayNamesIsNil applies the IsNil predicate on the "display_names" field.
+func DisplayNamesIsNil() predicate.AppCoin {
+	return predicate.AppCoin(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldDisplayNames)))
+	})
+}
+
+// DisplayNamesNotNil applies the NotNil predicate on the "display_names" field.
+func DisplayNamesNotNil() predicate.AppCoin {
+	return predicate.AppCoin(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldDisplayNames)))
+	})
+}
+
 // LogoEQ applies the EQ predicate on the "logo" field.
 func LogoEQ(v string) predicate.AppCoin {
 	return predicate.AppCoin(func(s *sql.Selector) {

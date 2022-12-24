@@ -192,6 +192,18 @@ func (eru *ExchangeRateUpdate) ClearSettlePercent() *ExchangeRateUpdate {
 	return eru
 }
 
+// SetSettleTips sets the "settle_tips" field.
+func (eru *ExchangeRateUpdate) SetSettleTips(s []string) *ExchangeRateUpdate {
+	eru.mutation.SetSettleTips(s)
+	return eru
+}
+
+// ClearSettleTips clears the value of the "settle_tips" field.
+func (eru *ExchangeRateUpdate) ClearSettleTips() *ExchangeRateUpdate {
+	eru.mutation.ClearSettleTips()
+	return eru
+}
+
 // SetSetter sets the "setter" field.
 func (eru *ExchangeRateUpdate) SetSetter(u uuid.UUID) *ExchangeRateUpdate {
 	eru.mutation.SetSetter(u)
@@ -424,6 +436,19 @@ func (eru *ExchangeRateUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: exchangerate.FieldSettlePercent,
 		})
 	}
+	if value, ok := eru.mutation.SettleTips(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeJSON,
+			Value:  value,
+			Column: exchangerate.FieldSettleTips,
+		})
+	}
+	if eru.mutation.SettleTipsCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeJSON,
+			Column: exchangerate.FieldSettleTips,
+		})
+	}
 	if value, ok := eru.mutation.Setter(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
@@ -617,6 +642,18 @@ func (eruo *ExchangeRateUpdateOne) AddSettlePercent(u int32) *ExchangeRateUpdate
 // ClearSettlePercent clears the value of the "settle_percent" field.
 func (eruo *ExchangeRateUpdateOne) ClearSettlePercent() *ExchangeRateUpdateOne {
 	eruo.mutation.ClearSettlePercent()
+	return eruo
+}
+
+// SetSettleTips sets the "settle_tips" field.
+func (eruo *ExchangeRateUpdateOne) SetSettleTips(s []string) *ExchangeRateUpdateOne {
+	eruo.mutation.SetSettleTips(s)
+	return eruo
+}
+
+// ClearSettleTips clears the value of the "settle_tips" field.
+func (eruo *ExchangeRateUpdateOne) ClearSettleTips() *ExchangeRateUpdateOne {
+	eruo.mutation.ClearSettleTips()
 	return eruo
 }
 
@@ -880,6 +917,19 @@ func (eruo *ExchangeRateUpdateOne) sqlSave(ctx context.Context) (_node *Exchange
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeUint32,
 			Column: exchangerate.FieldSettlePercent,
+		})
+	}
+	if value, ok := eruo.mutation.SettleTips(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeJSON,
+			Value:  value,
+			Column: exchangerate.FieldSettleTips,
+		})
+	}
+	if eruo.mutation.SettleTipsCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeJSON,
+			Column: exchangerate.FieldSettleTips,
 		})
 	}
 	if value, ok := eruo.mutation.Setter(); ok {

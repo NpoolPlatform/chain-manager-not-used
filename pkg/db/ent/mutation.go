@@ -61,6 +61,7 @@ type AppCoinMutation struct {
 	app_id                      *uuid.UUID
 	coin_type_id                *uuid.UUID
 	name                        *string
+	display_names               *[]string
 	logo                        *string
 	for_pay                     *bool
 	withdraw_auto_review_amount *decimal.Decimal
@@ -493,6 +494,55 @@ func (m *AppCoinMutation) ResetName() {
 	delete(m.clearedFields, appcoin.FieldName)
 }
 
+// SetDisplayNames sets the "display_names" field.
+func (m *AppCoinMutation) SetDisplayNames(s []string) {
+	m.display_names = &s
+}
+
+// DisplayNames returns the value of the "display_names" field in the mutation.
+func (m *AppCoinMutation) DisplayNames() (r []string, exists bool) {
+	v := m.display_names
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDisplayNames returns the old "display_names" field's value of the AppCoin entity.
+// If the AppCoin object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppCoinMutation) OldDisplayNames(ctx context.Context) (v []string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDisplayNames is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDisplayNames requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDisplayNames: %w", err)
+	}
+	return oldValue.DisplayNames, nil
+}
+
+// ClearDisplayNames clears the value of the "display_names" field.
+func (m *AppCoinMutation) ClearDisplayNames() {
+	m.display_names = nil
+	m.clearedFields[appcoin.FieldDisplayNames] = struct{}{}
+}
+
+// DisplayNamesCleared returns if the "display_names" field was cleared in this mutation.
+func (m *AppCoinMutation) DisplayNamesCleared() bool {
+	_, ok := m.clearedFields[appcoin.FieldDisplayNames]
+	return ok
+}
+
+// ResetDisplayNames resets all changes to the "display_names" field.
+func (m *AppCoinMutation) ResetDisplayNames() {
+	m.display_names = nil
+	delete(m.clearedFields, appcoin.FieldDisplayNames)
+}
+
 // SetLogo sets the "logo" field.
 func (m *AppCoinMutation) SetLogo(s string) {
 	m.logo = &s
@@ -855,7 +905,7 @@ func (m *AppCoinMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *AppCoinMutation) Fields() []string {
-	fields := make([]string, 0, 13)
+	fields := make([]string, 0, 14)
 	if m.created_at != nil {
 		fields = append(fields, appcoin.FieldCreatedAt)
 	}
@@ -873,6 +923,9 @@ func (m *AppCoinMutation) Fields() []string {
 	}
 	if m.name != nil {
 		fields = append(fields, appcoin.FieldName)
+	}
+	if m.display_names != nil {
+		fields = append(fields, appcoin.FieldDisplayNames)
 	}
 	if m.logo != nil {
 		fields = append(fields, appcoin.FieldLogo)
@@ -915,6 +968,8 @@ func (m *AppCoinMutation) Field(name string) (ent.Value, bool) {
 		return m.CoinTypeID()
 	case appcoin.FieldName:
 		return m.Name()
+	case appcoin.FieldDisplayNames:
+		return m.DisplayNames()
 	case appcoin.FieldLogo:
 		return m.Logo()
 	case appcoin.FieldForPay:
@@ -950,6 +1005,8 @@ func (m *AppCoinMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldCoinTypeID(ctx)
 	case appcoin.FieldName:
 		return m.OldName(ctx)
+	case appcoin.FieldDisplayNames:
+		return m.OldDisplayNames(ctx)
 	case appcoin.FieldLogo:
 		return m.OldLogo(ctx)
 	case appcoin.FieldForPay:
@@ -1014,6 +1071,13 @@ func (m *AppCoinMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetName(v)
+		return nil
+	case appcoin.FieldDisplayNames:
+		v, ok := value.([]string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDisplayNames(v)
 		return nil
 	case appcoin.FieldLogo:
 		v, ok := value.(string)
@@ -1142,6 +1206,9 @@ func (m *AppCoinMutation) ClearedFields() []string {
 	if m.FieldCleared(appcoin.FieldName) {
 		fields = append(fields, appcoin.FieldName)
 	}
+	if m.FieldCleared(appcoin.FieldDisplayNames) {
+		fields = append(fields, appcoin.FieldDisplayNames)
+	}
 	if m.FieldCleared(appcoin.FieldLogo) {
 		fields = append(fields, appcoin.FieldLogo)
 	}
@@ -1185,6 +1252,9 @@ func (m *AppCoinMutation) ClearField(name string) error {
 		return nil
 	case appcoin.FieldName:
 		m.ClearName()
+		return nil
+	case appcoin.FieldDisplayNames:
+		m.ClearDisplayNames()
 		return nil
 	case appcoin.FieldLogo:
 		m.ClearLogo()
@@ -1232,6 +1302,9 @@ func (m *AppCoinMutation) ResetField(name string) error {
 		return nil
 	case appcoin.FieldName:
 		m.ResetName()
+		return nil
+	case appcoin.FieldDisplayNames:
+		m.ResetDisplayNames()
 		return nil
 	case appcoin.FieldLogo:
 		m.ResetLogo()
@@ -4977,6 +5050,7 @@ type ExchangeRateMutation struct {
 	settle_value      *decimal.Decimal
 	settle_percent    *uint32
 	addsettle_percent *int32
+	settle_tips       *[]string
 	setter            *uuid.UUID
 	clearedFields     map[string]struct{}
 	done              bool
@@ -5522,6 +5596,55 @@ func (m *ExchangeRateMutation) ResetSettlePercent() {
 	delete(m.clearedFields, exchangerate.FieldSettlePercent)
 }
 
+// SetSettleTips sets the "settle_tips" field.
+func (m *ExchangeRateMutation) SetSettleTips(s []string) {
+	m.settle_tips = &s
+}
+
+// SettleTips returns the value of the "settle_tips" field in the mutation.
+func (m *ExchangeRateMutation) SettleTips() (r []string, exists bool) {
+	v := m.settle_tips
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSettleTips returns the old "settle_tips" field's value of the ExchangeRate entity.
+// If the ExchangeRate object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ExchangeRateMutation) OldSettleTips(ctx context.Context) (v []string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSettleTips is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSettleTips requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSettleTips: %w", err)
+	}
+	return oldValue.SettleTips, nil
+}
+
+// ClearSettleTips clears the value of the "settle_tips" field.
+func (m *ExchangeRateMutation) ClearSettleTips() {
+	m.settle_tips = nil
+	m.clearedFields[exchangerate.FieldSettleTips] = struct{}{}
+}
+
+// SettleTipsCleared returns if the "settle_tips" field was cleared in this mutation.
+func (m *ExchangeRateMutation) SettleTipsCleared() bool {
+	_, ok := m.clearedFields[exchangerate.FieldSettleTips]
+	return ok
+}
+
+// ResetSettleTips resets all changes to the "settle_tips" field.
+func (m *ExchangeRateMutation) ResetSettleTips() {
+	m.settle_tips = nil
+	delete(m.clearedFields, exchangerate.FieldSettleTips)
+}
+
 // SetSetter sets the "setter" field.
 func (m *ExchangeRateMutation) SetSetter(u uuid.UUID) {
 	m.setter = &u
@@ -5590,7 +5713,7 @@ func (m *ExchangeRateMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *ExchangeRateMutation) Fields() []string {
-	fields := make([]string, 0, 9)
+	fields := make([]string, 0, 10)
 	if m.created_at != nil {
 		fields = append(fields, exchangerate.FieldCreatedAt)
 	}
@@ -5614,6 +5737,9 @@ func (m *ExchangeRateMutation) Fields() []string {
 	}
 	if m.settle_percent != nil {
 		fields = append(fields, exchangerate.FieldSettlePercent)
+	}
+	if m.settle_tips != nil {
+		fields = append(fields, exchangerate.FieldSettleTips)
 	}
 	if m.setter != nil {
 		fields = append(fields, exchangerate.FieldSetter)
@@ -5642,6 +5768,8 @@ func (m *ExchangeRateMutation) Field(name string) (ent.Value, bool) {
 		return m.SettleValue()
 	case exchangerate.FieldSettlePercent:
 		return m.SettlePercent()
+	case exchangerate.FieldSettleTips:
+		return m.SettleTips()
 	case exchangerate.FieldSetter:
 		return m.Setter()
 	}
@@ -5669,6 +5797,8 @@ func (m *ExchangeRateMutation) OldField(ctx context.Context, name string) (ent.V
 		return m.OldSettleValue(ctx)
 	case exchangerate.FieldSettlePercent:
 		return m.OldSettlePercent(ctx)
+	case exchangerate.FieldSettleTips:
+		return m.OldSettleTips(ctx)
 	case exchangerate.FieldSetter:
 		return m.OldSetter(ctx)
 	}
@@ -5735,6 +5865,13 @@ func (m *ExchangeRateMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetSettlePercent(v)
+		return nil
+	case exchangerate.FieldSettleTips:
+		v, ok := value.([]string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSettleTips(v)
 		return nil
 	case exchangerate.FieldSetter:
 		v, ok := value.(uuid.UUID)
@@ -5839,6 +5976,9 @@ func (m *ExchangeRateMutation) ClearedFields() []string {
 	if m.FieldCleared(exchangerate.FieldSettlePercent) {
 		fields = append(fields, exchangerate.FieldSettlePercent)
 	}
+	if m.FieldCleared(exchangerate.FieldSettleTips) {
+		fields = append(fields, exchangerate.FieldSettleTips)
+	}
 	if m.FieldCleared(exchangerate.FieldSetter) {
 		fields = append(fields, exchangerate.FieldSetter)
 	}
@@ -5870,6 +6010,9 @@ func (m *ExchangeRateMutation) ClearField(name string) error {
 		return nil
 	case exchangerate.FieldSettlePercent:
 		m.ClearSettlePercent()
+		return nil
+	case exchangerate.FieldSettleTips:
+		m.ClearSettleTips()
 		return nil
 	case exchangerate.FieldSetter:
 		m.ClearSetter()
@@ -5905,6 +6048,9 @@ func (m *ExchangeRateMutation) ResetField(name string) error {
 		return nil
 	case exchangerate.FieldSettlePercent:
 		m.ResetSettlePercent()
+		return nil
+	case exchangerate.FieldSettleTips:
+		m.ResetSettleTips()
 		return nil
 	case exchangerate.FieldSetter:
 		m.ResetSetter()

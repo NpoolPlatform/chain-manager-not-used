@@ -136,6 +136,12 @@ func (erc *ExchangeRateCreate) SetNillableSettlePercent(u *uint32) *ExchangeRate
 	return erc
 }
 
+// SetSettleTips sets the "settle_tips" field.
+func (erc *ExchangeRateCreate) SetSettleTips(s []string) *ExchangeRateCreate {
+	erc.mutation.SetSettleTips(s)
+	return erc
+}
+
 // SetSetter sets the "setter" field.
 func (erc *ExchangeRateCreate) SetSetter(u uuid.UUID) *ExchangeRateCreate {
 	erc.mutation.SetSetter(u)
@@ -290,6 +296,10 @@ func (erc *ExchangeRateCreate) defaults() error {
 		v := exchangerate.DefaultSettlePercent
 		erc.mutation.SetSettlePercent(v)
 	}
+	if _, ok := erc.mutation.SettleTips(); !ok {
+		v := exchangerate.DefaultSettleTips
+		erc.mutation.SetSettleTips(v)
+	}
 	if _, ok := erc.mutation.Setter(); !ok {
 		if exchangerate.DefaultSetter == nil {
 			return fmt.Errorf("ent: uninitialized exchangerate.DefaultSetter (forgotten import ent/runtime?)")
@@ -418,6 +428,14 @@ func (erc *ExchangeRateCreate) createSpec() (*ExchangeRate, *sqlgraph.CreateSpec
 			Column: exchangerate.FieldSettlePercent,
 		})
 		_node.SettlePercent = value
+	}
+	if value, ok := erc.mutation.SettleTips(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeJSON,
+			Value:  value,
+			Column: exchangerate.FieldSettleTips,
+		})
+		_node.SettleTips = value
 	}
 	if value, ok := erc.mutation.Setter(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -628,6 +646,24 @@ func (u *ExchangeRateUpsert) AddSettlePercent(v uint32) *ExchangeRateUpsert {
 // ClearSettlePercent clears the value of the "settle_percent" field.
 func (u *ExchangeRateUpsert) ClearSettlePercent() *ExchangeRateUpsert {
 	u.SetNull(exchangerate.FieldSettlePercent)
+	return u
+}
+
+// SetSettleTips sets the "settle_tips" field.
+func (u *ExchangeRateUpsert) SetSettleTips(v []string) *ExchangeRateUpsert {
+	u.Set(exchangerate.FieldSettleTips, v)
+	return u
+}
+
+// UpdateSettleTips sets the "settle_tips" field to the value that was provided on create.
+func (u *ExchangeRateUpsert) UpdateSettleTips() *ExchangeRateUpsert {
+	u.SetExcluded(exchangerate.FieldSettleTips)
+	return u
+}
+
+// ClearSettleTips clears the value of the "settle_tips" field.
+func (u *ExchangeRateUpsert) ClearSettleTips() *ExchangeRateUpsert {
+	u.SetNull(exchangerate.FieldSettleTips)
 	return u
 }
 
@@ -871,6 +907,27 @@ func (u *ExchangeRateUpsertOne) UpdateSettlePercent() *ExchangeRateUpsertOne {
 func (u *ExchangeRateUpsertOne) ClearSettlePercent() *ExchangeRateUpsertOne {
 	return u.Update(func(s *ExchangeRateUpsert) {
 		s.ClearSettlePercent()
+	})
+}
+
+// SetSettleTips sets the "settle_tips" field.
+func (u *ExchangeRateUpsertOne) SetSettleTips(v []string) *ExchangeRateUpsertOne {
+	return u.Update(func(s *ExchangeRateUpsert) {
+		s.SetSettleTips(v)
+	})
+}
+
+// UpdateSettleTips sets the "settle_tips" field to the value that was provided on create.
+func (u *ExchangeRateUpsertOne) UpdateSettleTips() *ExchangeRateUpsertOne {
+	return u.Update(func(s *ExchangeRateUpsert) {
+		s.UpdateSettleTips()
+	})
+}
+
+// ClearSettleTips clears the value of the "settle_tips" field.
+func (u *ExchangeRateUpsertOne) ClearSettleTips() *ExchangeRateUpsertOne {
+	return u.Update(func(s *ExchangeRateUpsert) {
+		s.ClearSettleTips()
 	})
 }
 
@@ -1283,6 +1340,27 @@ func (u *ExchangeRateUpsertBulk) UpdateSettlePercent() *ExchangeRateUpsertBulk {
 func (u *ExchangeRateUpsertBulk) ClearSettlePercent() *ExchangeRateUpsertBulk {
 	return u.Update(func(s *ExchangeRateUpsert) {
 		s.ClearSettlePercent()
+	})
+}
+
+// SetSettleTips sets the "settle_tips" field.
+func (u *ExchangeRateUpsertBulk) SetSettleTips(v []string) *ExchangeRateUpsertBulk {
+	return u.Update(func(s *ExchangeRateUpsert) {
+		s.SetSettleTips(v)
+	})
+}
+
+// UpdateSettleTips sets the "settle_tips" field to the value that was provided on create.
+func (u *ExchangeRateUpsertBulk) UpdateSettleTips() *ExchangeRateUpsertBulk {
+	return u.Update(func(s *ExchangeRateUpsert) {
+		s.UpdateSettleTips()
+	})
+}
+
+// ClearSettleTips clears the value of the "settle_tips" field.
+func (u *ExchangeRateUpsertBulk) ClearSettleTips() *ExchangeRateUpsertBulk {
+	return u.Update(func(s *ExchangeRateUpsert) {
+		s.ClearSettleTips()
 	})
 }
 

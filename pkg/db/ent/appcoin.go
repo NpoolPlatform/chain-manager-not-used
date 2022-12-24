@@ -3,6 +3,7 @@
 package ent
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 
@@ -29,6 +30,8 @@ type AppCoin struct {
 	CoinTypeID uuid.UUID `json:"coin_type_id,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
+	// DisplayNames holds the value of the "display_names" field.
+	DisplayNames []string `json:"display_names,omitempty"`
 	// Logo holds the value of the "logo" field.
 	Logo string `json:"logo,omitempty"`
 	// ForPay holds the value of the "for_pay" field.
@@ -50,6 +53,8 @@ func (*AppCoin) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
+		case appcoin.FieldDisplayNames:
+			values[i] = new([]byte)
 		case appcoin.FieldWithdrawAutoReviewAmount, appcoin.FieldDailyRewardAmount:
 			values[i] = new(decimal.Decimal)
 		case appcoin.FieldForPay, appcoin.FieldDisabled, appcoin.FieldDisplay:
@@ -116,6 +121,14 @@ func (ac *AppCoin) assignValues(columns []string, values []interface{}) error {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
 				ac.Name = value.String
+			}
+		case appcoin.FieldDisplayNames:
+			if value, ok := values[i].(*[]byte); !ok {
+				return fmt.Errorf("unexpected type %T for field display_names", values[i])
+			} else if value != nil && len(*value) > 0 {
+				if err := json.Unmarshal(*value, &ac.DisplayNames); err != nil {
+					return fmt.Errorf("unmarshal field display_names: %w", err)
+				}
 			}
 		case appcoin.FieldLogo:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -204,6 +217,9 @@ func (ac *AppCoin) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("name=")
 	builder.WriteString(ac.Name)
+	builder.WriteString(", ")
+	builder.WriteString("display_names=")
+	builder.WriteString(fmt.Sprintf("%v", ac.DisplayNames))
 	builder.WriteString(", ")
 	builder.WriteString("logo=")
 	builder.WriteString(ac.Logo)

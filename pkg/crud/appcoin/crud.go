@@ -34,6 +34,7 @@ func CreateSet(c *ent.AppCoinCreate, in *npool.AppCoinReq) *ent.AppCoinCreate {
 	if in.Name != nil {
 		c.SetName(in.GetName())
 	}
+	c.SetDisplayNames(in.GetDisplayNames())
 	if in.Logo != nil {
 		c.SetLogo(in.GetLogo())
 	}
@@ -121,6 +122,9 @@ func UpdateSet(info *ent.AppCoin, in *npool.AppCoinReq) *ent.AppCoinUpdateOne {
 
 	if in.Name != nil {
 		stm = stm.SetName(in.GetName())
+	}
+	if len(in.GetDisplayNames()) > 0 {
+		stm = stm.SetDisplayNames(in.GetDisplayNames())
 	}
 	if in.Logo != nil {
 		stm = stm.SetLogo(in.GetLogo())

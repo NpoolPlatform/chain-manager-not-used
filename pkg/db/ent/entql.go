@@ -40,6 +40,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			appcoin.FieldAppID:                    {Type: field.TypeUUID, Column: appcoin.FieldAppID},
 			appcoin.FieldCoinTypeID:               {Type: field.TypeUUID, Column: appcoin.FieldCoinTypeID},
 			appcoin.FieldName:                     {Type: field.TypeString, Column: appcoin.FieldName},
+			appcoin.FieldDisplayNames:             {Type: field.TypeJSON, Column: appcoin.FieldDisplayNames},
 			appcoin.FieldLogo:                     {Type: field.TypeString, Column: appcoin.FieldLogo},
 			appcoin.FieldForPay:                   {Type: field.TypeBool, Column: appcoin.FieldForPay},
 			appcoin.FieldWithdrawAutoReviewAmount: {Type: field.TypeOther, Column: appcoin.FieldWithdrawAutoReviewAmount},
@@ -153,6 +154,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			exchangerate.FieldMarketValue:   {Type: field.TypeOther, Column: exchangerate.FieldMarketValue},
 			exchangerate.FieldSettleValue:   {Type: field.TypeOther, Column: exchangerate.FieldSettleValue},
 			exchangerate.FieldSettlePercent: {Type: field.TypeUint32, Column: exchangerate.FieldSettlePercent},
+			exchangerate.FieldSettleTips:    {Type: field.TypeJSON, Column: exchangerate.FieldSettleTips},
 			exchangerate.FieldSetter:        {Type: field.TypeUUID, Column: exchangerate.FieldSetter},
 		},
 	}
@@ -321,6 +323,11 @@ func (f *AppCoinFilter) WhereCoinTypeID(p entql.ValueP) {
 // WhereName applies the entql string predicate on the name field.
 func (f *AppCoinFilter) WhereName(p entql.StringP) {
 	f.Where(p.Field(appcoin.FieldName))
+}
+
+// WhereDisplayNames applies the entql json.RawMessage predicate on the display_names field.
+func (f *AppCoinFilter) WhereDisplayNames(p entql.BytesP) {
+	f.Where(p.Field(appcoin.FieldDisplayNames))
 }
 
 // WhereLogo applies the entql string predicate on the logo field.
@@ -761,6 +768,11 @@ func (f *ExchangeRateFilter) WhereSettleValue(p entql.OtherP) {
 // WhereSettlePercent applies the entql uint32 predicate on the settle_percent field.
 func (f *ExchangeRateFilter) WhereSettlePercent(p entql.Uint32P) {
 	f.Where(p.Field(exchangerate.FieldSettlePercent))
+}
+
+// WhereSettleTips applies the entql json.RawMessage predicate on the settle_tips field.
+func (f *ExchangeRateFilter) WhereSettleTips(p entql.BytesP) {
+	f.Where(p.Field(exchangerate.FieldSettleTips))
 }
 
 // WhereSetter applies the entql [16]byte predicate on the setter field.

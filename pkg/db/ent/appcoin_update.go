@@ -145,6 +145,18 @@ func (acu *AppCoinUpdate) ClearName() *AppCoinUpdate {
 	return acu
 }
 
+// SetDisplayNames sets the "display_names" field.
+func (acu *AppCoinUpdate) SetDisplayNames(s []string) *AppCoinUpdate {
+	acu.mutation.SetDisplayNames(s)
+	return acu
+}
+
+// ClearDisplayNames clears the value of the "display_names" field.
+func (acu *AppCoinUpdate) ClearDisplayNames() *AppCoinUpdate {
+	acu.mutation.ClearDisplayNames()
+	return acu
+}
+
 // SetLogo sets the "logo" field.
 func (acu *AppCoinUpdate) SetLogo(s string) *AppCoinUpdate {
 	acu.mutation.SetLogo(s)
@@ -464,6 +476,19 @@ func (acu *AppCoinUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: appcoin.FieldName,
 		})
 	}
+	if value, ok := acu.mutation.DisplayNames(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeJSON,
+			Value:  value,
+			Column: appcoin.FieldDisplayNames,
+		})
+	}
+	if acu.mutation.DisplayNamesCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeJSON,
+			Column: appcoin.FieldDisplayNames,
+		})
+	}
 	if value, ok := acu.mutation.Logo(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -688,6 +713,18 @@ func (acuo *AppCoinUpdateOne) SetNillableName(s *string) *AppCoinUpdateOne {
 // ClearName clears the value of the "name" field.
 func (acuo *AppCoinUpdateOne) ClearName() *AppCoinUpdateOne {
 	acuo.mutation.ClearName()
+	return acuo
+}
+
+// SetDisplayNames sets the "display_names" field.
+func (acuo *AppCoinUpdateOne) SetDisplayNames(s []string) *AppCoinUpdateOne {
+	acuo.mutation.SetDisplayNames(s)
+	return acuo
+}
+
+// ClearDisplayNames clears the value of the "display_names" field.
+func (acuo *AppCoinUpdateOne) ClearDisplayNames() *AppCoinUpdateOne {
+	acuo.mutation.ClearDisplayNames()
 	return acuo
 }
 
@@ -1038,6 +1075,19 @@ func (acuo *AppCoinUpdateOne) sqlSave(ctx context.Context) (_node *AppCoin, err 
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Column: appcoin.FieldName,
+		})
+	}
+	if value, ok := acuo.mutation.DisplayNames(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeJSON,
+			Value:  value,
+			Column: appcoin.FieldDisplayNames,
+		})
+	}
+	if acuo.mutation.DisplayNamesCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeJSON,
+			Column: appcoin.FieldDisplayNames,
 		})
 	}
 	if value, ok := acuo.mutation.Logo(); ok {

@@ -54,6 +54,10 @@ func (ExchangeRate) Fields() []ent.Field {
 			Optional().
 			Default(100), // nolint
 		field.
+			JSON("settle_tips", []string{}).
+			Optional().
+			Default([]string{}),
+		field.
 			UUID("setter", uuid.UUID{}).
 			Optional().
 			Default(uuid.New),

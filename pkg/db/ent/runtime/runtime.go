@@ -67,32 +67,36 @@ func init() {
 	appcoinDescName := appcoinFields[3].Descriptor()
 	// appcoin.DefaultName holds the default value on creation for the name field.
 	appcoin.DefaultName = appcoinDescName.Default.(string)
+	// appcoinDescDisplayNames is the schema descriptor for display_names field.
+	appcoinDescDisplayNames := appcoinFields[4].Descriptor()
+	// appcoin.DefaultDisplayNames holds the default value on creation for the display_names field.
+	appcoin.DefaultDisplayNames = appcoinDescDisplayNames.Default.([]string)
 	// appcoinDescLogo is the schema descriptor for logo field.
-	appcoinDescLogo := appcoinFields[4].Descriptor()
+	appcoinDescLogo := appcoinFields[5].Descriptor()
 	// appcoin.DefaultLogo holds the default value on creation for the logo field.
 	appcoin.DefaultLogo = appcoinDescLogo.Default.(string)
 	// appcoinDescForPay is the schema descriptor for for_pay field.
-	appcoinDescForPay := appcoinFields[5].Descriptor()
+	appcoinDescForPay := appcoinFields[6].Descriptor()
 	// appcoin.DefaultForPay holds the default value on creation for the for_pay field.
 	appcoin.DefaultForPay = appcoinDescForPay.Default.(bool)
 	// appcoinDescWithdrawAutoReviewAmount is the schema descriptor for withdraw_auto_review_amount field.
-	appcoinDescWithdrawAutoReviewAmount := appcoinFields[6].Descriptor()
+	appcoinDescWithdrawAutoReviewAmount := appcoinFields[7].Descriptor()
 	// appcoin.DefaultWithdrawAutoReviewAmount holds the default value on creation for the withdraw_auto_review_amount field.
 	appcoin.DefaultWithdrawAutoReviewAmount = appcoinDescWithdrawAutoReviewAmount.Default.(decimal.Decimal)
 	// appcoinDescProductPage is the schema descriptor for product_page field.
-	appcoinDescProductPage := appcoinFields[7].Descriptor()
+	appcoinDescProductPage := appcoinFields[8].Descriptor()
 	// appcoin.DefaultProductPage holds the default value on creation for the product_page field.
 	appcoin.DefaultProductPage = appcoinDescProductPage.Default.(string)
 	// appcoinDescDisabled is the schema descriptor for disabled field.
-	appcoinDescDisabled := appcoinFields[8].Descriptor()
+	appcoinDescDisabled := appcoinFields[9].Descriptor()
 	// appcoin.DefaultDisabled holds the default value on creation for the disabled field.
 	appcoin.DefaultDisabled = appcoinDescDisabled.Default.(bool)
 	// appcoinDescDailyRewardAmount is the schema descriptor for daily_reward_amount field.
-	appcoinDescDailyRewardAmount := appcoinFields[9].Descriptor()
+	appcoinDescDailyRewardAmount := appcoinFields[10].Descriptor()
 	// appcoin.DefaultDailyRewardAmount holds the default value on creation for the daily_reward_amount field.
 	appcoin.DefaultDailyRewardAmount = appcoinDescDailyRewardAmount.Default.(decimal.Decimal)
 	// appcoinDescDisplay is the schema descriptor for display field.
-	appcoinDescDisplay := appcoinFields[10].Descriptor()
+	appcoinDescDisplay := appcoinFields[11].Descriptor()
 	// appcoin.DefaultDisplay holds the default value on creation for the display field.
 	appcoin.DefaultDisplay = appcoinDescDisplay.Default.(bool)
 	// appcoinDescID is the schema descriptor for id field.
@@ -359,8 +363,12 @@ func init() {
 	exchangerateDescSettlePercent := exchangerateFields[5].Descriptor()
 	// exchangerate.DefaultSettlePercent holds the default value on creation for the settle_percent field.
 	exchangerate.DefaultSettlePercent = exchangerateDescSettlePercent.Default.(uint32)
+	// exchangerateDescSettleTips is the schema descriptor for settle_tips field.
+	exchangerateDescSettleTips := exchangerateFields[6].Descriptor()
+	// exchangerate.DefaultSettleTips holds the default value on creation for the settle_tips field.
+	exchangerate.DefaultSettleTips = exchangerateDescSettleTips.Default.([]string)
 	// exchangerateDescSetter is the schema descriptor for setter field.
-	exchangerateDescSetter := exchangerateFields[6].Descriptor()
+	exchangerateDescSetter := exchangerateFields[7].Descriptor()
 	// exchangerate.DefaultSetter holds the default value on creation for the setter field.
 	exchangerate.DefaultSetter = exchangerateDescSetter.Default.(func() uuid.UUID)
 	// exchangerateDescID is the schema descriptor for id field.

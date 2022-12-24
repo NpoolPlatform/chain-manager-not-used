@@ -25,6 +25,8 @@ const (
 	FieldCoinTypeID = "coin_type_id"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
+	// FieldDisplayNames holds the string denoting the display_names field in the database.
+	FieldDisplayNames = "display_names"
 	// FieldLogo holds the string denoting the logo field in the database.
 	FieldLogo = "logo"
 	// FieldForPay holds the string denoting the for_pay field in the database.
@@ -52,6 +54,7 @@ var Columns = []string{
 	FieldAppID,
 	FieldCoinTypeID,
 	FieldName,
+	FieldDisplayNames,
 	FieldLogo,
 	FieldForPay,
 	FieldWithdrawAutoReviewAmount,
@@ -94,6 +97,8 @@ var (
 	DefaultCoinTypeID func() uuid.UUID
 	// DefaultName holds the default value on creation for the "name" field.
 	DefaultName string
+	// DefaultDisplayNames holds the default value on creation for the "display_names" field.
+	DefaultDisplayNames []string
 	// DefaultLogo holds the default value on creation for the "logo" field.
 	DefaultLogo string
 	// DefaultForPay holds the default value on creation for the "for_pay" field.

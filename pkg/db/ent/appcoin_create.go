@@ -108,6 +108,12 @@ func (acc *AppCoinCreate) SetNillableName(s *string) *AppCoinCreate {
 	return acc
 }
 
+// SetDisplayNames sets the "display_names" field.
+func (acc *AppCoinCreate) SetDisplayNames(s []string) *AppCoinCreate {
+	acc.mutation.SetDisplayNames(s)
+	return acc
+}
+
 // SetLogo sets the "logo" field.
 func (acc *AppCoinCreate) SetLogo(s string) *AppCoinCreate {
 	acc.mutation.SetLogo(s)
@@ -338,6 +344,10 @@ func (acc *AppCoinCreate) defaults() error {
 		v := appcoin.DefaultName
 		acc.mutation.SetName(v)
 	}
+	if _, ok := acc.mutation.DisplayNames(); !ok {
+		v := appcoin.DefaultDisplayNames
+		acc.mutation.SetDisplayNames(v)
+	}
 	if _, ok := acc.mutation.Logo(); !ok {
 		v := appcoin.DefaultLogo
 		acc.mutation.SetLogo(v)
@@ -471,6 +481,14 @@ func (acc *AppCoinCreate) createSpec() (*AppCoin, *sqlgraph.CreateSpec) {
 			Column: appcoin.FieldName,
 		})
 		_node.Name = value
+	}
+	if value, ok := acc.mutation.DisplayNames(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeJSON,
+			Value:  value,
+			Column: appcoin.FieldDisplayNames,
+		})
+		_node.DisplayNames = value
 	}
 	if value, ok := acc.mutation.Logo(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -687,6 +705,24 @@ func (u *AppCoinUpsert) UpdateName() *AppCoinUpsert {
 // ClearName clears the value of the "name" field.
 func (u *AppCoinUpsert) ClearName() *AppCoinUpsert {
 	u.SetNull(appcoin.FieldName)
+	return u
+}
+
+// SetDisplayNames sets the "display_names" field.
+func (u *AppCoinUpsert) SetDisplayNames(v []string) *AppCoinUpsert {
+	u.Set(appcoin.FieldDisplayNames, v)
+	return u
+}
+
+// UpdateDisplayNames sets the "display_names" field to the value that was provided on create.
+func (u *AppCoinUpsert) UpdateDisplayNames() *AppCoinUpsert {
+	u.SetExcluded(appcoin.FieldDisplayNames)
+	return u
+}
+
+// ClearDisplayNames clears the value of the "display_names" field.
+func (u *AppCoinUpsert) ClearDisplayNames() *AppCoinUpsert {
+	u.SetNull(appcoin.FieldDisplayNames)
 	return u
 }
 
@@ -989,6 +1025,27 @@ func (u *AppCoinUpsertOne) UpdateName() *AppCoinUpsertOne {
 func (u *AppCoinUpsertOne) ClearName() *AppCoinUpsertOne {
 	return u.Update(func(s *AppCoinUpsert) {
 		s.ClearName()
+	})
+}
+
+// SetDisplayNames sets the "display_names" field.
+func (u *AppCoinUpsertOne) SetDisplayNames(v []string) *AppCoinUpsertOne {
+	return u.Update(func(s *AppCoinUpsert) {
+		s.SetDisplayNames(v)
+	})
+}
+
+// UpdateDisplayNames sets the "display_names" field to the value that was provided on create.
+func (u *AppCoinUpsertOne) UpdateDisplayNames() *AppCoinUpsertOne {
+	return u.Update(func(s *AppCoinUpsert) {
+		s.UpdateDisplayNames()
+	})
+}
+
+// ClearDisplayNames clears the value of the "display_names" field.
+func (u *AppCoinUpsertOne) ClearDisplayNames() *AppCoinUpsertOne {
+	return u.Update(func(s *AppCoinUpsert) {
+		s.ClearDisplayNames()
 	})
 }
 
@@ -1478,6 +1535,27 @@ func (u *AppCoinUpsertBulk) UpdateName() *AppCoinUpsertBulk {
 func (u *AppCoinUpsertBulk) ClearName() *AppCoinUpsertBulk {
 	return u.Update(func(s *AppCoinUpsert) {
 		s.ClearName()
+	})
+}
+
+// SetDisplayNames sets the "display_names" field.
+func (u *AppCoinUpsertBulk) SetDisplayNames(v []string) *AppCoinUpsertBulk {
+	return u.Update(func(s *AppCoinUpsert) {
+		s.SetDisplayNames(v)
+	})
+}
+
+// UpdateDisplayNames sets the "display_names" field to the value that was provided on create.
+func (u *AppCoinUpsertBulk) UpdateDisplayNames() *AppCoinUpsertBulk {
+	return u.Update(func(s *AppCoinUpsert) {
+		s.UpdateDisplayNames()
+	})
+}
+
+// ClearDisplayNames clears the value of the "display_names" field.
+func (u *AppCoinUpsertBulk) ClearDisplayNames() *AppCoinUpsertBulk {
+	return u.Update(func(s *AppCoinUpsert) {
+		s.ClearDisplayNames()
 	})
 }
 

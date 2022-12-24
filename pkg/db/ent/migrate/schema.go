@@ -17,6 +17,7 @@ var (
 		{Name: "app_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "coin_type_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "name", Type: field.TypeString, Nullable: true, Default: ""},
+		{Name: "display_names", Type: field.TypeJSON, Nullable: true},
 		{Name: "logo", Type: field.TypeString, Nullable: true, Default: ""},
 		{Name: "for_pay", Type: field.TypeBool, Nullable: true, Default: false},
 		{Name: "withdraw_auto_review_amount", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
@@ -115,6 +116,7 @@ var (
 		{Name: "market_value", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
 		{Name: "settle_value", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
 		{Name: "settle_percent", Type: field.TypeUint32, Nullable: true, Default: 100},
+		{Name: "settle_tips", Type: field.TypeJSON, Nullable: true},
 		{Name: "setter", Type: field.TypeUUID, Nullable: true},
 	}
 	// ExchangeRatesTable holds the schema information for the "exchange_rates" table.

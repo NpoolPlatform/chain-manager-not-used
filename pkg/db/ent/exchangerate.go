@@ -3,6 +3,7 @@
 package ent
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 
@@ -33,6 +34,8 @@ type ExchangeRate struct {
 	SettleValue decimal.Decimal `json:"settle_value,omitempty"`
 	// SettlePercent holds the value of the "settle_percent" field.
 	SettlePercent uint32 `json:"settle_percent,omitempty"`
+	// SettleTips holds the value of the "settle_tips" field.
+	SettleTips []string `json:"settle_tips,omitempty"`
 	// Setter holds the value of the "setter" field.
 	Setter uuid.UUID `json:"setter,omitempty"`
 }
@@ -42,6 +45,8 @@ func (*ExchangeRate) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
+		case exchangerate.FieldSettleTips:
+			values[i] = new([]byte)
 		case exchangerate.FieldMarketValue, exchangerate.FieldSettleValue:
 			values[i] = new(decimal.Decimal)
 		case exchangerate.FieldCreatedAt, exchangerate.FieldUpdatedAt, exchangerate.FieldDeletedAt, exchangerate.FieldSettlePercent:
@@ -117,6 +122,14 @@ func (er *ExchangeRate) assignValues(columns []string, values []interface{}) err
 			} else if value.Valid {
 				er.SettlePercent = uint32(value.Int64)
 			}
+		case exchangerate.FieldSettleTips:
+			if value, ok := values[i].(*[]byte); !ok {
+				return fmt.Errorf("unexpected type %T for field settle_tips", values[i])
+			} else if value != nil && len(*value) > 0 {
+				if err := json.Unmarshal(*value, &er.SettleTips); err != nil {
+					return fmt.Errorf("unmarshal field settle_tips: %w", err)
+				}
+			}
 		case exchangerate.FieldSetter:
 			if value, ok := values[i].(*uuid.UUID); !ok {
 				return fmt.Errorf("unexpected type %T for field setter", values[i])
@@ -174,6 +187,9 @@ func (er *ExchangeRate) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("settle_percent=")
 	builder.WriteString(fmt.Sprintf("%v", er.SettlePercent))
+	builder.WriteString(", ")
+	builder.WriteString("settle_tips=")
+	builder.WriteString(fmt.Sprintf("%v", er.SettleTips))
 	builder.WriteString(", ")
 	builder.WriteString("setter=")
 	builder.WriteString(fmt.Sprintf("%v", er.Setter))

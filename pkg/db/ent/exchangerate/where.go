@@ -725,6 +725,20 @@ func SettlePercentNotNil() predicate.ExchangeRate {
 	})
 }
 
+// SettleTipsIsNil applies the IsNil predicate on the "settle_tips" field.
+func SettleTipsIsNil() predicate.ExchangeRate {
+	return predicate.ExchangeRate(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldSettleTips)))
+	})
+}
+
+// SettleTipsNotNil applies the NotNil predicate on the "settle_tips" field.
+func SettleTipsNotNil() predicate.ExchangeRate {
+	return predicate.ExchangeRate(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldSettleTips)))
+	})
+}
+
 // SetterEQ applies the EQ predicate on the "setter" field.
 func SetterEQ(v uuid.UUID) predicate.ExchangeRate {
 	return predicate.ExchangeRate(func(s *sql.Selector) {

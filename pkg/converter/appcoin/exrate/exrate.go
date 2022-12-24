@@ -17,6 +17,7 @@ func Ent2Grpc(row *ent.ExchangeRate) *npool.ExchangeRate {
 		MarketValue:   row.MarketValue.String(),
 		SettleValue:   row.SettleValue.String(),
 		SettlePercent: row.SettlePercent,
+		SettleTips:    row.SettleTips,
 		Setter:        row.Setter.String(),
 		CreatedAt:     row.CreatedAt,
 		UpdatedAt:     row.UpdatedAt,

@@ -40,6 +40,10 @@ func (AppCoin) Fields() []ent.Field {
 			Optional().
 			Default(""),
 		field.
+			JSON("display_names", []string{}).
+			Optional().
+			Default([]string{}),
+		field.
 			String("logo").
 			Optional().
 			Default(""),
