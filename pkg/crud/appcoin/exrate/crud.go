@@ -44,7 +44,11 @@ func CreateSet(c *ent.ExchangeRateCreate, in *npool.ExchangeRateReq) *ent.Exchan
 	if in.SettlePercent != nil {
 		c.SetSettlePercent(in.GetSettlePercent())
 	}
-	c.SetSettleTips(in.GetSettleTips())
+	if len(in.GetSettleTips()) > 0 {
+		c.SetSettleTips(in.GetSettleTips())
+	} else {
+		c.SetSettleTips([]string{})
+	}
 	if in.Setter != nil {
 		c.SetSetter(uuid.MustParse(in.GetSetter()))
 	}
