@@ -212,6 +212,20 @@ func (acc *AppCoinCreate) SetNillableDisplay(b *bool) *AppCoinCreate {
 	return acc
 }
 
+// SetDisplayIndex sets the "display_index" field.
+func (acc *AppCoinCreate) SetDisplayIndex(u uint32) *AppCoinCreate {
+	acc.mutation.SetDisplayIndex(u)
+	return acc
+}
+
+// SetNillableDisplayIndex sets the "display_index" field if the given value is not nil.
+func (acc *AppCoinCreate) SetNillableDisplayIndex(u *uint32) *AppCoinCreate {
+	if u != nil {
+		acc.SetDisplayIndex(*u)
+	}
+	return acc
+}
+
 // SetID sets the "id" field.
 func (acc *AppCoinCreate) SetID(u uuid.UUID) *AppCoinCreate {
 	acc.mutation.SetID(u)
@@ -375,6 +389,10 @@ func (acc *AppCoinCreate) defaults() error {
 	if _, ok := acc.mutation.Display(); !ok {
 		v := appcoin.DefaultDisplay
 		acc.mutation.SetDisplay(v)
+	}
+	if _, ok := acc.mutation.DisplayIndex(); !ok {
+		v := appcoin.DefaultDisplayIndex
+		acc.mutation.SetDisplayIndex(v)
 	}
 	if _, ok := acc.mutation.ID(); !ok {
 		if appcoin.DefaultID == nil {
@@ -545,6 +563,14 @@ func (acc *AppCoinCreate) createSpec() (*AppCoin, *sqlgraph.CreateSpec) {
 			Column: appcoin.FieldDisplay,
 		})
 		_node.Display = value
+	}
+	if value, ok := acc.mutation.DisplayIndex(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint32,
+			Value:  value,
+			Column: appcoin.FieldDisplayIndex,
+		})
+		_node.DisplayIndex = value
 	}
 	return _node, _spec
 }
@@ -849,6 +875,30 @@ func (u *AppCoinUpsert) UpdateDisplay() *AppCoinUpsert {
 // ClearDisplay clears the value of the "display" field.
 func (u *AppCoinUpsert) ClearDisplay() *AppCoinUpsert {
 	u.SetNull(appcoin.FieldDisplay)
+	return u
+}
+
+// SetDisplayIndex sets the "display_index" field.
+func (u *AppCoinUpsert) SetDisplayIndex(v uint32) *AppCoinUpsert {
+	u.Set(appcoin.FieldDisplayIndex, v)
+	return u
+}
+
+// UpdateDisplayIndex sets the "display_index" field to the value that was provided on create.
+func (u *AppCoinUpsert) UpdateDisplayIndex() *AppCoinUpsert {
+	u.SetExcluded(appcoin.FieldDisplayIndex)
+	return u
+}
+
+// AddDisplayIndex adds v to the "display_index" field.
+func (u *AppCoinUpsert) AddDisplayIndex(v uint32) *AppCoinUpsert {
+	u.Add(appcoin.FieldDisplayIndex, v)
+	return u
+}
+
+// ClearDisplayIndex clears the value of the "display_index" field.
+func (u *AppCoinUpsert) ClearDisplayIndex() *AppCoinUpsert {
+	u.SetNull(appcoin.FieldDisplayIndex)
 	return u
 }
 
@@ -1193,6 +1243,34 @@ func (u *AppCoinUpsertOne) UpdateDisplay() *AppCoinUpsertOne {
 func (u *AppCoinUpsertOne) ClearDisplay() *AppCoinUpsertOne {
 	return u.Update(func(s *AppCoinUpsert) {
 		s.ClearDisplay()
+	})
+}
+
+// SetDisplayIndex sets the "display_index" field.
+func (u *AppCoinUpsertOne) SetDisplayIndex(v uint32) *AppCoinUpsertOne {
+	return u.Update(func(s *AppCoinUpsert) {
+		s.SetDisplayIndex(v)
+	})
+}
+
+// AddDisplayIndex adds v to the "display_index" field.
+func (u *AppCoinUpsertOne) AddDisplayIndex(v uint32) *AppCoinUpsertOne {
+	return u.Update(func(s *AppCoinUpsert) {
+		s.AddDisplayIndex(v)
+	})
+}
+
+// UpdateDisplayIndex sets the "display_index" field to the value that was provided on create.
+func (u *AppCoinUpsertOne) UpdateDisplayIndex() *AppCoinUpsertOne {
+	return u.Update(func(s *AppCoinUpsert) {
+		s.UpdateDisplayIndex()
+	})
+}
+
+// ClearDisplayIndex clears the value of the "display_index" field.
+func (u *AppCoinUpsertOne) ClearDisplayIndex() *AppCoinUpsertOne {
+	return u.Update(func(s *AppCoinUpsert) {
+		s.ClearDisplayIndex()
 	})
 }
 
@@ -1703,6 +1781,34 @@ func (u *AppCoinUpsertBulk) UpdateDisplay() *AppCoinUpsertBulk {
 func (u *AppCoinUpsertBulk) ClearDisplay() *AppCoinUpsertBulk {
 	return u.Update(func(s *AppCoinUpsert) {
 		s.ClearDisplay()
+	})
+}
+
+// SetDisplayIndex sets the "display_index" field.
+func (u *AppCoinUpsertBulk) SetDisplayIndex(v uint32) *AppCoinUpsertBulk {
+	return u.Update(func(s *AppCoinUpsert) {
+		s.SetDisplayIndex(v)
+	})
+}
+
+// AddDisplayIndex adds v to the "display_index" field.
+func (u *AppCoinUpsertBulk) AddDisplayIndex(v uint32) *AppCoinUpsertBulk {
+	return u.Update(func(s *AppCoinUpsert) {
+		s.AddDisplayIndex(v)
+	})
+}
+
+// UpdateDisplayIndex sets the "display_index" field to the value that was provided on create.
+func (u *AppCoinUpsertBulk) UpdateDisplayIndex() *AppCoinUpsertBulk {
+	return u.Update(func(s *AppCoinUpsert) {
+		s.UpdateDisplayIndex()
+	})
+}
+
+// ClearDisplayIndex clears the value of the "display_index" field.
+func (u *AppCoinUpsertBulk) ClearDisplayIndex() *AppCoinUpsertBulk {
+	return u.Update(func(s *AppCoinUpsert) {
+		s.ClearDisplayIndex()
 	})
 }
 

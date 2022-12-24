@@ -69,6 +69,8 @@ type AppCoinMutation struct {
 	disabled                    *bool
 	daily_reward_amount         *decimal.Decimal
 	display                     *bool
+	display_index               *uint32
+	adddisplay_index            *int32
 	clearedFields               map[string]struct{}
 	done                        bool
 	oldValue                    func(context.Context) (*AppCoin, error)
@@ -886,6 +888,76 @@ func (m *AppCoinMutation) ResetDisplay() {
 	delete(m.clearedFields, appcoin.FieldDisplay)
 }
 
+// SetDisplayIndex sets the "display_index" field.
+func (m *AppCoinMutation) SetDisplayIndex(u uint32) {
+	m.display_index = &u
+	m.adddisplay_index = nil
+}
+
+// DisplayIndex returns the value of the "display_index" field in the mutation.
+func (m *AppCoinMutation) DisplayIndex() (r uint32, exists bool) {
+	v := m.display_index
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDisplayIndex returns the old "display_index" field's value of the AppCoin entity.
+// If the AppCoin object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppCoinMutation) OldDisplayIndex(ctx context.Context) (v uint32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDisplayIndex is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDisplayIndex requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDisplayIndex: %w", err)
+	}
+	return oldValue.DisplayIndex, nil
+}
+
+// AddDisplayIndex adds u to the "display_index" field.
+func (m *AppCoinMutation) AddDisplayIndex(u int32) {
+	if m.adddisplay_index != nil {
+		*m.adddisplay_index += u
+	} else {
+		m.adddisplay_index = &u
+	}
+}
+
+// AddedDisplayIndex returns the value that was added to the "display_index" field in this mutation.
+func (m *AppCoinMutation) AddedDisplayIndex() (r int32, exists bool) {
+	v := m.adddisplay_index
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearDisplayIndex clears the value of the "display_index" field.
+func (m *AppCoinMutation) ClearDisplayIndex() {
+	m.display_index = nil
+	m.adddisplay_index = nil
+	m.clearedFields[appcoin.FieldDisplayIndex] = struct{}{}
+}
+
+// DisplayIndexCleared returns if the "display_index" field was cleared in this mutation.
+func (m *AppCoinMutation) DisplayIndexCleared() bool {
+	_, ok := m.clearedFields[appcoin.FieldDisplayIndex]
+	return ok
+}
+
+// ResetDisplayIndex resets all changes to the "display_index" field.
+func (m *AppCoinMutation) ResetDisplayIndex() {
+	m.display_index = nil
+	m.adddisplay_index = nil
+	delete(m.clearedFields, appcoin.FieldDisplayIndex)
+}
+
 // Where appends a list predicates to the AppCoinMutation builder.
 func (m *AppCoinMutation) Where(ps ...predicate.AppCoin) {
 	m.predicates = append(m.predicates, ps...)
@@ -905,7 +977,7 @@ func (m *AppCoinMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *AppCoinMutation) Fields() []string {
-	fields := make([]string, 0, 14)
+	fields := make([]string, 0, 15)
 	if m.created_at != nil {
 		fields = append(fields, appcoin.FieldCreatedAt)
 	}
@@ -948,6 +1020,9 @@ func (m *AppCoinMutation) Fields() []string {
 	if m.display != nil {
 		fields = append(fields, appcoin.FieldDisplay)
 	}
+	if m.display_index != nil {
+		fields = append(fields, appcoin.FieldDisplayIndex)
+	}
 	return fields
 }
 
@@ -984,6 +1059,8 @@ func (m *AppCoinMutation) Field(name string) (ent.Value, bool) {
 		return m.DailyRewardAmount()
 	case appcoin.FieldDisplay:
 		return m.Display()
+	case appcoin.FieldDisplayIndex:
+		return m.DisplayIndex()
 	}
 	return nil, false
 }
@@ -1021,6 +1098,8 @@ func (m *AppCoinMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldDailyRewardAmount(ctx)
 	case appcoin.FieldDisplay:
 		return m.OldDisplay(ctx)
+	case appcoin.FieldDisplayIndex:
+		return m.OldDisplayIndex(ctx)
 	}
 	return nil, fmt.Errorf("unknown AppCoin field %s", name)
 }
@@ -1128,6 +1207,13 @@ func (m *AppCoinMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetDisplay(v)
 		return nil
+	case appcoin.FieldDisplayIndex:
+		v, ok := value.(uint32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDisplayIndex(v)
+		return nil
 	}
 	return fmt.Errorf("unknown AppCoin field %s", name)
 }
@@ -1145,6 +1231,9 @@ func (m *AppCoinMutation) AddedFields() []string {
 	if m.adddeleted_at != nil {
 		fields = append(fields, appcoin.FieldDeletedAt)
 	}
+	if m.adddisplay_index != nil {
+		fields = append(fields, appcoin.FieldDisplayIndex)
+	}
 	return fields
 }
 
@@ -1159,6 +1248,8 @@ func (m *AppCoinMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedUpdatedAt()
 	case appcoin.FieldDeletedAt:
 		return m.AddedDeletedAt()
+	case appcoin.FieldDisplayIndex:
+		return m.AddedDisplayIndex()
 	}
 	return nil, false
 }
@@ -1188,6 +1279,13 @@ func (m *AppCoinMutation) AddField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddDeletedAt(v)
+		return nil
+	case appcoin.FieldDisplayIndex:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddDisplayIndex(v)
 		return nil
 	}
 	return fmt.Errorf("unknown AppCoin numeric field %s", name)
@@ -1229,6 +1327,9 @@ func (m *AppCoinMutation) ClearedFields() []string {
 	}
 	if m.FieldCleared(appcoin.FieldDisplay) {
 		fields = append(fields, appcoin.FieldDisplay)
+	}
+	if m.FieldCleared(appcoin.FieldDisplayIndex) {
+		fields = append(fields, appcoin.FieldDisplayIndex)
 	}
 	return fields
 }
@@ -1276,6 +1377,9 @@ func (m *AppCoinMutation) ClearField(name string) error {
 		return nil
 	case appcoin.FieldDisplay:
 		m.ClearDisplay()
+		return nil
+	case appcoin.FieldDisplayIndex:
+		m.ClearDisplayIndex()
 		return nil
 	}
 	return fmt.Errorf("unknown AppCoin nullable field %s", name)
@@ -1326,6 +1430,9 @@ func (m *AppCoinMutation) ResetField(name string) error {
 		return nil
 	case appcoin.FieldDisplay:
 		m.ResetDisplay()
+		return nil
+	case appcoin.FieldDisplayIndex:
+		m.ResetDisplayIndex()
 		return nil
 	}
 	return fmt.Errorf("unknown AppCoin field %s", name)

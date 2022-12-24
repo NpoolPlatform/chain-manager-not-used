@@ -99,6 +99,10 @@ func init() {
 	appcoinDescDisplay := appcoinFields[11].Descriptor()
 	// appcoin.DefaultDisplay holds the default value on creation for the display field.
 	appcoin.DefaultDisplay = appcoinDescDisplay.Default.(bool)
+	// appcoinDescDisplayIndex is the schema descriptor for display_index field.
+	appcoinDescDisplayIndex := appcoinFields[12].Descriptor()
+	// appcoin.DefaultDisplayIndex holds the default value on creation for the display_index field.
+	appcoin.DefaultDisplayIndex = appcoinDescDisplayIndex.Default.(uint32)
 	// appcoinDescID is the schema descriptor for id field.
 	appcoinDescID := appcoinFields[0].Descriptor()
 	// appcoin.DefaultID holds the default value on creation for the id field.

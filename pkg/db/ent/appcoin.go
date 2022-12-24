@@ -46,6 +46,8 @@ type AppCoin struct {
 	DailyRewardAmount decimal.Decimal `json:"daily_reward_amount,omitempty"`
 	// Display holds the value of the "display" field.
 	Display bool `json:"display,omitempty"`
+	// DisplayIndex holds the value of the "display_index" field.
+	DisplayIndex uint32 `json:"display_index,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -59,7 +61,7 @@ func (*AppCoin) scanValues(columns []string) ([]interface{}, error) {
 			values[i] = new(decimal.Decimal)
 		case appcoin.FieldForPay, appcoin.FieldDisabled, appcoin.FieldDisplay:
 			values[i] = new(sql.NullBool)
-		case appcoin.FieldCreatedAt, appcoin.FieldUpdatedAt, appcoin.FieldDeletedAt:
+		case appcoin.FieldCreatedAt, appcoin.FieldUpdatedAt, appcoin.FieldDeletedAt, appcoin.FieldDisplayIndex:
 			values[i] = new(sql.NullInt64)
 		case appcoin.FieldName, appcoin.FieldLogo, appcoin.FieldProductPage:
 			values[i] = new(sql.NullString)
@@ -172,6 +174,12 @@ func (ac *AppCoin) assignValues(columns []string, values []interface{}) error {
 			} else if value.Valid {
 				ac.Display = value.Bool
 			}
+		case appcoin.FieldDisplayIndex:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field display_index", values[i])
+			} else if value.Valid {
+				ac.DisplayIndex = uint32(value.Int64)
+			}
 		}
 	}
 	return nil
@@ -241,6 +249,9 @@ func (ac *AppCoin) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("display=")
 	builder.WriteString(fmt.Sprintf("%v", ac.Display))
+	builder.WriteString(", ")
+	builder.WriteString("display_index=")
+	builder.WriteString(fmt.Sprintf("%v", ac.DisplayIndex))
 	builder.WriteByte(')')
 	return builder.String()
 }

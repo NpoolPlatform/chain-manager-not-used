@@ -77,6 +77,10 @@ func (AppCoin) Fields() []ent.Field {
 			Bool("display").
 			Optional().
 			Default(true),
+		field.
+			Uint32("display_index").
+			Optional().
+			Default(0),
 	}
 }
 

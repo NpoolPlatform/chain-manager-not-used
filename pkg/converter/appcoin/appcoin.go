@@ -25,6 +25,7 @@ func Ent2Grpc(row *ent.AppCoin) *npool.AppCoin {
 		UpdatedAt:                row.UpdatedAt,
 		Disabled:                 row.Disabled,
 		Display:                  row.Display,
+		DisplayIndex:             row.DisplayIndex,
 	}
 }
 

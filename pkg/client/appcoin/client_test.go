@@ -70,16 +70,19 @@ func updateAppCoin(t *testing.T) {
 	name := uuid.NewString()
 	withdrawAutoReviewdAmount := "81.0234"
 	forPay := true
+	displayIndex := uint32(1)
 
 	appCoinReq.Name = &name
 	appCoinReq.WithdrawAutoReviewAmount = &withdrawAutoReviewdAmount
 	appCoinReq.DailyRewardAmount = &withdrawAutoReviewdAmount
 	appCoinReq.ForPay = &forPay
+	appCoinReq.DisplayIndex = &displayIndex
 
 	appCoin.Name = name
 	appCoin.WithdrawAutoReviewAmount = withdrawAutoReviewdAmount
 	appCoin.DailyRewardAmount = withdrawAutoReviewdAmount
 	appCoin.ForPay = forPay
+	appCoin.DisplayIndex = displayIndex
 
 	info, err := UpdateAppCoin(context.Background(), appCoinReq)
 	if assert.Nil(t, err) {

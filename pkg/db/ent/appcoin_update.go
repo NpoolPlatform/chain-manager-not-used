@@ -297,6 +297,33 @@ func (acu *AppCoinUpdate) ClearDisplay() *AppCoinUpdate {
 	return acu
 }
 
+// SetDisplayIndex sets the "display_index" field.
+func (acu *AppCoinUpdate) SetDisplayIndex(u uint32) *AppCoinUpdate {
+	acu.mutation.ResetDisplayIndex()
+	acu.mutation.SetDisplayIndex(u)
+	return acu
+}
+
+// SetNillableDisplayIndex sets the "display_index" field if the given value is not nil.
+func (acu *AppCoinUpdate) SetNillableDisplayIndex(u *uint32) *AppCoinUpdate {
+	if u != nil {
+		acu.SetDisplayIndex(*u)
+	}
+	return acu
+}
+
+// AddDisplayIndex adds u to the "display_index" field.
+func (acu *AppCoinUpdate) AddDisplayIndex(u int32) *AppCoinUpdate {
+	acu.mutation.AddDisplayIndex(u)
+	return acu
+}
+
+// ClearDisplayIndex clears the value of the "display_index" field.
+func (acu *AppCoinUpdate) ClearDisplayIndex() *AppCoinUpdate {
+	acu.mutation.ClearDisplayIndex()
+	return acu
+}
+
 // Mutation returns the AppCoinMutation object of the builder.
 func (acu *AppCoinUpdate) Mutation() *AppCoinMutation {
 	return acu.mutation
@@ -578,6 +605,26 @@ func (acu *AppCoinUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeBool,
 			Column: appcoin.FieldDisplay,
+		})
+	}
+	if value, ok := acu.mutation.DisplayIndex(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint32,
+			Value:  value,
+			Column: appcoin.FieldDisplayIndex,
+		})
+	}
+	if value, ok := acu.mutation.AddedDisplayIndex(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint32,
+			Value:  value,
+			Column: appcoin.FieldDisplayIndex,
+		})
+	}
+	if acu.mutation.DisplayIndexCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint32,
+			Column: appcoin.FieldDisplayIndex,
 		})
 	}
 	_spec.Modifiers = acu.modifiers
@@ -865,6 +912,33 @@ func (acuo *AppCoinUpdateOne) SetNillableDisplay(b *bool) *AppCoinUpdateOne {
 // ClearDisplay clears the value of the "display" field.
 func (acuo *AppCoinUpdateOne) ClearDisplay() *AppCoinUpdateOne {
 	acuo.mutation.ClearDisplay()
+	return acuo
+}
+
+// SetDisplayIndex sets the "display_index" field.
+func (acuo *AppCoinUpdateOne) SetDisplayIndex(u uint32) *AppCoinUpdateOne {
+	acuo.mutation.ResetDisplayIndex()
+	acuo.mutation.SetDisplayIndex(u)
+	return acuo
+}
+
+// SetNillableDisplayIndex sets the "display_index" field if the given value is not nil.
+func (acuo *AppCoinUpdateOne) SetNillableDisplayIndex(u *uint32) *AppCoinUpdateOne {
+	if u != nil {
+		acuo.SetDisplayIndex(*u)
+	}
+	return acuo
+}
+
+// AddDisplayIndex adds u to the "display_index" field.
+func (acuo *AppCoinUpdateOne) AddDisplayIndex(u int32) *AppCoinUpdateOne {
+	acuo.mutation.AddDisplayIndex(u)
+	return acuo
+}
+
+// ClearDisplayIndex clears the value of the "display_index" field.
+func (acuo *AppCoinUpdateOne) ClearDisplayIndex() *AppCoinUpdateOne {
+	acuo.mutation.ClearDisplayIndex()
 	return acuo
 }
 
@@ -1179,6 +1253,26 @@ func (acuo *AppCoinUpdateOne) sqlSave(ctx context.Context) (_node *AppCoin, err 
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeBool,
 			Column: appcoin.FieldDisplay,
+		})
+	}
+	if value, ok := acuo.mutation.DisplayIndex(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint32,
+			Value:  value,
+			Column: appcoin.FieldDisplayIndex,
+		})
+	}
+	if value, ok := acuo.mutation.AddedDisplayIndex(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint32,
+			Value:  value,
+			Column: appcoin.FieldDisplayIndex,
+		})
+	}
+	if acuo.mutation.DisplayIndexCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint32,
+			Column: appcoin.FieldDisplayIndex,
 		})
 	}
 	_spec.Modifiers = acuo.modifiers

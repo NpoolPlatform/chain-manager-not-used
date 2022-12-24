@@ -60,6 +60,7 @@ func CreateSet(c *ent.AppCoinCreate, in *npool.AppCoinReq) *ent.AppCoinCreate {
 	if in.Display != nil {
 		c.SetDisplay(in.GetDisplay())
 	}
+	c.SetDisplayIndex(in.GetDisplayIndex())
 	return c
 }
 
@@ -153,6 +154,9 @@ func UpdateSet(info *ent.AppCoin, in *npool.AppCoinReq) *ent.AppCoinUpdateOne {
 	}
 	if in.Display != nil {
 		stm = stm.SetDisplay(in.GetDisplay())
+	}
+	if in.DisplayIndex != nil {
+		stm = stm.SetDisplayIndex(in.GetDisplayIndex())
 	}
 
 	return stm

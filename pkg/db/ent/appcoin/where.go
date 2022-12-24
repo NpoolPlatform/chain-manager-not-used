@@ -171,6 +171,13 @@ func Display(v bool) predicate.AppCoin {
 	})
 }
 
+// DisplayIndex applies equality check predicate on the "display_index" field. It's identical to DisplayIndexEQ.
+func DisplayIndex(v uint32) predicate.AppCoin {
+	return predicate.AppCoin(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldDisplayIndex), v))
+	})
+}
+
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
 func CreatedAtEQ(v uint32) predicate.AppCoin {
 	return predicate.AppCoin(func(s *sql.Selector) {
@@ -1109,6 +1116,84 @@ func DisplayIsNil() predicate.AppCoin {
 func DisplayNotNil() predicate.AppCoin {
 	return predicate.AppCoin(func(s *sql.Selector) {
 		s.Where(sql.NotNull(s.C(FieldDisplay)))
+	})
+}
+
+// DisplayIndexEQ applies the EQ predicate on the "display_index" field.
+func DisplayIndexEQ(v uint32) predicate.AppCoin {
+	return predicate.AppCoin(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldDisplayIndex), v))
+	})
+}
+
+// DisplayIndexNEQ applies the NEQ predicate on the "display_index" field.
+func DisplayIndexNEQ(v uint32) predicate.AppCoin {
+	return predicate.AppCoin(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldDisplayIndex), v))
+	})
+}
+
+// DisplayIndexIn applies the In predicate on the "display_index" field.
+func DisplayIndexIn(vs ...uint32) predicate.AppCoin {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.AppCoin(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldDisplayIndex), v...))
+	})
+}
+
+// DisplayIndexNotIn applies the NotIn predicate on the "display_index" field.
+func DisplayIndexNotIn(vs ...uint32) predicate.AppCoin {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.AppCoin(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldDisplayIndex), v...))
+	})
+}
+
+// DisplayIndexGT applies the GT predicate on the "display_index" field.
+func DisplayIndexGT(v uint32) predicate.AppCoin {
+	return predicate.AppCoin(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldDisplayIndex), v))
+	})
+}
+
+// DisplayIndexGTE applies the GTE predicate on the "display_index" field.
+func DisplayIndexGTE(v uint32) predicate.AppCoin {
+	return predicate.AppCoin(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldDisplayIndex), v))
+	})
+}
+
+// DisplayIndexLT applies the LT predicate on the "display_index" field.
+func DisplayIndexLT(v uint32) predicate.AppCoin {
+	return predicate.AppCoin(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldDisplayIndex), v))
+	})
+}
+
+// DisplayIndexLTE applies the LTE predicate on the "display_index" field.
+func DisplayIndexLTE(v uint32) predicate.AppCoin {
+	return predicate.AppCoin(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldDisplayIndex), v))
+	})
+}
+
+// DisplayIndexIsNil applies the IsNil predicate on the "display_index" field.
+func DisplayIndexIsNil() predicate.AppCoin {
+	return predicate.AppCoin(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldDisplayIndex)))
+	})
+}
+
+// DisplayIndexNotNil applies the NotNil predicate on the "display_index" field.
+func DisplayIndexNotNil() predicate.AppCoin {
+	return predicate.AppCoin(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldDisplayIndex)))
 	})
 }
 
