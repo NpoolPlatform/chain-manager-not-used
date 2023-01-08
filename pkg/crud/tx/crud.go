@@ -274,6 +274,8 @@ func SetQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.TranQuery, error) 
 		switch conds.GetState().GetOp() {
 		case cruder.EQ:
 			stm.Where(tran.State(npool.TxState(conds.GetState().GetValue()).String()))
+		case cruder.NEQ:
+			stm.Where(tran.StateNEQ(npool.TxState(conds.GetState().GetValue()).String()))
 		default:
 			return nil, fmt.Errorf("invalid tx field")
 		}
