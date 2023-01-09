@@ -43,6 +43,8 @@ const (
 	FieldDisplay = "display"
 	// FieldDisplayIndex holds the string denoting the display_index field in the database.
 	FieldDisplayIndex = "display_index"
+	// FieldMaxAmountPerWithdraw holds the string denoting the max_amount_per_withdraw field in the database.
+	FieldMaxAmountPerWithdraw = "max_amount_per_withdraw"
 	// Table holds the table name of the appcoin in the database.
 	Table = "app_coins"
 )
@@ -65,6 +67,7 @@ var Columns = []string{
 	FieldDailyRewardAmount,
 	FieldDisplay,
 	FieldDisplayIndex,
+	FieldMaxAmountPerWithdraw,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -118,6 +121,8 @@ var (
 	DefaultDisplay bool
 	// DefaultDisplayIndex holds the default value on creation for the "display_index" field.
 	DefaultDisplayIndex uint32
+	// DefaultMaxAmountPerWithdraw holds the default value on creation for the "max_amount_per_withdraw" field.
+	DefaultMaxAmountPerWithdraw decimal.Decimal
 	// DefaultID holds the default value on creation for the "id" field.
 	DefaultID func() uuid.UUID
 )

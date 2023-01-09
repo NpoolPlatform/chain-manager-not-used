@@ -49,6 +49,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			appcoin.FieldDailyRewardAmount:        {Type: field.TypeOther, Column: appcoin.FieldDailyRewardAmount},
 			appcoin.FieldDisplay:                  {Type: field.TypeBool, Column: appcoin.FieldDisplay},
 			appcoin.FieldDisplayIndex:             {Type: field.TypeUint32, Column: appcoin.FieldDisplayIndex},
+			appcoin.FieldMaxAmountPerWithdraw:     {Type: field.TypeOther, Column: appcoin.FieldMaxAmountPerWithdraw},
 		},
 	}
 	graph.Nodes[1] = &sqlgraph.Node{
@@ -369,6 +370,11 @@ func (f *AppCoinFilter) WhereDisplay(p entql.BoolP) {
 // WhereDisplayIndex applies the entql uint32 predicate on the display_index field.
 func (f *AppCoinFilter) WhereDisplayIndex(p entql.Uint32P) {
 	f.Where(p.Field(appcoin.FieldDisplayIndex))
+}
+
+// WhereMaxAmountPerWithdraw applies the entql other predicate on the max_amount_per_withdraw field.
+func (f *AppCoinFilter) WhereMaxAmountPerWithdraw(p entql.OtherP) {
+	f.Where(p.Field(appcoin.FieldMaxAmountPerWithdraw))
 }
 
 // addPredicate implements the predicateAdder interface.

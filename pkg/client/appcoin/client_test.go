@@ -42,6 +42,7 @@ var appCoin = &npool.AppCoin{
 	DailyRewardAmount:        "89.122",
 	Display:                  false,
 	Disabled:                 false,
+	MaxAmountPerWithdraw:     "89.123",
 }
 
 var appCoinReq = &npool.AppCoinReq{
@@ -55,6 +56,7 @@ var appCoinReq = &npool.AppCoinReq{
 	DailyRewardAmount:        &appCoin.DailyRewardAmount,
 	Display:                  &appCoin.Display,
 	Disabled:                 &appCoin.Disabled,
+	MaxAmountPerWithdraw:     &appCoin.MaxAmountPerWithdraw,
 }
 
 func createAppCoin(t *testing.T) {

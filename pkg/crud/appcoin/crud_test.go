@@ -40,6 +40,7 @@ var entity = ent.AppCoin{
 	DailyRewardAmount:        decimal.RequireFromString("89.001"),
 	Disabled:                 false,
 	Display:                  false,
+	MaxAmountPerWithdraw:     decimal.RequireFromString("89.000"),
 }
 
 var (
@@ -51,6 +52,7 @@ var (
 	forPay                    = entity.ForPay
 	withdrawAutoReviewdAmount = entity.WithdrawAutoReviewAmount.String()
 	dailyRewardAmount         = entity.DailyRewardAmount.String()
+	maxAmountPerWithdraw      = entity.MaxAmountPerWithdraw.String()
 
 	req = npool.AppCoinReq{
 		ID:                       &id,
@@ -63,6 +65,7 @@ var (
 		DailyRewardAmount:        &dailyRewardAmount,
 		Disabled:                 &entity.Disabled,
 		Display:                  &entity.Display,
+		MaxAmountPerWithdraw:     &maxAmountPerWithdraw,
 	}
 )
 

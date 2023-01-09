@@ -103,6 +103,10 @@ func init() {
 	appcoinDescDisplayIndex := appcoinFields[12].Descriptor()
 	// appcoin.DefaultDisplayIndex holds the default value on creation for the display_index field.
 	appcoin.DefaultDisplayIndex = appcoinDescDisplayIndex.Default.(uint32)
+	// appcoinDescMaxAmountPerWithdraw is the schema descriptor for max_amount_per_withdraw field.
+	appcoinDescMaxAmountPerWithdraw := appcoinFields[13].Descriptor()
+	// appcoin.DefaultMaxAmountPerWithdraw holds the default value on creation for the max_amount_per_withdraw field.
+	appcoin.DefaultMaxAmountPerWithdraw = appcoinDescMaxAmountPerWithdraw.Default.(decimal.Decimal)
 	// appcoinDescID is the schema descriptor for id field.
 	appcoinDescID := appcoinFields[0].Descriptor()
 	// appcoin.DefaultID holds the default value on creation for the id field.

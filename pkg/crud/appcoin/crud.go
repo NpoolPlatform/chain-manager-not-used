@@ -61,6 +61,9 @@ func CreateSet(c *ent.AppCoinCreate, in *npool.AppCoinReq) *ent.AppCoinCreate {
 		c.SetDisplay(in.GetDisplay())
 	}
 	c.SetDisplayIndex(in.GetDisplayIndex())
+	if in.MaxAmountPerWithdraw != nil {
+		c.SetMaxAmountPerWithdraw(decimal.RequireFromString(in.GetMaxAmountPerWithdraw()))
+	}
 	return c
 }
 
@@ -157,6 +160,9 @@ func UpdateSet(info *ent.AppCoin, in *npool.AppCoinReq) *ent.AppCoinUpdateOne {
 	}
 	if in.DisplayIndex != nil {
 		stm = stm.SetDisplayIndex(in.GetDisplayIndex())
+	}
+	if in.MaxAmountPerWithdraw != nil {
+		stm = stm.SetMaxAmountPerWithdraw(decimal.RequireFromString(in.GetMaxAmountPerWithdraw()))
 	}
 
 	return stm

@@ -324,6 +324,26 @@ func (acu *AppCoinUpdate) ClearDisplayIndex() *AppCoinUpdate {
 	return acu
 }
 
+// SetMaxAmountPerWithdraw sets the "max_amount_per_withdraw" field.
+func (acu *AppCoinUpdate) SetMaxAmountPerWithdraw(d decimal.Decimal) *AppCoinUpdate {
+	acu.mutation.SetMaxAmountPerWithdraw(d)
+	return acu
+}
+
+// SetNillableMaxAmountPerWithdraw sets the "max_amount_per_withdraw" field if the given value is not nil.
+func (acu *AppCoinUpdate) SetNillableMaxAmountPerWithdraw(d *decimal.Decimal) *AppCoinUpdate {
+	if d != nil {
+		acu.SetMaxAmountPerWithdraw(*d)
+	}
+	return acu
+}
+
+// ClearMaxAmountPerWithdraw clears the value of the "max_amount_per_withdraw" field.
+func (acu *AppCoinUpdate) ClearMaxAmountPerWithdraw() *AppCoinUpdate {
+	acu.mutation.ClearMaxAmountPerWithdraw()
+	return acu
+}
+
 // Mutation returns the AppCoinMutation object of the builder.
 func (acu *AppCoinUpdate) Mutation() *AppCoinMutation {
 	return acu.mutation
@@ -625,6 +645,19 @@ func (acu *AppCoinUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeUint32,
 			Column: appcoin.FieldDisplayIndex,
+		})
+	}
+	if value, ok := acu.mutation.MaxAmountPerWithdraw(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeOther,
+			Value:  value,
+			Column: appcoin.FieldMaxAmountPerWithdraw,
+		})
+	}
+	if acu.mutation.MaxAmountPerWithdrawCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeOther,
+			Column: appcoin.FieldMaxAmountPerWithdraw,
 		})
 	}
 	_spec.Modifiers = acu.modifiers
@@ -939,6 +972,26 @@ func (acuo *AppCoinUpdateOne) AddDisplayIndex(u int32) *AppCoinUpdateOne {
 // ClearDisplayIndex clears the value of the "display_index" field.
 func (acuo *AppCoinUpdateOne) ClearDisplayIndex() *AppCoinUpdateOne {
 	acuo.mutation.ClearDisplayIndex()
+	return acuo
+}
+
+// SetMaxAmountPerWithdraw sets the "max_amount_per_withdraw" field.
+func (acuo *AppCoinUpdateOne) SetMaxAmountPerWithdraw(d decimal.Decimal) *AppCoinUpdateOne {
+	acuo.mutation.SetMaxAmountPerWithdraw(d)
+	return acuo
+}
+
+// SetNillableMaxAmountPerWithdraw sets the "max_amount_per_withdraw" field if the given value is not nil.
+func (acuo *AppCoinUpdateOne) SetNillableMaxAmountPerWithdraw(d *decimal.Decimal) *AppCoinUpdateOne {
+	if d != nil {
+		acuo.SetMaxAmountPerWithdraw(*d)
+	}
+	return acuo
+}
+
+// ClearMaxAmountPerWithdraw clears the value of the "max_amount_per_withdraw" field.
+func (acuo *AppCoinUpdateOne) ClearMaxAmountPerWithdraw() *AppCoinUpdateOne {
+	acuo.mutation.ClearMaxAmountPerWithdraw()
 	return acuo
 }
 
@@ -1273,6 +1326,19 @@ func (acuo *AppCoinUpdateOne) sqlSave(ctx context.Context) (_node *AppCoin, err 
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeUint32,
 			Column: appcoin.FieldDisplayIndex,
+		})
+	}
+	if value, ok := acuo.mutation.MaxAmountPerWithdraw(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeOther,
+			Value:  value,
+			Column: appcoin.FieldMaxAmountPerWithdraw,
+		})
+	}
+	if acuo.mutation.MaxAmountPerWithdrawCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeOther,
+			Column: appcoin.FieldMaxAmountPerWithdraw,
 		})
 	}
 	_spec.Modifiers = acuo.modifiers

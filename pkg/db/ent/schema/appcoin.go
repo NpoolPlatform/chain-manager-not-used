@@ -81,6 +81,13 @@ func (AppCoin) Fields() []ent.Field {
 			Uint32("display_index").
 			Optional().
 			Default(0),
+		field.
+			Other("max_amount_per_withdraw", decimal.Decimal{}).
+			SchemaType(map[string]string{
+				dialect.MySQL: "decimal(37,18)",
+			}).
+			Optional().
+			Default(decimal.Decimal{}),
 	}
 }
 
