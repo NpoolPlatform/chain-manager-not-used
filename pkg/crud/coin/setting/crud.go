@@ -53,6 +53,9 @@ func CreateSet(c *ent.SettingCreate, in *npool.SettingReq) *ent.SettingCreate {
 	if in.PaymentAccountCollectAmount != nil {
 		c.SetPaymentAccountCollectAmount(decimal.RequireFromString(in.GetPaymentAccountCollectAmount()))
 	}
+	if in.LeastTransferAmount != nil {
+		c.SetLeastTransferAmount(decimal.RequireFromString(in.GetLeastTransferAmount()))
+	}
 	return c
 }
 
@@ -140,6 +143,9 @@ func UpdateSet(info *ent.Setting, in *npool.SettingReq) *ent.SettingUpdateOne {
 	}
 	if in.PaymentAccountCollectAmount != nil {
 		stm.SetPaymentAccountCollectAmount(decimal.RequireFromString(in.GetPaymentAccountCollectAmount()))
+	}
+	if in.LeastTransferAmount != nil {
+		stm.SetLeastTransferAmount(decimal.RequireFromString(in.GetLeastTransferAmount()))
 	}
 
 	return stm

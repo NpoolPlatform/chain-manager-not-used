@@ -535,6 +535,10 @@ func init() {
 	settingDescPaymentAccountCollectAmount := settingFields[9].Descriptor()
 	// setting.DefaultPaymentAccountCollectAmount holds the default value on creation for the payment_account_collect_amount field.
 	setting.DefaultPaymentAccountCollectAmount = settingDescPaymentAccountCollectAmount.Default.(decimal.Decimal)
+	// settingDescLeastTransferAmount is the schema descriptor for least_transfer_amount field.
+	settingDescLeastTransferAmount := settingFields[10].Descriptor()
+	// setting.DefaultLeastTransferAmount holds the default value on creation for the least_transfer_amount field.
+	setting.DefaultLeastTransferAmount = settingDescLeastTransferAmount.Default.(decimal.Decimal)
 	// settingDescID is the schema descriptor for id field.
 	settingDescID := settingFields[0].Descriptor()
 	// setting.DefaultID holds the default value on creation for the id field.

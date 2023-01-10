@@ -8,7 +8,7 @@ require (
 	github.com/NpoolPlatform/api-manager v0.0.0-20220826022307-d72866fe3ec0
 	github.com/NpoolPlatform/go-service-framework v0.0.0-20220927113434-7c153f087a8c
 	github.com/NpoolPlatform/libent-cruder v0.0.0-20221109023947-366125b690fb
-	github.com/NpoolPlatform/message v0.0.0-20230109055950-8faed8ec3001
+	github.com/NpoolPlatform/message v0.0.0-20230110135328-fe07dd0e1cd8
 	github.com/google/uuid v1.3.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.10.0
 	github.com/shopspring/decimal v1.3.1

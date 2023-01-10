@@ -157,5 +157,13 @@ func validateUpdate(in *npool.SettingReq) error { //nolint
 		}
 	}
 
+	if in.LeastTransferAmount != nil {
+		amount, err := decimal.NewFromString(in.GetLeastTransferAmount())
+		if err != nil || amount.Cmp(decimal.NewFromInt(0)) <= 0 {
+			logger.Sugar().Errorw("validate", "LeastTransferAmount", in.GetLeastTransferAmount(), "error", err)
+			return err
+		}
+	}
+
 	return nil
 }

@@ -42,6 +42,7 @@ var setting = &npool.Setting{
 	LowFeeAmount:                "0.201",
 	HotWalletAccountAmount:      "9000.123",
 	PaymentAccountCollectAmount: "9000.123",
+	LeastTransferAmount:         "9000.123",
 }
 
 var settingReq = &npool.SettingReq{
@@ -55,6 +56,7 @@ var settingReq = &npool.SettingReq{
 	LowFeeAmount:                &setting.LowFeeAmount,
 	HotWalletAccountAmount:      &setting.HotWalletAccountAmount,
 	PaymentAccountCollectAmount: &setting.PaymentAccountCollectAmount,
+	LeastTransferAmount:         &setting.LeastTransferAmount,
 }
 
 func createSetting(t *testing.T) {

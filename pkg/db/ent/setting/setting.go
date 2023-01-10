@@ -37,6 +37,8 @@ const (
 	FieldHotWalletAccountAmount = "hot_wallet_account_amount"
 	// FieldPaymentAccountCollectAmount holds the string denoting the payment_account_collect_amount field in the database.
 	FieldPaymentAccountCollectAmount = "payment_account_collect_amount"
+	// FieldLeastTransferAmount holds the string denoting the least_transfer_amount field in the database.
+	FieldLeastTransferAmount = "least_transfer_amount"
 	// Table holds the table name of the setting in the database.
 	Table = "settings"
 )
@@ -56,6 +58,7 @@ var Columns = []string{
 	FieldLowFeeAmount,
 	FieldHotWalletAccountAmount,
 	FieldPaymentAccountCollectAmount,
+	FieldLeastTransferAmount,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -103,6 +106,8 @@ var (
 	DefaultHotWalletAccountAmount decimal.Decimal
 	// DefaultPaymentAccountCollectAmount holds the default value on creation for the "payment_account_collect_amount" field.
 	DefaultPaymentAccountCollectAmount decimal.Decimal
+	// DefaultLeastTransferAmount holds the default value on creation for the "least_transfer_amount" field.
+	DefaultLeastTransferAmount decimal.Decimal
 	// DefaultID holds the default value on creation for the "id" field.
 	DefaultID func() uuid.UUID
 )

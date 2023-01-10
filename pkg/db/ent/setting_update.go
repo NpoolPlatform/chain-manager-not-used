@@ -265,6 +265,26 @@ func (su *SettingUpdate) ClearPaymentAccountCollectAmount() *SettingUpdate {
 	return su
 }
 
+// SetLeastTransferAmount sets the "least_transfer_amount" field.
+func (su *SettingUpdate) SetLeastTransferAmount(d decimal.Decimal) *SettingUpdate {
+	su.mutation.SetLeastTransferAmount(d)
+	return su
+}
+
+// SetNillableLeastTransferAmount sets the "least_transfer_amount" field if the given value is not nil.
+func (su *SettingUpdate) SetNillableLeastTransferAmount(d *decimal.Decimal) *SettingUpdate {
+	if d != nil {
+		su.SetLeastTransferAmount(*d)
+	}
+	return su
+}
+
+// ClearLeastTransferAmount clears the value of the "least_transfer_amount" field.
+func (su *SettingUpdate) ClearLeastTransferAmount() *SettingUpdate {
+	su.mutation.ClearLeastTransferAmount()
+	return su
+}
+
 // Mutation returns the SettingMutation object of the builder.
 func (su *SettingUpdate) Mutation() *SettingMutation {
 	return su.mutation
@@ -522,6 +542,19 @@ func (su *SettingUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: setting.FieldPaymentAccountCollectAmount,
 		})
 	}
+	if value, ok := su.mutation.LeastTransferAmount(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeOther,
+			Value:  value,
+			Column: setting.FieldLeastTransferAmount,
+		})
+	}
+	if su.mutation.LeastTransferAmountCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeOther,
+			Column: setting.FieldLeastTransferAmount,
+		})
+	}
 	_spec.Modifiers = su.modifiers
 	if n, err = sqlgraph.UpdateNodes(ctx, su.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -775,6 +808,26 @@ func (suo *SettingUpdateOne) SetNillablePaymentAccountCollectAmount(d *decimal.D
 // ClearPaymentAccountCollectAmount clears the value of the "payment_account_collect_amount" field.
 func (suo *SettingUpdateOne) ClearPaymentAccountCollectAmount() *SettingUpdateOne {
 	suo.mutation.ClearPaymentAccountCollectAmount()
+	return suo
+}
+
+// SetLeastTransferAmount sets the "least_transfer_amount" field.
+func (suo *SettingUpdateOne) SetLeastTransferAmount(d decimal.Decimal) *SettingUpdateOne {
+	suo.mutation.SetLeastTransferAmount(d)
+	return suo
+}
+
+// SetNillableLeastTransferAmount sets the "least_transfer_amount" field if the given value is not nil.
+func (suo *SettingUpdateOne) SetNillableLeastTransferAmount(d *decimal.Decimal) *SettingUpdateOne {
+	if d != nil {
+		suo.SetLeastTransferAmount(*d)
+	}
+	return suo
+}
+
+// ClearLeastTransferAmount clears the value of the "least_transfer_amount" field.
+func (suo *SettingUpdateOne) ClearLeastTransferAmount() *SettingUpdateOne {
+	suo.mutation.ClearLeastTransferAmount()
 	return suo
 }
 
@@ -1063,6 +1116,19 @@ func (suo *SettingUpdateOne) sqlSave(ctx context.Context) (_node *Setting, err e
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeOther,
 			Column: setting.FieldPaymentAccountCollectAmount,
+		})
+	}
+	if value, ok := suo.mutation.LeastTransferAmount(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeOther,
+			Value:  value,
+			Column: setting.FieldLeastTransferAmount,
+		})
+	}
+	if suo.mutation.LeastTransferAmountCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeOther,
+			Column: setting.FieldLeastTransferAmount,
 		})
 	}
 	_spec.Modifiers = suo.modifiers

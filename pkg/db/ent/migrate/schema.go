@@ -174,6 +174,7 @@ var (
 		{Name: "low_fee_amount", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
 		{Name: "hot_wallet_account_amount", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
 		{Name: "payment_account_collect_amount", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
+		{Name: "least_transfer_amount", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
 	}
 	// SettingsTable holds the schema information for the "settings" table.
 	SettingsTable = &schema.Table{

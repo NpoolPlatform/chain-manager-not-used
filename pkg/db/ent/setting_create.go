@@ -192,6 +192,20 @@ func (sc *SettingCreate) SetNillablePaymentAccountCollectAmount(d *decimal.Decim
 	return sc
 }
 
+// SetLeastTransferAmount sets the "least_transfer_amount" field.
+func (sc *SettingCreate) SetLeastTransferAmount(d decimal.Decimal) *SettingCreate {
+	sc.mutation.SetLeastTransferAmount(d)
+	return sc
+}
+
+// SetNillableLeastTransferAmount sets the "least_transfer_amount" field if the given value is not nil.
+func (sc *SettingCreate) SetNillableLeastTransferAmount(d *decimal.Decimal) *SettingCreate {
+	if d != nil {
+		sc.SetLeastTransferAmount(*d)
+	}
+	return sc
+}
+
 // SetID sets the "id" field.
 func (sc *SettingCreate) SetID(u uuid.UUID) *SettingCreate {
 	sc.mutation.SetID(u)
@@ -348,6 +362,10 @@ func (sc *SettingCreate) defaults() error {
 		v := setting.DefaultPaymentAccountCollectAmount
 		sc.mutation.SetPaymentAccountCollectAmount(v)
 	}
+	if _, ok := sc.mutation.LeastTransferAmount(); !ok {
+		v := setting.DefaultLeastTransferAmount
+		sc.mutation.SetLeastTransferAmount(v)
+	}
 	if _, ok := sc.mutation.ID(); !ok {
 		if setting.DefaultID == nil {
 			return fmt.Errorf("ent: uninitialized setting.DefaultID (forgotten import ent/runtime?)")
@@ -501,6 +519,14 @@ func (sc *SettingCreate) createSpec() (*Setting, *sqlgraph.CreateSpec) {
 			Column: setting.FieldPaymentAccountCollectAmount,
 		})
 		_node.PaymentAccountCollectAmount = value
+	}
+	if value, ok := sc.mutation.LeastTransferAmount(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeOther,
+			Value:  value,
+			Column: setting.FieldLeastTransferAmount,
+		})
+		_node.LeastTransferAmount = value
 	}
 	return _node, _spec
 }
@@ -769,6 +795,24 @@ func (u *SettingUpsert) UpdatePaymentAccountCollectAmount() *SettingUpsert {
 // ClearPaymentAccountCollectAmount clears the value of the "payment_account_collect_amount" field.
 func (u *SettingUpsert) ClearPaymentAccountCollectAmount() *SettingUpsert {
 	u.SetNull(setting.FieldPaymentAccountCollectAmount)
+	return u
+}
+
+// SetLeastTransferAmount sets the "least_transfer_amount" field.
+func (u *SettingUpsert) SetLeastTransferAmount(v decimal.Decimal) *SettingUpsert {
+	u.Set(setting.FieldLeastTransferAmount, v)
+	return u
+}
+
+// UpdateLeastTransferAmount sets the "least_transfer_amount" field to the value that was provided on create.
+func (u *SettingUpsert) UpdateLeastTransferAmount() *SettingUpsert {
+	u.SetExcluded(setting.FieldLeastTransferAmount)
+	return u
+}
+
+// ClearLeastTransferAmount clears the value of the "least_transfer_amount" field.
+func (u *SettingUpsert) ClearLeastTransferAmount() *SettingUpsert {
+	u.SetNull(setting.FieldLeastTransferAmount)
 	return u
 }
 
@@ -1071,6 +1115,27 @@ func (u *SettingUpsertOne) UpdatePaymentAccountCollectAmount() *SettingUpsertOne
 func (u *SettingUpsertOne) ClearPaymentAccountCollectAmount() *SettingUpsertOne {
 	return u.Update(func(s *SettingUpsert) {
 		s.ClearPaymentAccountCollectAmount()
+	})
+}
+
+// SetLeastTransferAmount sets the "least_transfer_amount" field.
+func (u *SettingUpsertOne) SetLeastTransferAmount(v decimal.Decimal) *SettingUpsertOne {
+	return u.Update(func(s *SettingUpsert) {
+		s.SetLeastTransferAmount(v)
+	})
+}
+
+// UpdateLeastTransferAmount sets the "least_transfer_amount" field to the value that was provided on create.
+func (u *SettingUpsertOne) UpdateLeastTransferAmount() *SettingUpsertOne {
+	return u.Update(func(s *SettingUpsert) {
+		s.UpdateLeastTransferAmount()
+	})
+}
+
+// ClearLeastTransferAmount clears the value of the "least_transfer_amount" field.
+func (u *SettingUpsertOne) ClearLeastTransferAmount() *SettingUpsertOne {
+	return u.Update(func(s *SettingUpsert) {
+		s.ClearLeastTransferAmount()
 	})
 }
 
@@ -1539,6 +1604,27 @@ func (u *SettingUpsertBulk) UpdatePaymentAccountCollectAmount() *SettingUpsertBu
 func (u *SettingUpsertBulk) ClearPaymentAccountCollectAmount() *SettingUpsertBulk {
 	return u.Update(func(s *SettingUpsert) {
 		s.ClearPaymentAccountCollectAmount()
+	})
+}
+
+// SetLeastTransferAmount sets the "least_transfer_amount" field.
+func (u *SettingUpsertBulk) SetLeastTransferAmount(v decimal.Decimal) *SettingUpsertBulk {
+	return u.Update(func(s *SettingUpsert) {
+		s.SetLeastTransferAmount(v)
+	})
+}
+
+// UpdateLeastTransferAmount sets the "least_transfer_amount" field to the value that was provided on create.
+func (u *SettingUpsertBulk) UpdateLeastTransferAmount() *SettingUpsertBulk {
+	return u.Update(func(s *SettingUpsert) {
+		s.UpdateLeastTransferAmount()
+	})
+}
+
+// ClearLeastTransferAmount clears the value of the "least_transfer_amount" field.
+func (u *SettingUpsertBulk) ClearLeastTransferAmount() *SettingUpsertBulk {
+	return u.Update(func(s *SettingUpsert) {
+		s.ClearLeastTransferAmount()
 	})
 }
 
