@@ -26,6 +26,7 @@ func Ent2Grpc(row *ent.AppCoin) *npool.AppCoin {
 		Disabled:                 row.Disabled,
 		Display:                  row.Display,
 		DisplayIndex:             row.DisplayIndex,
+		MaxAmountPerWithdraw:     row.MaxAmountPerWithdraw.String(),
 	}
 }
 

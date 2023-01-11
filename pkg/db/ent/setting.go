@@ -41,6 +41,8 @@ type Setting struct {
 	HotWalletAccountAmount decimal.Decimal `json:"hot_wallet_account_amount,omitempty"`
 	// PaymentAccountCollectAmount holds the value of the "payment_account_collect_amount" field.
 	PaymentAccountCollectAmount decimal.Decimal `json:"payment_account_collect_amount,omitempty"`
+	// LeastTransferAmount holds the value of the "least_transfer_amount" field.
+	LeastTransferAmount decimal.Decimal `json:"least_transfer_amount,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -48,7 +50,7 @@ func (*Setting) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case setting.FieldWithdrawFeeAmount, setting.FieldCollectFeeAmount, setting.FieldHotWalletFeeAmount, setting.FieldLowFeeAmount, setting.FieldHotWalletAccountAmount, setting.FieldPaymentAccountCollectAmount:
+		case setting.FieldWithdrawFeeAmount, setting.FieldCollectFeeAmount, setting.FieldHotWalletFeeAmount, setting.FieldLowFeeAmount, setting.FieldHotWalletAccountAmount, setting.FieldPaymentAccountCollectAmount, setting.FieldLeastTransferAmount:
 			values[i] = new(decimal.Decimal)
 		case setting.FieldWithdrawFeeByStableUsd:
 			values[i] = new(sql.NullBool)
@@ -149,6 +151,12 @@ func (s *Setting) assignValues(columns []string, values []interface{}) error {
 			} else if value != nil {
 				s.PaymentAccountCollectAmount = *value
 			}
+		case setting.FieldLeastTransferAmount:
+			if value, ok := values[i].(*decimal.Decimal); !ok {
+				return fmt.Errorf("unexpected type %T for field least_transfer_amount", values[i])
+			} else if value != nil {
+				s.LeastTransferAmount = *value
+			}
 		}
 	}
 	return nil
@@ -212,6 +220,9 @@ func (s *Setting) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("payment_account_collect_amount=")
 	builder.WriteString(fmt.Sprintf("%v", s.PaymentAccountCollectAmount))
+	builder.WriteString(", ")
+	builder.WriteString("least_transfer_amount=")
+	builder.WriteString(fmt.Sprintf("%v", s.LeastTransferAmount))
 	builder.WriteByte(')')
 	return builder.String()
 }

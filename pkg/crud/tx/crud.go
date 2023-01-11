@@ -221,7 +221,7 @@ func Row(ctx context.Context, id uuid.UUID) (*ent.Tran, error) {
 	return info, nil
 }
 
-func SetQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.TranQuery, error) {
+func SetQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.TranQuery, error) { //nolint
 	stm := cli.Tran.Query()
 	if conds.ID != nil {
 		switch conds.GetID().GetOp() {
@@ -274,6 +274,8 @@ func SetQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.TranQuery, error) 
 		switch conds.GetState().GetOp() {
 		case cruder.EQ:
 			stm.Where(tran.State(npool.TxState(conds.GetState().GetValue()).String()))
+		case cruder.NEQ:
+			stm.Where(tran.StateNEQ(npool.TxState(conds.GetState().GetValue()).String()))
 		default:
 			return nil, fmt.Errorf("invalid tx field")
 		}
@@ -282,6 +284,18 @@ func SetQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.TranQuery, error) 
 		switch conds.GetType().GetOp() {
 		case cruder.EQ:
 			stm.Where(tran.Type(npool.TxType(conds.GetType().GetValue()).String()))
+		default:
+			return nil, fmt.Errorf("invalid tx field")
+		}
+	}
+	if len(conds.GetIDs().GetValue()) > 0 {
+		ids := []uuid.UUID{}
+		for _, id := range conds.GetIDs().GetValue() {
+			ids = append(ids, uuid.MustParse(id))
+		}
+		switch conds.GetIDs().GetOp() {
+		case cruder.IN:
+			stm.Where(tran.IDIn(ids...))
 		default:
 			return nil, fmt.Errorf("invalid tx field")
 		}

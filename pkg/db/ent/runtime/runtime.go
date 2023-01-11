@@ -103,6 +103,10 @@ func init() {
 	appcoinDescDisplayIndex := appcoinFields[12].Descriptor()
 	// appcoin.DefaultDisplayIndex holds the default value on creation for the display_index field.
 	appcoin.DefaultDisplayIndex = appcoinDescDisplayIndex.Default.(uint32)
+	// appcoinDescMaxAmountPerWithdraw is the schema descriptor for max_amount_per_withdraw field.
+	appcoinDescMaxAmountPerWithdraw := appcoinFields[13].Descriptor()
+	// appcoin.DefaultMaxAmountPerWithdraw holds the default value on creation for the max_amount_per_withdraw field.
+	appcoin.DefaultMaxAmountPerWithdraw = appcoinDescMaxAmountPerWithdraw.Default.(decimal.Decimal)
 	// appcoinDescID is the schema descriptor for id field.
 	appcoinDescID := appcoinFields[0].Descriptor()
 	// appcoin.DefaultID holds the default value on creation for the id field.
@@ -531,6 +535,10 @@ func init() {
 	settingDescPaymentAccountCollectAmount := settingFields[9].Descriptor()
 	// setting.DefaultPaymentAccountCollectAmount holds the default value on creation for the payment_account_collect_amount field.
 	setting.DefaultPaymentAccountCollectAmount = settingDescPaymentAccountCollectAmount.Default.(decimal.Decimal)
+	// settingDescLeastTransferAmount is the schema descriptor for least_transfer_amount field.
+	settingDescLeastTransferAmount := settingFields[10].Descriptor()
+	// setting.DefaultLeastTransferAmount holds the default value on creation for the least_transfer_amount field.
+	setting.DefaultLeastTransferAmount = settingDescLeastTransferAmount.Default.(decimal.Decimal)
 	// settingDescID is the schema descriptor for id field.
 	settingDescID := settingFields[0].Descriptor()
 	// setting.DefaultID holds the default value on creation for the id field.

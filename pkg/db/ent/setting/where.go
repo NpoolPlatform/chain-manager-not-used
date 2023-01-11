@@ -164,6 +164,13 @@ func PaymentAccountCollectAmount(v decimal.Decimal) predicate.Setting {
 	})
 }
 
+// LeastTransferAmount applies equality check predicate on the "least_transfer_amount" field. It's identical to LeastTransferAmountEQ.
+func LeastTransferAmount(v decimal.Decimal) predicate.Setting {
+	return predicate.Setting(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldLeastTransferAmount), v))
+	})
+}
+
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
 func CreatedAtEQ(v uint32) predicate.Setting {
 	return predicate.Setting(func(s *sql.Selector) {
@@ -1005,6 +1012,84 @@ func PaymentAccountCollectAmountIsNil() predicate.Setting {
 func PaymentAccountCollectAmountNotNil() predicate.Setting {
 	return predicate.Setting(func(s *sql.Selector) {
 		s.Where(sql.NotNull(s.C(FieldPaymentAccountCollectAmount)))
+	})
+}
+
+// LeastTransferAmountEQ applies the EQ predicate on the "least_transfer_amount" field.
+func LeastTransferAmountEQ(v decimal.Decimal) predicate.Setting {
+	return predicate.Setting(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldLeastTransferAmount), v))
+	})
+}
+
+// LeastTransferAmountNEQ applies the NEQ predicate on the "least_transfer_amount" field.
+func LeastTransferAmountNEQ(v decimal.Decimal) predicate.Setting {
+	return predicate.Setting(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldLeastTransferAmount), v))
+	})
+}
+
+// LeastTransferAmountIn applies the In predicate on the "least_transfer_amount" field.
+func LeastTransferAmountIn(vs ...decimal.Decimal) predicate.Setting {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Setting(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldLeastTransferAmount), v...))
+	})
+}
+
+// LeastTransferAmountNotIn applies the NotIn predicate on the "least_transfer_amount" field.
+func LeastTransferAmountNotIn(vs ...decimal.Decimal) predicate.Setting {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Setting(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldLeastTransferAmount), v...))
+	})
+}
+
+// LeastTransferAmountGT applies the GT predicate on the "least_transfer_amount" field.
+func LeastTransferAmountGT(v decimal.Decimal) predicate.Setting {
+	return predicate.Setting(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldLeastTransferAmount), v))
+	})
+}
+
+// LeastTransferAmountGTE applies the GTE predicate on the "least_transfer_amount" field.
+func LeastTransferAmountGTE(v decimal.Decimal) predicate.Setting {
+	return predicate.Setting(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldLeastTransferAmount), v))
+	})
+}
+
+// LeastTransferAmountLT applies the LT predicate on the "least_transfer_amount" field.
+func LeastTransferAmountLT(v decimal.Decimal) predicate.Setting {
+	return predicate.Setting(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldLeastTransferAmount), v))
+	})
+}
+
+// LeastTransferAmountLTE applies the LTE predicate on the "least_transfer_amount" field.
+func LeastTransferAmountLTE(v decimal.Decimal) predicate.Setting {
+	return predicate.Setting(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldLeastTransferAmount), v))
+	})
+}
+
+// LeastTransferAmountIsNil applies the IsNil predicate on the "least_transfer_amount" field.
+func LeastTransferAmountIsNil() predicate.Setting {
+	return predicate.Setting(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldLeastTransferAmount)))
+	})
+}
+
+// LeastTransferAmountNotNil applies the NotNil predicate on the "least_transfer_amount" field.
+func LeastTransferAmountNotNil() predicate.Setting {
+	return predicate.Setting(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldLeastTransferAmount)))
 	})
 }
 

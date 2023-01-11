@@ -66,6 +66,8 @@ func validate(in *npool.TxReq) error { //nolint
 	case npool.TxType_TxPaymentCollect:
 	case npool.TxType_TxBenefit:
 	case npool.TxType_TxLimitation:
+	case npool.TxType_TxPlatformBenefit:
+	case npool.TxType_TxUserBenefit:
 	default:
 		logger.Sugar().Errorw("validate", "Type", in.GetType())
 		return fmt.Errorf("type is invalid")
@@ -132,6 +134,8 @@ func validateConds(conds *npool.Conds) error { //nolint
 		case npool.TxType_TxPaymentCollect:
 		case npool.TxType_TxBenefit:
 		case npool.TxType_TxLimitation:
+		case npool.TxType_TxPlatformBenefit:
+		case npool.TxType_TxUserBenefit:
 		default:
 			logger.Sugar().Errorw("validateConds", "Type", conds.GetType().GetValue())
 			return fmt.Errorf("type is invalid")

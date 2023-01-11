@@ -71,6 +71,7 @@ type AppCoinMutation struct {
 	display                     *bool
 	display_index               *uint32
 	adddisplay_index            *int32
+	max_amount_per_withdraw     *decimal.Decimal
 	clearedFields               map[string]struct{}
 	done                        bool
 	oldValue                    func(context.Context) (*AppCoin, error)
@@ -958,6 +959,55 @@ func (m *AppCoinMutation) ResetDisplayIndex() {
 	delete(m.clearedFields, appcoin.FieldDisplayIndex)
 }
 
+// SetMaxAmountPerWithdraw sets the "max_amount_per_withdraw" field.
+func (m *AppCoinMutation) SetMaxAmountPerWithdraw(d decimal.Decimal) {
+	m.max_amount_per_withdraw = &d
+}
+
+// MaxAmountPerWithdraw returns the value of the "max_amount_per_withdraw" field in the mutation.
+func (m *AppCoinMutation) MaxAmountPerWithdraw() (r decimal.Decimal, exists bool) {
+	v := m.max_amount_per_withdraw
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldMaxAmountPerWithdraw returns the old "max_amount_per_withdraw" field's value of the AppCoin entity.
+// If the AppCoin object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppCoinMutation) OldMaxAmountPerWithdraw(ctx context.Context) (v decimal.Decimal, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldMaxAmountPerWithdraw is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldMaxAmountPerWithdraw requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldMaxAmountPerWithdraw: %w", err)
+	}
+	return oldValue.MaxAmountPerWithdraw, nil
+}
+
+// ClearMaxAmountPerWithdraw clears the value of the "max_amount_per_withdraw" field.
+func (m *AppCoinMutation) ClearMaxAmountPerWithdraw() {
+	m.max_amount_per_withdraw = nil
+	m.clearedFields[appcoin.FieldMaxAmountPerWithdraw] = struct{}{}
+}
+
+// MaxAmountPerWithdrawCleared returns if the "max_amount_per_withdraw" field was cleared in this mutation.
+func (m *AppCoinMutation) MaxAmountPerWithdrawCleared() bool {
+	_, ok := m.clearedFields[appcoin.FieldMaxAmountPerWithdraw]
+	return ok
+}
+
+// ResetMaxAmountPerWithdraw resets all changes to the "max_amount_per_withdraw" field.
+func (m *AppCoinMutation) ResetMaxAmountPerWithdraw() {
+	m.max_amount_per_withdraw = nil
+	delete(m.clearedFields, appcoin.FieldMaxAmountPerWithdraw)
+}
+
 // Where appends a list predicates to the AppCoinMutation builder.
 func (m *AppCoinMutation) Where(ps ...predicate.AppCoin) {
 	m.predicates = append(m.predicates, ps...)
@@ -977,7 +1027,7 @@ func (m *AppCoinMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *AppCoinMutation) Fields() []string {
-	fields := make([]string, 0, 15)
+	fields := make([]string, 0, 16)
 	if m.created_at != nil {
 		fields = append(fields, appcoin.FieldCreatedAt)
 	}
@@ -1023,6 +1073,9 @@ func (m *AppCoinMutation) Fields() []string {
 	if m.display_index != nil {
 		fields = append(fields, appcoin.FieldDisplayIndex)
 	}
+	if m.max_amount_per_withdraw != nil {
+		fields = append(fields, appcoin.FieldMaxAmountPerWithdraw)
+	}
 	return fields
 }
 
@@ -1061,6 +1114,8 @@ func (m *AppCoinMutation) Field(name string) (ent.Value, bool) {
 		return m.Display()
 	case appcoin.FieldDisplayIndex:
 		return m.DisplayIndex()
+	case appcoin.FieldMaxAmountPerWithdraw:
+		return m.MaxAmountPerWithdraw()
 	}
 	return nil, false
 }
@@ -1100,6 +1155,8 @@ func (m *AppCoinMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldDisplay(ctx)
 	case appcoin.FieldDisplayIndex:
 		return m.OldDisplayIndex(ctx)
+	case appcoin.FieldMaxAmountPerWithdraw:
+		return m.OldMaxAmountPerWithdraw(ctx)
 	}
 	return nil, fmt.Errorf("unknown AppCoin field %s", name)
 }
@@ -1213,6 +1270,13 @@ func (m *AppCoinMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetDisplayIndex(v)
+		return nil
+	case appcoin.FieldMaxAmountPerWithdraw:
+		v, ok := value.(decimal.Decimal)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetMaxAmountPerWithdraw(v)
 		return nil
 	}
 	return fmt.Errorf("unknown AppCoin field %s", name)
@@ -1331,6 +1395,9 @@ func (m *AppCoinMutation) ClearedFields() []string {
 	if m.FieldCleared(appcoin.FieldDisplayIndex) {
 		fields = append(fields, appcoin.FieldDisplayIndex)
 	}
+	if m.FieldCleared(appcoin.FieldMaxAmountPerWithdraw) {
+		fields = append(fields, appcoin.FieldMaxAmountPerWithdraw)
+	}
 	return fields
 }
 
@@ -1380,6 +1447,9 @@ func (m *AppCoinMutation) ClearField(name string) error {
 		return nil
 	case appcoin.FieldDisplayIndex:
 		m.ClearDisplayIndex()
+		return nil
+	case appcoin.FieldMaxAmountPerWithdraw:
+		m.ClearMaxAmountPerWithdraw()
 		return nil
 	}
 	return fmt.Errorf("unknown AppCoin nullable field %s", name)
@@ -1433,6 +1503,9 @@ func (m *AppCoinMutation) ResetField(name string) error {
 		return nil
 	case appcoin.FieldDisplayIndex:
 		m.ResetDisplayIndex()
+		return nil
+	case appcoin.FieldMaxAmountPerWithdraw:
+		m.ResetMaxAmountPerWithdraw()
 		return nil
 	}
 	return fmt.Errorf("unknown AppCoin field %s", name)
@@ -7733,6 +7806,7 @@ type SettingMutation struct {
 	low_fee_amount                 *decimal.Decimal
 	hot_wallet_account_amount      *decimal.Decimal
 	payment_account_collect_amount *decimal.Decimal
+	least_transfer_amount          *decimal.Decimal
 	clearedFields                  map[string]struct{}
 	done                           bool
 	oldValue                       func(context.Context) (*Setting, error)
@@ -8452,6 +8526,55 @@ func (m *SettingMutation) ResetPaymentAccountCollectAmount() {
 	delete(m.clearedFields, setting.FieldPaymentAccountCollectAmount)
 }
 
+// SetLeastTransferAmount sets the "least_transfer_amount" field.
+func (m *SettingMutation) SetLeastTransferAmount(d decimal.Decimal) {
+	m.least_transfer_amount = &d
+}
+
+// LeastTransferAmount returns the value of the "least_transfer_amount" field in the mutation.
+func (m *SettingMutation) LeastTransferAmount() (r decimal.Decimal, exists bool) {
+	v := m.least_transfer_amount
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLeastTransferAmount returns the old "least_transfer_amount" field's value of the Setting entity.
+// If the Setting object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SettingMutation) OldLeastTransferAmount(ctx context.Context) (v decimal.Decimal, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLeastTransferAmount is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLeastTransferAmount requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLeastTransferAmount: %w", err)
+	}
+	return oldValue.LeastTransferAmount, nil
+}
+
+// ClearLeastTransferAmount clears the value of the "least_transfer_amount" field.
+func (m *SettingMutation) ClearLeastTransferAmount() {
+	m.least_transfer_amount = nil
+	m.clearedFields[setting.FieldLeastTransferAmount] = struct{}{}
+}
+
+// LeastTransferAmountCleared returns if the "least_transfer_amount" field was cleared in this mutation.
+func (m *SettingMutation) LeastTransferAmountCleared() bool {
+	_, ok := m.clearedFields[setting.FieldLeastTransferAmount]
+	return ok
+}
+
+// ResetLeastTransferAmount resets all changes to the "least_transfer_amount" field.
+func (m *SettingMutation) ResetLeastTransferAmount() {
+	m.least_transfer_amount = nil
+	delete(m.clearedFields, setting.FieldLeastTransferAmount)
+}
+
 // Where appends a list predicates to the SettingMutation builder.
 func (m *SettingMutation) Where(ps ...predicate.Setting) {
 	m.predicates = append(m.predicates, ps...)
@@ -8471,7 +8594,7 @@ func (m *SettingMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *SettingMutation) Fields() []string {
-	fields := make([]string, 0, 12)
+	fields := make([]string, 0, 13)
 	if m.created_at != nil {
 		fields = append(fields, setting.FieldCreatedAt)
 	}
@@ -8508,6 +8631,9 @@ func (m *SettingMutation) Fields() []string {
 	if m.payment_account_collect_amount != nil {
 		fields = append(fields, setting.FieldPaymentAccountCollectAmount)
 	}
+	if m.least_transfer_amount != nil {
+		fields = append(fields, setting.FieldLeastTransferAmount)
+	}
 	return fields
 }
 
@@ -8540,6 +8666,8 @@ func (m *SettingMutation) Field(name string) (ent.Value, bool) {
 		return m.HotWalletAccountAmount()
 	case setting.FieldPaymentAccountCollectAmount:
 		return m.PaymentAccountCollectAmount()
+	case setting.FieldLeastTransferAmount:
+		return m.LeastTransferAmount()
 	}
 	return nil, false
 }
@@ -8573,6 +8701,8 @@ func (m *SettingMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldHotWalletAccountAmount(ctx)
 	case setting.FieldPaymentAccountCollectAmount:
 		return m.OldPaymentAccountCollectAmount(ctx)
+	case setting.FieldLeastTransferAmount:
+		return m.OldLeastTransferAmount(ctx)
 	}
 	return nil, fmt.Errorf("unknown Setting field %s", name)
 }
@@ -8665,6 +8795,13 @@ func (m *SettingMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetPaymentAccountCollectAmount(v)
+		return nil
+	case setting.FieldLeastTransferAmount:
+		v, ok := value.(decimal.Decimal)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLeastTransferAmount(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Setting field %s", name)
@@ -8762,6 +8899,9 @@ func (m *SettingMutation) ClearedFields() []string {
 	if m.FieldCleared(setting.FieldPaymentAccountCollectAmount) {
 		fields = append(fields, setting.FieldPaymentAccountCollectAmount)
 	}
+	if m.FieldCleared(setting.FieldLeastTransferAmount) {
+		fields = append(fields, setting.FieldLeastTransferAmount)
+	}
 	return fields
 }
 
@@ -8802,6 +8942,9 @@ func (m *SettingMutation) ClearField(name string) error {
 		return nil
 	case setting.FieldPaymentAccountCollectAmount:
 		m.ClearPaymentAccountCollectAmount()
+		return nil
+	case setting.FieldLeastTransferAmount:
+		m.ClearLeastTransferAmount()
 		return nil
 	}
 	return fmt.Errorf("unknown Setting nullable field %s", name)
@@ -8846,6 +8989,9 @@ func (m *SettingMutation) ResetField(name string) error {
 		return nil
 	case setting.FieldPaymentAccountCollectAmount:
 		m.ResetPaymentAccountCollectAmount()
+		return nil
+	case setting.FieldLeastTransferAmount:
+		m.ResetLeastTransferAmount()
 		return nil
 	}
 	return fmt.Errorf("unknown Setting field %s", name)

@@ -178,6 +178,13 @@ func DisplayIndex(v uint32) predicate.AppCoin {
 	})
 }
 
+// MaxAmountPerWithdraw applies equality check predicate on the "max_amount_per_withdraw" field. It's identical to MaxAmountPerWithdrawEQ.
+func MaxAmountPerWithdraw(v decimal.Decimal) predicate.AppCoin {
+	return predicate.AppCoin(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldMaxAmountPerWithdraw), v))
+	})
+}
+
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
 func CreatedAtEQ(v uint32) predicate.AppCoin {
 	return predicate.AppCoin(func(s *sql.Selector) {
@@ -1194,6 +1201,84 @@ func DisplayIndexIsNil() predicate.AppCoin {
 func DisplayIndexNotNil() predicate.AppCoin {
 	return predicate.AppCoin(func(s *sql.Selector) {
 		s.Where(sql.NotNull(s.C(FieldDisplayIndex)))
+	})
+}
+
+// MaxAmountPerWithdrawEQ applies the EQ predicate on the "max_amount_per_withdraw" field.
+func MaxAmountPerWithdrawEQ(v decimal.Decimal) predicate.AppCoin {
+	return predicate.AppCoin(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldMaxAmountPerWithdraw), v))
+	})
+}
+
+// MaxAmountPerWithdrawNEQ applies the NEQ predicate on the "max_amount_per_withdraw" field.
+func MaxAmountPerWithdrawNEQ(v decimal.Decimal) predicate.AppCoin {
+	return predicate.AppCoin(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldMaxAmountPerWithdraw), v))
+	})
+}
+
+// MaxAmountPerWithdrawIn applies the In predicate on the "max_amount_per_withdraw" field.
+func MaxAmountPerWithdrawIn(vs ...decimal.Decimal) predicate.AppCoin {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.AppCoin(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldMaxAmountPerWithdraw), v...))
+	})
+}
+
+// MaxAmountPerWithdrawNotIn applies the NotIn predicate on the "max_amount_per_withdraw" field.
+func MaxAmountPerWithdrawNotIn(vs ...decimal.Decimal) predicate.AppCoin {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.AppCoin(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldMaxAmountPerWithdraw), v...))
+	})
+}
+
+// MaxAmountPerWithdrawGT applies the GT predicate on the "max_amount_per_withdraw" field.
+func MaxAmountPerWithdrawGT(v decimal.Decimal) predicate.AppCoin {
+	return predicate.AppCoin(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldMaxAmountPerWithdraw), v))
+	})
+}
+
+// MaxAmountPerWithdrawGTE applies the GTE predicate on the "max_amount_per_withdraw" field.
+func MaxAmountPerWithdrawGTE(v decimal.Decimal) predicate.AppCoin {
+	return predicate.AppCoin(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldMaxAmountPerWithdraw), v))
+	})
+}
+
+// MaxAmountPerWithdrawLT applies the LT predicate on the "max_amount_per_withdraw" field.
+func MaxAmountPerWithdrawLT(v decimal.Decimal) predicate.AppCoin {
+	return predicate.AppCoin(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldMaxAmountPerWithdraw), v))
+	})
+}
+
+// MaxAmountPerWithdrawLTE applies the LTE predicate on the "max_amount_per_withdraw" field.
+func MaxAmountPerWithdrawLTE(v decimal.Decimal) predicate.AppCoin {
+	return predicate.AppCoin(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldMaxAmountPerWithdraw), v))
+	})
+}
+
+// MaxAmountPerWithdrawIsNil applies the IsNil predicate on the "max_amount_per_withdraw" field.
+func MaxAmountPerWithdrawIsNil() predicate.AppCoin {
+	return predicate.AppCoin(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldMaxAmountPerWithdraw)))
+	})
+}
+
+// MaxAmountPerWithdrawNotNil applies the NotNil predicate on the "max_amount_per_withdraw" field.
+func MaxAmountPerWithdrawNotNil() predicate.AppCoin {
+	return predicate.AppCoin(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldMaxAmountPerWithdraw)))
 	})
 }
 

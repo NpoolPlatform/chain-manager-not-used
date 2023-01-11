@@ -48,6 +48,8 @@ type AppCoin struct {
 	Display bool `json:"display,omitempty"`
 	// DisplayIndex holds the value of the "display_index" field.
 	DisplayIndex uint32 `json:"display_index,omitempty"`
+	// MaxAmountPerWithdraw holds the value of the "max_amount_per_withdraw" field.
+	MaxAmountPerWithdraw decimal.Decimal `json:"max_amount_per_withdraw,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -57,7 +59,7 @@ func (*AppCoin) scanValues(columns []string) ([]interface{}, error) {
 		switch columns[i] {
 		case appcoin.FieldDisplayNames:
 			values[i] = new([]byte)
-		case appcoin.FieldWithdrawAutoReviewAmount, appcoin.FieldDailyRewardAmount:
+		case appcoin.FieldWithdrawAutoReviewAmount, appcoin.FieldDailyRewardAmount, appcoin.FieldMaxAmountPerWithdraw:
 			values[i] = new(decimal.Decimal)
 		case appcoin.FieldForPay, appcoin.FieldDisabled, appcoin.FieldDisplay:
 			values[i] = new(sql.NullBool)
@@ -180,6 +182,12 @@ func (ac *AppCoin) assignValues(columns []string, values []interface{}) error {
 			} else if value.Valid {
 				ac.DisplayIndex = uint32(value.Int64)
 			}
+		case appcoin.FieldMaxAmountPerWithdraw:
+			if value, ok := values[i].(*decimal.Decimal); !ok {
+				return fmt.Errorf("unexpected type %T for field max_amount_per_withdraw", values[i])
+			} else if value != nil {
+				ac.MaxAmountPerWithdraw = *value
+			}
 		}
 	}
 	return nil
@@ -252,6 +260,9 @@ func (ac *AppCoin) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("display_index=")
 	builder.WriteString(fmt.Sprintf("%v", ac.DisplayIndex))
+	builder.WriteString(", ")
+	builder.WriteString("max_amount_per_withdraw=")
+	builder.WriteString(fmt.Sprintf("%v", ac.MaxAmountPerWithdraw))
 	builder.WriteByte(')')
 	return builder.String()
 }

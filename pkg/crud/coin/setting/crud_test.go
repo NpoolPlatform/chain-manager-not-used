@@ -40,6 +40,7 @@ var entity = ent.Setting{
 	LowFeeAmount:                decimal.RequireFromString("0.201"),
 	HotWalletAccountAmount:      decimal.RequireFromString("0.201"),
 	PaymentAccountCollectAmount: decimal.RequireFromString("0.201"),
+	LeastTransferAmount:         decimal.RequireFromString("0.201"),
 }
 
 var (
@@ -53,6 +54,7 @@ var (
 	lowFeeAmount                = entity.LowFeeAmount.String()
 	hotWalletAccountAmount      = entity.HotWalletAccountAmount.String()
 	paymentAccountCollectAmount = entity.PaymentAccountCollectAmount.String()
+	leastTransferAmount         = entity.LeastTransferAmount.String()
 
 	req = npool.SettingReq{
 		ID:                          &id,
@@ -65,6 +67,7 @@ var (
 		LowFeeAmount:                &lowFeeAmount,
 		HotWalletAccountAmount:      &hotWalletAccountAmount,
 		PaymentAccountCollectAmount: &paymentAccountCollectAmount,
+		LeastTransferAmount:         &leastTransferAmount,
 	}
 )
 
@@ -93,6 +96,7 @@ func createBulk(t *testing.T) {
 			LowFeeAmount:                decimal.RequireFromString("0.202"),
 			HotWalletAccountAmount:      decimal.RequireFromString("0.201"),
 			PaymentAccountCollectAmount: decimal.RequireFromString("0.201"),
+			LeastTransferAmount:         decimal.RequireFromString("0.201"),
 		},
 		{
 			ID:                          uuid.New(),
@@ -105,6 +109,7 @@ func createBulk(t *testing.T) {
 			LowFeeAmount:                decimal.RequireFromString("0.201"),
 			HotWalletAccountAmount:      decimal.RequireFromString("0.201"),
 			PaymentAccountCollectAmount: decimal.RequireFromString("0.201"),
+			LeastTransferAmount:         decimal.RequireFromString("0.201"),
 		},
 	}
 
@@ -120,6 +125,7 @@ func createBulk(t *testing.T) {
 		_lowFeeAmount := _entity.LowFeeAmount.String()
 		_hotWalletAccountAmount := _entity.HotWalletAccountAmount.String()
 		_paymentAccountCollectAmount := _entity.PaymentAccountCollectAmount.String()
+		_leastTransferAmount := _entity.LeastTransferAmount.String()
 
 		reqs = append(reqs, &npool.SettingReq{
 			ID:                          &_id,
@@ -132,6 +138,7 @@ func createBulk(t *testing.T) {
 			LowFeeAmount:                &_lowFeeAmount,
 			HotWalletAccountAmount:      &_hotWalletAccountAmount,
 			PaymentAccountCollectAmount: &_paymentAccountCollectAmount,
+			LeastTransferAmount:         &_leastTransferAmount,
 		})
 	}
 	infos, err := CreateBulk(context.Background(), reqs)

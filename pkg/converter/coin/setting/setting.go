@@ -21,6 +21,7 @@ func Ent2Grpc(row *ent.Setting) *npool.Setting {
 		LowFeeAmount:                row.LowFeeAmount.String(),
 		HotWalletAccountAmount:      row.HotWalletAccountAmount.String(),
 		PaymentAccountCollectAmount: row.PaymentAccountCollectAmount.String(),
+		LeastTransferAmount:         row.LeastTransferAmount.String(),
 		CreatedAt:                   row.CreatedAt,
 		UpdatedAt:                   row.UpdatedAt,
 	}

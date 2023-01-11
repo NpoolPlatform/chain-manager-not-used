@@ -26,6 +26,7 @@ var (
 		{Name: "daily_reward_amount", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
 		{Name: "display", Type: field.TypeBool, Nullable: true, Default: true},
 		{Name: "display_index", Type: field.TypeUint32, Nullable: true, Default: 0},
+		{Name: "max_amount_per_withdraw", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
 	}
 	// AppCoinsTable holds the schema information for the "app_coins" table.
 	AppCoinsTable = &schema.Table{
@@ -173,6 +174,7 @@ var (
 		{Name: "low_fee_amount", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
 		{Name: "hot_wallet_account_amount", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
 		{Name: "payment_account_collect_amount", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
+		{Name: "least_transfer_amount", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
 	}
 	// SettingsTable holds the schema information for the "settings" table.
 	SettingsTable = &schema.Table{

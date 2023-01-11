@@ -226,6 +226,20 @@ func (acc *AppCoinCreate) SetNillableDisplayIndex(u *uint32) *AppCoinCreate {
 	return acc
 }
 
+// SetMaxAmountPerWithdraw sets the "max_amount_per_withdraw" field.
+func (acc *AppCoinCreate) SetMaxAmountPerWithdraw(d decimal.Decimal) *AppCoinCreate {
+	acc.mutation.SetMaxAmountPerWithdraw(d)
+	return acc
+}
+
+// SetNillableMaxAmountPerWithdraw sets the "max_amount_per_withdraw" field if the given value is not nil.
+func (acc *AppCoinCreate) SetNillableMaxAmountPerWithdraw(d *decimal.Decimal) *AppCoinCreate {
+	if d != nil {
+		acc.SetMaxAmountPerWithdraw(*d)
+	}
+	return acc
+}
+
 // SetID sets the "id" field.
 func (acc *AppCoinCreate) SetID(u uuid.UUID) *AppCoinCreate {
 	acc.mutation.SetID(u)
@@ -393,6 +407,10 @@ func (acc *AppCoinCreate) defaults() error {
 	if _, ok := acc.mutation.DisplayIndex(); !ok {
 		v := appcoin.DefaultDisplayIndex
 		acc.mutation.SetDisplayIndex(v)
+	}
+	if _, ok := acc.mutation.MaxAmountPerWithdraw(); !ok {
+		v := appcoin.DefaultMaxAmountPerWithdraw
+		acc.mutation.SetMaxAmountPerWithdraw(v)
 	}
 	if _, ok := acc.mutation.ID(); !ok {
 		if appcoin.DefaultID == nil {
@@ -571,6 +589,14 @@ func (acc *AppCoinCreate) createSpec() (*AppCoin, *sqlgraph.CreateSpec) {
 			Column: appcoin.FieldDisplayIndex,
 		})
 		_node.DisplayIndex = value
+	}
+	if value, ok := acc.mutation.MaxAmountPerWithdraw(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeOther,
+			Value:  value,
+			Column: appcoin.FieldMaxAmountPerWithdraw,
+		})
+		_node.MaxAmountPerWithdraw = value
 	}
 	return _node, _spec
 }
@@ -899,6 +925,24 @@ func (u *AppCoinUpsert) AddDisplayIndex(v uint32) *AppCoinUpsert {
 // ClearDisplayIndex clears the value of the "display_index" field.
 func (u *AppCoinUpsert) ClearDisplayIndex() *AppCoinUpsert {
 	u.SetNull(appcoin.FieldDisplayIndex)
+	return u
+}
+
+// SetMaxAmountPerWithdraw sets the "max_amount_per_withdraw" field.
+func (u *AppCoinUpsert) SetMaxAmountPerWithdraw(v decimal.Decimal) *AppCoinUpsert {
+	u.Set(appcoin.FieldMaxAmountPerWithdraw, v)
+	return u
+}
+
+// UpdateMaxAmountPerWithdraw sets the "max_amount_per_withdraw" field to the value that was provided on create.
+func (u *AppCoinUpsert) UpdateMaxAmountPerWithdraw() *AppCoinUpsert {
+	u.SetExcluded(appcoin.FieldMaxAmountPerWithdraw)
+	return u
+}
+
+// ClearMaxAmountPerWithdraw clears the value of the "max_amount_per_withdraw" field.
+func (u *AppCoinUpsert) ClearMaxAmountPerWithdraw() *AppCoinUpsert {
+	u.SetNull(appcoin.FieldMaxAmountPerWithdraw)
 	return u
 }
 
@@ -1271,6 +1315,27 @@ func (u *AppCoinUpsertOne) UpdateDisplayIndex() *AppCoinUpsertOne {
 func (u *AppCoinUpsertOne) ClearDisplayIndex() *AppCoinUpsertOne {
 	return u.Update(func(s *AppCoinUpsert) {
 		s.ClearDisplayIndex()
+	})
+}
+
+// SetMaxAmountPerWithdraw sets the "max_amount_per_withdraw" field.
+func (u *AppCoinUpsertOne) SetMaxAmountPerWithdraw(v decimal.Decimal) *AppCoinUpsertOne {
+	return u.Update(func(s *AppCoinUpsert) {
+		s.SetMaxAmountPerWithdraw(v)
+	})
+}
+
+// UpdateMaxAmountPerWithdraw sets the "max_amount_per_withdraw" field to the value that was provided on create.
+func (u *AppCoinUpsertOne) UpdateMaxAmountPerWithdraw() *AppCoinUpsertOne {
+	return u.Update(func(s *AppCoinUpsert) {
+		s.UpdateMaxAmountPerWithdraw()
+	})
+}
+
+// ClearMaxAmountPerWithdraw clears the value of the "max_amount_per_withdraw" field.
+func (u *AppCoinUpsertOne) ClearMaxAmountPerWithdraw() *AppCoinUpsertOne {
+	return u.Update(func(s *AppCoinUpsert) {
+		s.ClearMaxAmountPerWithdraw()
 	})
 }
 
@@ -1809,6 +1874,27 @@ func (u *AppCoinUpsertBulk) UpdateDisplayIndex() *AppCoinUpsertBulk {
 func (u *AppCoinUpsertBulk) ClearDisplayIndex() *AppCoinUpsertBulk {
 	return u.Update(func(s *AppCoinUpsert) {
 		s.ClearDisplayIndex()
+	})
+}
+
+// SetMaxAmountPerWithdraw sets the "max_amount_per_withdraw" field.
+func (u *AppCoinUpsertBulk) SetMaxAmountPerWithdraw(v decimal.Decimal) *AppCoinUpsertBulk {
+	return u.Update(func(s *AppCoinUpsert) {
+		s.SetMaxAmountPerWithdraw(v)
+	})
+}
+
+// UpdateMaxAmountPerWithdraw sets the "max_amount_per_withdraw" field to the value that was provided on create.
+func (u *AppCoinUpsertBulk) UpdateMaxAmountPerWithdraw() *AppCoinUpsertBulk {
+	return u.Update(func(s *AppCoinUpsert) {
+		s.UpdateMaxAmountPerWithdraw()
+	})
+}
+
+// ClearMaxAmountPerWithdraw clears the value of the "max_amount_per_withdraw" field.
+func (u *AppCoinUpsertBulk) ClearMaxAmountPerWithdraw() *AppCoinUpsertBulk {
+	return u.Update(func(s *AppCoinUpsert) {
+		s.ClearMaxAmountPerWithdraw()
 	})
 }
 

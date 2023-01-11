@@ -49,6 +49,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			appcoin.FieldDailyRewardAmount:        {Type: field.TypeOther, Column: appcoin.FieldDailyRewardAmount},
 			appcoin.FieldDisplay:                  {Type: field.TypeBool, Column: appcoin.FieldDisplay},
 			appcoin.FieldDisplayIndex:             {Type: field.TypeUint32, Column: appcoin.FieldDisplayIndex},
+			appcoin.FieldMaxAmountPerWithdraw:     {Type: field.TypeOther, Column: appcoin.FieldMaxAmountPerWithdraw},
 		},
 	}
 	graph.Nodes[1] = &sqlgraph.Node{
@@ -220,6 +221,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			setting.FieldLowFeeAmount:                {Type: field.TypeOther, Column: setting.FieldLowFeeAmount},
 			setting.FieldHotWalletAccountAmount:      {Type: field.TypeOther, Column: setting.FieldHotWalletAccountAmount},
 			setting.FieldPaymentAccountCollectAmount: {Type: field.TypeOther, Column: setting.FieldPaymentAccountCollectAmount},
+			setting.FieldLeastTransferAmount:         {Type: field.TypeOther, Column: setting.FieldLeastTransferAmount},
 		},
 	}
 	graph.Nodes[9] = &sqlgraph.Node{
@@ -369,6 +371,11 @@ func (f *AppCoinFilter) WhereDisplay(p entql.BoolP) {
 // WhereDisplayIndex applies the entql uint32 predicate on the display_index field.
 func (f *AppCoinFilter) WhereDisplayIndex(p entql.Uint32P) {
 	f.Where(p.Field(appcoin.FieldDisplayIndex))
+}
+
+// WhereMaxAmountPerWithdraw applies the entql other predicate on the max_amount_per_withdraw field.
+func (f *AppCoinFilter) WhereMaxAmountPerWithdraw(p entql.OtherP) {
+	f.Where(p.Field(appcoin.FieldMaxAmountPerWithdraw))
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -1024,6 +1031,11 @@ func (f *SettingFilter) WhereHotWalletAccountAmount(p entql.OtherP) {
 // WherePaymentAccountCollectAmount applies the entql other predicate on the payment_account_collect_amount field.
 func (f *SettingFilter) WherePaymentAccountCollectAmount(p entql.OtherP) {
 	f.Where(p.Field(setting.FieldPaymentAccountCollectAmount))
+}
+
+// WhereLeastTransferAmount applies the entql other predicate on the least_transfer_amount field.
+func (f *SettingFilter) WhereLeastTransferAmount(p entql.OtherP) {
+	f.Where(p.Field(setting.FieldLeastTransferAmount))
 }
 
 // addPredicate implements the predicateAdder interface.
