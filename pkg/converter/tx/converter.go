@@ -2,6 +2,7 @@ package tx
 
 import (
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent"
+	basetypes "github.com/NpoolPlatform/message/npool/basetypes/v1"
 	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/tx"
 )
 
@@ -20,7 +21,7 @@ func Ent2Grpc(row *ent.Tran) *npool.Tx {
 		ChainTxID:     row.ChainTxID,
 		State:         npool.TxState(npool.TxState_value[row.State]),
 		Extra:         row.Extra,
-		Type:          npool.TxType(npool.TxType_value[row.Type]),
+		Type:          basetypes.TxType(basetypes.TxType_value[row.Type]),
 		CreatedAt:     row.CreatedAt,
 		UpdatedAt:     row.UpdatedAt,
 	}

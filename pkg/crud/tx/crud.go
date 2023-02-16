@@ -17,6 +17,8 @@ import (
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/tran"
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
+
+	basetypes "github.com/NpoolPlatform/message/npool/basetypes/v1"
 	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/tx"
 
 	"github.com/google/uuid"
@@ -283,7 +285,7 @@ func SetQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.TranQuery, error) 
 	if conds.Type != nil {
 		switch conds.GetType().GetOp() {
 		case cruder.EQ:
-			stm.Where(tran.Type(npool.TxType(conds.GetType().GetValue()).String()))
+			stm.Where(tran.Type(basetypes.TxType(conds.GetType().GetValue()).String()))
 		default:
 			return nil, fmt.Errorf("invalid tx field")
 		}
