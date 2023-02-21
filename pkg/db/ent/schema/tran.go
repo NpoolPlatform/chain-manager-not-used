@@ -5,6 +5,7 @@ import (
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/schema/field"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/mixin"
+	basetypes "github.com/NpoolPlatform/message/npool/basetypes/v1"
 	tran "github.com/NpoolPlatform/message/npool/chain/mgr/v1/tx"
 	"github.com/google/uuid"
 	"github.com/shopspring/decimal"
@@ -75,7 +76,7 @@ func (Tran) Fields() []ent.Field {
 		field.
 			String("type").
 			Optional().
-			Default(tran.TxType_DefaultTxType.String()),
+			Default(basetypes.TxType_DefaultTxType.String()),
 	}
 }
 

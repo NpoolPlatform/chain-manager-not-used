@@ -14,6 +14,7 @@ import (
 
 	testinit "github.com/NpoolPlatform/chain-manager/pkg/testinit"
 	valuedef "github.com/NpoolPlatform/message/npool"
+	basetypes "github.com/NpoolPlatform/message/npool/basetypes/v1"
 	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/tx"
 	"github.com/google/uuid"
 
@@ -39,7 +40,7 @@ var entity = ent.Tran{
 	ChainTxID:     uuid.NewString(),
 	State:         npool.TxState_StateCreated.String(),
 	Extra:         uuid.NewString(),
-	Type:          npool.TxType_TxWithdraw.String(),
+	Type:          basetypes.TxType_TxWithdraw.String(),
 }
 
 var (
@@ -52,7 +53,7 @@ var (
 	chainTxID     = entity.ChainTxID
 	state         = npool.TxState(npool.TxState_value[entity.State])
 	extra         = entity.Extra
-	tyep          = npool.TxType(npool.TxType_value[entity.Type])
+	tyep          = basetypes.TxType(basetypes.TxType_value[entity.Type])
 
 	req = npool.TxReq{
 		ID:            &id,
@@ -92,7 +93,7 @@ func createBulk(t *testing.T) {
 			ChainTxID:     uuid.NewString(),
 			State:         npool.TxState_StateTransferring.String(),
 			Extra:         uuid.NewString(),
-			Type:          npool.TxType_TxPaymentCollect.String(),
+			Type:          basetypes.TxType_TxPaymentCollect.String(),
 		},
 		{
 			ID:            uuid.New(),
@@ -104,7 +105,7 @@ func createBulk(t *testing.T) {
 			ChainTxID:     uuid.NewString(),
 			State:         npool.TxState_StateWait.String(),
 			Extra:         uuid.NewString(),
-			Type:          npool.TxType_TxFeedGas.String(),
+			Type:          basetypes.TxType_TxFeedGas.String(),
 		},
 	}
 
@@ -119,7 +120,7 @@ func createBulk(t *testing.T) {
 		_chainTxID := _entity.ChainTxID
 		_state := npool.TxState(npool.TxState_value[_entity.State])
 		_extra := _entity.Extra
-		_type := npool.TxType(npool.TxType_value[_entity.Type])
+		_type := basetypes.TxType(basetypes.TxType_value[_entity.Type])
 
 		reqs = append(reqs, &npool.TxReq{
 			ID:            &_id,

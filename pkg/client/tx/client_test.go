@@ -16,7 +16,9 @@ import (
 
 	"github.com/NpoolPlatform/chain-manager/pkg/testinit"
 
+	basetypes "github.com/NpoolPlatform/message/npool/basetypes/v1"
 	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/tx"
+
 	"github.com/stretchr/testify/assert"
 
 	"github.com/google/uuid"
@@ -41,7 +43,7 @@ var tran = &npool.Tx{
 	ChainTxID:     uuid.UUID{}.String(),
 	State:         npool.TxState_StateCreated,
 	Extra:         uuid.NewString(),
-	Type:          npool.TxType_TxPaymentCollect,
+	Type:          basetypes.TxType_TxPaymentCollect,
 }
 
 var tranReq = &npool.TxReq{

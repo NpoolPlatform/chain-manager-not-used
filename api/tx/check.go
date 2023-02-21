@@ -4,6 +4,8 @@ import (
 	"fmt"
 
 	"github.com/NpoolPlatform/go-service-framework/pkg/logger"
+
+	basetypes "github.com/NpoolPlatform/message/npool/basetypes/v1"
 	npool "github.com/NpoolPlatform/message/npool/chain/mgr/v1/tx"
 
 	"github.com/shopspring/decimal"
@@ -61,13 +63,13 @@ func validate(in *npool.TxReq) error { //nolint
 	}
 
 	switch in.GetType() {
-	case npool.TxType_TxWithdraw:
-	case npool.TxType_TxFeedGas:
-	case npool.TxType_TxPaymentCollect:
-	case npool.TxType_TxBenefit:
-	case npool.TxType_TxLimitation:
-	case npool.TxType_TxPlatformBenefit:
-	case npool.TxType_TxUserBenefit:
+	case basetypes.TxType_TxWithdraw:
+	case basetypes.TxType_TxFeedGas:
+	case basetypes.TxType_TxPaymentCollect:
+	case basetypes.TxType_TxBenefit:
+	case basetypes.TxType_TxLimitation:
+	case basetypes.TxType_TxPlatformBenefit:
+	case basetypes.TxType_TxUserBenefit:
 	default:
 		logger.Sugar().Errorw("validate", "Type", in.GetType())
 		return fmt.Errorf("type is invalid")
@@ -128,14 +130,14 @@ func validateConds(conds *npool.Conds) error { //nolint
 	}
 
 	if conds.Type != nil {
-		switch npool.TxType(conds.GetType().GetValue()) {
-		case npool.TxType_TxWithdraw:
-		case npool.TxType_TxFeedGas:
-		case npool.TxType_TxPaymentCollect:
-		case npool.TxType_TxBenefit:
-		case npool.TxType_TxLimitation:
-		case npool.TxType_TxPlatformBenefit:
-		case npool.TxType_TxUserBenefit:
+		switch basetypes.TxType(conds.GetType().GetValue()) {
+		case basetypes.TxType_TxWithdraw:
+		case basetypes.TxType_TxFeedGas:
+		case basetypes.TxType_TxPaymentCollect:
+		case basetypes.TxType_TxBenefit:
+		case basetypes.TxType_TxLimitation:
+		case basetypes.TxType_TxPlatformBenefit:
+		case basetypes.TxType_TxUserBenefit:
 		default:
 			logger.Sugar().Errorw("validateConds", "Type", conds.GetType().GetValue())
 			return fmt.Errorf("type is invalid")
