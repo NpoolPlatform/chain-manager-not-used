@@ -150,6 +150,13 @@ func LowFeeAmount(v decimal.Decimal) predicate.Setting {
 	})
 }
 
+// HotLowFeeAmount applies equality check predicate on the "hot_low_fee_amount" field. It's identical to HotLowFeeAmountEQ.
+func HotLowFeeAmount(v decimal.Decimal) predicate.Setting {
+	return predicate.Setting(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldHotLowFeeAmount), v))
+	})
+}
+
 // HotWalletAccountAmount applies equality check predicate on the "hot_wallet_account_amount" field. It's identical to HotWalletAccountAmountEQ.
 func HotWalletAccountAmount(v decimal.Decimal) predicate.Setting {
 	return predicate.Setting(func(s *sql.Selector) {
@@ -856,6 +863,84 @@ func LowFeeAmountIsNil() predicate.Setting {
 func LowFeeAmountNotNil() predicate.Setting {
 	return predicate.Setting(func(s *sql.Selector) {
 		s.Where(sql.NotNull(s.C(FieldLowFeeAmount)))
+	})
+}
+
+// HotLowFeeAmountEQ applies the EQ predicate on the "hot_low_fee_amount" field.
+func HotLowFeeAmountEQ(v decimal.Decimal) predicate.Setting {
+	return predicate.Setting(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldHotLowFeeAmount), v))
+	})
+}
+
+// HotLowFeeAmountNEQ applies the NEQ predicate on the "hot_low_fee_amount" field.
+func HotLowFeeAmountNEQ(v decimal.Decimal) predicate.Setting {
+	return predicate.Setting(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldHotLowFeeAmount), v))
+	})
+}
+
+// HotLowFeeAmountIn applies the In predicate on the "hot_low_fee_amount" field.
+func HotLowFeeAmountIn(vs ...decimal.Decimal) predicate.Setting {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Setting(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldHotLowFeeAmount), v...))
+	})
+}
+
+// HotLowFeeAmountNotIn applies the NotIn predicate on the "hot_low_fee_amount" field.
+func HotLowFeeAmountNotIn(vs ...decimal.Decimal) predicate.Setting {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Setting(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldHotLowFeeAmount), v...))
+	})
+}
+
+// HotLowFeeAmountGT applies the GT predicate on the "hot_low_fee_amount" field.
+func HotLowFeeAmountGT(v decimal.Decimal) predicate.Setting {
+	return predicate.Setting(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldHotLowFeeAmount), v))
+	})
+}
+
+// HotLowFeeAmountGTE applies the GTE predicate on the "hot_low_fee_amount" field.
+func HotLowFeeAmountGTE(v decimal.Decimal) predicate.Setting {
+	return predicate.Setting(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldHotLowFeeAmount), v))
+	})
+}
+
+// HotLowFeeAmountLT applies the LT predicate on the "hot_low_fee_amount" field.
+func HotLowFeeAmountLT(v decimal.Decimal) predicate.Setting {
+	return predicate.Setting(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldHotLowFeeAmount), v))
+	})
+}
+
+// HotLowFeeAmountLTE applies the LTE predicate on the "hot_low_fee_amount" field.
+func HotLowFeeAmountLTE(v decimal.Decimal) predicate.Setting {
+	return predicate.Setting(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldHotLowFeeAmount), v))
+	})
+}
+
+// HotLowFeeAmountIsNil applies the IsNil predicate on the "hot_low_fee_amount" field.
+func HotLowFeeAmountIsNil() predicate.Setting {
+	return predicate.Setting(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldHotLowFeeAmount)))
+	})
+}
+
+// HotLowFeeAmountNotNil applies the NotNil predicate on the "hot_low_fee_amount" field.
+func HotLowFeeAmountNotNil() predicate.Setting {
+	return predicate.Setting(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldHotLowFeeAmount)))
 	})
 }
 

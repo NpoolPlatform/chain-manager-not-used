@@ -527,16 +527,20 @@ func init() {
 	settingDescLowFeeAmount := settingFields[7].Descriptor()
 	// setting.DefaultLowFeeAmount holds the default value on creation for the low_fee_amount field.
 	setting.DefaultLowFeeAmount = settingDescLowFeeAmount.Default.(decimal.Decimal)
+	// settingDescHotLowFeeAmount is the schema descriptor for hot_low_fee_amount field.
+	settingDescHotLowFeeAmount := settingFields[8].Descriptor()
+	// setting.DefaultHotLowFeeAmount holds the default value on creation for the hot_low_fee_amount field.
+	setting.DefaultHotLowFeeAmount = settingDescHotLowFeeAmount.Default.(decimal.Decimal)
 	// settingDescHotWalletAccountAmount is the schema descriptor for hot_wallet_account_amount field.
-	settingDescHotWalletAccountAmount := settingFields[8].Descriptor()
+	settingDescHotWalletAccountAmount := settingFields[9].Descriptor()
 	// setting.DefaultHotWalletAccountAmount holds the default value on creation for the hot_wallet_account_amount field.
 	setting.DefaultHotWalletAccountAmount = settingDescHotWalletAccountAmount.Default.(decimal.Decimal)
 	// settingDescPaymentAccountCollectAmount is the schema descriptor for payment_account_collect_amount field.
-	settingDescPaymentAccountCollectAmount := settingFields[9].Descriptor()
+	settingDescPaymentAccountCollectAmount := settingFields[10].Descriptor()
 	// setting.DefaultPaymentAccountCollectAmount holds the default value on creation for the payment_account_collect_amount field.
 	setting.DefaultPaymentAccountCollectAmount = settingDescPaymentAccountCollectAmount.Default.(decimal.Decimal)
 	// settingDescLeastTransferAmount is the schema descriptor for least_transfer_amount field.
-	settingDescLeastTransferAmount := settingFields[10].Descriptor()
+	settingDescLeastTransferAmount := settingFields[11].Descriptor()
 	// setting.DefaultLeastTransferAmount holds the default value on creation for the least_transfer_amount field.
 	setting.DefaultLeastTransferAmount = settingDescLeastTransferAmount.Default.(decimal.Decimal)
 	// settingDescID is the schema descriptor for id field.

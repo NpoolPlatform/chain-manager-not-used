@@ -164,6 +164,20 @@ func (sc *SettingCreate) SetNillableLowFeeAmount(d *decimal.Decimal) *SettingCre
 	return sc
 }
 
+// SetHotLowFeeAmount sets the "hot_low_fee_amount" field.
+func (sc *SettingCreate) SetHotLowFeeAmount(d decimal.Decimal) *SettingCreate {
+	sc.mutation.SetHotLowFeeAmount(d)
+	return sc
+}
+
+// SetNillableHotLowFeeAmount sets the "hot_low_fee_amount" field if the given value is not nil.
+func (sc *SettingCreate) SetNillableHotLowFeeAmount(d *decimal.Decimal) *SettingCreate {
+	if d != nil {
+		sc.SetHotLowFeeAmount(*d)
+	}
+	return sc
+}
+
 // SetHotWalletAccountAmount sets the "hot_wallet_account_amount" field.
 func (sc *SettingCreate) SetHotWalletAccountAmount(d decimal.Decimal) *SettingCreate {
 	sc.mutation.SetHotWalletAccountAmount(d)
@@ -354,6 +368,10 @@ func (sc *SettingCreate) defaults() error {
 		v := setting.DefaultLowFeeAmount
 		sc.mutation.SetLowFeeAmount(v)
 	}
+	if _, ok := sc.mutation.HotLowFeeAmount(); !ok {
+		v := setting.DefaultHotLowFeeAmount
+		sc.mutation.SetHotLowFeeAmount(v)
+	}
 	if _, ok := sc.mutation.HotWalletAccountAmount(); !ok {
 		v := setting.DefaultHotWalletAccountAmount
 		sc.mutation.SetHotWalletAccountAmount(v)
@@ -503,6 +521,14 @@ func (sc *SettingCreate) createSpec() (*Setting, *sqlgraph.CreateSpec) {
 			Column: setting.FieldLowFeeAmount,
 		})
 		_node.LowFeeAmount = value
+	}
+	if value, ok := sc.mutation.HotLowFeeAmount(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeOther,
+			Value:  value,
+			Column: setting.FieldHotLowFeeAmount,
+		})
+		_node.HotLowFeeAmount = value
 	}
 	if value, ok := sc.mutation.HotWalletAccountAmount(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -759,6 +785,24 @@ func (u *SettingUpsert) UpdateLowFeeAmount() *SettingUpsert {
 // ClearLowFeeAmount clears the value of the "low_fee_amount" field.
 func (u *SettingUpsert) ClearLowFeeAmount() *SettingUpsert {
 	u.SetNull(setting.FieldLowFeeAmount)
+	return u
+}
+
+// SetHotLowFeeAmount sets the "hot_low_fee_amount" field.
+func (u *SettingUpsert) SetHotLowFeeAmount(v decimal.Decimal) *SettingUpsert {
+	u.Set(setting.FieldHotLowFeeAmount, v)
+	return u
+}
+
+// UpdateHotLowFeeAmount sets the "hot_low_fee_amount" field to the value that was provided on create.
+func (u *SettingUpsert) UpdateHotLowFeeAmount() *SettingUpsert {
+	u.SetExcluded(setting.FieldHotLowFeeAmount)
+	return u
+}
+
+// ClearHotLowFeeAmount clears the value of the "hot_low_fee_amount" field.
+func (u *SettingUpsert) ClearHotLowFeeAmount() *SettingUpsert {
+	u.SetNull(setting.FieldHotLowFeeAmount)
 	return u
 }
 
@@ -1073,6 +1117,27 @@ func (u *SettingUpsertOne) UpdateLowFeeAmount() *SettingUpsertOne {
 func (u *SettingUpsertOne) ClearLowFeeAmount() *SettingUpsertOne {
 	return u.Update(func(s *SettingUpsert) {
 		s.ClearLowFeeAmount()
+	})
+}
+
+// SetHotLowFeeAmount sets the "hot_low_fee_amount" field.
+func (u *SettingUpsertOne) SetHotLowFeeAmount(v decimal.Decimal) *SettingUpsertOne {
+	return u.Update(func(s *SettingUpsert) {
+		s.SetHotLowFeeAmount(v)
+	})
+}
+
+// UpdateHotLowFeeAmount sets the "hot_low_fee_amount" field to the value that was provided on create.
+func (u *SettingUpsertOne) UpdateHotLowFeeAmount() *SettingUpsertOne {
+	return u.Update(func(s *SettingUpsert) {
+		s.UpdateHotLowFeeAmount()
+	})
+}
+
+// ClearHotLowFeeAmount clears the value of the "hot_low_fee_amount" field.
+func (u *SettingUpsertOne) ClearHotLowFeeAmount() *SettingUpsertOne {
+	return u.Update(func(s *SettingUpsert) {
+		s.ClearHotLowFeeAmount()
 	})
 }
 
@@ -1562,6 +1627,27 @@ func (u *SettingUpsertBulk) UpdateLowFeeAmount() *SettingUpsertBulk {
 func (u *SettingUpsertBulk) ClearLowFeeAmount() *SettingUpsertBulk {
 	return u.Update(func(s *SettingUpsert) {
 		s.ClearLowFeeAmount()
+	})
+}
+
+// SetHotLowFeeAmount sets the "hot_low_fee_amount" field.
+func (u *SettingUpsertBulk) SetHotLowFeeAmount(v decimal.Decimal) *SettingUpsertBulk {
+	return u.Update(func(s *SettingUpsert) {
+		s.SetHotLowFeeAmount(v)
+	})
+}
+
+// UpdateHotLowFeeAmount sets the "hot_low_fee_amount" field to the value that was provided on create.
+func (u *SettingUpsertBulk) UpdateHotLowFeeAmount() *SettingUpsertBulk {
+	return u.Update(func(s *SettingUpsert) {
+		s.UpdateHotLowFeeAmount()
+	})
+}
+
+// ClearHotLowFeeAmount clears the value of the "hot_low_fee_amount" field.
+func (u *SettingUpsertBulk) ClearHotLowFeeAmount() *SettingUpsertBulk {
+	return u.Update(func(s *SettingUpsert) {
+		s.ClearHotLowFeeAmount()
 	})
 }
 

@@ -7804,6 +7804,7 @@ type SettingMutation struct {
 	collect_fee_amount             *decimal.Decimal
 	hot_wallet_fee_amount          *decimal.Decimal
 	low_fee_amount                 *decimal.Decimal
+	hot_low_fee_amount             *decimal.Decimal
 	hot_wallet_account_amount      *decimal.Decimal
 	payment_account_collect_amount *decimal.Decimal
 	least_transfer_amount          *decimal.Decimal
@@ -8428,6 +8429,55 @@ func (m *SettingMutation) ResetLowFeeAmount() {
 	delete(m.clearedFields, setting.FieldLowFeeAmount)
 }
 
+// SetHotLowFeeAmount sets the "hot_low_fee_amount" field.
+func (m *SettingMutation) SetHotLowFeeAmount(d decimal.Decimal) {
+	m.hot_low_fee_amount = &d
+}
+
+// HotLowFeeAmount returns the value of the "hot_low_fee_amount" field in the mutation.
+func (m *SettingMutation) HotLowFeeAmount() (r decimal.Decimal, exists bool) {
+	v := m.hot_low_fee_amount
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldHotLowFeeAmount returns the old "hot_low_fee_amount" field's value of the Setting entity.
+// If the Setting object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SettingMutation) OldHotLowFeeAmount(ctx context.Context) (v decimal.Decimal, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldHotLowFeeAmount is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldHotLowFeeAmount requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldHotLowFeeAmount: %w", err)
+	}
+	return oldValue.HotLowFeeAmount, nil
+}
+
+// ClearHotLowFeeAmount clears the value of the "hot_low_fee_amount" field.
+func (m *SettingMutation) ClearHotLowFeeAmount() {
+	m.hot_low_fee_amount = nil
+	m.clearedFields[setting.FieldHotLowFeeAmount] = struct{}{}
+}
+
+// HotLowFeeAmountCleared returns if the "hot_low_fee_amount" field was cleared in this mutation.
+func (m *SettingMutation) HotLowFeeAmountCleared() bool {
+	_, ok := m.clearedFields[setting.FieldHotLowFeeAmount]
+	return ok
+}
+
+// ResetHotLowFeeAmount resets all changes to the "hot_low_fee_amount" field.
+func (m *SettingMutation) ResetHotLowFeeAmount() {
+	m.hot_low_fee_amount = nil
+	delete(m.clearedFields, setting.FieldHotLowFeeAmount)
+}
+
 // SetHotWalletAccountAmount sets the "hot_wallet_account_amount" field.
 func (m *SettingMutation) SetHotWalletAccountAmount(d decimal.Decimal) {
 	m.hot_wallet_account_amount = &d
@@ -8594,7 +8644,7 @@ func (m *SettingMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *SettingMutation) Fields() []string {
-	fields := make([]string, 0, 13)
+	fields := make([]string, 0, 14)
 	if m.created_at != nil {
 		fields = append(fields, setting.FieldCreatedAt)
 	}
@@ -8624,6 +8674,9 @@ func (m *SettingMutation) Fields() []string {
 	}
 	if m.low_fee_amount != nil {
 		fields = append(fields, setting.FieldLowFeeAmount)
+	}
+	if m.hot_low_fee_amount != nil {
+		fields = append(fields, setting.FieldHotLowFeeAmount)
 	}
 	if m.hot_wallet_account_amount != nil {
 		fields = append(fields, setting.FieldHotWalletAccountAmount)
@@ -8662,6 +8715,8 @@ func (m *SettingMutation) Field(name string) (ent.Value, bool) {
 		return m.HotWalletFeeAmount()
 	case setting.FieldLowFeeAmount:
 		return m.LowFeeAmount()
+	case setting.FieldHotLowFeeAmount:
+		return m.HotLowFeeAmount()
 	case setting.FieldHotWalletAccountAmount:
 		return m.HotWalletAccountAmount()
 	case setting.FieldPaymentAccountCollectAmount:
@@ -8697,6 +8752,8 @@ func (m *SettingMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldHotWalletFeeAmount(ctx)
 	case setting.FieldLowFeeAmount:
 		return m.OldLowFeeAmount(ctx)
+	case setting.FieldHotLowFeeAmount:
+		return m.OldHotLowFeeAmount(ctx)
 	case setting.FieldHotWalletAccountAmount:
 		return m.OldHotWalletAccountAmount(ctx)
 	case setting.FieldPaymentAccountCollectAmount:
@@ -8781,6 +8838,13 @@ func (m *SettingMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetLowFeeAmount(v)
+		return nil
+	case setting.FieldHotLowFeeAmount:
+		v, ok := value.(decimal.Decimal)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetHotLowFeeAmount(v)
 		return nil
 	case setting.FieldHotWalletAccountAmount:
 		v, ok := value.(decimal.Decimal)
@@ -8893,6 +8957,9 @@ func (m *SettingMutation) ClearedFields() []string {
 	if m.FieldCleared(setting.FieldLowFeeAmount) {
 		fields = append(fields, setting.FieldLowFeeAmount)
 	}
+	if m.FieldCleared(setting.FieldHotLowFeeAmount) {
+		fields = append(fields, setting.FieldHotLowFeeAmount)
+	}
 	if m.FieldCleared(setting.FieldHotWalletAccountAmount) {
 		fields = append(fields, setting.FieldHotWalletAccountAmount)
 	}
@@ -8936,6 +9003,9 @@ func (m *SettingMutation) ClearField(name string) error {
 		return nil
 	case setting.FieldLowFeeAmount:
 		m.ClearLowFeeAmount()
+		return nil
+	case setting.FieldHotLowFeeAmount:
+		m.ClearHotLowFeeAmount()
 		return nil
 	case setting.FieldHotWalletAccountAmount:
 		m.ClearHotWalletAccountAmount()
@@ -8983,6 +9053,9 @@ func (m *SettingMutation) ResetField(name string) error {
 		return nil
 	case setting.FieldLowFeeAmount:
 		m.ResetLowFeeAmount()
+		return nil
+	case setting.FieldHotLowFeeAmount:
+		m.ResetHotLowFeeAmount()
 		return nil
 	case setting.FieldHotWalletAccountAmount:
 		m.ResetHotWalletAccountAmount()

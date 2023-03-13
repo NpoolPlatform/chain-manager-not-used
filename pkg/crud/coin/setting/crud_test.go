@@ -38,6 +38,7 @@ var entity = ent.Setting{
 	CollectFeeAmount:            decimal.RequireFromString("2.01"),
 	HotWalletFeeAmount:          decimal.RequireFromString("2.01"),
 	LowFeeAmount:                decimal.RequireFromString("0.201"),
+	HotLowFeeAmount:             decimal.RequireFromString("0.201"),
 	HotWalletAccountAmount:      decimal.RequireFromString("0.201"),
 	PaymentAccountCollectAmount: decimal.RequireFromString("0.201"),
 	LeastTransferAmount:         decimal.RequireFromString("0.201"),
@@ -52,6 +53,7 @@ var (
 	collectFeeAmount            = entity.CollectFeeAmount.String()
 	hotWalletFeeAmount          = entity.HotWalletFeeAmount.String()
 	lowFeeAmount                = entity.LowFeeAmount.String()
+	hotLowFeeAmount             = entity.HotLowFeeAmount.String()
 	hotWalletAccountAmount      = entity.HotWalletAccountAmount.String()
 	paymentAccountCollectAmount = entity.PaymentAccountCollectAmount.String()
 	leastTransferAmount         = entity.LeastTransferAmount.String()
@@ -65,6 +67,7 @@ var (
 		CollectFeeAmount:            &collectFeeAmount,
 		HotWalletFeeAmount:          &hotWalletFeeAmount,
 		LowFeeAmount:                &lowFeeAmount,
+		HotLowFeeAmount:             &hotLowFeeAmount,
 		HotWalletAccountAmount:      &hotWalletAccountAmount,
 		PaymentAccountCollectAmount: &paymentAccountCollectAmount,
 		LeastTransferAmount:         &leastTransferAmount,
@@ -94,6 +97,7 @@ func createBulk(t *testing.T) {
 			CollectFeeAmount:            decimal.RequireFromString("2.02"),
 			HotWalletFeeAmount:          decimal.RequireFromString("2.03"),
 			LowFeeAmount:                decimal.RequireFromString("0.202"),
+			HotLowFeeAmount:             decimal.RequireFromString("0.202"),
 			HotWalletAccountAmount:      decimal.RequireFromString("0.201"),
 			PaymentAccountCollectAmount: decimal.RequireFromString("0.201"),
 			LeastTransferAmount:         decimal.RequireFromString("0.201"),
@@ -107,6 +111,7 @@ func createBulk(t *testing.T) {
 			CollectFeeAmount:            decimal.RequireFromString("2.03"),
 			HotWalletFeeAmount:          decimal.RequireFromString("2.02"),
 			LowFeeAmount:                decimal.RequireFromString("0.201"),
+			HotLowFeeAmount:             decimal.RequireFromString("0.201"),
 			HotWalletAccountAmount:      decimal.RequireFromString("0.201"),
 			PaymentAccountCollectAmount: decimal.RequireFromString("0.201"),
 			LeastTransferAmount:         decimal.RequireFromString("0.201"),
@@ -123,6 +128,7 @@ func createBulk(t *testing.T) {
 		_collectFeeAmount := _entity.CollectFeeAmount.String()
 		_hotWalletFeeAmount := _entity.HotWalletFeeAmount.String()
 		_lowFeeAmount := _entity.LowFeeAmount.String()
+		_hotLowFeeAmount := _entity.HotLowFeeAmount.String()
 		_hotWalletAccountAmount := _entity.HotWalletAccountAmount.String()
 		_paymentAccountCollectAmount := _entity.PaymentAccountCollectAmount.String()
 		_leastTransferAmount := _entity.LeastTransferAmount.String()
@@ -136,6 +142,7 @@ func createBulk(t *testing.T) {
 			CollectFeeAmount:            &_collectFeeAmount,
 			HotWalletFeeAmount:          &_hotWalletFeeAmount,
 			LowFeeAmount:                &_lowFeeAmount,
+			HotLowFeeAmount:             &_hotLowFeeAmount,
 			HotWalletAccountAmount:      &_hotWalletAccountAmount,
 			PaymentAccountCollectAmount: &_paymentAccountCollectAmount,
 			LeastTransferAmount:         &_leastTransferAmount,
@@ -159,12 +166,14 @@ func add(t *testing.T) {
 	req.CollectFeeAmount = &collectFeeAmount
 	req.HotWalletFeeAmount = &hotWalletFeeAmount
 	req.LowFeeAmount = &lowFeeAmount
+	req.HotLowFeeAmount = &lowFeeAmount
 
 	entity.WithdrawFeeByStableUsd = withdrawFeeByStableUSD
 	entity.WithdrawFeeAmount = decimal.RequireFromString(withdrawFeeAmount)
 	entity.CollectFeeAmount = decimal.RequireFromString(collectFeeAmount)
 	entity.HotWalletFeeAmount = decimal.RequireFromString(hotWalletFeeAmount)
 	entity.LowFeeAmount = decimal.RequireFromString(lowFeeAmount)
+	entity.HotLowFeeAmount = decimal.RequireFromString(lowFeeAmount)
 
 	info, err := Update(context.Background(), &req)
 	if assert.Nil(t, err) {

@@ -40,6 +40,7 @@ var setting = &npool.Setting{
 	CollectFeeAmount:            "2.01",
 	HotWalletFeeAmount:          "2.01",
 	LowFeeAmount:                "0.201",
+	HotLowFeeAmount:             "0.201",
 	HotWalletAccountAmount:      "9000.123",
 	PaymentAccountCollectAmount: "9000.123",
 	LeastTransferAmount:         "9000.123",
@@ -54,6 +55,7 @@ var settingReq = &npool.SettingReq{
 	CollectFeeAmount:            &setting.CollectFeeAmount,
 	HotWalletFeeAmount:          &setting.HotWalletFeeAmount,
 	LowFeeAmount:                &setting.LowFeeAmount,
+	HotLowFeeAmount:             &setting.HotLowFeeAmount,
 	HotWalletAccountAmount:      &setting.HotWalletAccountAmount,
 	PaymentAccountCollectAmount: &setting.PaymentAccountCollectAmount,
 	LeastTransferAmount:         &setting.LeastTransferAmount,
@@ -80,12 +82,14 @@ func updateSetting(t *testing.T) {
 	settingReq.CollectFeeAmount = &collectFeeAmount
 	settingReq.HotWalletFeeAmount = &hotWalletFeeAmount
 	settingReq.LowFeeAmount = &lowFeeAmount
+	settingReq.HotLowFeeAmount = &lowFeeAmount
 
 	setting.WithdrawFeeByStableUSD = withdrawFeeByStableUSD
 	setting.WithdrawFeeAmount = withdrawFeeAmount
 	setting.CollectFeeAmount = collectFeeAmount
 	setting.HotWalletFeeAmount = hotWalletFeeAmount
 	setting.LowFeeAmount = lowFeeAmount
+	setting.HotLowFeeAmount = lowFeeAmount
 
 	info, err := UpdateSetting(context.Background(), settingReq)
 	if assert.Nil(t, err) {

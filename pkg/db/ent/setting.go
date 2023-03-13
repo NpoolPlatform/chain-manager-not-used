@@ -37,6 +37,8 @@ type Setting struct {
 	HotWalletFeeAmount decimal.Decimal `json:"hot_wallet_fee_amount,omitempty"`
 	// LowFeeAmount holds the value of the "low_fee_amount" field.
 	LowFeeAmount decimal.Decimal `json:"low_fee_amount,omitempty"`
+	// HotLowFeeAmount holds the value of the "hot_low_fee_amount" field.
+	HotLowFeeAmount decimal.Decimal `json:"hot_low_fee_amount,omitempty"`
 	// HotWalletAccountAmount holds the value of the "hot_wallet_account_amount" field.
 	HotWalletAccountAmount decimal.Decimal `json:"hot_wallet_account_amount,omitempty"`
 	// PaymentAccountCollectAmount holds the value of the "payment_account_collect_amount" field.
@@ -50,7 +52,7 @@ func (*Setting) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case setting.FieldWithdrawFeeAmount, setting.FieldCollectFeeAmount, setting.FieldHotWalletFeeAmount, setting.FieldLowFeeAmount, setting.FieldHotWalletAccountAmount, setting.FieldPaymentAccountCollectAmount, setting.FieldLeastTransferAmount:
+		case setting.FieldWithdrawFeeAmount, setting.FieldCollectFeeAmount, setting.FieldHotWalletFeeAmount, setting.FieldLowFeeAmount, setting.FieldHotLowFeeAmount, setting.FieldHotWalletAccountAmount, setting.FieldPaymentAccountCollectAmount, setting.FieldLeastTransferAmount:
 			values[i] = new(decimal.Decimal)
 		case setting.FieldWithdrawFeeByStableUsd:
 			values[i] = new(sql.NullBool)
@@ -139,6 +141,12 @@ func (s *Setting) assignValues(columns []string, values []interface{}) error {
 			} else if value != nil {
 				s.LowFeeAmount = *value
 			}
+		case setting.FieldHotLowFeeAmount:
+			if value, ok := values[i].(*decimal.Decimal); !ok {
+				return fmt.Errorf("unexpected type %T for field hot_low_fee_amount", values[i])
+			} else if value != nil {
+				s.HotLowFeeAmount = *value
+			}
 		case setting.FieldHotWalletAccountAmount:
 			if value, ok := values[i].(*decimal.Decimal); !ok {
 				return fmt.Errorf("unexpected type %T for field hot_wallet_account_amount", values[i])
@@ -214,6 +222,9 @@ func (s *Setting) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("low_fee_amount=")
 	builder.WriteString(fmt.Sprintf("%v", s.LowFeeAmount))
+	builder.WriteString(", ")
+	builder.WriteString("hot_low_fee_amount=")
+	builder.WriteString(fmt.Sprintf("%v", s.HotLowFeeAmount))
 	builder.WriteString(", ")
 	builder.WriteString("hot_wallet_account_amount=")
 	builder.WriteString(fmt.Sprintf("%v", s.HotWalletAccountAmount))
