@@ -47,6 +47,11 @@ func validate(in *npool.SettingReq) error { //nolint
 		logger.Sugar().Errorw("validate", "LowFeeAmount", in.GetLowFeeAmount(), "error", err)
 		return fmt.Errorf("lowfeeamount is invalid: %v", err)
 	}
+	amount, err = decimal.NewFromString(in.GetHotLowFeeAmount())
+	if err != nil || amount.Cmp(decimal.NewFromInt(0)) <= 0 {
+		logger.Sugar().Errorw("validate", "HotLowFeeAmount", in.GetHotLowFeeAmount(), "error", err)
+		return fmt.Errorf("hotlowfeeamount is invalid: %v", err)
+	}
 	amount, err = decimal.NewFromString(in.GetHotWalletAccountAmount())
 	if err != nil || amount.Cmp(decimal.NewFromInt(0)) <= 0 {
 		logger.Sugar().Errorw("validate", "HotWalletAccountAmount", in.GetHotWalletAccountAmount(), "error", err)

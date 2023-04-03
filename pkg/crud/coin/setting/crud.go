@@ -47,6 +47,9 @@ func CreateSet(c *ent.SettingCreate, in *npool.SettingReq) *ent.SettingCreate {
 	if in.LowFeeAmount != nil {
 		c.SetLowFeeAmount(decimal.RequireFromString(in.GetLowFeeAmount()))
 	}
+	if in.HotLowFeeAmount != nil {
+		c.SetHotLowFeeAmount(decimal.RequireFromString(in.GetHotLowFeeAmount()))
+	}
 	if in.HotWalletAccountAmount != nil {
 		c.SetHotWalletAccountAmount(decimal.RequireFromString(in.GetHotWalletAccountAmount()))
 	}
@@ -137,6 +140,9 @@ func UpdateSet(info *ent.Setting, in *npool.SettingReq) *ent.SettingUpdateOne {
 	}
 	if in.LowFeeAmount != nil {
 		stm.SetLowFeeAmount(decimal.RequireFromString(in.GetLowFeeAmount()))
+	}
+	if in.HotLowFeeAmount != nil {
+		stm.SetHotLowFeeAmount(decimal.RequireFromString(in.GetHotLowFeeAmount()))
 	}
 	if in.HotWalletAccountAmount != nil {
 		stm.SetHotWalletAccountAmount(decimal.RequireFromString(in.GetHotWalletAccountAmount()))

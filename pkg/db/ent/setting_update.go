@@ -225,6 +225,26 @@ func (su *SettingUpdate) ClearLowFeeAmount() *SettingUpdate {
 	return su
 }
 
+// SetHotLowFeeAmount sets the "hot_low_fee_amount" field.
+func (su *SettingUpdate) SetHotLowFeeAmount(d decimal.Decimal) *SettingUpdate {
+	su.mutation.SetHotLowFeeAmount(d)
+	return su
+}
+
+// SetNillableHotLowFeeAmount sets the "hot_low_fee_amount" field if the given value is not nil.
+func (su *SettingUpdate) SetNillableHotLowFeeAmount(d *decimal.Decimal) *SettingUpdate {
+	if d != nil {
+		su.SetHotLowFeeAmount(*d)
+	}
+	return su
+}
+
+// ClearHotLowFeeAmount clears the value of the "hot_low_fee_amount" field.
+func (su *SettingUpdate) ClearHotLowFeeAmount() *SettingUpdate {
+	su.mutation.ClearHotLowFeeAmount()
+	return su
+}
+
 // SetHotWalletAccountAmount sets the "hot_wallet_account_amount" field.
 func (su *SettingUpdate) SetHotWalletAccountAmount(d decimal.Decimal) *SettingUpdate {
 	su.mutation.SetHotWalletAccountAmount(d)
@@ -516,6 +536,19 @@ func (su *SettingUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: setting.FieldLowFeeAmount,
 		})
 	}
+	if value, ok := su.mutation.HotLowFeeAmount(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeOther,
+			Value:  value,
+			Column: setting.FieldHotLowFeeAmount,
+		})
+	}
+	if su.mutation.HotLowFeeAmountCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeOther,
+			Column: setting.FieldHotLowFeeAmount,
+		})
+	}
 	if value, ok := su.mutation.HotWalletAccountAmount(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeOther,
@@ -768,6 +801,26 @@ func (suo *SettingUpdateOne) SetNillableLowFeeAmount(d *decimal.Decimal) *Settin
 // ClearLowFeeAmount clears the value of the "low_fee_amount" field.
 func (suo *SettingUpdateOne) ClearLowFeeAmount() *SettingUpdateOne {
 	suo.mutation.ClearLowFeeAmount()
+	return suo
+}
+
+// SetHotLowFeeAmount sets the "hot_low_fee_amount" field.
+func (suo *SettingUpdateOne) SetHotLowFeeAmount(d decimal.Decimal) *SettingUpdateOne {
+	suo.mutation.SetHotLowFeeAmount(d)
+	return suo
+}
+
+// SetNillableHotLowFeeAmount sets the "hot_low_fee_amount" field if the given value is not nil.
+func (suo *SettingUpdateOne) SetNillableHotLowFeeAmount(d *decimal.Decimal) *SettingUpdateOne {
+	if d != nil {
+		suo.SetHotLowFeeAmount(*d)
+	}
+	return suo
+}
+
+// ClearHotLowFeeAmount clears the value of the "hot_low_fee_amount" field.
+func (suo *SettingUpdateOne) ClearHotLowFeeAmount() *SettingUpdateOne {
+	suo.mutation.ClearHotLowFeeAmount()
 	return suo
 }
 
@@ -1090,6 +1143,19 @@ func (suo *SettingUpdateOne) sqlSave(ctx context.Context) (_node *Setting, err e
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeOther,
 			Column: setting.FieldLowFeeAmount,
+		})
+	}
+	if value, ok := suo.mutation.HotLowFeeAmount(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeOther,
+			Value:  value,
+			Column: setting.FieldHotLowFeeAmount,
+		})
+	}
+	if suo.mutation.HotLowFeeAmountCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeOther,
+			Column: setting.FieldHotLowFeeAmount,
 		})
 	}
 	if value, ok := suo.mutation.HotWalletAccountAmount(); ok {

@@ -219,6 +219,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			setting.FieldCollectFeeAmount:            {Type: field.TypeOther, Column: setting.FieldCollectFeeAmount},
 			setting.FieldHotWalletFeeAmount:          {Type: field.TypeOther, Column: setting.FieldHotWalletFeeAmount},
 			setting.FieldLowFeeAmount:                {Type: field.TypeOther, Column: setting.FieldLowFeeAmount},
+			setting.FieldHotLowFeeAmount:             {Type: field.TypeOther, Column: setting.FieldHotLowFeeAmount},
 			setting.FieldHotWalletAccountAmount:      {Type: field.TypeOther, Column: setting.FieldHotWalletAccountAmount},
 			setting.FieldPaymentAccountCollectAmount: {Type: field.TypeOther, Column: setting.FieldPaymentAccountCollectAmount},
 			setting.FieldLeastTransferAmount:         {Type: field.TypeOther, Column: setting.FieldLeastTransferAmount},
@@ -1021,6 +1022,11 @@ func (f *SettingFilter) WhereHotWalletFeeAmount(p entql.OtherP) {
 // WhereLowFeeAmount applies the entql other predicate on the low_fee_amount field.
 func (f *SettingFilter) WhereLowFeeAmount(p entql.OtherP) {
 	f.Where(p.Field(setting.FieldLowFeeAmount))
+}
+
+// WhereHotLowFeeAmount applies the entql other predicate on the hot_low_fee_amount field.
+func (f *SettingFilter) WhereHotLowFeeAmount(p entql.OtherP) {
+	f.Where(p.Field(setting.FieldHotLowFeeAmount))
 }
 
 // WhereHotWalletAccountAmount applies the entql other predicate on the hot_wallet_account_amount field.

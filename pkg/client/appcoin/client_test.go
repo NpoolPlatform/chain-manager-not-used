@@ -106,6 +106,7 @@ func getAppCoin(t *testing.T) {
 func deleteAppCoin(t *testing.T) {
 	info, err := DeleteAppCoin(context.Background(), appCoin.ID)
 	if assert.Nil(t, err) {
+		appCoin.UpdatedAt = info.UpdatedAt
 		assert.Equal(t, appCoin, info)
 	}
 
