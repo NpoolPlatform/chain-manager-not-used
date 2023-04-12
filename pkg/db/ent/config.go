@@ -36,6 +36,7 @@ type hooks struct {
 	ExchangeRate     []ent.Hook
 	FiatCurrency     []ent.Hook
 	FiatCurrencyType []ent.Hook
+	LatestCurrency   []ent.Hook
 	Setting          []ent.Hook
 	Tran             []ent.Hook
 }

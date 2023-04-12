@@ -30,6 +30,9 @@ type FiatCurrency func(*sql.Selector)
 // FiatCurrencyType is the predicate function for fiatcurrencytype builders.
 type FiatCurrencyType func(*sql.Selector)
 
+// LatestCurrency is the predicate function for latestcurrency builders.
+type LatestCurrency func(*sql.Selector)
+
 // Setting is the predicate function for setting builders.
 type Setting func(*sql.Selector)
 
