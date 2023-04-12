@@ -106,6 +106,18 @@ var (
 		Name:       "currencies",
 		Columns:    CurrenciesColumns,
 		PrimaryKey: []*schema.Column{CurrenciesColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "currency_coin_type_id_id",
+				Unique:  false,
+				Columns: []*schema.Column{CurrenciesColumns[4], CurrenciesColumns[0]},
+			},
+			{
+				Name:    "currency_coin_type_id",
+				Unique:  false,
+				Columns: []*schema.Column{CurrenciesColumns[4]},
+			},
+		},
 	}
 	// ExchangeRatesColumns holds the columns for the "exchange_rates" table.
 	ExchangeRatesColumns = []*schema.Column{

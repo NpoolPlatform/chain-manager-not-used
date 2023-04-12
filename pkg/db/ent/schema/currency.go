@@ -5,6 +5,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/mixin"
 	"github.com/google/uuid"
 	"github.com/shopspring/decimal"
@@ -58,4 +59,11 @@ func (Currency) Fields() []ent.Field {
 // Edges of the Currency.
 func (Currency) Edges() []ent.Edge {
 	return nil
+}
+
+func (Currency) Indexes() []ent.Index {
+	return []ent.Index{
+		index.Fields("coin_type_id", "id"),
+		index.Fields("coin_type_id"),
+	}
 }
