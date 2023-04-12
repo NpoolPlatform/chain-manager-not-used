@@ -342,30 +342,6 @@ func (f FiatCurrencyTypeMutationRuleFunc) EvalMutation(ctx context.Context, m en
 	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.FiatCurrencyTypeMutation", m)
 }
 
-// The LatestCurrencyQueryRuleFunc type is an adapter to allow the use of ordinary
-// functions as a query rule.
-type LatestCurrencyQueryRuleFunc func(context.Context, *ent.LatestCurrencyQuery) error
-
-// EvalQuery return f(ctx, q).
-func (f LatestCurrencyQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
-	if q, ok := q.(*ent.LatestCurrencyQuery); ok {
-		return f(ctx, q)
-	}
-	return Denyf("ent/privacy: unexpected query type %T, expect *ent.LatestCurrencyQuery", q)
-}
-
-// The LatestCurrencyMutationRuleFunc type is an adapter to allow the use of ordinary
-// functions as a mutation rule.
-type LatestCurrencyMutationRuleFunc func(context.Context, *ent.LatestCurrencyMutation) error
-
-// EvalMutation calls f(ctx, m).
-func (f LatestCurrencyMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
-	if m, ok := m.(*ent.LatestCurrencyMutation); ok {
-		return f(ctx, m)
-	}
-	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.LatestCurrencyMutation", m)
-}
-
 // The SettingQueryRuleFunc type is an adapter to allow the use of ordinary
 // functions as a query rule.
 type SettingQueryRuleFunc func(context.Context, *ent.SettingQuery) error
@@ -465,8 +441,6 @@ func queryFilter(q ent.Query) (Filter, error) {
 		return q.Filter(), nil
 	case *ent.FiatCurrencyTypeQuery:
 		return q.Filter(), nil
-	case *ent.LatestCurrencyQuery:
-		return q.Filter(), nil
 	case *ent.SettingQuery:
 		return q.Filter(), nil
 	case *ent.TranQuery:
@@ -493,8 +467,6 @@ func mutationFilter(m ent.Mutation) (Filter, error) {
 	case *ent.FiatCurrencyMutation:
 		return m.Filter(), nil
 	case *ent.FiatCurrencyTypeMutation:
-		return m.Filter(), nil
-	case *ent.LatestCurrencyMutation:
 		return m.Filter(), nil
 	case *ent.SettingMutation:
 		return m.Filter(), nil

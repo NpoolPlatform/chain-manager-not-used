@@ -159,23 +159,6 @@ var (
 		Columns:    FiatCurrencyTypesColumns,
 		PrimaryKey: []*schema.Column{FiatCurrencyTypesColumns[0]},
 	}
-	// LatestCurrenciesColumns holds the columns for the "latest_currencies" table.
-	LatestCurrenciesColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeUUID, Unique: true},
-		{Name: "created_at", Type: field.TypeUint32},
-		{Name: "updated_at", Type: field.TypeUint32},
-		{Name: "deleted_at", Type: field.TypeUint32},
-		{Name: "coin_type_id", Type: field.TypeUUID, Nullable: true},
-		{Name: "feed_type", Type: field.TypeString, Nullable: true, Default: "DefaultFeedType"},
-		{Name: "market_value_high", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
-		{Name: "market_value_low", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
-	}
-	// LatestCurrenciesTable holds the schema information for the "latest_currencies" table.
-	LatestCurrenciesTable = &schema.Table{
-		Name:       "latest_currencies",
-		Columns:    LatestCurrenciesColumns,
-		PrimaryKey: []*schema.Column{LatestCurrenciesColumns[0]},
-	}
 	// SettingsColumns holds the columns for the "settings" table.
 	SettingsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID, Unique: true},
@@ -232,7 +215,6 @@ var (
 		ExchangeRatesTable,
 		FiatCurrenciesTable,
 		FiatCurrencyTypesTable,
-		LatestCurrenciesTable,
 		SettingsTable,
 		TransTable,
 	}

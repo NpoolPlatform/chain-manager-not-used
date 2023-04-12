@@ -18,7 +18,6 @@ import (
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/exchangerate"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/fiatcurrency"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/fiatcurrencytype"
-	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/latestcurrency"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/setting"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/tran"
 )
@@ -49,7 +48,6 @@ func columnChecker(table string) func(string) error {
 		exchangerate.Table:     exchangerate.ValidColumn,
 		fiatcurrency.Table:     fiatcurrency.ValidColumn,
 		fiatcurrencytype.Table: fiatcurrencytype.ValidColumn,
-		latestcurrency.Table:   latestcurrency.ValidColumn,
 		setting.Table:          setting.ValidColumn,
 		tran.Table:             tran.ValidColumn,
 	}

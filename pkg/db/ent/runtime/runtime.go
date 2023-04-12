@@ -13,7 +13,6 @@ import (
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/exchangerate"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/fiatcurrency"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/fiatcurrencytype"
-	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/latestcurrency"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/schema"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/setting"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/tran"
@@ -472,54 +471,6 @@ func init() {
 	fiatcurrencytypeDescID := fiatcurrencytypeFields[0].Descriptor()
 	// fiatcurrencytype.DefaultID holds the default value on creation for the id field.
 	fiatcurrencytype.DefaultID = fiatcurrencytypeDescID.Default.(func() uuid.UUID)
-	latestcurrencyMixin := schema.LatestCurrency{}.Mixin()
-	latestcurrency.Policy = privacy.NewPolicies(latestcurrencyMixin[0], schema.LatestCurrency{})
-	latestcurrency.Hooks[0] = func(next ent.Mutator) ent.Mutator {
-		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-			if err := latestcurrency.Policy.EvalMutation(ctx, m); err != nil {
-				return nil, err
-			}
-			return next.Mutate(ctx, m)
-		})
-	}
-	latestcurrencyMixinFields0 := latestcurrencyMixin[0].Fields()
-	_ = latestcurrencyMixinFields0
-	latestcurrencyFields := schema.LatestCurrency{}.Fields()
-	_ = latestcurrencyFields
-	// latestcurrencyDescCreatedAt is the schema descriptor for created_at field.
-	latestcurrencyDescCreatedAt := latestcurrencyMixinFields0[0].Descriptor()
-	// latestcurrency.DefaultCreatedAt holds the default value on creation for the created_at field.
-	latestcurrency.DefaultCreatedAt = latestcurrencyDescCreatedAt.Default.(func() uint32)
-	// latestcurrencyDescUpdatedAt is the schema descriptor for updated_at field.
-	latestcurrencyDescUpdatedAt := latestcurrencyMixinFields0[1].Descriptor()
-	// latestcurrency.DefaultUpdatedAt holds the default value on creation for the updated_at field.
-	latestcurrency.DefaultUpdatedAt = latestcurrencyDescUpdatedAt.Default.(func() uint32)
-	// latestcurrency.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
-	latestcurrency.UpdateDefaultUpdatedAt = latestcurrencyDescUpdatedAt.UpdateDefault.(func() uint32)
-	// latestcurrencyDescDeletedAt is the schema descriptor for deleted_at field.
-	latestcurrencyDescDeletedAt := latestcurrencyMixinFields0[2].Descriptor()
-	// latestcurrency.DefaultDeletedAt holds the default value on creation for the deleted_at field.
-	latestcurrency.DefaultDeletedAt = latestcurrencyDescDeletedAt.Default.(func() uint32)
-	// latestcurrencyDescCoinTypeID is the schema descriptor for coin_type_id field.
-	latestcurrencyDescCoinTypeID := latestcurrencyFields[1].Descriptor()
-	// latestcurrency.DefaultCoinTypeID holds the default value on creation for the coin_type_id field.
-	latestcurrency.DefaultCoinTypeID = latestcurrencyDescCoinTypeID.Default.(func() uuid.UUID)
-	// latestcurrencyDescFeedType is the schema descriptor for feed_type field.
-	latestcurrencyDescFeedType := latestcurrencyFields[2].Descriptor()
-	// latestcurrency.DefaultFeedType holds the default value on creation for the feed_type field.
-	latestcurrency.DefaultFeedType = latestcurrencyDescFeedType.Default.(string)
-	// latestcurrencyDescMarketValueHigh is the schema descriptor for market_value_high field.
-	latestcurrencyDescMarketValueHigh := latestcurrencyFields[3].Descriptor()
-	// latestcurrency.DefaultMarketValueHigh holds the default value on creation for the market_value_high field.
-	latestcurrency.DefaultMarketValueHigh = latestcurrencyDescMarketValueHigh.Default.(decimal.Decimal)
-	// latestcurrencyDescMarketValueLow is the schema descriptor for market_value_low field.
-	latestcurrencyDescMarketValueLow := latestcurrencyFields[4].Descriptor()
-	// latestcurrency.DefaultMarketValueLow holds the default value on creation for the market_value_low field.
-	latestcurrency.DefaultMarketValueLow = latestcurrencyDescMarketValueLow.Default.(decimal.Decimal)
-	// latestcurrencyDescID is the schema descriptor for id field.
-	latestcurrencyDescID := latestcurrencyFields[0].Descriptor()
-	// latestcurrency.DefaultID holds the default value on creation for the id field.
-	latestcurrency.DefaultID = latestcurrencyDescID.Default.(func() uuid.UUID)
 	settingMixin := schema.Setting{}.Mixin()
 	setting.Policy = privacy.NewPolicies(settingMixin[0], schema.Setting{})
 	setting.Hooks[0] = func(next ent.Mutator) ent.Mutator {

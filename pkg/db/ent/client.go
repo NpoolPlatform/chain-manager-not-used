@@ -19,7 +19,6 @@ import (
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/exchangerate"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/fiatcurrency"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/fiatcurrencytype"
-	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/latestcurrency"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/setting"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/tran"
 
@@ -48,8 +47,6 @@ type Client struct {
 	FiatCurrency *FiatCurrencyClient
 	// FiatCurrencyType is the client for interacting with the FiatCurrencyType builders.
 	FiatCurrencyType *FiatCurrencyTypeClient
-	// LatestCurrency is the client for interacting with the LatestCurrency builders.
-	LatestCurrency *LatestCurrencyClient
 	// Setting is the client for interacting with the Setting builders.
 	Setting *SettingClient
 	// Tran is the client for interacting with the Tran builders.
@@ -75,7 +72,6 @@ func (c *Client) init() {
 	c.ExchangeRate = NewExchangeRateClient(c.config)
 	c.FiatCurrency = NewFiatCurrencyClient(c.config)
 	c.FiatCurrencyType = NewFiatCurrencyTypeClient(c.config)
-	c.LatestCurrency = NewLatestCurrencyClient(c.config)
 	c.Setting = NewSettingClient(c.config)
 	c.Tran = NewTranClient(c.config)
 }
@@ -119,7 +115,6 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		ExchangeRate:     NewExchangeRateClient(cfg),
 		FiatCurrency:     NewFiatCurrencyClient(cfg),
 		FiatCurrencyType: NewFiatCurrencyTypeClient(cfg),
-		LatestCurrency:   NewLatestCurrencyClient(cfg),
 		Setting:          NewSettingClient(cfg),
 		Tran:             NewTranClient(cfg),
 	}, nil
@@ -149,7 +144,6 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		ExchangeRate:     NewExchangeRateClient(cfg),
 		FiatCurrency:     NewFiatCurrencyClient(cfg),
 		FiatCurrencyType: NewFiatCurrencyTypeClient(cfg),
-		LatestCurrency:   NewLatestCurrencyClient(cfg),
 		Setting:          NewSettingClient(cfg),
 		Tran:             NewTranClient(cfg),
 	}, nil
@@ -189,7 +183,6 @@ func (c *Client) Use(hooks ...Hook) {
 	c.ExchangeRate.Use(hooks...)
 	c.FiatCurrency.Use(hooks...)
 	c.FiatCurrencyType.Use(hooks...)
-	c.LatestCurrency.Use(hooks...)
 	c.Setting.Use(hooks...)
 	c.Tran.Use(hooks...)
 }
@@ -920,97 +913,6 @@ func (c *FiatCurrencyTypeClient) GetX(ctx context.Context, id uuid.UUID) *FiatCu
 func (c *FiatCurrencyTypeClient) Hooks() []Hook {
 	hooks := c.hooks.FiatCurrencyType
 	return append(hooks[:len(hooks):len(hooks)], fiatcurrencytype.Hooks[:]...)
-}
-
-// LatestCurrencyClient is a client for the LatestCurrency schema.
-type LatestCurrencyClient struct {
-	config
-}
-
-// NewLatestCurrencyClient returns a client for the LatestCurrency from the given config.
-func NewLatestCurrencyClient(c config) *LatestCurrencyClient {
-	return &LatestCurrencyClient{config: c}
-}
-
-// Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `latestcurrency.Hooks(f(g(h())))`.
-func (c *LatestCurrencyClient) Use(hooks ...Hook) {
-	c.hooks.LatestCurrency = append(c.hooks.LatestCurrency, hooks...)
-}
-
-// Create returns a builder for creating a LatestCurrency entity.
-func (c *LatestCurrencyClient) Create() *LatestCurrencyCreate {
-	mutation := newLatestCurrencyMutation(c.config, OpCreate)
-	return &LatestCurrencyCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// CreateBulk returns a builder for creating a bulk of LatestCurrency entities.
-func (c *LatestCurrencyClient) CreateBulk(builders ...*LatestCurrencyCreate) *LatestCurrencyCreateBulk {
-	return &LatestCurrencyCreateBulk{config: c.config, builders: builders}
-}
-
-// Update returns an update builder for LatestCurrency.
-func (c *LatestCurrencyClient) Update() *LatestCurrencyUpdate {
-	mutation := newLatestCurrencyMutation(c.config, OpUpdate)
-	return &LatestCurrencyUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOne returns an update builder for the given entity.
-func (c *LatestCurrencyClient) UpdateOne(lc *LatestCurrency) *LatestCurrencyUpdateOne {
-	mutation := newLatestCurrencyMutation(c.config, OpUpdateOne, withLatestCurrency(lc))
-	return &LatestCurrencyUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOneID returns an update builder for the given id.
-func (c *LatestCurrencyClient) UpdateOneID(id uuid.UUID) *LatestCurrencyUpdateOne {
-	mutation := newLatestCurrencyMutation(c.config, OpUpdateOne, withLatestCurrencyID(id))
-	return &LatestCurrencyUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Delete returns a delete builder for LatestCurrency.
-func (c *LatestCurrencyClient) Delete() *LatestCurrencyDelete {
-	mutation := newLatestCurrencyMutation(c.config, OpDelete)
-	return &LatestCurrencyDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// DeleteOne returns a builder for deleting the given entity.
-func (c *LatestCurrencyClient) DeleteOne(lc *LatestCurrency) *LatestCurrencyDeleteOne {
-	return c.DeleteOneID(lc.ID)
-}
-
-// DeleteOne returns a builder for deleting the given entity by its id.
-func (c *LatestCurrencyClient) DeleteOneID(id uuid.UUID) *LatestCurrencyDeleteOne {
-	builder := c.Delete().Where(latestcurrency.ID(id))
-	builder.mutation.id = &id
-	builder.mutation.op = OpDeleteOne
-	return &LatestCurrencyDeleteOne{builder}
-}
-
-// Query returns a query builder for LatestCurrency.
-func (c *LatestCurrencyClient) Query() *LatestCurrencyQuery {
-	return &LatestCurrencyQuery{
-		config: c.config,
-	}
-}
-
-// Get returns a LatestCurrency entity by its id.
-func (c *LatestCurrencyClient) Get(ctx context.Context, id uuid.UUID) (*LatestCurrency, error) {
-	return c.Query().Where(latestcurrency.ID(id)).Only(ctx)
-}
-
-// GetX is like Get, but panics if an error occurs.
-func (c *LatestCurrencyClient) GetX(ctx context.Context, id uuid.UUID) *LatestCurrency {
-	obj, err := c.Get(ctx, id)
-	if err != nil {
-		panic(err)
-	}
-	return obj
-}
-
-// Hooks returns the client hooks.
-func (c *LatestCurrencyClient) Hooks() []Hook {
-	hooks := c.hooks.LatestCurrency
-	return append(hooks[:len(hooks):len(hooks)], latestcurrency.Hooks[:]...)
 }
 
 // SettingClient is a client for the Setting schema.

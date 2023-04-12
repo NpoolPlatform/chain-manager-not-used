@@ -11,7 +11,6 @@ import (
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/exchangerate"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/fiatcurrency"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/fiatcurrencytype"
-	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/latestcurrency"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/setting"
 	"github.com/NpoolPlatform/chain-manager/pkg/db/ent/tran"
 
@@ -23,7 +22,7 @@ import (
 
 // schemaGraph holds a representation of ent/schema at runtime.
 var schemaGraph = func() *sqlgraph.Schema {
-	graph := &sqlgraph.Schema{Nodes: make([]*sqlgraph.Node, 11)}
+	graph := &sqlgraph.Schema{Nodes: make([]*sqlgraph.Node, 10)}
 	graph.Nodes[0] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   appcoin.Table,
@@ -201,26 +200,6 @@ var schemaGraph = func() *sqlgraph.Schema {
 	}
 	graph.Nodes[8] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
-			Table:   latestcurrency.Table,
-			Columns: latestcurrency.Columns,
-			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeUUID,
-				Column: latestcurrency.FieldID,
-			},
-		},
-		Type: "LatestCurrency",
-		Fields: map[string]*sqlgraph.FieldSpec{
-			latestcurrency.FieldCreatedAt:       {Type: field.TypeUint32, Column: latestcurrency.FieldCreatedAt},
-			latestcurrency.FieldUpdatedAt:       {Type: field.TypeUint32, Column: latestcurrency.FieldUpdatedAt},
-			latestcurrency.FieldDeletedAt:       {Type: field.TypeUint32, Column: latestcurrency.FieldDeletedAt},
-			latestcurrency.FieldCoinTypeID:      {Type: field.TypeUUID, Column: latestcurrency.FieldCoinTypeID},
-			latestcurrency.FieldFeedType:        {Type: field.TypeString, Column: latestcurrency.FieldFeedType},
-			latestcurrency.FieldMarketValueHigh: {Type: field.TypeOther, Column: latestcurrency.FieldMarketValueHigh},
-			latestcurrency.FieldMarketValueLow:  {Type: field.TypeOther, Column: latestcurrency.FieldMarketValueLow},
-		},
-	}
-	graph.Nodes[9] = &sqlgraph.Node{
-		NodeSpec: sqlgraph.NodeSpec{
 			Table:   setting.Table,
 			Columns: setting.Columns,
 			ID: &sqlgraph.FieldSpec{
@@ -246,7 +225,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			setting.FieldLeastTransferAmount:         {Type: field.TypeOther, Column: setting.FieldLeastTransferAmount},
 		},
 	}
-	graph.Nodes[10] = &sqlgraph.Node{
+	graph.Nodes[9] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   tran.Table,
 			Columns: tran.Columns,
@@ -956,81 +935,6 @@ func (f *FiatCurrencyTypeFilter) WhereLogo(p entql.StringP) {
 }
 
 // addPredicate implements the predicateAdder interface.
-func (lcq *LatestCurrencyQuery) addPredicate(pred func(s *sql.Selector)) {
-	lcq.predicates = append(lcq.predicates, pred)
-}
-
-// Filter returns a Filter implementation to apply filters on the LatestCurrencyQuery builder.
-func (lcq *LatestCurrencyQuery) Filter() *LatestCurrencyFilter {
-	return &LatestCurrencyFilter{config: lcq.config, predicateAdder: lcq}
-}
-
-// addPredicate implements the predicateAdder interface.
-func (m *LatestCurrencyMutation) addPredicate(pred func(s *sql.Selector)) {
-	m.predicates = append(m.predicates, pred)
-}
-
-// Filter returns an entql.Where implementation to apply filters on the LatestCurrencyMutation builder.
-func (m *LatestCurrencyMutation) Filter() *LatestCurrencyFilter {
-	return &LatestCurrencyFilter{config: m.config, predicateAdder: m}
-}
-
-// LatestCurrencyFilter provides a generic filtering capability at runtime for LatestCurrencyQuery.
-type LatestCurrencyFilter struct {
-	predicateAdder
-	config
-}
-
-// Where applies the entql predicate on the query filter.
-func (f *LatestCurrencyFilter) Where(p entql.P) {
-	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[8].Type, p, s); err != nil {
-			s.AddError(err)
-		}
-	})
-}
-
-// WhereID applies the entql [16]byte predicate on the id field.
-func (f *LatestCurrencyFilter) WhereID(p entql.ValueP) {
-	f.Where(p.Field(latestcurrency.FieldID))
-}
-
-// WhereCreatedAt applies the entql uint32 predicate on the created_at field.
-func (f *LatestCurrencyFilter) WhereCreatedAt(p entql.Uint32P) {
-	f.Where(p.Field(latestcurrency.FieldCreatedAt))
-}
-
-// WhereUpdatedAt applies the entql uint32 predicate on the updated_at field.
-func (f *LatestCurrencyFilter) WhereUpdatedAt(p entql.Uint32P) {
-	f.Where(p.Field(latestcurrency.FieldUpdatedAt))
-}
-
-// WhereDeletedAt applies the entql uint32 predicate on the deleted_at field.
-func (f *LatestCurrencyFilter) WhereDeletedAt(p entql.Uint32P) {
-	f.Where(p.Field(latestcurrency.FieldDeletedAt))
-}
-
-// WhereCoinTypeID applies the entql [16]byte predicate on the coin_type_id field.
-func (f *LatestCurrencyFilter) WhereCoinTypeID(p entql.ValueP) {
-	f.Where(p.Field(latestcurrency.FieldCoinTypeID))
-}
-
-// WhereFeedType applies the entql string predicate on the feed_type field.
-func (f *LatestCurrencyFilter) WhereFeedType(p entql.StringP) {
-	f.Where(p.Field(latestcurrency.FieldFeedType))
-}
-
-// WhereMarketValueHigh applies the entql other predicate on the market_value_high field.
-func (f *LatestCurrencyFilter) WhereMarketValueHigh(p entql.OtherP) {
-	f.Where(p.Field(latestcurrency.FieldMarketValueHigh))
-}
-
-// WhereMarketValueLow applies the entql other predicate on the market_value_low field.
-func (f *LatestCurrencyFilter) WhereMarketValueLow(p entql.OtherP) {
-	f.Where(p.Field(latestcurrency.FieldMarketValueLow))
-}
-
-// addPredicate implements the predicateAdder interface.
 func (sq *SettingQuery) addPredicate(pred func(s *sql.Selector)) {
 	sq.predicates = append(sq.predicates, pred)
 }
@@ -1059,7 +963,7 @@ type SettingFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *SettingFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[9].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[8].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -1169,7 +1073,7 @@ type TranFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *TranFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[10].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[9].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})

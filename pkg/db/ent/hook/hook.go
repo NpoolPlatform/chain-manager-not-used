@@ -113,19 +113,6 @@ func (f FiatCurrencyTypeFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.V
 	return f(ctx, mv)
 }
 
-// The LatestCurrencyFunc type is an adapter to allow the use of ordinary
-// function as LatestCurrency mutator.
-type LatestCurrencyFunc func(context.Context, *ent.LatestCurrencyMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f LatestCurrencyFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	mv, ok := m.(*ent.LatestCurrencyMutation)
-	if !ok {
-		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.LatestCurrencyMutation", m)
-	}
-	return f(ctx, mv)
-}
-
 // The SettingFunc type is an adapter to allow the use of ordinary
 // function as Setting mutator.
 type SettingFunc func(context.Context, *ent.SettingMutation) (ent.Value, error)
