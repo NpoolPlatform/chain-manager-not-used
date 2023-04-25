@@ -543,6 +543,10 @@ func init() {
 	settingDescLeastTransferAmount := settingFields[11].Descriptor()
 	// setting.DefaultLeastTransferAmount holds the default value on creation for the least_transfer_amount field.
 	setting.DefaultLeastTransferAmount = settingDescLeastTransferAmount.Default.(decimal.Decimal)
+	// settingDescNeedMemo is the schema descriptor for need_memo field.
+	settingDescNeedMemo := settingFields[12].Descriptor()
+	// setting.DefaultNeedMemo holds the default value on creation for the need_memo field.
+	setting.DefaultNeedMemo = settingDescNeedMemo.Default.(bool)
 	// settingDescID is the schema descriptor for id field.
 	settingDescID := settingFields[0].Descriptor()
 	// setting.DefaultID holds the default value on creation for the id field.

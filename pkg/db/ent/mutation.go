@@ -7808,6 +7808,7 @@ type SettingMutation struct {
 	hot_wallet_account_amount      *decimal.Decimal
 	payment_account_collect_amount *decimal.Decimal
 	least_transfer_amount          *decimal.Decimal
+	need_memo                      *bool
 	clearedFields                  map[string]struct{}
 	done                           bool
 	oldValue                       func(context.Context) (*Setting, error)
@@ -8625,6 +8626,55 @@ func (m *SettingMutation) ResetLeastTransferAmount() {
 	delete(m.clearedFields, setting.FieldLeastTransferAmount)
 }
 
+// SetNeedMemo sets the "need_memo" field.
+func (m *SettingMutation) SetNeedMemo(b bool) {
+	m.need_memo = &b
+}
+
+// NeedMemo returns the value of the "need_memo" field in the mutation.
+func (m *SettingMutation) NeedMemo() (r bool, exists bool) {
+	v := m.need_memo
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldNeedMemo returns the old "need_memo" field's value of the Setting entity.
+// If the Setting object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SettingMutation) OldNeedMemo(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldNeedMemo is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldNeedMemo requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldNeedMemo: %w", err)
+	}
+	return oldValue.NeedMemo, nil
+}
+
+// ClearNeedMemo clears the value of the "need_memo" field.
+func (m *SettingMutation) ClearNeedMemo() {
+	m.need_memo = nil
+	m.clearedFields[setting.FieldNeedMemo] = struct{}{}
+}
+
+// NeedMemoCleared returns if the "need_memo" field was cleared in this mutation.
+func (m *SettingMutation) NeedMemoCleared() bool {
+	_, ok := m.clearedFields[setting.FieldNeedMemo]
+	return ok
+}
+
+// ResetNeedMemo resets all changes to the "need_memo" field.
+func (m *SettingMutation) ResetNeedMemo() {
+	m.need_memo = nil
+	delete(m.clearedFields, setting.FieldNeedMemo)
+}
+
 // Where appends a list predicates to the SettingMutation builder.
 func (m *SettingMutation) Where(ps ...predicate.Setting) {
 	m.predicates = append(m.predicates, ps...)
@@ -8644,7 +8694,7 @@ func (m *SettingMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *SettingMutation) Fields() []string {
-	fields := make([]string, 0, 14)
+	fields := make([]string, 0, 15)
 	if m.created_at != nil {
 		fields = append(fields, setting.FieldCreatedAt)
 	}
@@ -8687,6 +8737,9 @@ func (m *SettingMutation) Fields() []string {
 	if m.least_transfer_amount != nil {
 		fields = append(fields, setting.FieldLeastTransferAmount)
 	}
+	if m.need_memo != nil {
+		fields = append(fields, setting.FieldNeedMemo)
+	}
 	return fields
 }
 
@@ -8723,6 +8776,8 @@ func (m *SettingMutation) Field(name string) (ent.Value, bool) {
 		return m.PaymentAccountCollectAmount()
 	case setting.FieldLeastTransferAmount:
 		return m.LeastTransferAmount()
+	case setting.FieldNeedMemo:
+		return m.NeedMemo()
 	}
 	return nil, false
 }
@@ -8760,6 +8815,8 @@ func (m *SettingMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldPaymentAccountCollectAmount(ctx)
 	case setting.FieldLeastTransferAmount:
 		return m.OldLeastTransferAmount(ctx)
+	case setting.FieldNeedMemo:
+		return m.OldNeedMemo(ctx)
 	}
 	return nil, fmt.Errorf("unknown Setting field %s", name)
 }
@@ -8867,6 +8924,13 @@ func (m *SettingMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetLeastTransferAmount(v)
 		return nil
+	case setting.FieldNeedMemo:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetNeedMemo(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Setting field %s", name)
 }
@@ -8969,6 +9033,9 @@ func (m *SettingMutation) ClearedFields() []string {
 	if m.FieldCleared(setting.FieldLeastTransferAmount) {
 		fields = append(fields, setting.FieldLeastTransferAmount)
 	}
+	if m.FieldCleared(setting.FieldNeedMemo) {
+		fields = append(fields, setting.FieldNeedMemo)
+	}
 	return fields
 }
 
@@ -9015,6 +9082,9 @@ func (m *SettingMutation) ClearField(name string) error {
 		return nil
 	case setting.FieldLeastTransferAmount:
 		m.ClearLeastTransferAmount()
+		return nil
+	case setting.FieldNeedMemo:
+		m.ClearNeedMemo()
 		return nil
 	}
 	return fmt.Errorf("unknown Setting nullable field %s", name)
@@ -9065,6 +9135,9 @@ func (m *SettingMutation) ResetField(name string) error {
 		return nil
 	case setting.FieldLeastTransferAmount:
 		m.ResetLeastTransferAmount()
+		return nil
+	case setting.FieldNeedMemo:
+		m.ResetNeedMemo()
 		return nil
 	}
 	return fmt.Errorf("unknown Setting field %s", name)

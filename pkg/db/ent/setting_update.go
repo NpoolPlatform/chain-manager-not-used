@@ -305,6 +305,26 @@ func (su *SettingUpdate) ClearLeastTransferAmount() *SettingUpdate {
 	return su
 }
 
+// SetNeedMemo sets the "need_memo" field.
+func (su *SettingUpdate) SetNeedMemo(b bool) *SettingUpdate {
+	su.mutation.SetNeedMemo(b)
+	return su
+}
+
+// SetNillableNeedMemo sets the "need_memo" field if the given value is not nil.
+func (su *SettingUpdate) SetNillableNeedMemo(b *bool) *SettingUpdate {
+	if b != nil {
+		su.SetNeedMemo(*b)
+	}
+	return su
+}
+
+// ClearNeedMemo clears the value of the "need_memo" field.
+func (su *SettingUpdate) ClearNeedMemo() *SettingUpdate {
+	su.mutation.ClearNeedMemo()
+	return su
+}
+
 // Mutation returns the SettingMutation object of the builder.
 func (su *SettingUpdate) Mutation() *SettingMutation {
 	return su.mutation
@@ -586,6 +606,19 @@ func (su *SettingUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeOther,
 			Column: setting.FieldLeastTransferAmount,
+		})
+	}
+	if value, ok := su.mutation.NeedMemo(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Value:  value,
+			Column: setting.FieldNeedMemo,
+		})
+	}
+	if su.mutation.NeedMemoCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Column: setting.FieldNeedMemo,
 		})
 	}
 	_spec.Modifiers = su.modifiers
@@ -881,6 +914,26 @@ func (suo *SettingUpdateOne) SetNillableLeastTransferAmount(d *decimal.Decimal) 
 // ClearLeastTransferAmount clears the value of the "least_transfer_amount" field.
 func (suo *SettingUpdateOne) ClearLeastTransferAmount() *SettingUpdateOne {
 	suo.mutation.ClearLeastTransferAmount()
+	return suo
+}
+
+// SetNeedMemo sets the "need_memo" field.
+func (suo *SettingUpdateOne) SetNeedMemo(b bool) *SettingUpdateOne {
+	suo.mutation.SetNeedMemo(b)
+	return suo
+}
+
+// SetNillableNeedMemo sets the "need_memo" field if the given value is not nil.
+func (suo *SettingUpdateOne) SetNillableNeedMemo(b *bool) *SettingUpdateOne {
+	if b != nil {
+		suo.SetNeedMemo(*b)
+	}
+	return suo
+}
+
+// ClearNeedMemo clears the value of the "need_memo" field.
+func (suo *SettingUpdateOne) ClearNeedMemo() *SettingUpdateOne {
+	suo.mutation.ClearNeedMemo()
 	return suo
 }
 
@@ -1195,6 +1248,19 @@ func (suo *SettingUpdateOne) sqlSave(ctx context.Context) (_node *Setting, err e
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeOther,
 			Column: setting.FieldLeastTransferAmount,
+		})
+	}
+	if value, ok := suo.mutation.NeedMemo(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Value:  value,
+			Column: setting.FieldNeedMemo,
+		})
+	}
+	if suo.mutation.NeedMemoCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Column: setting.FieldNeedMemo,
 		})
 	}
 	_spec.Modifiers = suo.modifiers

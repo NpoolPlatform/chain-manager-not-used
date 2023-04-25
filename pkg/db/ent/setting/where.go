@@ -178,6 +178,13 @@ func LeastTransferAmount(v decimal.Decimal) predicate.Setting {
 	})
 }
 
+// NeedMemo applies equality check predicate on the "need_memo" field. It's identical to NeedMemoEQ.
+func NeedMemo(v bool) predicate.Setting {
+	return predicate.Setting(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldNeedMemo), v))
+	})
+}
+
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
 func CreatedAtEQ(v uint32) predicate.Setting {
 	return predicate.Setting(func(s *sql.Selector) {
@@ -1175,6 +1182,34 @@ func LeastTransferAmountIsNil() predicate.Setting {
 func LeastTransferAmountNotNil() predicate.Setting {
 	return predicate.Setting(func(s *sql.Selector) {
 		s.Where(sql.NotNull(s.C(FieldLeastTransferAmount)))
+	})
+}
+
+// NeedMemoEQ applies the EQ predicate on the "need_memo" field.
+func NeedMemoEQ(v bool) predicate.Setting {
+	return predicate.Setting(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldNeedMemo), v))
+	})
+}
+
+// NeedMemoNEQ applies the NEQ predicate on the "need_memo" field.
+func NeedMemoNEQ(v bool) predicate.Setting {
+	return predicate.Setting(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldNeedMemo), v))
+	})
+}
+
+// NeedMemoIsNil applies the IsNil predicate on the "need_memo" field.
+func NeedMemoIsNil() predicate.Setting {
+	return predicate.Setting(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldNeedMemo)))
+	})
+}
+
+// NeedMemoNotNil applies the NotNil predicate on the "need_memo" field.
+func NeedMemoNotNil() predicate.Setting {
+	return predicate.Setting(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldNeedMemo)))
 	})
 }
 

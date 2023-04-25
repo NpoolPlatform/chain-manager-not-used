@@ -220,6 +220,20 @@ func (sc *SettingCreate) SetNillableLeastTransferAmount(d *decimal.Decimal) *Set
 	return sc
 }
 
+// SetNeedMemo sets the "need_memo" field.
+func (sc *SettingCreate) SetNeedMemo(b bool) *SettingCreate {
+	sc.mutation.SetNeedMemo(b)
+	return sc
+}
+
+// SetNillableNeedMemo sets the "need_memo" field if the given value is not nil.
+func (sc *SettingCreate) SetNillableNeedMemo(b *bool) *SettingCreate {
+	if b != nil {
+		sc.SetNeedMemo(*b)
+	}
+	return sc
+}
+
 // SetID sets the "id" field.
 func (sc *SettingCreate) SetID(u uuid.UUID) *SettingCreate {
 	sc.mutation.SetID(u)
@@ -383,6 +397,10 @@ func (sc *SettingCreate) defaults() error {
 	if _, ok := sc.mutation.LeastTransferAmount(); !ok {
 		v := setting.DefaultLeastTransferAmount
 		sc.mutation.SetLeastTransferAmount(v)
+	}
+	if _, ok := sc.mutation.NeedMemo(); !ok {
+		v := setting.DefaultNeedMemo
+		sc.mutation.SetNeedMemo(v)
 	}
 	if _, ok := sc.mutation.ID(); !ok {
 		if setting.DefaultID == nil {
@@ -553,6 +571,14 @@ func (sc *SettingCreate) createSpec() (*Setting, *sqlgraph.CreateSpec) {
 			Column: setting.FieldLeastTransferAmount,
 		})
 		_node.LeastTransferAmount = value
+	}
+	if value, ok := sc.mutation.NeedMemo(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Value:  value,
+			Column: setting.FieldNeedMemo,
+		})
+		_node.NeedMemo = value
 	}
 	return _node, _spec
 }
@@ -857,6 +883,24 @@ func (u *SettingUpsert) UpdateLeastTransferAmount() *SettingUpsert {
 // ClearLeastTransferAmount clears the value of the "least_transfer_amount" field.
 func (u *SettingUpsert) ClearLeastTransferAmount() *SettingUpsert {
 	u.SetNull(setting.FieldLeastTransferAmount)
+	return u
+}
+
+// SetNeedMemo sets the "need_memo" field.
+func (u *SettingUpsert) SetNeedMemo(v bool) *SettingUpsert {
+	u.Set(setting.FieldNeedMemo, v)
+	return u
+}
+
+// UpdateNeedMemo sets the "need_memo" field to the value that was provided on create.
+func (u *SettingUpsert) UpdateNeedMemo() *SettingUpsert {
+	u.SetExcluded(setting.FieldNeedMemo)
+	return u
+}
+
+// ClearNeedMemo clears the value of the "need_memo" field.
+func (u *SettingUpsert) ClearNeedMemo() *SettingUpsert {
+	u.SetNull(setting.FieldNeedMemo)
 	return u
 }
 
@@ -1201,6 +1245,27 @@ func (u *SettingUpsertOne) UpdateLeastTransferAmount() *SettingUpsertOne {
 func (u *SettingUpsertOne) ClearLeastTransferAmount() *SettingUpsertOne {
 	return u.Update(func(s *SettingUpsert) {
 		s.ClearLeastTransferAmount()
+	})
+}
+
+// SetNeedMemo sets the "need_memo" field.
+func (u *SettingUpsertOne) SetNeedMemo(v bool) *SettingUpsertOne {
+	return u.Update(func(s *SettingUpsert) {
+		s.SetNeedMemo(v)
+	})
+}
+
+// UpdateNeedMemo sets the "need_memo" field to the value that was provided on create.
+func (u *SettingUpsertOne) UpdateNeedMemo() *SettingUpsertOne {
+	return u.Update(func(s *SettingUpsert) {
+		s.UpdateNeedMemo()
+	})
+}
+
+// ClearNeedMemo clears the value of the "need_memo" field.
+func (u *SettingUpsertOne) ClearNeedMemo() *SettingUpsertOne {
+	return u.Update(func(s *SettingUpsert) {
+		s.ClearNeedMemo()
 	})
 }
 
@@ -1711,6 +1776,27 @@ func (u *SettingUpsertBulk) UpdateLeastTransferAmount() *SettingUpsertBulk {
 func (u *SettingUpsertBulk) ClearLeastTransferAmount() *SettingUpsertBulk {
 	return u.Update(func(s *SettingUpsert) {
 		s.ClearLeastTransferAmount()
+	})
+}
+
+// SetNeedMemo sets the "need_memo" field.
+func (u *SettingUpsertBulk) SetNeedMemo(v bool) *SettingUpsertBulk {
+	return u.Update(func(s *SettingUpsert) {
+		s.SetNeedMemo(v)
+	})
+}
+
+// UpdateNeedMemo sets the "need_memo" field to the value that was provided on create.
+func (u *SettingUpsertBulk) UpdateNeedMemo() *SettingUpsertBulk {
+	return u.Update(func(s *SettingUpsert) {
+		s.UpdateNeedMemo()
+	})
+}
+
+// ClearNeedMemo clears the value of the "need_memo" field.
+func (u *SettingUpsertBulk) ClearNeedMemo() *SettingUpsertBulk {
+	return u.Update(func(s *SettingUpsert) {
+		s.ClearNeedMemo()
 	})
 }
 

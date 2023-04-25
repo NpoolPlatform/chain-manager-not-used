@@ -45,6 +45,8 @@ type Setting struct {
 	PaymentAccountCollectAmount decimal.Decimal `json:"payment_account_collect_amount,omitempty"`
 	// LeastTransferAmount holds the value of the "least_transfer_amount" field.
 	LeastTransferAmount decimal.Decimal `json:"least_transfer_amount,omitempty"`
+	// NeedMemo holds the value of the "need_memo" field.
+	NeedMemo bool `json:"need_memo,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -54,7 +56,7 @@ func (*Setting) scanValues(columns []string) ([]interface{}, error) {
 		switch columns[i] {
 		case setting.FieldWithdrawFeeAmount, setting.FieldCollectFeeAmount, setting.FieldHotWalletFeeAmount, setting.FieldLowFeeAmount, setting.FieldHotLowFeeAmount, setting.FieldHotWalletAccountAmount, setting.FieldPaymentAccountCollectAmount, setting.FieldLeastTransferAmount:
 			values[i] = new(decimal.Decimal)
-		case setting.FieldWithdrawFeeByStableUsd:
+		case setting.FieldWithdrawFeeByStableUsd, setting.FieldNeedMemo:
 			values[i] = new(sql.NullBool)
 		case setting.FieldCreatedAt, setting.FieldUpdatedAt, setting.FieldDeletedAt:
 			values[i] = new(sql.NullInt64)
@@ -165,6 +167,12 @@ func (s *Setting) assignValues(columns []string, values []interface{}) error {
 			} else if value != nil {
 				s.LeastTransferAmount = *value
 			}
+		case setting.FieldNeedMemo:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field need_memo", values[i])
+			} else if value.Valid {
+				s.NeedMemo = value.Bool
+			}
 		}
 	}
 	return nil
@@ -234,6 +242,9 @@ func (s *Setting) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("least_transfer_amount=")
 	builder.WriteString(fmt.Sprintf("%v", s.LeastTransferAmount))
+	builder.WriteString(", ")
+	builder.WriteString("need_memo=")
+	builder.WriteString(fmt.Sprintf("%v", s.NeedMemo))
 	builder.WriteByte(')')
 	return builder.String()
 }

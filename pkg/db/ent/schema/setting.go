@@ -95,6 +95,10 @@ func (Setting) Fields() []ent.Field {
 			}).
 			Optional().
 			Default(decimal.Decimal{}),
+		field.
+			Bool("need_memo").
+			Optional().
+			Default(false),
 	}
 }
 

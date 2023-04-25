@@ -59,6 +59,9 @@ func CreateSet(c *ent.SettingCreate, in *npool.SettingReq) *ent.SettingCreate {
 	if in.LeastTransferAmount != nil {
 		c.SetLeastTransferAmount(decimal.RequireFromString(in.GetLeastTransferAmount()))
 	}
+	if in.NeedMemo != nil {
+		c.SetNeedMemo(in.GetNeedMemo())
+	}
 	return c
 }
 
@@ -152,6 +155,9 @@ func UpdateSet(info *ent.Setting, in *npool.SettingReq) *ent.SettingUpdateOne {
 	}
 	if in.LeastTransferAmount != nil {
 		stm.SetLeastTransferAmount(decimal.RequireFromString(in.GetLeastTransferAmount()))
+	}
+	if in.NeedMemo != nil {
+		stm.SetNeedMemo(in.GetNeedMemo())
 	}
 
 	return stm
