@@ -33,7 +33,7 @@ func init() {
 	}
 }
 
-var tran = &npool.Tx{
+var ret = &npool.Tx{
 	ID:            uuid.NewString(),
 	CoinTypeID:    uuid.NewString(),
 	FromAccountID: uuid.NewString(),
@@ -46,38 +46,38 @@ var tran = &npool.Tx{
 	Type:          basetypes.TxType_TxPaymentCollect,
 }
 
-var tranReq = &npool.TxReq{
-	ID:            &tran.ID,
-	CoinTypeID:    &tran.CoinTypeID,
-	FromAccountID: &tran.FromAccountID,
-	ToAccountID:   &tran.ToAccountID,
-	Amount:        &tran.Amount,
-	FeeAmount:     &tran.FeeAmount,
-	ChainTxID:     &tran.ChainTxID,
-	State:         &tran.State,
-	Extra:         &tran.Extra,
-	Type:          &tran.Type,
+var req = &npool.TxReq{
+	ID:            &ret.ID,
+	CoinTypeID:    &ret.CoinTypeID,
+	FromAccountID: &ret.FromAccountID,
+	ToAccountID:   &ret.ToAccountID,
+	Amount:        &ret.Amount,
+	FeeAmount:     &ret.FeeAmount,
+	ChainTxID:     &ret.ChainTxID,
+	State:         &ret.State,
+	Extra:         &ret.Extra,
+	Type:          &ret.Type,
 }
 
 func createTx(t *testing.T) {
-	info, err := CreateTx(context.Background(), tranReq)
+	info, err := CreateTx(context.Background(), req)
 	if assert.Nil(t, err) {
-		tran.CreatedAt = info.CreatedAt
-		tran.UpdatedAt = info.UpdatedAt
-		assert.Equal(t, tran, info)
+		ret.CreatedAt = info.CreatedAt
+		ret.UpdatedAt = info.UpdatedAt
+		assert.Equal(t, ret, info)
 	}
 }
 
 func updateTx(t *testing.T) {
 	state := npool.TxState_StateWait
 
-	tranReq.State = &state
-	tran.State = state
+	req.State = &state
+	ret.State = state
 
-	info, err := UpdateTx(context.Background(), tranReq)
+	info, err := UpdateTx(context.Background(), req)
 	if assert.Nil(t, err) {
-		tran.UpdatedAt = info.UpdatedAt
-		assert.Equal(t, tran, info)
+		ret.UpdatedAt = info.UpdatedAt
+		assert.Equal(t, ret, info)
 	}
 }
 
@@ -85,16 +85,17 @@ func createTxs(t *testing.T) {
 }
 
 func getTx(t *testing.T) {
-	info, err := GetTx(context.Background(), tran.ID)
+	info, err := GetTx(context.Background(), ret.ID)
 	if assert.Nil(t, err) {
-		assert.Equal(t, tran, info)
+		assert.Equal(t, ret, info)
 	}
 }
 
 func deleteTx(t *testing.T) {
-	info, err := DeleteTx(context.Background(), tran.ID)
+	info, err := DeleteTx(context.Background(), ret.ID)
 	if assert.Nil(t, err) {
-		assert.Equal(t, tran, info)
+		ret.UpdatedAt = info.UpdatedAt
+		assert.Equal(t, ret, info)
 	}
 
 	_, err = GetTx(context.Background(), info.ID)
